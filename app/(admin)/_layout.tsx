@@ -5,7 +5,7 @@ import { Redirect, router, Stack } from 'expo-router';
 import { useAuth } from '@/hooks/AuthProvider';
 
 export default function AppLayout() {
-  const { user, session, loading, signOut } = useAuth();
+  const { session, loading, signOut } = useAuth();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (loading) {
@@ -46,7 +46,7 @@ export default function AppLayout() {
           headerBackVisible: false,
           headerLeft: () => (
             <TouchableOpacity 
-                onPress={() => router.back()}
+                onPress={() => router.dismiss()}
                 style={{ marginRight: 16 }}
             >
                 <MaterialIcons name="home" size={24} color="#fff" />
@@ -61,6 +61,9 @@ export default function AppLayout() {
             </TouchableOpacity>
           ),
         }}
+      />
+      <Stack.Screen 
+        name='account'
       />
     </Stack>
   );

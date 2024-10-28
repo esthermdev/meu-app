@@ -98,12 +98,12 @@ export default function AdminDashboard() {
         <ThemedText style={styles.sectionTitle}>Quick Actions</ThemedText>
         <View style={styles.buttonGroup}>
             <Button 
-                onPress={() => router.push('/(admin)')}
-                title='Settings'
+                onPress={() => router.dismiss()}
+                title='Back to app'
             />
             <Button 
-                onPress={() => router.push('/(tabs)')}
-                title='Back to app'
+                onPress={() => router.push('/(admin)/account')}
+                title='My Profile'
             />
         </View>
       </View>
