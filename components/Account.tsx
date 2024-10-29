@@ -3,6 +3,9 @@ import { supabase } from '@/lib/supabase'
 import { StyleSheet, View, Alert } from 'react-native'
 import { Button, Input } from '@rneui/themed'
 import { Session } from '@supabase/supabase-js'
+import { Database } from '@/database.types'
+
+type ProfileUpdate = Database['public']['Tables']['profiles']['Insert'];
 
 export default function Account({ session }: { session: Session }) {
   const [loading, setLoading] = useState(true)
@@ -10,6 +13,7 @@ export default function Account({ session }: { session: Session }) {
 
   useEffect(() => {
     if (session) getProfile()
+      console.log(session)
   }, [session])
 
   async function getProfile() {
@@ -19,7 +23,7 @@ export default function Account({ session }: { session: Session }) {
 
       const { data, error, status } = await supabase
         .from('profiles')
-        .select(`full_name`)
+        .select('*')
         .eq('id', session?.user.id)
         .single()
       if (error && status !== 406) {
@@ -27,7 +31,7 @@ export default function Account({ session }: { session: Session }) {
       }
 
       if (data) {
-        setFullName(data.full_name)
+        setFullName(data.full_name ?? '')
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -47,10 +51,10 @@ export default function Account({ session }: { session: Session }) {
       setLoading(true)
       if (!session?.user) throw new Error('No user on the session!')
 
-      const updates = {
+      const updates: ProfileUpdate = {
         id: session?.user.id,
-        full_name,
-        updated_at: new Date(),
+        full_name: full_name || null,
+        updated_at: new Date().toISOString()
       }
 
       const { error } = await supabase.from('profiles').upsert(updates)

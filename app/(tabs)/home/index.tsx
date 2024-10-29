@@ -8,29 +8,29 @@ export default function HomeScreen() {
       <ScrollView contentContainerStyle={styles.buttonContainer}>
         <HomeButtons 
           title="My Games"
-          buttonColor={{ backgroundColor: 'blue' }}
-          icon="play"
+          buttonColor={{ backgroundColor: '#FA7930' }}
+          icon="star"
           route="/(tabs)"
           disabled={false}
         />
         <HomeButtons 
           title="Watch Live"
-          buttonColor={{ backgroundColor: 'blue' }}
-          icon="play"
+          buttonColor={{ backgroundColor: '#FF026C' }}
+          icon="youtube-play"
           route="/(tabs)"
           disabled={false}
         />
         <HomeButtons 
           title="Field Map"
-          buttonColor={{ backgroundColor: 'blue' }}
-          icon="play"
+          buttonColor={{ backgroundColor: '#B6C846' }}
+          icon="map"
           route="/(tabs)"
           disabled={false}
         />
         <HomeButtons 
           title="Report Spirit Scores"
-          buttonColor={{ backgroundColor: 'blue' }}
-          icon="play"
+          buttonColor={{ backgroundColor: '#41A603' }}
+          icon="handshake-o"
           route="/(tabs)"
           disabled={false}
         />

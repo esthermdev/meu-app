@@ -22,7 +22,7 @@ export const HomeButtons: React.FC<HomeButtonsProps> = ({
             disabled={disabled}
         >
             <FontAwesome name={icon} size={24} color='#fff' />
-            <Text>{title}</Text>
+            <Text maxFontSizeMultiplier={1.1} style={styles.buttonText}>{title}</Text>
         </TouchableOpacity>
     );
 }
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     minWidth: 160,
     minHeight: 120 
   },
-  text: {
+  buttonText: {
     fontSize: 16,
     fontFamily: 'OutfitBold',
     color: '#fff'

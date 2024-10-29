@@ -1,7 +1,6 @@
 import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Header = () => {
@@ -38,7 +37,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	button: {
-		paddingHorizontal: 20
+		paddingHorizontal: 15
 	},
 });
 
