@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, TextInput, Button } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard } from 'react-native';
 import { Link, router } from 'expo-router';
 import { useAuth } from '@/hooks/AuthProvider';
 import { ThemedText } from '@/components/ThemedText';
+import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Button } from '@rneui/themed';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -14,80 +17,114 @@ export default function SignIn() {
     try {
       setLoading(true);
       await signIn(email, password);
+      router.push('/(tabs)/home')
     } catch (error) {
       console.error(error);
       alert('Error signing in: ' + (error as Error).message);
     } finally {
       setLoading(false);
-      router.navigate('/(admin)')
     }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.form}>
-        <ThemedText style={styles.title}>Sign In</ThemedText>
-        
-        <TextInput
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          style={styles.input}
-        />
-        
-        <TextInput
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          style={styles.input}
-        />
+    <SafeAreaView style={styles.container}>
+      <TouchableOpacity onPress={() => router.dismiss()}>
+        <Ionicons name="home" size={30} color="#EA1D25" />
+      </TouchableOpacity>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.form}>
+            <ThemedText style={styles.title}>Sign In</ThemedText>
+            
+            <TextInput
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              style={styles.input}
+            />
+            
+            <TextInput
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              style={styles.input}
+            />
 
-        <Button
-            title={loading ? 'Signing in...' : 'Sign In'}
-            onPress={handleSignIn}
-            disabled={loading}
-        />
+            <Button
+              title={loading ? 'Signing in...' : 'Sign In'}
+              onPress={handleSignIn}
+              buttonStyle={styles.button}
+              titleStyle={styles.buttonText}
+            />
 
-        <View style={styles.footer}>
-          <ThemedText>Don't have an account? </ThemedText>
-          <Link href={'../sign-up'} asChild>
-            <TouchableOpacity>
-              <ThemedText style={styles.link}>Sign Up</ThemedText>
-            </TouchableOpacity>
-          </Link>
-        </View>
-      </View>
-    </View>
+            <View style={styles.footer}>
+              <ThemedText darkColor='#000' style={styles.text}>Don't have an account? </ThemedText>
+              <Link href={'../sign-up'} asChild>
+                <TouchableOpacity>
+                  <ThemedText style={styles.link}>Sign Up</ThemedText>
+                </TouchableOpacity>
+              </Link>
+            </View>
+
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      padding: 20,
-    },
-    form: {
-      gap: 16,
-    },
-    title: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      marginBottom: 16,
-      textAlign: 'center',
-    },
-    input: {
-      marginBottom: 8,
-    },
-    footer: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      marginTop: 16,
-    },
-    link: {
-      color: '#0066cc',
-    },
-  });
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  form: {
+    flex: 1,
+    gap: 16,
+  },
+  title: {
+    fontFamily: 'OutfitBold',
+    fontSize: 28,
+    color: '#EA1D25',
+    marginBottom: 30,
+    textAlign: 'center',
+  },
+  input: {
+    height: 60,
+    borderColor: '#8F8DAA',
+    borderWidth: 1,
+    paddingHorizontal: 22,
+    borderRadius: 100,
+    fontFamily: 'OutfitRegular',
+    fontSize: 18
+  },
+  button: {
+    height: 60,
+    backgroundColor: '#EA1D25',
+    paddingHorizontal: 22,
+    borderRadius: 100,
+    marginBottom: 10
+  },
+  buttonText: {
+    fontFamily: 'OutfitSemiBold',
+    fontSize: 18,
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 16,
+  },
+  text: {
+    fontFamily: 'OutfitRegular',
+  },
+  link: {
+    fontFamily: 'OutfitRegular',
+    color: '#0066cc',
+  },
+});

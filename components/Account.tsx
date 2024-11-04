@@ -4,12 +4,15 @@ import { StyleSheet, View, Alert } from 'react-native'
 import { Button, Input } from '@rneui/themed'
 import { Session } from '@supabase/supabase-js'
 import { Database } from '@/database.types'
+import { useAuth } from '@/hooks/AuthProvider'
+import { router } from 'expo-router'
 
 type ProfileUpdate = Database['public']['Tables']['profiles']['Insert'];
 
 export default function Account({ session }: { session: Session }) {
   const [loading, setLoading] = useState(true)
   const [fullName, setFullName] = useState('')
+  const { signOut } = useAuth()
 
   useEffect(() => {
     if (session) getProfile()
@@ -41,6 +44,15 @@ export default function Account({ session }: { session: Session }) {
       setLoading(false)
     }
   }
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+      alert('Error signing out');
+    }
+  };
 
   async function updateProfile({
     full_name,
@@ -86,6 +98,14 @@ export default function Account({ session }: { session: Session }) {
           onPress={() => updateProfile({ full_name: fullName })}
           disabled={loading}
         />
+        <Button 
+          title='Sign Out'
+          onPress={handleSignOut}
+        />
+        <Button 
+          title='Go home'
+          onPress={() => router.push('/(tabs)/home')}
+        />
       </View>
     </View>
   )
@@ -100,6 +120,7 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     paddingBottom: 4,
     alignSelf: 'stretch',
+    gap: 16
   },
   mt20: {
     marginTop: 20,

@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { Platform } from 'react-native';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -13,8 +13,13 @@ export default function TabLayout() {
         screenOptions={{
           tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
           header: () => <Header />,
-          tabBarLabelStyle: {fontFamily: 'OutfitRegular'}
-
+          tabBarLabelStyle: {
+            fontFamily: 'OutfitRegular',
+            fontSize: 13,
+          },
+          tabBarItemStyle: {
+            height: '100%',
+          },
         }}>
         <Tabs.Screen
           name="home"
@@ -55,7 +60,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="info"
           options={{
-            title: 'Information',
+            title: 'Info',
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon name={focused ? 'information-circle' : 'information-circle-outline'} color={color} />
             ),
@@ -64,10 +69,3 @@ export default function TabLayout() {
       </Tabs>
   );
 }
-
-const styles = StyleSheet.create({
-  tabBarLabel: {
-    fontFamily: 'OutfitRegular',
-    
-  }
-})

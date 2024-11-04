@@ -4,7 +4,7 @@ import { Redirect, router, Stack } from 'expo-router';
 
 import { useAuth } from '@/hooks/AuthProvider';
 
-export default function AdminLayout() {
+export default function UserLayout() {
   const { session, loading, signOut } = useAuth();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
@@ -35,9 +35,9 @@ export default function AdminLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: 'Admin Dashboard',
+          title: 'User',
           headerStyle: {
-            backgroundColor: '#f4511e',
+            backgroundColor: '#917120',
           },
           headerTintColor: '#fff',
           headerTitleStyle: {
@@ -48,7 +48,7 @@ export default function AdminLayout() {
             <TouchableOpacity 
                 onPress={() => router.dismiss()}
             >
-                <MaterialIcons name="home" size={24} color="#fff" />
+              <MaterialIcons name="home" size={24} color="#fff" style={{ marginRight: 10}} />
             </TouchableOpacity>
           ),
           headerRight: () => (
@@ -62,6 +62,15 @@ export default function AdminLayout() {
       />
       <Stack.Screen 
         name='account'
+        options={{
+          headerTitle: 'My Account'
+        }}
+      />
+      <Stack.Screen 
+        name='favorites'
+        options={{
+          headerTitle: 'Favorite Teams'
+        }}
       />
     </Stack>
   );

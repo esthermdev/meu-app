@@ -105,6 +105,29 @@ export type Database = {
         }
         Relationships: []
       }
+      favorite_teams: {
+        Row: {
+          team_id: number
+          user_id: string
+        }
+        Insert: {
+          team_id: number
+          user_id: string
+        }
+        Update: {
+          team_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorite_teams_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       feedback: {
         Row: {
           created_at: string

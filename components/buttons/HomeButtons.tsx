@@ -2,6 +2,9 @@ import { FontAwesome } from '@expo/vector-icons';
 import { router, Href } from 'expo-router';
 import { StyleSheet, Text, Dimensions, TouchableOpacity } from 'react-native';
 
+const { width } = Dimensions.get('window');
+const buttonWidth = (width - 80) / 2;
+
 type FontAwesomeNames = keyof typeof FontAwesome.glyphMap;
 
 interface HomeButtonsProps {
@@ -36,11 +39,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'space-between',
     borderRadius: 22,
-    minWidth: 160,
+    minWidth: buttonWidth,
     minHeight: 120 
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'OutfitBold',
     color: '#fff'
   }

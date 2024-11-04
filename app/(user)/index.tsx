@@ -1,0 +1,126 @@
+import { StyleSheet, View, ScrollView, Button } from 'react-native';
+import { ThemedText } from '@/components/ThemedText';
+import { router } from 'expo-router';
+import { useAuth } from '@/hooks/AuthProvider';
+import { Card } from '@/components/Card';
+import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
+
+export default function UserDashboard() {
+  const { user, profile } = useAuth();
+
+  return (
+    <ScrollView 
+      style={styles.container}
+    >
+      {/* Admin Info */}
+      <View style={styles.header}>
+        <ThemedText style={styles.welcomeText}>
+          Welcome, {profile?.full_name}
+        </ThemedText>
+        <ThemedText style={styles.roleText}>
+          User Dashboard
+        </ThemedText>
+      </View>
+
+      {/* Cards */}
+      <View style={styles.statsContainer}>        
+        <TouchableOpacity style={{ flex: 1 }} onPress={() => router.push('/favorites')}>
+          <Card style={styles.statsCard}>
+            <Ionicons name="heart" size={24} color="red" />
+            <ThemedText style={styles.statsLabel}>Favorites</ThemedText>
+          </Card>
+        </TouchableOpacity>
+      </View>
+
+      {/* Quick Actions */}
+      <View style={styles.actionsContainer}>
+        <ThemedText style={styles.sectionTitle}>Quick Actions</ThemedText>
+        <View style={styles.buttonGroup}>
+            <Button 
+                onPress={() => router.navigate('/(tabs)/home')}
+                title='Back to app'
+            />
+            <Button 
+                onPress={() => router.push('/(user)/account')}
+                title='My Profile'
+            />
+        </View>
+      </View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  header: {
+    padding: 20,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  roleText: {
+    fontSize: 16,
+    color: '#666',
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    padding: 16,
+    justifyContent: 'space-between',
+  },
+  statsCard: {
+    width: 100,
+    height: 100,
+    padding: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  statsNumber: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginVertical: 8,
+  },
+  statsLabel: {
+    fontSize: 15,
+    color: '#666',
+    fontFamily: 'OutfitRegular',
+    textAlign: 'center',
+  },
+  actionsContainer: {
+    padding: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  buttonGroup: {
+    gap: 12,
+  },
+  actionButton: {
+    borderRadius: 8,
+  },
+  secondaryButton: {
+    backgroundColor: '#666',
+  },
+});

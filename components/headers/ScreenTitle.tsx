@@ -23,7 +23,7 @@ export const ScreenTitle: React.FC<ScreenTitleProps> = ({
           <Ionicons name="caret-back" size={24} color="#000" />
         </TouchableOpacity>
       )}
-      <Text style={styles.title}>{title}</Text>
+      <Text maxFontSizeMultiplier={1.1} style={styles.title}>{title}</Text>
     </View>
   );
 };
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     height: 50,
     backgroundColor: '#fff'
   },
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   title: {
-    fontSize: 26,
+    fontSize: 30,
     fontFamily: 'OutfitBold',
     color: '#EA1D25'
   },

@@ -1,19 +1,24 @@
 import { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Button, TextInput } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, TextInput } from 'react-native';
 import { Link } from 'expo-router';
 import { useAuth } from '@/hooks/AuthProvider';
 import { ThemedText } from '@/components/ThemedText';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import { Button } from '@rneui/themed';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const { signUp } = useAuth();
 
   const handleSignUp = async () => {
     try {
       setLoading(true);
-      await signUp(email, password);
+      await signUp(email, password, fullName);
       alert('Check your email for the confirmation link!');
     } catch (error) {
       console.error(error);
@@ -24,9 +29,20 @@ export default function SignUp() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <TouchableOpacity onPress={() => router.navigate('/(tabs)/home')}>
+        <Ionicons name="home" size={30} color="#EA1D25" />
+      </TouchableOpacity>
       <View style={styles.form}>
         <ThemedText style={styles.title}>Create Account</ThemedText>
+
+        <TextInput
+          placeholder="Full name"
+          value={fullName}
+          onChangeText={setFullName}
+          autoCapitalize="none"
+          style={styles.input}
+        />
         
         <TextInput
           placeholder="Email"
@@ -44,14 +60,17 @@ export default function SignUp() {
           secureTextEntry
           style={styles.input}
         />
+
         <Button
           onPress={handleSignUp}
           title={loading ? 'Creating account...' : 'Sign Up'}
           disabled={loading}
+          buttonStyle={styles.button}
+          titleStyle={styles.buttonText}
         />
 
         <View style={styles.footer}>
-          <ThemedText>Already have an account? </ThemedText>
+          <ThemedText darkColor='#000' style={styles.text}>Already have an account? </ThemedText>
           <Link href={'../sign-in'} asChild>
             <TouchableOpacity>
               <ThemedText style={styles.link}>Sign In</ThemedText>
@@ -59,34 +78,56 @@ export default function SignUp() {
           </Link>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
   },
   form: {
+    flex: 1,
     gap: 16,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
+    fontFamily: 'OutfitBold',
+    fontSize: 28,
+    color: '#EA1D25',
+    marginBottom: 30,
     textAlign: 'center',
   },
   input: {
-    marginBottom: 8,
+    height: 60,
+    borderColor: '#8F8DAA',
+    borderWidth: 1,
+    paddingHorizontal: 22,
+    borderRadius: 100,
+    fontFamily: 'OutfitRegular',
+    fontSize: 18
+  },
+  button: {
+    height: 60,
+    backgroundColor: '#EA1D25',
+    paddingHorizontal: 22,
+    borderRadius: 100,
+    marginBottom: 10
+  },
+  buttonText: {
+    fontFamily: 'OutfitSemiBold',
+    fontSize: 18,
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 16,
   },
+  text: {
+    fontFamily: 'OutfitRegular',
+  },
   link: {
+    fontFamily: 'OutfitRegular',
     color: '#0066cc',
   },
 });

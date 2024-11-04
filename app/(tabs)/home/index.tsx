@@ -10,7 +10,7 @@ export default function HomeScreen() {
           title="My Games"
           buttonColor={{ backgroundColor: '#FA7930' }}
           icon="star"
-          route="/(tabs)"
+          route="/(tabs)/home/mygames"
           disabled={false}
         />
         <HomeButtons 

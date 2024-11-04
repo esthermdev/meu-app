@@ -1,6 +1,6 @@
 // app/(admin)/index.tsx
 import { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, RefreshControl, Button } from 'react-native';
+import { StyleSheet, View, ScrollView, RefreshControl, Button, Pressable } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { router } from 'expo-router';
 import { supabase } from '@/lib/supabase';
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
         <ThemedText style={styles.sectionTitle}>Quick Actions</ThemedText>
         <View style={styles.buttonGroup}>
             <Button 
-                onPress={() => router.dismiss()}
+                onPress={() => router.navigate('/(tabs)/home')}
                 title='Back to app'
             />
             <Button 
