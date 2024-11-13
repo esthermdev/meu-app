@@ -126,15 +126,6 @@ export const useFavorites = (session: Session | null) => {
     }
   };
 
-  const debouncedLoadData = useCallback(
-    debounce(async () => {
-      setLoading(true);
-      await Promise.all([fetchTeams(), fetchFavorites()]);
-      setLoading(false);
-    }, 300), // 300ms debounce
-    [session]
-  );
-
   const loadData = useCallback(async () => {
     setLoading(true);
     await Promise.all([fetchTeams(), fetchFavorites()]);

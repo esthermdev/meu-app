@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import * as SplashScreen from 'expo-splash-screen';
 import { AuthProvider } from '@/hooks/AuthProvider';
 import { supabase } from '@/lib/supabase';
@@ -8,9 +7,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import 'react-native-reanimated';
 import 'react-native-gesture-handler';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { StatusBar } from 'react-native';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -18,7 +15,6 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [session, setSession] = useState<Session | null>(null)
 
-  const colorScheme = useColorScheme();
 
   const [loaded] = useFonts({
     OutfitBlack: require('../assets/fonts/Outfit-Black.ttf'),
@@ -55,7 +51,6 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
-          <StatusBar backgroundColor={'black'} />
           <Stack>
             <Stack.Screen name="index" />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

@@ -1,7 +1,6 @@
 // app/(admin)/index.tsx
 import { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, RefreshControl, Button, Pressable } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
+import { StyleSheet, View, ScrollView, RefreshControl, Button, Text } from 'react-native';
 import { router } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/AuthProvider';
@@ -66,36 +65,36 @@ export default function AdminDashboard() {
     >
       {/* Admin Info */}
       <View style={styles.header}>
-        <ThemedText style={styles.welcomeText}>
+        <Text style={styles.welcomeText}>
           Welcome, {user?.email}
-        </ThemedText>
-        <ThemedText style={styles.roleText}>
+        </Text>
+        <Text style={styles.roleText}>
           Admin Dashboard
-        </ThemedText>
+        </Text>
       </View>
 
       {/* Statistics Cards */}
       <View style={styles.statsContainer}>
         <Card style={styles.statsCard}>
           <MaterialIcons name="people" size={24} color="#f4511e" />
-          <ThemedText style={styles.statsNumber}>
+          <Text style={styles.statsNumber}>
             {loading ? '...' : stats?.totalUsers}
-          </ThemedText>
-          <ThemedText style={styles.statsLabel}>Total Users</ThemedText>
+          </Text>
+          <Text style={styles.statsLabel}>Total Users</Text>
         </Card>
 
         <Card style={styles.statsCard}>
           <MaterialIcons name="post-add" size={24} color="#2196F3" />
-          <ThemedText style={styles.statsNumber}>
+          <Text style={styles.statsNumber}>
             {loading ? '...' : stats?.teamId}
-          </ThemedText>
-          <ThemedText style={styles.statsLabel}>Team ID</ThemedText>
+          </Text>
+          <Text style={styles.statsLabel}>Team ID</Text>
         </Card>
       </View>
 
       {/* Quick Actions */}
       <View style={styles.actionsContainer}>
-        <ThemedText style={styles.sectionTitle}>Quick Actions</ThemedText>
+        <Text style={styles.sectionTitle}>Quick Actions</Text>
         <View style={styles.buttonGroup}>
             <Button 
                 onPress={() => router.navigate('/(tabs)/home')}

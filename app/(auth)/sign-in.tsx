@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard, Text } from 'react-native';
 import { Link, router } from 'expo-router';
 import { useAuth } from '@/hooks/AuthProvider';
-import { ThemedText } from '@/components/ThemedText';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '@rneui/themed';
@@ -37,7 +36,7 @@ export default function SignIn() {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.form}>
-            <ThemedText style={styles.title}>Sign In</ThemedText>
+            <Text style={styles.title}>Sign In</Text>
             
             <TextInput
               placeholder="Email"
@@ -64,10 +63,10 @@ export default function SignIn() {
             />
 
             <View style={styles.footer}>
-              <ThemedText darkColor='#000' style={styles.text}>Don't have an account? </ThemedText>
+              <Text style={styles.text}>Don't have an account? </Text>
               <Link href={'../sign-up'} asChild>
                 <TouchableOpacity>
-                  <ThemedText style={styles.link}>Sign Up</ThemedText>
+                  <Text style={styles.link}>Sign Up</Text>
                 </TouchableOpacity>
               </Link>
             </View>

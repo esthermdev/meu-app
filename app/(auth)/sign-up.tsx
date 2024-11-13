@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, TextInput, Text } from 'react-native';
 import { Link } from 'expo-router';
 import { useAuth } from '@/hooks/AuthProvider';
-import { ThemedText } from '@/components/ThemedText';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -34,7 +33,7 @@ export default function SignUp() {
         <Ionicons name="home" size={30} color="#EA1D25" />
       </TouchableOpacity>
       <View style={styles.form}>
-        <ThemedText style={styles.title}>Create Account</ThemedText>
+        <Text style={styles.title}>Create Account</Text>
 
         <TextInput
           placeholder="Full name"
@@ -70,10 +69,10 @@ export default function SignUp() {
         />
 
         <View style={styles.footer}>
-          <ThemedText darkColor='#000' style={styles.text}>Already have an account? </ThemedText>
+          <Text style={styles.text}>Already have an account? </Text>
           <Link href={'../sign-in'} asChild>
             <TouchableOpacity>
-              <ThemedText style={styles.link}>Sign In</ThemedText>
+              <Text style={styles.link}>Sign In</Text>
             </TouchableOpacity>
           </Link>
         </View>

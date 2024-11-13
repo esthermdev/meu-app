@@ -87,6 +87,33 @@ export type Database = {
         }
         Relationships: []
       }
+      divisions: {
+        Row: {
+          code: string
+          color: string
+          display_order: number | null
+          icon: string | null
+          id: number
+          title: string
+        }
+        Insert: {
+          code: string
+          color: string
+          display_order?: number | null
+          icon?: string | null
+          id?: number
+          title: string
+        }
+        Update: {
+          code?: string
+          color?: string
+          display_order?: number | null
+          icon?: string | null
+          id?: number
+          title?: string
+        }
+        Relationships: []
+      }
       faq: {
         Row: {
           answer: string | null
@@ -107,14 +134,20 @@ export type Database = {
       }
       favorite_teams: {
         Row: {
+          created_at: string
+          id: number
           team_id: number
           user_id: string
         }
         Insert: {
+          created_at?: string
+          id?: number
           team_id: number
           user_id: string
         }
         Update: {
+          created_at?: string
+          id?: number
           team_id?: number
           user_id?: string
         }
@@ -171,33 +204,39 @@ export type Database = {
         Row: {
           datetime_id: number | null
           division: Database["public"]["Enums"]["division"] | null
+          division_id: number | null
           field_id: number | null
           id: number
           name: Database["public"]["Enums"]["game_id"] | null
           pool_id: number | null
           round_id: number | null
+          schedule_id: number | null
           team1_id: number | null
           team2_id: number | null
         }
         Insert: {
           datetime_id?: number | null
           division?: Database["public"]["Enums"]["division"] | null
+          division_id?: number | null
           field_id?: number | null
           id?: number
           name?: Database["public"]["Enums"]["game_id"] | null
           pool_id?: number | null
           round_id?: number | null
+          schedule_id?: number | null
           team1_id?: number | null
           team2_id?: number | null
         }
         Update: {
           datetime_id?: number | null
           division?: Database["public"]["Enums"]["division"] | null
+          division_id?: number | null
           field_id?: number | null
           id?: number
           name?: Database["public"]["Enums"]["game_id"] | null
           pool_id?: number | null
           round_id?: number | null
+          schedule_id?: number | null
           team1_id?: number | null
           team2_id?: number | null
         }
@@ -207,6 +246,13 @@ export type Database = {
             columns: ["datetime_id"]
             isOneToOne: false
             referencedRelation: "datetime"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "games_division_id_fkey"
+            columns: ["division_id"]
+            isOneToOne: false
+            referencedRelation: "divisions"
             referencedColumns: ["id"]
           },
           {
@@ -228,6 +274,13 @@ export type Database = {
             columns: ["round_id"]
             isOneToOne: false
             referencedRelation: "rounds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "games_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "schedule_options"
             referencedColumns: ["id"]
           },
           {
@@ -429,18 +482,72 @@ export type Database = {
           id: number
           place: number | null
           stage: string
+          title: string | null
         }
         Insert: {
           id?: number
           place?: number | null
           stage: string
+          title?: string | null
         }
         Update: {
           id?: number
           place?: number | null
           stage?: string
+          title?: string | null
         }
         Relationships: []
+      }
+      schedule_options: {
+        Row: {
+          bg_color: string | null
+          display_order: number | null
+          division_id: number | null
+          icon: string | null
+          icon_color: string | null
+          id: number
+          round_id: number | null
+          route: string
+          title: string
+        }
+        Insert: {
+          bg_color?: string | null
+          display_order?: number | null
+          division_id?: number | null
+          icon?: string | null
+          icon_color?: string | null
+          id?: number
+          round_id?: number | null
+          route: string
+          title: string
+        }
+        Update: {
+          bg_color?: string | null
+          display_order?: number | null
+          division_id?: number | null
+          icon?: string | null
+          icon_color?: string | null
+          id?: number
+          round_id?: number | null
+          route?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "schedule_options_division_id_fkey"
+            columns: ["division_id"]
+            isOneToOne: false
+            referencedRelation: "divisions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "schedule_options_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "rounds"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       scores: {
         Row: {

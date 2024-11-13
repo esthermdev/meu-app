@@ -1,5 +1,4 @@
-import { StyleSheet, View, ScrollView, Button } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
+import { StyleSheet, View, ScrollView, Button, Text } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@/hooks/AuthProvider';
 import { Card } from '@/components/Card';
@@ -16,12 +15,12 @@ export default function UserDashboard() {
     >
       {/* Admin Info */}
       <View style={styles.header}>
-        <ThemedText style={styles.welcomeText}>
+        <Text style={styles.welcomeText}>
           Welcome, {profile?.full_name}
-        </ThemedText>
-        <ThemedText style={styles.roleText}>
+        </Text>
+        <Text style={styles.roleText}>
           User Dashboard
-        </ThemedText>
+        </Text>
       </View>
 
       {/* Cards */}
@@ -29,14 +28,14 @@ export default function UserDashboard() {
         <TouchableOpacity style={{ flex: 1 }} onPress={() => router.push('/favorites')}>
           <Card style={styles.statsCard}>
             <Ionicons name="heart" size={24} color="red" />
-            <ThemedText style={styles.statsLabel}>Favorites</ThemedText>
+            <Text style={styles.statsLabel}>Favorites</Text>
           </Card>
         </TouchableOpacity>
       </View>
 
       {/* Quick Actions */}
       <View style={styles.actionsContainer}>
-        <ThemedText style={styles.sectionTitle}>Quick Actions</ThemedText>
+        <Text style={styles.sectionTitle}>Quick Actions</Text>
         <View style={styles.buttonGroup}>
             <Button 
                 onPress={() => router.navigate('/(tabs)/home')}
