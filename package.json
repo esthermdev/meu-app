@@ -46,7 +46,9 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.10",
     "rneui": "^1.0.0-stable.0",
-    "react-native-pager-view": "6.3.0"
+    "react-native-pager-view": "6.3.0",
+    "expo-dev-client": "~4.0.29",
+    "expo-updates": "~0.25.27"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

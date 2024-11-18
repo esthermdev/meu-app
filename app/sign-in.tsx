@@ -16,7 +16,7 @@ export default function SignIn() {
     try {
       setLoading(true);
       await signIn(email, password);
-      router.push('/(tabs)/home')
+      router.replace('/(tabs)/home')
     } catch (error) {
       console.error(error);
       alert('Error signing in: ' + (error as Error).message);
@@ -64,7 +64,7 @@ export default function SignIn() {
 
             <View style={styles.footer}>
               <Text style={styles.text}>Don't have an account? </Text>
-              <Link href={'../sign-up'} asChild>
+              <Link href={'/sign-up'} asChild>
                 <TouchableOpacity>
                   <Text style={styles.link}>Sign Up</Text>
                 </TouchableOpacity>

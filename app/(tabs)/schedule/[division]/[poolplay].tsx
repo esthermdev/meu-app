@@ -1,51 +1,51 @@
-import { View, Text, StyleSheet } from 'react-native'
+import React from 'react';
+import { View, ActivityIndicator, Text } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { useGames, usePoolIds } from '@/hooks/useGamesFilter';
-import { FlashList } from '@shopify/flash-list';
-import { Database } from '@/database.types';
+import { usePoolIds } from '@/hooks/useGamesFilter';
+import PoolScreen from '@/components/PoolScreen';
 
-const Tab = createMaterialTopTabNavigator()
+const Tab = createMaterialTopTabNavigator();
 
 export default function PoolPlayScreen() {
-  const { poolplay } = useLocalSearchParams()
+  const { poolplay } = useLocalSearchParams();
+  const { pools, loading, error } = usePoolIds(Number(poolplay));
 
-  const { games, loading, error } = useGames(Number(poolplay), 1);
-  const { pools } = usePoolIds(Number(poolplay))
-  console.log(pools)
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#EA1D25" />
+      </View>
+    );
+  }
+
+  if (error || !pools.length) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>No pools found</Text>
+      </View>
+    );
+  }
 
   return (
-    <View style={styles.container}>
-      <Tab.Navigator
-        screenOptions={{
-          tabBarActiveTintColor: '#EA1D25',
-          tabBarInactiveTintColor: '#8F8DAA',
-          tabBarLabelStyle: { fontFamily: 'Outfit-Semibold', fontSize: 12 },
-          tabBarIndicatorStyle: { backgroundColor: '#EA1D25' },
-        }}
-      >
-        {pools.map((pool) => (
-          <Tab.Screen
-            key={pool.id}
-            name={pool.name}
-            options={{ title: pool.name }}
-          >
-            {() => <View><Text>Pool{pool.name} Screen</Text></View>}
-          </Tab.Screen>
-        ))}
-
-      </Tab.Navigator>
-    </View>
-  )
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: '#EA1D25',
+        tabBarInactiveTintColor: '#8F8DAA',
+        tabBarLabelStyle: { fontFamily: 'Outfit-Semibold', fontSize: 12 },
+        tabBarIndicatorStyle: { backgroundColor: '#EA1D25' },
+        lazy: true,
+      }}
+    >
+      {pools.map((pool) => (
+        <Tab.Screen
+          key={pool.id}
+          name={`Pool ${pool.name}`}
+          children={() => (
+            <PoolScreen poolId={pool.id} divisionId={Number(poolplay)} />
+          )}
+        />
+      ))}
+    </Tab.Navigator>
+  );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-    borderTopWidth: 1,
-    borderTopColor: '#D9D9D9',
-    paddingTop: 10
-  },
-})
-

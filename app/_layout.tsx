@@ -52,13 +52,12 @@ export default function RootLayout() {
     <AuthProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
           <Stack>
-            <Stack.Screen name="index" />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            {session && session.user ? 
-              <Stack.Screen name="(admin)" options={{ headerShown: false }} /> : <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            }
             <Stack.Screen name="(user)" options={{ headerShown: false }} />
+            <Stack.Screen name="sign-in" options={{ headerShown: false  }} />
+            <Stack.Screen name="sign-up" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
+            <Stack.Screen name="index" />
           </Stack>
       </GestureHandlerRootView>
     </AuthProvider>

@@ -1,6 +1,7 @@
 import { View } from 'react-native'
 import { useAuth } from '@/hooks/AuthProvider'
 import Account from '@/components/Account'
+import { Link } from 'expo-router'
 
 export default function AccountPage() {
   const { session } = useAuth()

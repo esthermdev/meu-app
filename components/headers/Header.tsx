@@ -6,10 +6,14 @@ import { useAuth } from '@/hooks/AuthProvider';
 
 const Header = () => {
 
-	const { profile } = useAuth()
+	const { session, profile } = useAuth();
 
   const handleProfilePress = () => {
-    router.push(profile?.is_admin ? '/(admin)' : '/(user)')
+		if (!session) {
+			router.navigate('/sign-in')
+		} else {
+			router.navigate('/(user)')
+		}
   }
 
 	return (
@@ -22,10 +26,9 @@ const Header = () => {
           <TouchableOpacity 
             style={styles.button} 
             onPress={handleProfilePress}
-            accessibilityLabel={profile?.is_admin ? 'Admin Profile' : 'User Profile'}
           >
             <MaterialIcons
-              name={profile?.is_admin ? 'manage-accounts' : 'account-circle'}
+              name='account-circle'
               size={32}
               color="#EA1D25"
             />

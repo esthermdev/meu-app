@@ -6,15 +6,14 @@ export default function DivisionScreen() {
   const { division, divisionName } = useLocalSearchParams();
 
   const { scheduleOptions } = useScheduleOptions(Number(division))
-  console.log('Schedule options for division', divisionName, scheduleOptions)
 
   return (
     <View style={styles.container}>
       <Text>Details of division Id: {division} </Text>
       <Link
         href={{
-          pathname: "schedule/[division]/[poolplay]",
-          params: { poolplay: division }
+          pathname: "/schedule/[division]/[poolplay]",
+          params: { division: Number(division), poolplay: Number(division) }
         }}>
         View pool play games
       </Link>

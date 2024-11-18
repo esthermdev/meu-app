@@ -102,10 +102,6 @@ export default function Account({ session }: { session: Session }) {
           title='Sign Out'
           onPress={handleSignOut}
         />
-        <Button 
-          title='Go home'
-          onPress={() => router.push('/(tabs)/home')}
-        />
       </View>
     </View>
   )
@@ -113,8 +109,7 @@ export default function Account({ session }: { session: Session }) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
-    padding: 12,
+    padding: 16,
   },
   verticallySpaced: {
     paddingTop: 4,

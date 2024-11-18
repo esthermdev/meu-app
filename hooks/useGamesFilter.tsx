@@ -17,28 +17,44 @@ export function useGames(divisionId: number, roundId: number) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     async function fetchGames() {
       try {
         const { data, error } = await supabase
           .from('games')
-          .select(`*, team1: team1_id(name), team2: team2_id(name )`)
+          .select(`
+            *,
+            team1:teams!games_team1_id_fkey(*),
+            team2:teams!games_team2_id_fkey(*)
+          `)
           .eq('division_id', divisionId)
           .eq('round_id', roundId)
-          .order('pool_id')
+          .order('pool_id');
 
         if (error) throw error;
-        setGames(data as unknown as Games[]);
+        if (isMounted) {
+          setGames(data as Games[]);
+        }
       } catch (e) {
-        setError(e instanceof Error ? e.message : 'An error occurred');
+        if (isMounted) {
+          setError(e instanceof Error ? e.message : 'An error occurred');
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     }
 
     if (divisionId) {
       fetchGames();
     }
-  }, [divisionId]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [divisionId, roundId]);
 
   return { games, loading, error };
 }
@@ -49,25 +65,38 @@ export function usePoolIds(divisionId: number) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     async function fetchPools() {
       try {
         const { data, error } = await supabase
           .from('pools')
-          .select(`*`)
+          .select('*')
           .eq('division_id', divisionId)
+          .order('name');
 
         if (error) throw error;
-        setPools(data);
+        if (isMounted) {
+          setPools(data || []);
+        }
       } catch (e) {
-        setError(e instanceof Error ? e.message : 'An error occurred');
+        if (isMounted) {
+          setError(e instanceof Error ? e.message : 'An error occurred');
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     }
 
     if (divisionId) {
       fetchPools();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [divisionId]);
 
   return { pools, loading, error };

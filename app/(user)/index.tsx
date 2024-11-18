@@ -1,5 +1,5 @@
 import { StyleSheet, View, ScrollView, Button, Text } from 'react-native';
-import { router } from 'expo-router';
+import { Href, router } from 'expo-router';
 import { useAuth } from '@/hooks/AuthProvider';
 import { Card } from '@/components/Card';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,7 +7,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 export default function UserDashboard() {
-  const { user, profile } = useAuth();
+  const { profile } = useAuth();
 
   return (
     <ScrollView 
@@ -17,9 +17,6 @@ export default function UserDashboard() {
       <View style={styles.header}>
         <Text style={styles.welcomeText}>
           Welcome, {profile?.full_name}
-        </Text>
-        <Text style={styles.roleText}>
-          User Dashboard
         </Text>
       </View>
 
@@ -31,20 +28,35 @@ export default function UserDashboard() {
             <Text style={styles.statsLabel}>Favorites</Text>
           </Card>
         </TouchableOpacity>
+
+        {profile?.is_admin ? 
+          <TouchableOpacity style={{ flex: 1 }} onPress={() => router.push('/admin' as Href)}>
+            <Card style={styles.statsCard}>
+              <Ionicons name="settings" size={24} color="red" />
+              <Text style={styles.statsLabel}>Admin</Text>
+            </Card>
+          </TouchableOpacity>  :
+          null
+        }
+
       </View>
 
       {/* Quick Actions */}
       <View style={styles.actionsContainer}>
         <Text style={styles.sectionTitle}>Quick Actions</Text>
         <View style={styles.buttonGroup}>
-            <Button 
-                onPress={() => router.navigate('/(tabs)/home')}
-                title='Back to app'
-            />
-            <Button 
-                onPress={() => router.push('/(user)/account')}
-                title='My Profile'
-            />
+          <Button 
+            onPress={() => router.push('/(user)/account')}
+            title='My Profile'
+          />
+          <Button 
+            onPress={() => router.back()}
+            title='Back to app'
+          />
+          <Button 
+            onPress={() => null}
+            title='Delete Account'
+          />
         </View>
       </View>
     </ScrollView>
@@ -66,10 +78,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 4,
-  },
-  roleText: {
-    fontSize: 16,
-    color: '#666',
   },
   statsContainer: {
     flexDirection: 'row',

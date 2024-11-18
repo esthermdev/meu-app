@@ -17,7 +17,7 @@ export default function UserLayout() {
   if (!session) {
     // On web, static rendering will stop here as the user is not authenticated
     // in the headless Node process that the pages are rendered in.
-    return <Redirect href="/(auth)/sign-in" />;
+    return <Redirect href="/sign-in" />;
   }
 
   const handleSignOut = async () => {
@@ -37,20 +37,13 @@ export default function UserLayout() {
         options={{
           title: 'User',
           headerStyle: {
-            backgroundColor: '#917120',
+            backgroundColor: '#EA1D25',
           },
           headerTintColor: '#fff',
           headerTitleStyle: {
             fontWeight: 'bold',
           },
           headerBackVisible: false,
-          headerLeft: () => (
-            <TouchableOpacity 
-                onPress={() => router.dismiss()}
-            >
-              <MaterialIcons name="home" size={24} color="#fff" style={{ marginRight: 10}} />
-            </TouchableOpacity>
-          ),
           headerRight: () => (
             <TouchableOpacity 
               onPress={handleSignOut}
@@ -70,6 +63,12 @@ export default function UserLayout() {
         name='favorites'
         options={{
           headerTitle: 'Favorite Teams'
+        }}
+      />
+      <Stack.Screen 
+        name='admin'
+        options={{
+          headerTitle: 'Admin'
         }}
       />
     </Stack>
