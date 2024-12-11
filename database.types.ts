@@ -1,3 +1,5 @@
+import { ColorValue } from "react-native"
+
 export type Json =
   | string
   | number
@@ -500,11 +502,11 @@ export type Database = {
       }
       schedule_options: {
         Row: {
-          bg_color: string | null
+          bg_color: ColorValue | undefined
           display_order: number | null
           division_id: number | null
           icon: string | null
-          icon_color: string | null
+          icon_color: ColorValue | undefined
           id: number
           round_id: number | null
           route: string
