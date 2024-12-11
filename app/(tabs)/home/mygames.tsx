@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
-import { useAuth } from '@/hooks/AuthProvider';
+import { useAuth } from '@/context/AuthProvider';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
 

@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { SearchBar } from '@rneui/themed';
 import { FlashList } from '@shopify/flash-list';
-import { useAuth } from '@/hooks/AuthProvider';
+import { useAuth } from '@/context/AuthProvider';
 import { useFavorites } from '@/hooks/useFavorites';
 import { TeamListItem } from '@/components/TeamListItem';
 

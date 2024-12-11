@@ -1,6 +1,6 @@
 import { StyleSheet, View, ScrollView, Button, Text } from 'react-native';
 import { Href, router } from 'expo-router';
-import { useAuth } from '@/hooks/AuthProvider';
+import { useAuth } from '@/context/AuthProvider';
 import { Card } from '@/components/Card';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';

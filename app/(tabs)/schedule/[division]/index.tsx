@@ -17,6 +17,14 @@ export default function DivisionScreen() {
         }}>
         View pool play games
       </Link>
+      <Link
+        href={{
+          pathname: "/schedule/[division]/championship-bracket",
+          params: { division: Number(division) }
+        }}
+      >
+        View championship bracket games
+      </Link>
     </View>
   );
 }

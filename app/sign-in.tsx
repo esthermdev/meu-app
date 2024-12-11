@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, View, TouchableOpacity, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard, Text } from 'react-native';
 import { Link, router } from 'expo-router';
-import { useAuth } from '@/hooks/AuthProvider';
+import { useAuth } from '@/context/AuthProvider';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '@rneui/themed';

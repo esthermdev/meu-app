@@ -2,7 +2,7 @@ import { View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from '@/hooks/AuthProvider';
+import { useAuth } from '@/context/AuthProvider';
 
 const Header = () => {
 

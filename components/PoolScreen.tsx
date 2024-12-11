@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
-import { useGames } from '@/hooks/useGamesFilter';
+import { useRoundIds } from '@/hooks/useGamesFilter';
 
 type Props = {
   poolId: number;
@@ -9,7 +9,7 @@ type Props = {
 }
 
 const PoolScreen: React.FC<Props> = ({ poolId, divisionId }) => {
-  const { games, loading, error } = useGames(divisionId, 1); // Assuming round_id 1 is for pool play
+  const { games, loading, error } = useRoundIds(divisionId, 1); // Assuming round_id 1 is for pool play
   
   const poolGames = games.filter(game => game.pool_id === poolId);
 

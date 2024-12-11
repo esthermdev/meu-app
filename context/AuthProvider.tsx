@@ -3,7 +3,6 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Session, User } from '@supabase/supabase-js';
 import { Database } from '@/database.types'
-import { router } from 'expo-router';
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
-import { AuthProvider } from '@/hooks/AuthProvider';
+import { AuthProvider } from '@/context/AuthProvider';
 import { supabase } from '@/lib/supabase';
 import { Session } from '@supabase/supabase-js';
 import { useFonts } from 'expo-font';
@@ -13,7 +13,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [session, setSession] = useState<Session | null>(null)
 
 
   const [loaded] = useFonts({
@@ -28,25 +27,11 @@ export default function RootLayout() {
     OutfitThin: require('../assets/fonts/Outfit-Thin.ttf'),
   });
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-    })
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-  }, [])
-
   if (!loaded) {
+    SplashScreen.hideAsync()
     return null;
   }
+
 
   return (
     <AuthProvider>

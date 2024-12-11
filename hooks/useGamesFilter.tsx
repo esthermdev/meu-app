@@ -11,7 +11,7 @@ interface Games extends GamesRow {
   team2: TeamsRow | null;
 }
 
-export function useGames(divisionId: number, roundId: number) {
+export function useRoundIds(divisionId: number, roundId: number) {
   const [games, setGames] = useState<Games[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

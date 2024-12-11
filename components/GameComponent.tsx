@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native'
 import { useLocalSearchParams } from 'expo-router';
 import { Card, Avatar } from '@rneui/base';
-import { useGames } from '@/hooks/useGamesFilter';
+import { useRoundIds } from '@/hooks/useGamesFilter';
 import { FlashList } from '@shopify/flash-list';
 import { Database } from '@/database.types';
 
@@ -13,10 +13,14 @@ interface Games extends GamesRow {
   team2: TeamsRow | null;
 }
 
-const GameComponent = () => {
-  const { poolplay } = useLocalSearchParams()
+interface GameComponentProps {
+  divisionId: number;
+  roundId: number;
+}
 
-  const { games, loading, error } = useGames(Number(poolplay), 1);
+const GameComponent: React.FC<GameComponentProps> = ({ divisionId, roundId }) => {
+
+  const { games, loading, error } = useRoundIds(Number(divisionId), roundId);
   console.log(games)
   
   const renderItem = ({ item }: {item: Games}) => (

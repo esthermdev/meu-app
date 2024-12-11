@@ -4,7 +4,7 @@ import { StyleSheet, View, Alert } from 'react-native'
 import { Button, Input } from '@rneui/themed'
 import { Session } from '@supabase/supabase-js'
 import { Database } from '@/database.types'
-import { useAuth } from '@/hooks/AuthProvider'
+import { useAuth } from '@/context/AuthProvider'
 import { router } from 'expo-router'
 
 type ProfileUpdate = Database['public']['Tables']['profiles']['Insert'];

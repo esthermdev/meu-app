@@ -1,5 +1,5 @@
 import { View } from 'react-native'
-import { useAuth } from '@/hooks/AuthProvider'
+import { useAuth } from '@/context/AuthProvider'
 import Account from '@/components/Account'
 import { Link } from 'expo-router'
 

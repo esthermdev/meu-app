@@ -13,17 +13,17 @@ interface AdminOptionProps {
   onPress?: () => void;
 }
 
+interface AdminOptionType {
+  title: string;
+  iconName: MaterialIconName;
+}
+
 const AdminOption = ({ title, iconName, onPress }: AdminOptionProps) => (
   <TouchableOpacity style={styles.optionButton} onPress={onPress}>
     <MaterialIcons name={iconName} size={52} color="#FFFFFF" />
     <Text maxFontSizeMultiplier={1} style={styles.optionText}>{title}</Text>
   </TouchableOpacity>
 );
-
-interface AdminOptionType {
-  title: string;
-  iconName: MaterialIconName;
-}
 
 const AdminScreen = () => {
   const adminOptions: AdminOptionType[] = [

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, View, TouchableOpacity, TextInput, Text } from 'react-native';
 import { Link } from 'expo-router';
-import { useAuth } from '@/hooks/AuthProvider';
+import { useAuth } from '@/context/AuthProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
