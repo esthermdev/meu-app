@@ -2,8 +2,7 @@ import React from 'react';
 import { View, ActivityIndicator, Text } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { usePoolIds, useRoundIds } from '@/hooks/useGamesFilter';
-import PoolScreen from '@/components/PoolScreen';
+import { useRoundIds } from '@/hooks/useGamesFilter';
 import GameComponent from '@/components/GameComponent';
 
 const Tab = createMaterialTopTabNavigator();
@@ -44,10 +43,10 @@ export default function ChampionshipBracketScreen() {
       <Tab.Screen name="Quarters" options={{ title: "Q" }}>
         {() => <GameComponent divisionId={Number(division)} roundId={3} />}
       </Tab.Screen>
-      <Tab.Screen name="Semi-finals" options={{ title: "CP" }}>
+      <Tab.Screen name="Semi-finals" options={{ title: "SF" }}>
         {() => <GameComponent divisionId={Number(division)} roundId={4} />}
       </Tab.Screen>
-      <Tab.Screen name="Finals" options={{ title: "CP" }}>
+      <Tab.Screen name="Finals" options={{ title: "F" }}>
         {() => <GameComponent divisionId={Number(division)} roundId={5} />}
       </Tab.Screen>
     </Tab.Navigator>

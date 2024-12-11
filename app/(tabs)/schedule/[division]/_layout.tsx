@@ -6,8 +6,8 @@ import { useScheduleOptions } from '@/hooks/useScheduleConfig';
 
 export default function DivisionLayout() {
 	const { division } = useLocalSearchParams();
-	const schedule = useScheduleOptions(Number(division))
-	console.log(schedule)
+	const { scheduleOptions } = useScheduleOptions(Number(division))
+  console.log(scheduleOptions)
 
 	return (
 		<Stack>
@@ -17,12 +17,16 @@ export default function DivisionLayout() {
 					headerShown: false
 				}}
 			/>
-			<Stack.Screen
-				name="[poolplay]"
-				options={{
-					headerShown: false
-				}}
-			/>
+			{scheduleOptions.map(gameType => 
+				<Stack.Screen 
+					key={gameType.route}
+					name={gameType.route}
+					options={{
+						title: gameType.title,
+						headerShown: false
+					}}
+				/>
+			)}
 		</Stack>
 	);
 }

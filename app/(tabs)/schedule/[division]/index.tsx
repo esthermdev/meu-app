@@ -6,6 +6,7 @@ export default function DivisionScreen() {
   const { division, divisionName } = useLocalSearchParams();
 
   const { scheduleOptions } = useScheduleOptions(Number(division))
+  console.log(scheduleOptions)
 
   return (
     <View style={styles.container}>
