@@ -10,6 +10,7 @@ export default function HomeLayout() {
                     header: () => <ScreenTitle title='Standings' route={'/(tabs)'} showBackButton={false} /> 
                 }}
             />
+            <Stack.Screen name="[division]" options={{ headerShown: false }} />
         </Stack>
     );
 };
