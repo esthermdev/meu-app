@@ -14,7 +14,6 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
 
-
   const [loaded] = useFonts({
     OutfitBlack: require('../assets/fonts/Outfit-Black.ttf'),
     OutfitBold: require('../assets/fonts/Outfit-Bold.ttf'),

@@ -8,8 +8,8 @@ type Props = {
   divisionId: number;
 }
 
-const PoolScreen: React.FC<Props> = ({ poolId, divisionId }) => {
-  const { games, loading, error } = useRoundIds(divisionId, 1); // Assuming round_id 1 is for pool play
+const PoolGameComponent: React.FC<Props> = ({ poolId, divisionId }) => {
+  const { games, loading, error } = useRoundIds(divisionId, 1);
   
   const poolGames = games.filter(game => game.pool_id === poolId);
 
@@ -72,4 +72,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PoolScreen;
+export default PoolGameComponent;

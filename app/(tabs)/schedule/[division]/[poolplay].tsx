@@ -3,13 +3,13 @@ import { View, ActivityIndicator, Text } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { usePoolIds } from '@/hooks/useGamesFilter';
-import PoolScreen from '@/components/PoolScreen';
+import PoolGameComponent from '@/components/PoolGameComponent';
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function PoolPlayScreen() {
-  const { poolplay } = useLocalSearchParams();
-  const { pools, loading, error } = usePoolIds(Number(poolplay));
+  const { division } = useLocalSearchParams();
+  const { pools, loading, error } = usePoolIds(Number(division));
 
   if (loading) {
     return (
@@ -42,7 +42,7 @@ export default function PoolPlayScreen() {
           key={pool.id}
           name={`Pool ${pool.name}`}
           children={() => (
-            <PoolScreen poolId={pool.id} divisionId={Number(poolplay)} />
+            <PoolGameComponent poolId={pool.id} divisionId={Number(division)} />
           )}
         />
       ))}

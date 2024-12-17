@@ -1,5 +1,3 @@
-import { ColorValue } from "react-native"
-
 export type Json =
   | string
   | number
@@ -352,20 +350,31 @@ export type Database = {
       pools: {
         Row: {
           division: Database["public"]["Enums"]["division"] | null
+          division_id: number | null
           id: number
           name: string
         }
         Insert: {
           division?: Database["public"]["Enums"]["division"] | null
+          division_id?: number | null
           id?: number
           name: string
         }
         Update: {
           division?: Database["public"]["Enums"]["division"] | null
+          division_id?: number | null
           id?: number
           name?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "pools_division_id_fkey"
+            columns: ["division_id"]
+            isOneToOne: false
+            referencedRelation: "divisions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -502,11 +511,11 @@ export type Database = {
       }
       schedule_options: {
         Row: {
-          bg_color: ColorValue | undefined
+          bg_color: string | null
           display_order: number | null
           division_id: number | null
           icon: string | null
-          icon_color: ColorValue | undefined
+          icon_color: string | null
           id: number
           round_id: number | null
           route: string
