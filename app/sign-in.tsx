@@ -8,14 +8,13 @@ import { Button } from '@rneui/themed';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { signIn } = useAuth();
 
   const handleSignIn = async () => {
     try {
       setLoading(true);
-      await signIn(email, password);
+      await signIn(email);
       router.replace('/(tabs)/home')
     } catch (error) {
       console.error(error);
@@ -37,7 +36,7 @@ export default function SignIn() {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.form}>
             <Text style={styles.title}>Sign In</Text>
-            
+
             <TextInput
               placeholder="Email"
               value={email}
@@ -46,18 +45,11 @@ export default function SignIn() {
               keyboardType="email-address"
               style={styles.input}
             />
-            
-            <TextInput
-              placeholder="Password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              style={styles.input}
-            />
 
             <Button
-              title={loading ? 'Signing in...' : 'Sign In'}
               onPress={handleSignIn}
+              title={loading ? 'Sending link...' : 'Send Magic Link'}
+              disabled={loading}
               buttonStyle={styles.button}
               titleStyle={styles.buttonText}
             />

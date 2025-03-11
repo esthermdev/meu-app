@@ -10,10 +10,7 @@ type ScheduleOption = Database['public']['Tables']['schedule_options']['Row'];
 
 export default function DivisionScreen() {
   const { division } = useLocalSearchParams();
-
   const { scheduleOptions } = useScheduleOptions(Number(division))
-  console.log(scheduleOptions)
-
   
   const renderItem: ListRenderItem<ScheduleOption> = ({ item }) => (
     <TouchableOpacity

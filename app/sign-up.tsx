@@ -17,7 +17,7 @@ export default function SignUp() {
   const handleSignUp = async () => {
     try {
       setLoading(true);
-      await signUp(email, password, fullName);
+      await signUp(email, fullName);
       alert('Check your email for the confirmation link!');
     } catch (error) {
       console.error(error);
@@ -49,14 +49,6 @@ export default function SignUp() {
           onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
-          style={styles.input}
-        />
-        
-        <TextInput
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
           style={styles.input}
         />
 

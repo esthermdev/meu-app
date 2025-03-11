@@ -11,7 +11,7 @@ export default function Index() {
       }}
     >
       <Text>Welcome Screen!</Text>
-      <Button title="Continue" onPress={() => router.push('/(tabs)/home')}/>
+      <Button title="Continue" onPress={() => router.push('/(tabs)/home')} />
     </View>
   );
 }

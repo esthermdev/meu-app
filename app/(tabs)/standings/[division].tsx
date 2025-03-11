@@ -7,7 +7,6 @@ import { Database } from '@/database.types';
 
 type StandingsRow = Database['public']['Tables']['rankings']['Row']
 type TeamsRow = Database['public']['Tables']['teams']['Row'];
-type PoolRow = Database['public']['Tables']['pools']['Row'];
 
 interface Standings extends StandingsRow {
   teams: TeamsRow | null;

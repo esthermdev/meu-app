@@ -3,6 +3,8 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Session, User } from '@supabase/supabase-js';
 import { Database } from '@/database.types'
+import * as Linking from "expo-linking";
+import { router } from 'expo-router';
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 
@@ -11,8 +13,8 @@ type AuthContextType = {
   user: User | null;
   profile: Profile | null
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, full_name: string) => Promise<void>;
+  signIn: (email: string) => Promise<void>;
+  signUp: (email: string, full_name: string) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -23,6 +25,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Flag to track if we're processing a deep link
+  const [isProcessingDeepLink, setIsProcessingDeepLink] = useState(false);
 
   async function getProfile(userId: string) {
     try {
@@ -39,6 +44,79 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setProfile(null)
     }
   }
+
+  // Function to extract tokens from URL fragments
+  const extractTokensFromHash = (hash: string) => {
+    if (!hash || hash === '') return null;
+    
+    // Remove the leading '#' if present
+    const fragment = hash.startsWith('#') ? hash.substring(1) : hash;
+    
+    // Split the fragment into key-value pairs
+    const params = new URLSearchParams(fragment);
+    
+    // Extract the tokens
+    const accessToken = params.get('access_token');
+    const refreshToken = params.get('refresh_token');
+    
+    if (accessToken && refreshToken) {
+      return { accessToken, refreshToken };
+    }
+    
+    return null;
+  };
+
+  // Function to handle deep links that contain auth tokens
+  const handleDeepLink = async (url: string) => {
+    try {
+      setIsProcessingDeepLink(true);
+      console.log("Processing deep link:", url);
+      
+      // Check if this URL is coming from an auth flow
+      if (url.includes('access_token=') || url.includes('refresh_token=')) {
+        console.log("Auth parameters detected in URL");
+        
+        // Extract the fragment from the URL (everything after #)
+        const hashIndex = url.indexOf('#');
+        if (hashIndex !== -1) {
+          const fragment = url.substring(hashIndex);
+          const tokens = extractTokensFromHash(fragment);
+          
+          if (tokens) {
+            console.log("Extracted tokens, setting session");
+            
+            // Set the session with the extracted tokens
+            const { data, error } = await supabase.auth.setSession({
+              access_token: tokens.accessToken,
+              refresh_token: tokens.refreshToken
+            });
+            
+            if (error) {
+              console.error("Error setting session:", error);
+            } else if (data?.session) {
+              console.log("Session successfully established");
+              setSession(data.session);
+              setUser(data.session.user);
+              
+              if (data.session.user) {
+                await getProfile(data.session.user.id);
+              }
+              
+              // Navigate to the account page after a slight delay
+              setTimeout(() => {
+                router.replace('/(user)/account');
+              }, 500);
+            }
+          }
+        }
+      }
+      
+      setIsProcessingDeepLink(false);
+    } catch (error) {
+      console.error("Error handling deep link:", error);
+      setIsProcessingDeepLink(false);
+    }
+  };
 
   useEffect(() => {
     // Get initial session
@@ -59,24 +137,59 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         getProfile(session.user.id)
       }
       setLoading(false);
+
+      // Only update loading if we're not processing a deep link
+      if (!isProcessingDeepLink) {
+        setLoading(false);
+      }
     });
 
-    return () => subscription.unsubscribe();
+    // Set up deep link handling for initial URL
+    const handleInitialURL = async () => {
+      try {
+        const initialURL = await Linking.getInitialURL();
+        if (initialURL) {
+          console.log("Found initial URL:", initialURL);
+          await handleDeepLink(initialURL);
+        }
+      } catch (error) {
+        console.error("Error handling initial URL:", error);
+        setLoading(false);
+      }
+    };
+    
+    // Handle initial URL
+    handleInitialURL();
+    
+    // Subscribe to URL open events
+    const linkingSubscription = Linking.addEventListener('url', async ({ url }) => {
+      console.log("App opened via URL:", url);
+      await handleDeepLink(url);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      linkingSubscription.remove();
+    };
+
   }, []);
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+  const signIn = async (email: string) => {
+    const { error } = await supabase.auth.signInWithOtp({
       email,
-      password,
+      options: {
+        emailRedirectTo: 'meu.app://(user)'
+      },
     });
     if (error) throw error;
   };
 
-  const signUp = async (email: string, password: string, full_name: string) => {
-    const { error } = await supabase.auth.signUp({
+  const signUp = async (email: string, full_name: string) => {
+    const { error } = await supabase.auth.signInWithOtp({
       email,
-      password,
       options: {
+        shouldCreateUser: true,
+        emailRedirectTo: 'meu.app://(user)',
         data: {
           full_name: full_name
         }
