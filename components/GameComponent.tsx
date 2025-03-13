@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native'
-import { useLocalSearchParams } from 'expo-router';
-import { Card, Avatar } from '@rneui/base';
+import { Card } from '@rneui/base';
 import { useRoundIds } from '@/hooks/useGamesFilter';
 import { FlashList } from '@shopify/flash-list';
 import { Database } from '@/database.types';
