@@ -387,9 +387,7 @@ export type Database = {
           is_driver: boolean | null
           is_logged_in: boolean | null
           is_medical_staff: boolean | null
-          is_team_captain: boolean | null
           is_volunteer: boolean | null
-          team_id: number | null
           updated_at: string | null
         }
         Insert: {
@@ -402,9 +400,7 @@ export type Database = {
           is_driver?: boolean | null
           is_logged_in?: boolean | null
           is_medical_staff?: boolean | null
-          is_team_captain?: boolean | null
           is_volunteer?: boolean | null
-          team_id?: number | null
           updated_at?: string | null
         }
         Update: {
@@ -417,20 +413,10 @@ export type Database = {
           is_driver?: boolean | null
           is_logged_in?: boolean | null
           is_medical_staff?: boolean | null
-          is_team_captain?: boolean | null
           is_volunteer?: boolean | null
-          team_id?: number | null
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_team_id_fkey"
-            columns: ["team_id"]
-            isOneToOne: false
-            referencedRelation: "teams"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       rankings: {
         Row: {
@@ -675,7 +661,7 @@ export type Database = {
         }
         Relationships: []
       }
-      water_refill: {
+      water_requests: {
         Row: {
           created_at: string | null
           field_number: number | null
