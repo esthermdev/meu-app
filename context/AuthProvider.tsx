@@ -102,9 +102,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 await getProfile(data.session.user.id);
               }
               
-              // Navigate to the account page after a slight delay
+              // Navigate to the user page after a slight delay
               setTimeout(() => {
-                router.replace('/(user)/account');
+                router.replace('/(user)');
               }, 500);
             }
           }
