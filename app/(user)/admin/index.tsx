@@ -10,12 +10,14 @@ type MaterialIconName = keyof typeof MaterialIcons.glyphMap;
 interface AdminOptionProps {
   title: string;
   iconName: MaterialIconName;
+  route: Href;
   onPress?: () => void;
 }
 
 interface AdminOptionType {
   title: string;
   iconName: MaterialIconName;
+  route: Href;
 }
 
 const AdminOption = ({ title, iconName, onPress }: AdminOptionProps) => (
@@ -30,22 +32,27 @@ const AdminScreen = () => {
     {
       title: 'Update Scores',
       iconName: 'scoreboard',
+      route: '/admin',
     },
     {
       title: 'Trainers List',
       iconName: 'sports',
+      route: '/admin',
     },
     {
       title: 'Cart Requests',
       iconName: 'directions-car',
+      route: '/admin',
     },
     {
-      title: 'Water Refill Requests',
+      title: 'Water Requests',
       iconName: 'water-drop',
+      route: '/admin/water-requests',
     },
     {
       title: 'Send Public Announcement',
       iconName: 'campaign',
+      route: '/admin',
     },
   ];
 
@@ -59,7 +66,8 @@ const AdminScreen = () => {
             key={index}
             title={option.title}
             iconName={option.iconName}
-            onPress={() => null}
+            route={option.route}
+            onPress={() => option.route ? router.push(option.route) : null}
           />
         ))}
       </ScrollView>

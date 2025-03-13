@@ -1,6 +1,6 @@
 import { Text, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Redirect, router, Stack } from 'expo-router';
+import { Redirect, Stack } from 'expo-router';
 
 import { useAuth } from '@/context/AuthProvider';
 
