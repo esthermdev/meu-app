@@ -1,4 +1,6 @@
 import HomeButtons from "@/components/buttons/HomeButtons";
+import WaterRequestButton from "@/components/buttons/WaterRequestButton";
+import WaterRequestNotification from "@/components/notifications/WaterRequestNotification";
 import { View, Text, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -34,6 +36,8 @@ export default function HomeScreen() {
           route="/(tabs)"
           disabled={false}
         />
+        <WaterRequestButton />
+        <WaterRequestNotification />
         <Text>This is the Home screen.</Text>
       </ScrollView>
     </View>
