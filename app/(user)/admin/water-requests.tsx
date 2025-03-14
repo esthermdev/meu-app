@@ -56,7 +56,6 @@ const WaterRequestsList: React.FC = () => {
 
       if (error) throw error;
       setRequests(data);
-      console.log(requests)
     } catch (error) {
       console.error('Error fetching requests:', error);
     } finally {

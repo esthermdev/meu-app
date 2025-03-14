@@ -30,11 +30,11 @@ Deno.serve(async (req) => {
   }
 
   const { data: volunteers, error: queryError } = await supabase
-  .from("profiles")
-  .select("id, expo_push_token")
-  .eq("is_volunteer", true)
-  .not("expo_push_token", "is", null);
-  
+    .from("profiles")
+    .select("id, expo_push_token")
+    .eq("is_volunteer", true)
+    .eq("is_available", true)
+    
   if (queryError) {
     console.error("Error querying volunteers:", queryError);
     return new Response(JSON.stringify({ error: "Database query error" }), {

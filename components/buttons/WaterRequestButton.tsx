@@ -8,17 +8,13 @@ import {
   Modal,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Dimensions,
   FlatList
 } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { ms } from 'react-native-size-matters';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tables } from '@/database.types';
+import { typography } from '@/constants/Typography';
 
 type Field = Tables<'fields'>;
-
-const { width } = Dimensions.get('window');
-const buttonWidth = (width - 70) / 2;
 
 const WaterRequestButton = () => {
   const [selectedField, setSelectedField] = useState<number | undefined>(undefined);
@@ -64,7 +60,7 @@ const WaterRequestButton = () => {
 
     try {
       // Create a single water refill request
-      const { data: newRequest, error: insertError } = await supabase
+      const { error: insertError } = await supabase
         .from('water_requests')
         .insert({
           field_number: selectedField,
@@ -91,7 +87,7 @@ const WaterRequestButton = () => {
       Alert.alert('Refill of water jugs requested', 'Water is on the way');
 
     } catch (error) {
-      console.error('Error requesting water jug refills:', error);
+      console.error('Error requesting water:', error);
       Alert.alert('Error', 'Failed to request water jug refill');
     } finally {
       hideModal();
@@ -99,19 +95,19 @@ const WaterRequestButton = () => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <TouchableOpacity
-        style={styles.buttonStyle}
+        style={styles.circleButton}
         onPress={showModal}
       >
-        <Ionicons name="water" size={27} color="#FFF" />
-        <Text maxFontSizeMultiplier={1} style={styles.text}>Water</Text>
+        <MaterialCommunityIcons name="water" size={28} color="#347764" />
       </TouchableOpacity>
+      <Text style={styles.label}>Water</Text>
 
       <Modal
         visible={isModalVisible}
         transparent={true}
-        animationType="slide"
+        animationType='fade'
         onRequestClose={hideModal}
       >
         <TouchableWithoutFeedback onPress={hideModal}>
@@ -169,20 +165,23 @@ const WaterRequestButton = () => {
 export default WaterRequestButton;
 
 const styles = StyleSheet.create({
-  buttonStyle: {
-    flex: 1,
-    padding: 20,
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    borderRadius: 22,
-    minHeight: 120,
-    width: buttonWidth,
-    backgroundColor: '#3DC5C5',
+  container: {
+    alignItems: 'center',
   },
-  text: {
-    fontSize: ms(16),
-    fontFamily: 'Outfit-Bold',
-    color: '#fff'
+  circleButton: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  label: {
+    textAlign: 'center',
+    marginTop: 5,
+    ...typography.bodyBold
   },
   modalContainer: {
     flex: 1,
@@ -198,8 +197,7 @@ const styles = StyleSheet.create({
     maxHeight: '80%',
   },
   pickerTitle: {
-    fontSize: ms(20),
-    fontFamily: 'Outfit-Bold',
+    ...typography.h4,
     marginBottom: 10,
     textAlign: 'center',
   },
@@ -211,8 +209,7 @@ const styles = StyleSheet.create({
   },
   selectedFieldText: {
     padding: 12,
-    fontSize: ms(16),
-    fontFamily: 'Outfit-Medium',
+    ...typography.h5,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
@@ -228,11 +225,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#e6f7ff',
   },
   dropdownItemText: {
-    fontSize: ms(16),
-    fontFamily: 'Outfit-Regular',
+    ...typography.body,
   },
   dropdownItemTextSelected: {
-    fontFamily: 'Outfit-Medium',
+    ...typography.bodyBold,
     color: '#0078d4',
   },
   buttonContainer: {
@@ -247,7 +243,7 @@ const styles = StyleSheet.create({
     width: '47%',
   },
   confirmButton: {
-    backgroundColor: '#EA1D25',
+    backgroundColor: '#347764',
     padding: 10,
     borderRadius: 100,
     width: '47%',
@@ -255,7 +251,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     textAlign: 'center',
-    fontFamily: 'Outfit-Bold',
-    fontSize: ms(16)
+    ...typography.bodyMedium
   },
 });

@@ -1,9 +1,33 @@
-import { Tabs } from 'expo-router';
+import { useEffect, useRef } from 'react';
+import * as Notifications from 'expo-notifications';
+import { Tabs, router } from 'expo-router';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import Header from '@/components/headers/Header';
 import { fonts } from '@/constants/Typography';
 
 export default function TabLayout() {
+  const responseListener = useRef<Notifications.Subscription>();
+  
+  useEffect(() => {
+    // This won't conflict with the listener in usePushNotifications 
+    // because we're adding specific routing logic here
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      const { notification: { request: { content: { data } } } } = response;
+      
+      // Handle different notification types with routing
+      if (data.type === "new_water_request") {
+        router.push('/(user)/admin/water-requests');
+        console.log('Notification received:', data);
+      }
+    });
+    
+    return () => {
+      if (responseListener.current) {
+        Notifications.removeNotificationSubscription(responseListener.current);
+      }
+    };
+  }, []);
+
   return (
       <Tabs
         screenOptions={{
