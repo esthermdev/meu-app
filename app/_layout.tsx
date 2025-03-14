@@ -10,11 +10,13 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync().catch(error => {
+  console.warn('Error preventing splash screen from auto-hiding:', error);
+});
 
 export default function RootLayout() {
 
-  const [loaded] = useFonts({
+  const [loaded, error] = useFonts({
     GeistThin: require('../assets/fonts/Geist-Thin.ttf'),
     GeistExtraLight: require('../assets/fonts/Geist-ExtraLight.ttf'),
     GeistLight: require('../assets/fonts/Geist-Light.ttf'),
@@ -27,24 +29,15 @@ export default function RootLayout() {
   });
 
   // Use an effect to hide the splash screen when fonts are loaded
-  useEffect(() => {
-    const hideSplash = async () => {
-      if (loaded) {
-        try {
-          // Only hide the splash screen once the fonts have loaded
-          await SplashScreen.hideAsync();
-        } catch (e) {
-          console.warn("Error hiding splash screen:", e);
-        }
-      }
-    };
+	useEffect(() => {
+		if (loaded || error) {
+			SplashScreen.hideAsync();
+		}
+	}, [loaded, error]);
 
-    hideSplash();
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
+	if (!loaded && !error) {
+		return null;
+	}
 
   return (
     <AuthProvider>
