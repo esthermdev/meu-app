@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { ListItem, Avatar } from '@rneui/themed';
 import { Ionicons } from '@expo/vector-icons';
 import { TeamWithPool } from '@/hooks/useFavorites';
+import { typography } from '@/constants/Typography';
 
 interface TeamListItemProps {
   item: TeamWithPool;
@@ -60,8 +61,8 @@ export const TeamListItem = React.memo(({
           <ListItem.Title style={styles.name} maxFontSizeMultiplier={1.2}>
             {item.name}
           </ListItem.Title>
-          <View style={[styles.divisionContainer, { backgroundColor: item.color || '#ccc' }]}>
-            <Text style={styles.divisionText}>{item.division}</Text>
+          <View style={[styles.divisionContainer, { backgroundColor: item.color || '#ccc', borderWidth: 1, borderColor: item.border_color || '#ccc' }]}>
+            <Text style={[styles.divisionText, { color: item.border_color || '#fff' }]}>{item.division}</Text>
           </View>
         </View>
         {isLoading ? (
@@ -81,8 +82,6 @@ export const TeamListItem = React.memo(({
   );
 });
 
-// ... styles remain the same
-
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 12,
@@ -97,9 +96,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   name: {
-    fontFamily: 'OutfitBold',
-    fontSize: 16,
-    color: '#333243',
+    ...typography.label,
   },
   divisionContainer: {
     borderRadius: 100,
@@ -108,9 +105,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   divisionText: {
-    color: 'white',
-    fontFamily: 'OutfitLight',
-    fontSize: 12,
+    ...typography.caption,
   },
   favoriteIcon: {
     marginLeft: 'auto',

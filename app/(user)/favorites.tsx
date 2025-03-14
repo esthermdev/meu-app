@@ -3,14 +3,19 @@ import {
   StyleSheet, 
   Text, 
   View, 
-  RefreshControl, 
-  ActivityIndicator,
+  RefreshControl,
+  TextInput,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Keyboard
 } from 'react-native';
-import { SearchBar } from '@rneui/themed';
+import { Ionicons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { useAuth } from '@/context/AuthProvider';
 import { useFavorites } from '@/hooks/useFavorites';
 import { TeamListItem } from '@/components/TeamListItem';
+import CustomHeader from '@/components/headers/CustomHeader';
+import { typography } from '@/constants/Typography';
 
 const FavoritesScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -20,7 +25,6 @@ const FavoritesScreen = () => {
   const { 
     teams, 
     favorites, 
-    loading, 
     toggleFavorite, 
     loadData,
     remainingFavorites,
@@ -43,42 +47,39 @@ const FavoritesScreen = () => {
     await loadData();
   };
 
-  if (!session) {
-    return (
-      <View style={styles.centeredContainer}>
-        <Text style={styles.messageText}>Please login to manage your favorites</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={{ fontFamily: 'OutfitBold', fontSize: 20, padding: 16 }}>Select your favorite teams!</Text>
-        <SearchBar
-          placeholder="Search teams..."
-          onChangeText={setSearchQuery}
-          value={searchQuery}
-          containerStyle={styles.searchBarContainer}
-          inputContainerStyle={styles.searchBarInputContainer}
-          inputStyle={styles.searchBarInput}
-          round={true}
-          lightTheme={true}
-          clearIcon={{ color: '#86939e' }}
-          searchIcon={{ color: '#86939e' }}
-        />
-        <View style={styles.favoritesInfoContainer}>
-          <Text style={styles.favoritesCount}>
-            {favorites.size} {favorites.size === 1 ? 'Team' : 'Teams'} Selected
-          </Text>
-          <Text style={[
-            styles.remainingSlots,
-            remainingFavorites === 0 && styles.remainingSlotsWarning
-          ]}>
-            {remainingFavorites} {remainingFavorites === 1 ? 'slot' : 'slots'} remaining
-          </Text>
-        </View>
-      </View>
+      <CustomHeader title="Favorites" />
+      <KeyboardAvoidingView behavior="padding">
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.title}>Select your favorite teams!</Text>
+            
+            {/* Custom Search Bar */}
+            <View style={styles.searchBarContainer}>
+              <Ionicons name="search" size={20} color="#86939e" style={styles.searchIcon} />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search teams..."
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                placeholderTextColor="#86939e"
+              />
+            </View>
+            
+            {/* Status Bar */}
+            <View style={styles.statsContainer}>
+              <Text style={styles.favoritesCount}>
+                <Text style={styles.favoritesCountNumber}>{favorites.size} teams </Text>selected
+              </Text>
+              <Text style={styles.remainingSlots}>
+                <Text style={styles.remainingSlotsNumber}>{remainingFavorites} slots </Text>remaining
+              </Text>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+      
       <FlashList
         data={filteredTeams}
         renderItem={({ item }) => (
@@ -114,8 +115,62 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   headerContainer: {
-    borderBottomColor: '#D9D9D9',
+    borderBottomColor: '#EFEFEF',
     borderBottomWidth: 1,
+    paddingBottom: 15,
+  },
+  title: {
+    ...typography.h4,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+  },
+  searchBarContainer: {
+    marginHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 100,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#000',
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    ...typography.bodyMedium,
+    color: '#000',
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  favoritesCount: {
+    ...typography.body,
+    color: '#EA1D25',
+  },
+  favoritesCountNumber: {
+    ...typography.bodyBold,
+    color: '#EA1D25',
+  },
+  remainingSlots: {
+    ...typography.body,
+    color: '#666',
+  },
+  remainingSlotsNumber: {
+    ...typography.bodyBold,
+  },
+  messageText: {
+    fontFamily: 'GeistRegular',
+    fontSize: 16,
+    color: '#8F8DAA',
+    textAlign: 'center',
   },
   centeredContainer: {
     flex: 1,
@@ -123,48 +178,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
-  searchBarContainer: {
-    backgroundColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderTopColor: 'transparent',
-    paddingHorizontal: 15,
-    paddingVertical: 0,
-  },
-  searchBarInputContainer: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: 100,
-    height: 40,
-  },
-  searchBarInput: {
-    fontFamily: 'OutfitRegular',
-    fontSize: 16,
-  },
-  favoritesCount: {
-    fontFamily: 'OutfitMedium',
-    fontSize: 14,
-    color: '#8F8DAA',
-  },
-  messageText: {
-    fontFamily: 'OutfitRegular',
-    fontSize: 16,
-    color: '#8F8DAA',
-    textAlign: 'center',
-  },
-  favoritesInfoContainer: {
-    padding: 10,
-    paddingHorizontal: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  remainingSlots: {
-    fontFamily: 'OutfitMedium',
-    fontSize: 14,
-    color: '#8F8DAA',
-  },
-  remainingSlotsWarning: {
-    color: '#EA1D25',
-  }
 });
 
 export default FavoritesScreen;
