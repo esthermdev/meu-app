@@ -584,6 +584,7 @@ export type Database = {
       teams: {
         Row: {
           avatar_uri: string | null
+          border_color: string | null
           color: string | null
           division: string | null
           id: number
@@ -593,6 +594,7 @@ export type Database = {
         }
         Insert: {
           avatar_uri?: string | null
+          border_color?: string | null
           color?: string | null
           division?: string | null
           id: number
@@ -602,6 +604,7 @@ export type Database = {
         }
         Update: {
           avatar_uri?: string | null
+          border_color?: string | null
           color?: string | null
           division?: string | null
           id?: number
