@@ -1,15 +1,15 @@
 import React from 'react';
 import { View, ActivityIndicator, Text } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useDivisions } from '@/hooks/useScheduleConfig';
 import { useRoundIds } from '@/hooks/useGamesFilter';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import GameComponent from '@/components/GameComponent';
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function ChampionshipBracketScreen() {
-  const { division } = useLocalSearchParams();
-  const { games, loading, error } = useRoundIds(Number(division), 3);
+  const { divisionId } = useDivisions();
+  const { games, loading, error } = useRoundIds(divisionId, 3);
 
   if (loading) {
     return (
@@ -38,16 +38,16 @@ export default function ChampionshipBracketScreen() {
       }}
     >
       <Tab.Screen name="Crossover" options={{ title: "CP" }}>
-        {() => <GameComponent divisionId={Number(division)} roundId={2} />}
+        {() => <GameComponent divisionId={divisionId} roundId={2} />}
       </Tab.Screen>
       <Tab.Screen name="Quarters" options={{ title: "Q" }}>
-        {() => <GameComponent divisionId={Number(division)} roundId={3} />}
+        {() => <GameComponent divisionId={divisionId} roundId={3} />}
       </Tab.Screen>
       <Tab.Screen name="Semi-finals" options={{ title: "SF" }}>
-        {() => <GameComponent divisionId={Number(division)} roundId={4} />}
+        {() => <GameComponent divisionId={divisionId} roundId={4} />}
       </Tab.Screen>
       <Tab.Screen name="Finals" options={{ title: "F" }}>
-        {() => <GameComponent divisionId={Number(division)} roundId={5} />}
+        {() => <GameComponent divisionId={divisionId} roundId={5} />}
       </Tab.Screen>
     </Tab.Navigator>
   );

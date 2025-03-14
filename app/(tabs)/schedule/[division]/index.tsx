@@ -1,31 +1,33 @@
 // @ts-nocheck
 import { useScheduleOptions } from '@/hooks/useScheduleConfig';
 import { useLocalSearchParams, Link } from 'expo-router';
+import { useDivisions } from '@/hooks/useScheduleConfig';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, ListRenderItem } from 'react-native';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { Database } from '@/database.types';
+import { typography } from '@/constants/Typography';
 
 type ScheduleOption = Database['public']['Tables']['schedule_options']['Row'];
 
 export default function DivisionScreen() {
-  const { division } = useLocalSearchParams();
-  const { scheduleOptions } = useScheduleOptions(Number(division))
+  const { divisionId } = useDivisions();
+  const { scheduleOptions } = useScheduleOptions(divisionId)
   
   const renderItem: ListRenderItem<ScheduleOption> = ({ item }) => (
     <TouchableOpacity
-      style={[styles.optionButton, { backgroundColor: item.bg_color }]}
+      style={styles.optionButton}
       onPress={() => router.push({
         pathname: `schedule/[division]/${item.route}`,
         params: {
-          division: Number(division),
+          division: divisionId,
         }
       })}
       activeOpacity={0.6}
     >
-      <FontAwesome6 name={item.icon} size={22} color={item.icon_color} style={styles.icon}/>
-      <Text style={[styles.optionButtonText, { color: item.icon_color }]} maxFontSizeMultiplier={1}>{item.title}</Text>
-      <FontAwesome6 name="chevron-right" size={20} color={item.icon_color} />
+      <FontAwesome6 name={item.icon} size={22} style={styles.icon}/>
+      <Text style={styles.optionButtonText} maxFontSizeMultiplier={1}>{item.title}</Text>
+      <FontAwesome6 name="chevron-right" size={20} />
     </TouchableOpacity>
   );
 
@@ -43,22 +45,23 @@ export default function DivisionScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-    padding: 25
+    padding: 20
   },
   optionButton: {
+    backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 20,
-    marginBottom: 12,
+    marginBottom: 10,
+    padding: 15,
     borderRadius: 12
   },
   icon: {
     marginRight: 15,
+    color: '#EA1D25'
   },
   optionButtonText: {
+    ...typography.bodyLarge,
     flex: 1,
-    fontSize: 18,
-    fontFamily: 'Outfit-SemiBold',
+    color: '#000',
   },
 });

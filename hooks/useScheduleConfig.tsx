@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
+import { useLocalSearchParams } from 'expo-router';
 
 type Division = Database['public']['Tables']['divisions']['Row'];
 type ScheduleOption = Database['public']['Tables']['schedule_options']['Row'];
@@ -9,6 +10,10 @@ export function useDivisions() {
   const [divisions, setDivisions] = useState<Division[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const params = useLocalSearchParams();
+  const divisionId = Number(params.division);
+  const divisionName = params.divisionName as string;
 
   useEffect(() => {
     async function fetchDivisions() {
@@ -30,7 +35,7 @@ export function useDivisions() {
     fetchDivisions();
   }, []);
 
-  return { divisions, loading, error };
+  return { divisionId, divisionName, divisions, loading, error };
 }
 
 export function useScheduleOptions(divisionId: number) {
