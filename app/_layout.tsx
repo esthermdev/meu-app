@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import 'expo-dev-client';
 import * as SplashScreen from 'expo-splash-screen';
 import { AuthProvider } from '@/context/AuthProvider';
@@ -25,8 +26,23 @@ export default function RootLayout() {
     GeistBlack: require('../assets/fonts/Geist-Black.ttf'),
   });
 
+  // Use an effect to hide the splash screen when fonts are loaded
+  useEffect(() => {
+    const hideSplash = async () => {
+      if (loaded) {
+        try {
+          // Only hide the splash screen once the fonts have loaded
+          await SplashScreen.hideAsync();
+        } catch (e) {
+          console.warn("Error hiding splash screen:", e);
+        }
+      }
+    };
+
+    hideSplash();
+  }, [loaded]);
+
   if (!loaded) {
-    SplashScreen.hideAsync()
     return null;
   }
 
