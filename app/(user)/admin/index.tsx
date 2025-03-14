@@ -37,12 +37,12 @@ const AdminScreen = () => {
     {
       title: 'Trainers List',
       iconName: 'sports',
-      route: '/admin',
+      route: '/admin/trainers-list',
     },
     {
       title: 'Cart Requests',
       iconName: 'directions-car',
-      route: '/admin',
+      route: '/admin/cart-requests',
     },
     {
       title: 'Water Requests',

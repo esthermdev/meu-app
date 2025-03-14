@@ -69,7 +69,7 @@ export default function UserLayout() {
       <Stack.Screen 
         name='admin'
         options={{
-          headerTitle: 'Admin'
+          headerShown: false
         }}
       />
     </Stack>

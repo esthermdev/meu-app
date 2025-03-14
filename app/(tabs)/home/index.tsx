@@ -3,8 +3,11 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import LargeCardButton from '@/components/buttons/LargeCardButton';
 import FullWidthButton from '@/components/buttons/FullWidthButton';
-import WaterRequestButton from '@/components/buttons/WaterRequestButton';
+import WaterRequestButton from '@/components/requests/WaterRequestButton';
 import MyGamesBackground from '@/components/MyGamesBackground';
+import CartRequestButton from '@/components/requests/CartRequestButton';
+import CircleIconButton from '@/components/buttons/CircleIconButton';
+import TrainerRequestButton from '@/components/requests/TrainerRequestButton';
 
 
 export default function HomeScreen() {
@@ -39,7 +42,14 @@ export default function HomeScreen() {
 
         {/* Circular icon buttons */}
         <View style={styles.utilsContainer}>
+          <CircleIconButton 
+            icon='map'
+            label='Field Map'
+            route="/(tabs)/home/fieldmap"
+          />
           <WaterRequestButton />
+          <CartRequestButton />
+          <TrainerRequestButton />
         </View>
         
         {/* Spacer to push content down */}
@@ -52,7 +62,7 @@ export default function HomeScreen() {
             icon="account-group"
             backgroundColor="#e1f0ec"
             iconColor='#276B5D'
-            route="/(tabs)/info"
+            route="/(tabs)/home/volunteers"
           />
           
           <FullWidthButton
@@ -60,7 +70,7 @@ export default function HomeScreen() {
             icon="heart"
             backgroundColor="#ffe9e9"
             iconColor='#FE0000'
-            route="/(tabs)/info"
+            route='https://www.paypal.com/donate/?hosted_button_id=3HCQBB97LCV34'
           />
         </View>
       </ScrollView>
@@ -86,6 +96,7 @@ const styles = StyleSheet.create({
   utilsContainer: {
     flexDirection: 'row',
     paddingVertical: 15,
+    justifyContent: 'space-between',
   },
   spacer: {
     height: 40, // Adds some space before the bottom buttons

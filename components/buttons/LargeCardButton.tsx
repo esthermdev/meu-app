@@ -4,7 +4,6 @@ import { StyleSheet, Text, TouchableOpacity, View, ImageBackground } from 'react
 import { router, Href } from 'expo-router';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { typography } from '@/constants/Typography';
-import { images } from '@/constants';
 
 type FontAwesomeNames = keyof typeof FontAwesome.glyphMap;
 

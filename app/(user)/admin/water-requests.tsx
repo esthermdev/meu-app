@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { StyleSheet, View, Text, FlatList, Switch, ActivityIndicator, TouchableOpacity, Alert, RefreshControl } from 'react-native';
+import { StyleSheet, View, Text, FlatList, Switch, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
 import { Card } from '@rneui/themed';
 import { Ionicons } from '@expo/vector-icons';
 import { capitalizeWords } from '@/utils/capitalizeWords';

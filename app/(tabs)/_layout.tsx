@@ -1,11 +1,13 @@
 import { useEffect, useRef } from 'react';
 import * as Notifications from 'expo-notifications';
+import usePushNotifications from '@/hooks/usePushNotifications';
 import { Tabs, router } from 'expo-router';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import Header from '@/components/headers/Header';
 import { fonts } from '@/constants/Typography';
 
 export default function TabLayout() {
+  const { expoPushToken } = usePushNotifications();
   const responseListener = useRef<Notifications.Subscription>();
   
   useEffect(() => {
@@ -17,7 +19,13 @@ export default function TabLayout() {
       // Handle different notification types with routing
       if (data.type === "new_water_request") {
         router.push('/(user)/admin/water-requests');
-        console.log('Notification received:', data);
+        console.log('Notification for water received:', data);
+      } else if (data.type === "new_medic_request") {
+        router.push('/(user)/admin/trainers-list');
+        console.log('Notification for trainer received:', data);
+      } else if (data.type === "new_cart_request") {
+        router.push('/(user)/admin/cart-requests');
+        console.log('Notification for driver received:', data);
       }
     });
     

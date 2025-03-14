@@ -2,6 +2,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { router, Href } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { typography } from '@/constants/Typography';
 
 type MaterialIconNames = keyof typeof MaterialCommunityIcons.glyphMap;
 
@@ -35,7 +36,6 @@ const CircleIconButton: React.FC<CircleIconButtonProps> = ({
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    padding: 8,
   },
   button: {
     width: 70,
@@ -44,14 +44,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 8,
     borderWidth: 1,
     borderColor: '#e0e0e0',
   },
   label: {
     textAlign: 'center',
-    fontFamily: 'GeistMedium',
-    fontSize: 14,
+    marginTop: 5,
+    ...typography.bodyBold
   },
 });
 

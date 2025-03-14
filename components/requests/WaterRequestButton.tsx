@@ -114,43 +114,36 @@ const WaterRequestButton = () => {
           <View style={styles.modalContainer}>
             <TouchableWithoutFeedback>
               <View style={styles.pickerContainer}>
-                <Text style={styles.pickerTitle} maxFontSizeMultiplier={1.2}>Select Field</Text>
+                <Text style={styles.pickerTitle}>Select Field</Text>
                 
-                <View style={styles.customPickerContainer}>
-                  <Text style={styles.selectedFieldText}>{selectedFieldName}</Text>
-                  
-                  {/* Custom Dropdown List */}
-                  <FlatList
-                    data={fields}
-                    style={styles.dropdownList}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={({ item }) => (
-                      <TouchableOpacity 
-                        style={[
-                          styles.dropdownItem,
-                          selectedField === item.id && styles.dropdownItemSelected
-                        ]}
-                        onPress={() => selectField(item.id, item.name)}
-                      >
-                        <Text 
-                          style={[
-                            styles.dropdownItemText,
-                            selectedField === item.id && styles.dropdownItemTextSelected
-                          ]}
-                        >
-                          {`Field ${item.name}`}
-                        </Text>
-                      </TouchableOpacity>
-                    )}
-                  />
-                </View>
+                <FlatList
+                  data={fields}
+                  style={styles.fieldList}
+                  keyExtractor={(item) => item.id.toString()}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity 
+                      style={[
+                        styles.fieldItem,
+                        selectedField === item.id && styles.selectedFieldItem
+                      ]}
+                      onPress={() => selectField(item.id, item.name)}
+                    >
+                      <Text style={[
+                        styles.fieldItemText,
+                        selectedField === item.id && styles.selectedFieldText
+                      ]}>
+                        Field {item.name}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                />
                 
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity style={styles.cancelButton} onPress={hideModal}>
-                    <Text style={styles.buttonText} maxFontSizeMultiplier={1.2}>Cancel</Text>
+                    <Text style={styles.buttonText}>Cancel</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.confirmButton} onPress={requestWater}>
-                    <Text style={styles.buttonText} maxFontSizeMultiplier={1.2}>Confirm</Text>
+                    <Text style={styles.buttonText}>Confirm</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -191,62 +184,55 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     backgroundColor: 'white',
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 20,
     width: '80%',
-    maxHeight: '80%',
+    maxHeight: '60%',
   },
   pickerTitle: {
     ...typography.h4,
-    marginBottom: 10,
     textAlign: 'center',
+    marginBottom: 20,
   },
-  customPickerContainer: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    overflow: 'hidden',
+  fieldList: {
+    maxHeight: 250,
+  },
+  fieldItem: {
+    borderTopWidth: 0.5,
+    borderColor: '#E0E0E0',
+  },
+  selectedFieldItem: {
+    backgroundColor: '#F5F5F5',
+    borderLeftWidth: 3,
+    borderLeftColor: '#E74C3C',
+  },
+  fieldItemText: {
+    ...typography.body,
+    textAlign: 'center',
+    paddingVertical: 15,
   },
   selectedFieldText: {
-    padding: 12,
-    ...typography.h5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  dropdownList: {
-    maxHeight: 200,
-  },
-  dropdownItem: {
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  dropdownItemSelected: {
-    backgroundColor: '#e6f7ff',
-  },
-  dropdownItemText: {
-    ...typography.body,
-  },
-  dropdownItemTextSelected: {
     ...typography.bodyBold,
-    color: '#0078d4',
+    color: '#E74C3C',
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     marginTop: 20,
   },
   cancelButton: {
-    backgroundColor: '#333243',
-    padding: 10,
-    borderRadius: 100,
-    width: '47%',
+    backgroundColor: '#000000',
+    padding: 12,
+    borderRadius: 6,
+    width: '48%',
+    justifyContent: 'center',
   },
   confirmButton: {
-    backgroundColor: '#347764',
-    padding: 10,
-    borderRadius: 100,
-    width: '47%',
+    backgroundColor: '#E74C3C',
+    padding: 12,
+    borderRadius: 6,
+    width: '48%',
+    justifyContent: 'center',
   },
   buttonText: {
     color: 'white',
