@@ -1,14 +1,11 @@
 // app/(tabs)/home/index.tsx
-import { View, StyleSheet, ScrollView, Dimensions } from 'react-native';
-import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
 import LargeCardButton from '@/components/buttons/LargeCardButton';
-import CircleIconButton from '@/components/buttons/CircleIconButton';
 import FullWidthButton from '@/components/buttons/FullWidthButton';
 import WaterRequestButton from '@/components/buttons/WaterRequestButton';
 import MyGamesBackground from '@/components/MyGamesBackground';
 
-// Get screen dimensions
-const { height } = Dimensions.get('window');
 
 export default function HomeScreen() {
   return (
