@@ -13,15 +13,15 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
 
   const [loaded] = useFonts({
-    OutfitBlack: require('../assets/fonts/Outfit-Black.ttf'),
-    OutfitBold: require('../assets/fonts/Outfit-Bold.ttf'),
-    OutfitExtraBold: require('../assets/fonts/Outfit-ExtraBold.ttf'),
-    OutfitExtraLight: require('../assets/fonts/Outfit-ExtraLight.ttf'),
-    OutfitLight: require('../assets/fonts/Outfit-Light.ttf'),
-    OutfitMedium: require('../assets/fonts/Outfit-Medium.ttf'),
-    OutfitRegular: require('../assets/fonts/Outfit-Regular.ttf'),
-    OutfitSemiBold: require('../assets/fonts/Outfit-SemiBold.ttf'),
-    OutfitThin: require('../assets/fonts/Outfit-Thin.ttf'),
+    GeistThin: require('../assets/fonts/Geist-Thin.ttf'),
+    GeistExtraLight: require('../assets/fonts/Geist-ExtraLight.ttf'),
+    GeistLight: require('../assets/fonts/Geist-Light.ttf'),
+    GeistRegular: require('../assets/fonts/Geist-Regular.ttf'),
+    GeistMedium: require('../assets/fonts/Geist-Medium.ttf'),
+    GeistSemiBold: require('../assets/fonts/Geist-SemiBold.ttf'),
+    GeistBold: require('../assets/fonts/Geist-Bold.ttf'),
+    GeistExtraBold: require('../assets/fonts/Geist-ExtraBold.ttf'),
+    GeistBlack: require('../assets/fonts/Geist-Black.ttf'),
   });
 
   if (!loaded) {
@@ -34,11 +34,11 @@ export default function RootLayout() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="(user)" options={{ headerShown: false }} />
-          <Stack.Screen name="sign-in" options={{ headerShown: false }} />
-          <Stack.Screen name="sign-up" options={{ headerShown: false }} />
+          <Stack.Screen name="(user)" options={{ headerShown: false, gestureEnabled: false }} />
+          <Stack.Screen name="sign-in" options={{ headerShown: false, gestureEnabled: false }} />
+          <Stack.Screen name="sign-up" options={{ headerShown: false, gestureEnabled: false }} />
           <Stack.Screen name="+not-found" />
-          <Stack.Screen name="index" />
+          <Stack.Screen name="index" options={{ headerShown: false }} />
         </Stack>
       </GestureHandlerRootView>
     </AuthProvider>
