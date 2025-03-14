@@ -32,7 +32,7 @@ export default function HomeScreen() {
             <LargeCardButton
               title="Watch Live"
               route="/(tabs)/home"
-              backgroundImage={require('@/assets/images/background-image.jpg')}
+              backgroundImage={require('@/assets/images/background-image.png')}
             />
           </View>
         </View>
