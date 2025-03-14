@@ -2,8 +2,9 @@ import { StyleSheet, View, ScrollView, Button, Text } from 'react-native';
 import { Href, router } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
 import { Card } from '@/components/Card';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { fonts, typography } from '@/constants/Typography';
 
 
 export default function UserDashboard() {
@@ -13,52 +14,52 @@ export default function UserDashboard() {
     <ScrollView 
       style={styles.container}
     >
-      {/* Admin Info */}
       <View style={styles.header}>
         <Text style={styles.welcomeText}>
-          Welcome, {profile?.full_name}
+          Welcome, <Text style={{ color: '#000' }}>{profile?.full_name}!</Text>
         </Text>
       </View>
 
       {/* Cards */}
-      <View style={styles.statsContainer}>        
-        <TouchableOpacity style={{ flex: 1 }} onPress={() => router.push('/favorites')}>
-          <Card style={styles.statsCard}>
-            <Ionicons name="heart" size={24} color="red" />
-            <Text style={styles.statsLabel}>Favorites</Text>
+      <View>
+        <TouchableOpacity onPress={() => router.push('/(user)/account')}>
+          <Card style={styles.card}>
+            <MaterialIcons name="account-box" size={24} color="#FE0000" style={styles.cardIcon} />
+            <Text style={styles.cardLabel}>My Profile</Text>
+            <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
+          </Card>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => router.push('/favorites')}>
+          <Card style={styles.card}>
+            <Ionicons name="heart" size={24} color="#FE0000" style={styles.cardIcon} />
+            <Text style={styles.cardLabel}>Favorites</Text>
+            <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
           </Card>
         </TouchableOpacity>
 
         {profile?.is_admin ? 
-          <TouchableOpacity style={{ flex: 1 }} onPress={() => router.push('/admin' as Href)}>
-            <Card style={styles.statsCard}>
-              <Ionicons name="settings" size={24} color="red" />
-              <Text style={styles.statsLabel}>Admin</Text>
+          <TouchableOpacity onPress={() => router.push('/admin' as Href)}>
+            <Card style={styles.card}>
+              <Ionicons name="settings" size={24} color="#FE0000" style={styles.cardIcon} />
+              <Text style={styles.cardLabel}>Admin</Text>
+              <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
             </Card>
           </TouchableOpacity>  :
           null
         }
-
       </View>
 
       {/* Quick Actions */}
-      <View style={styles.actionsContainer}>
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
-        <View style={styles.buttonGroup}>
-          <Button 
-            onPress={() => router.push('/(user)/account')}
-            title='My Profile'
-          />
-          <Button 
-            onPress={() => router.back()}
-            title='Back to app'
-          />
-          <Button 
-            onPress={() => null}
-            title='Delete Account'
-          />
-        </View>
-      </View>
+      <Text style={styles.sectionTitle}>Quick Actions</Text>
+      <TouchableOpacity onPress={() => router.navigate('/(tabs)/home')} style={styles.actionButton}>
+        <Ionicons name="arrow-back-circle" size={24} color="##000" style={styles.cardIcon} />
+        <Text style={styles.quickActionLabels}>Back to App</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => null} style={styles.actionButton}>
+        <MaterialIcons name="delete-sweep" size={24} color="##000" style={styles.cardIcon} />
+        <Text style={styles.quickActionLabels}>Delete Account</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -67,67 +68,46 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    padding: 20,
   },
   header: {
-    padding: 20,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    marginBottom: 20,
   },
   welcomeText: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    ...typography.h3,
     marginBottom: 4,
+    color: '#B3B3B3',
   },
-  statsContainer: {
+  card: {
+    backgroundColor: '#FFF0F0',
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    padding: 16,
-    justifyContent: 'space-between',
-  },
-  statsCard: {
-    width: 100,
-    height: 100,
-    padding: 16,
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  statsNumber: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginVertical: 8,
-  },
-  statsLabel: {
-    fontSize: 15,
-    color: '#666',
-    fontFamily: 'OutfitRegular',
-    textAlign: 'center',
-  },
-  actionsContainer: {
     padding: 20,
+    borderRadius: 12
+  },
+  cardIcon: {
+    marginRight: 15,
+  },
+  cardLabel: {
+    flex: 1,
+    ...typography.label,
+    color: '#FE0000',
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  buttonGroup: {
-    gap: 12,
+    fontFamily: fonts.bold,
+    fontSize: 20,
+    paddingVertical: 15
   },
   actionButton: {
-    borderRadius: 8,
+    borderBottomColor: '#E5E5E5',
+    borderBottomWidth: 1,
+    paddingVertical: 20,
+    flexDirection: 'row',
+    alignItems: 'center'
   },
-  secondaryButton: {
-    backgroundColor: '#666',
-  },
+  quickActionLabels: {
+    fontFamily: fonts.semiBold,
+    fontSize: 16,
+    color: '#000',
+  }
 });
