@@ -1,8 +1,7 @@
 import { Tabs } from 'expo-router';
-import { Platform } from 'react-native';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
 import Header from '@/components/headers/Header';
+import { fonts } from '@/constants/Typography';
 
 export default function TabLayout() {
   return (
@@ -11,8 +10,8 @@ export default function TabLayout() {
           tabBarActiveTintColor: '#EA1D25',
           header: () => <Header />,
           tabBarLabelStyle: {
-            fontFamily: 'OutfitRegular',
-            fontSize: 13,
+            fontFamily: fonts.regular,
+            fontSize: 12,
           },
           tabBarItemStyle: {
             height: '100%',

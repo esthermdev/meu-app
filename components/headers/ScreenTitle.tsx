@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { router, Href } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { typography } from "@/constants/Typography";
 
 interface ScreenTitleProps {
   title: string;
@@ -40,8 +41,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   title: {
-    fontSize: 30,
-    fontFamily: 'OutfitBold',
+    ...typography.h3,
     color: '#EA1D25'
   },
 });

@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { typography } from '@/constants/Typography';
 
 interface CustomHeaderProps {
   title: string | string[];
@@ -12,9 +13,11 @@ export const CustomHeader: React.FC<CustomHeaderProps> = ({ title }) => {
   return (
     <View style={styles.headerContainer}>
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Ionicons name="caret-back" size={23} color="#EA1D25" />
+        <Ionicons name="arrow-back" size={23} color="#EA1D25" />
       </TouchableOpacity>
-      <Text style={styles.header} maxFontSizeMultiplier={1}>{title}</Text>
+      <View style={styles.titleContainer}>
+        <Text style={styles.header} maxFontSizeMultiplier={1}>{title}</Text>
+      </View>
     </View>
   );
 };
@@ -28,15 +31,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     backgroundColor: '#fff',
-    justifyContent: 'space-between'
+    position: 'relative',
   },
   header: {
-    fontFamily: 'Outfit-Bold',
-    fontSize: 24,
-    color: 'black',
+    ...typography.h5,
+    color: '#000',
+    textAlign: 'center',
   },
   backButton: {
-    marginRight: 15,
+    position: 'absolute',
+    left: 20,
+    zIndex: 10,
+  },
+  titleContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

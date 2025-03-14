@@ -1,5 +1,6 @@
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { images } from '@/constants';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/context/AuthProvider';
@@ -20,15 +21,22 @@ const Header = () => {
 		<SafeAreaView edges={["top"]} style={{ backgroundColor: '#fff' }}>
 			<View style={styles.container}>
 				<View style={styles.content}>
-					<TouchableOpacity style={styles.button} onPress={() => router.navigate('/(tabs)/home')}>
-						<MaterialIcons name='home' size={32} />
+					<TouchableOpacity onPress={() => router.navigate('/(tabs)/home')}>
+						<MaterialCommunityIcons
+							name='home-outline'
+							size={32}
+							color="#000"
+						/>
 					</TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.button} 
+					<Image 
+						source={images.logoW}
+						style={{ width: 40, height: 40 }}
+					/>
+          <TouchableOpacity  
             onPress={handleProfilePress}
           >
             <MaterialIcons
-              name='account-circle'
+              name='person-outline'
               size={32}
               color="#EA1D25"
             />
@@ -44,15 +52,13 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff',
 		height: 40,
 		width: '100%',
+		paddingHorizontal: 20,
 	},
 	content: {
 		flex: 1,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-	},
-	button: {
-		paddingHorizontal: 16
 	},
 });
 

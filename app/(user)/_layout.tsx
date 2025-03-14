@@ -3,6 +3,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Redirect, Stack } from 'expo-router';
 
 import { useAuth } from '@/context/AuthProvider';
+import Header from '@/components/headers/Header';
 
 export default function UserLayout() {
   const { session, loading, signOut } = useAuth();
@@ -56,13 +57,13 @@ export default function UserLayout() {
       <Stack.Screen 
         name='account'
         options={{
-          headerTitle: 'My Account'
+          headerShown: false
         }}
       />
       <Stack.Screen 
         name='favorites'
         options={{
-          headerTitle: 'Favorite Teams'
+          header: () => <Header />
         }}
       />
       <Stack.Screen 

@@ -3,18 +3,19 @@ import React from 'react';
 import { Stack } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 import { useScheduleOptions } from '@/hooks/useScheduleConfig';
+import CustomHeader from '@/components/headers/CustomHeader';
+import { useDivisions } from '@/hooks/useScheduleConfig';
 
 export default function DivisionLayout() {
-	const { division } = useLocalSearchParams();
-	const { scheduleOptions } = useScheduleOptions(Number(division))
-  console.log(scheduleOptions)
+	const { divisionId, divisionName } = useDivisions()
+	const { scheduleOptions } = useScheduleOptions(divisionId)
 
 	return (
 		<Stack>
 			<Stack.Screen
 				name="index"
 				options={{
-					headerShown: false
+					header: () => <CustomHeader title={divisionName} />
 				}}
 			/>
 			{scheduleOptions.map(gameType => 
@@ -23,7 +24,7 @@ export default function DivisionLayout() {
 					name={gameType.route}
 					options={{
 						title: gameType.title,
-						headerShown: false
+						header: () => <CustomHeader title={divisionName} />,
 					}}
 				/>
 			)}
