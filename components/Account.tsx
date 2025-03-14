@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react'
+import { StyleSheet, View, Alert, Text, TouchableOpacity, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, TextInput, Image, Platform, ScrollView } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { supabase } from '@/lib/supabase'
-import { StyleSheet, View, Alert } from 'react-native'
-import { Button, Input } from '@rneui/themed'
 import { Session } from '@supabase/supabase-js'
 import { Database } from '@/database.types'
-import { useAuth } from '@/context/AuthProvider'
+import { MaterialIcons, FontAwesome6, Ionicons } from '@expo/vector-icons'
+import { typography } from '@/constants/Typography'
+import { images } from '@/constants'
+import { router } from 'expo-router'
+import PrimaryButton from '@/components/buttons/PrimaryButton'
 
 type ProfileUpdate = Database['public']['Tables']['profiles']['Insert'];
 
 export default function Account({ session }: { session: Session }) {
   const [loading, setLoading] = useState(true)
   const [fullName, setFullName] = useState('')
-  const { signOut } = useAuth()
 
   useEffect(() => {
     if (session) getProfile()
@@ -44,15 +47,6 @@ export default function Account({ session }: { session: Session }) {
     }
   }
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      console.error('Error signing out:', error);
-      alert('Error signing out');
-    }
-  };
-
   async function updateProfile({
     full_name,
   }: {
@@ -73,6 +67,8 @@ export default function Account({ session }: { session: Session }) {
       if (error) {
         throw error
       }
+      
+      Alert.alert('Profile updated successfully')
     } catch (error) {
       if (error instanceof Error) {
         Alert.alert(error.message)
@@ -83,40 +79,115 @@ export default function Account({ session }: { session: Session }) {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Input label="Email" value={session?.user?.email} disabled />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input label="Full Name" value={fullName || ''} onChangeText={(text) => setFullName(text)} />
-      </View>
+    <SafeAreaView style={styles.container}>
+      <TouchableOpacity onPress={() => router.back()}>
+        <Ionicons name="arrow-back" size={30} color="#000" />
+      </TouchableOpacity>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 30 : 0}
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.form}>
+              <Image source={images.logoW} style={styles.image} />
+              <Text style={styles.title}>My Profile</Text>
+              <Text style={styles.label}>Email</Text>
+              <View style={[styles.inputContainer, styles.disabledInput]}>
+                <MaterialIcons name="email" size={20} color="#666" />
+                <Text style={styles.disabledText}>{session?.user?.email}</Text>
+              </View>
+              
+              <Text style={styles.label}>Full Name</Text>
+              <View style={styles.inputContainer}>
+                <FontAwesome6 name="signature" size={20} color="#000" />
+                <TextInput
+                  value={fullName || ''}
+                  onChangeText={(text) => setFullName(text)}
+                  style={styles.inputWithIcon}
+                  placeholder="Enter your full name"
+                />
+              </View>
 
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button
-          title={loading ? 'Loading ...' : 'Update'}
-          onPress={() => updateProfile({ full_name: fullName })}
-          disabled={loading}
-        />
-        <Button 
-          title='Sign Out'
-          onPress={handleSignOut}
-        />
-      </View>
-    </View>
+              <View style={styles.buttonContainer}>
+                <PrimaryButton
+                  title={loading ? 'Loading...' : 'Update Profile'}
+                  onPress={() => updateProfile({ full_name: fullName })}
+                  disabled={loading}
+                />
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    flex: 1,
+    padding: 25,
   },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: 'stretch',
-    gap: 16
+  title: {
+    ...typography.h1,
+    color: '#EA1D25',
+    marginVertical: 20,
   },
-  mt20: {
-    marginTop: 20,
+  form: {
+    flex: 1,
+    gap: 15,
   },
-})
+  image: {
+    height: 90,
+    width: 90,
+    marginTop: 50,
+    marginBottom: 25,   
+  },
+  label: {
+    ...typography.bodyMedium,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: '#000',
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 15,
+  },
+  disabledInput: {
+    backgroundColor: '#f0f0f0',
+    borderColor: '#ccc',
+  },
+  disabledText: {
+    ...typography.bodyMedium,
+    color: '#666',
+    padding: 20,
+    flex: 1,
+  },
+  inputWithIcon: {
+    flex: 1,
+    padding: 20,
+    ...typography.bodyMedium,
+  },
+  buttonContainer: {
+    gap: 15,
+    marginTop: 15,
+  },
+  signOutButton: {
+    padding: 15,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#EA1D25',
+    alignItems: 'center',
+  },
+  signOutText: {
+    ...typography.bodyMedium,
+    color: '#EA1D25',
+  }
+});
