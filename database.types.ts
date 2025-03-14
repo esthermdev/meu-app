@@ -303,6 +303,7 @@ export type Database = {
         Row: {
           assigned_to: string | null
           created_at: string | null
+          description_of_emergency: string | null
           field_number: number | null
           id: number
           priority_level: string | null
@@ -313,6 +314,7 @@ export type Database = {
         Insert: {
           assigned_to?: string | null
           created_at?: string | null
+          description_of_emergency?: string | null
           field_number?: number | null
           id?: number
           priority_level?: string | null
@@ -323,6 +325,7 @@ export type Database = {
         Update: {
           assigned_to?: string | null
           created_at?: string | null
+          description_of_emergency?: string | null
           field_number?: number | null
           id?: number
           priority_level?: string | null
