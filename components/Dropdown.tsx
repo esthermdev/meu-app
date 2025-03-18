@@ -67,9 +67,8 @@ const styles = StyleSheet.create({
 		borderRadius: 8,
 	},
 	buttonText: {
-		fontFamily: fonts.semiBold,
+		fontFamily: fonts.medium,
 		fontSize: ms(16),
-		color: '#Ea1d25',
 	},
 	overlay: {
 		flex: 1,

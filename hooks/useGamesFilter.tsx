@@ -25,8 +25,10 @@ export function useRoundIds(divisionId: number, roundId: number) {
           .from('games')
           .select(`
             *,
-            team1:teams!games_team1_id_fkey(*),
-            team2:teams!games_team2_id_fkey(*)
+            datetime: datetime_id (*),
+            team1: team1_id (*),
+            team2: team2_id (*),
+            scores(*)
           `)
           .eq('division_id', divisionId)
           .eq('round_id', roundId)
@@ -34,7 +36,7 @@ export function useRoundIds(divisionId: number, roundId: number) {
 
         if (error) throw error;
         if (isMounted) {
-          setGames(data as Games[]);
+          setGames(data as unknown as Games[]);
         }
       } catch (e) {
         if (isMounted) {

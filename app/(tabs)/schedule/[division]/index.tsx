@@ -3,7 +3,7 @@ import { useScheduleOptions } from '@/hooks/useScheduleConfig';
 import { useLocalSearchParams, Link } from 'expo-router';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, ListRenderItem } from 'react-native';
-import { FontAwesome6 } from '@expo/vector-icons';
+import { FontAwesome6, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
@@ -25,9 +25,8 @@ export default function DivisionScreen() {
       })}
       activeOpacity={0.6}
     >
-      <FontAwesome6 name={item.icon} size={22} style={styles.icon}/>
+      <MaterialCommunityIcons name={item.icon} size={22} style={styles.icon}/>
       <Text style={styles.optionButtonText} maxFontSizeMultiplier={1}>{item.title}</Text>
-      <FontAwesome6 name="chevron-right" size={20} />
     </TouchableOpacity>
   );
 

@@ -1,4 +1,4 @@
-// app/(tabs)/schedule/championship-bracket.tsx
+// app/(tabs)/schedule/placement-games.tsx
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated, LayoutAnimation, Platform, UIManager } from 'react-native';
 import { useDivisions } from '@/hooks/useScheduleConfig';
@@ -8,7 +8,7 @@ import { Tables } from '@/database.types';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { formatDate } from '@/utils/formatDate';
 import { typography } from '@/constants/Typography';
-import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
 type Round = Tables<'rounds'>;
 type Game = Tables<'games'> & {
@@ -21,22 +21,22 @@ if (Platform.OS === 'android') {
   }
 }
 
-// Define which round IDs to show on this screen (Championship bracket)
-const CHAMPIONSHIP_ROUND_IDS = [2, 3, 4, 5]; // Crossover, Quarters, Semis, Finals
+// Define which round IDs to show on this screen
+const PLACEMENT_ROUND_IDS = [6, 7, 8, 9, 10, 11, 12];
 
-export default function ChampionshipBracketScreen() {
+export default function PlacementGames() {
   const { divisionId } = useDivisions();
   const [loading, setLoading] = useState(true);
-  const [bracketRounds, setBracketRounds] = useState<Round[]>([]);
+  const [placementRounds, setPlacementRounds] = useState<Round[]>([]);
   const [roundsWithGames, setRoundsWithGames] = useState<{[key: number]: boolean}>({});
   const [allGames, setAllGames] = useState<Game[]>([]);
   const [dates, setDates] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [expandedSections, setExpandedSections] = useState<{[key: number]: boolean}>({});
 
-  // Fetch championship rounds from the database
+  // Fetch placement rounds from the database
   useEffect(() => {
-    const fetchChampionshipRounds = async () => {
+    const fetchPlacementRounds = async () => {
       setLoading(true);
       
       try {
@@ -44,33 +44,33 @@ export default function ChampionshipBracketScreen() {
         const { data, error } = await supabase
           .from('rounds')
           .select('*')
-          .in('id', CHAMPIONSHIP_ROUND_IDS)
+          .in('id', PLACEMENT_ROUND_IDS)
           .order('id', { ascending: true });
         
         if (error) throw error;
         
         if (data) {
-          setBracketRounds(data);
+          setPlacementRounds(data);
         }
       } catch (error) {
-        console.error('Error fetching championship rounds:', error);
+        console.error('Error fetching placement rounds:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchChampionshipRounds();
+    fetchPlacementRounds();
   }, []);
 
   useEffect(() => {
-    if (bracketRounds.length > 0) {  // or placementRounds for the other file
+    if (placementRounds.length > 0) {
       const initialExpandedState: {[key: number]: boolean} = {};
-      bracketRounds.forEach(round => {  // or placementRounds for the other file
+      placementRounds.forEach(round => {  
         initialExpandedState[round.id] = true; // Start with all sections expanded
       });
       setExpandedSections(initialExpandedState);
     }
-  }, [bracketRounds]); // or [placementRounds] for the other file
+  }, [placementRounds]);
 
   const toggleSection = (roundId: number) => {
     // Configure the animation
@@ -82,17 +82,18 @@ export default function ChampionshipBracketScreen() {
       [roundId]: !prev[roundId]
     }));
   };
+  
 
-  // Check which rounds have games for the current division
+  // Fetch games and extract dates
   useEffect(() => {
     const fetchGames = async () => {
-      if (!divisionId || bracketRounds.length === 0) return;
+      if (!divisionId || placementRounds.length === 0) return;
       
       try {
         const status: {[key: number]: boolean} = {};
         let fetchedGames: Game[] = [];
         
-        // Get all games for this division in the championship bracket
+        // Get all games for this division in the placement rounds
         const { data, error } = await supabase
           .from('games')
           .select(`
@@ -100,7 +101,7 @@ export default function ChampionshipBracketScreen() {
             datetime:datetime_id(*)
           `)
           .eq('division_id', divisionId)
-          .in('round_id', CHAMPIONSHIP_ROUND_IDS);
+          .in('round_id', PLACEMENT_ROUND_IDS);
         
         if (error) throw error;
         
@@ -122,7 +123,7 @@ export default function ChampionshipBracketScreen() {
           }
           
           // Check which rounds have games
-          bracketRounds.forEach(round => {
+          placementRounds.forEach(round => {
             status[round.id] = fetchedGames.some(game => game.round_id === round.id);
           });
           
@@ -133,13 +134,13 @@ export default function ChampionshipBracketScreen() {
       }
     };
 
-    if (divisionId && bracketRounds.length > 0) {
+    if (divisionId && placementRounds.length > 0) {
       fetchGames();
     }
-  }, [divisionId, bracketRounds]);
+  }, [divisionId, placementRounds]);
 
   if (loading) {
-    return <LoadingIndicator message='Loading championship bracket...' />;
+    return <LoadingIndicator message='Loading placement games...' />;
   }
 
   // Filter games by selected date and round
@@ -200,7 +201,7 @@ export default function ChampionshipBracketScreen() {
     <ScrollView style={styles.container}>
       {renderDateFilter()}
       
-      {bracketRounds.map((round) => (
+      {placementRounds.map((round) => (
         // Only render sections that have games for the current division and selected date
         roundsWithGames[round.id] && getGamesForRoundAndDate(round.id) ? (
           <View key={round.id} style={styles.section}>
@@ -223,9 +224,9 @@ export default function ChampionshipBracketScreen() {
       ))}
       
       {/* Show a message if no games are found */}
-      {bracketRounds.length === 0 || Object.values(roundsWithGames).every(value => !value) ? (
+      {placementRounds.length === 0 || Object.values(roundsWithGames).every(value => !value) ? (
         <View style={styles.emptyState}>
-          <Text style={styles.emptyText}>No championship games scheduled yet</Text>
+          <Text style={styles.emptyText}>No placement games scheduled yet</Text>
         </View>
       ) : null}
     </ScrollView>
@@ -275,7 +276,7 @@ const styles = StyleSheet.create({
     ...typography.bodyMedium
   },
   section: {
-    marginBottom: 10
+    marginBottom: 10,
   },
   sectionHeader: {
     paddingHorizontal: 16,

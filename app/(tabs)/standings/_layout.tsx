@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import ScreenTitle from "@/components/headers/ScreenTitle";
 
-export default function HomeLayout() {
+export default function StandingsLayout() {
     return (
         <Stack>
             <Stack.Screen 
@@ -10,7 +10,7 @@ export default function HomeLayout() {
                     header: () => <ScreenTitle title='Standings' route={'/(tabs)'} showBackButton={false} /> 
                 }}
             />
-            <Stack.Screen name="[division]" options={{ headerShown: false }} />
+            <Stack.Screen name="[division]" options={{ headerShown: false }}/>
         </Stack>
     );
 };

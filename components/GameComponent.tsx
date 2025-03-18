@@ -1,15 +1,32 @@
-import { View, Text, StyleSheet } from 'react-native'
-import { Card } from '@rneui/base';
-import { useRoundIds } from '@/hooks/useGamesFilter';
-import { FlashList } from '@shopify/flash-list';
+// components/GameComponent.tsx
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+} from 'react-native';
 import { Database } from '@/database.types';
+import { formatDate } from '@/utils/formatDate';
+import { formatTime } from '@/utils/formatTime';
+import { typography } from '@/constants/Typography';
+import { useRoundIds } from '@/hooks/useGamesFilter';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
-type TeamsRow = Database['public']['Tables']['teams']['Row'];
+type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
+type TeamRow = Database['public']['Tables']['teams']['Row'];
+type ScoresRow = Database['public']['Tables']['scores']['Row'];
 
-interface Games extends GamesRow {
-  team1: TeamsRow | null;
-  team2: TeamsRow | null;
+// Define the interface that matches what useRoundIds returns
+interface FetchedGame extends GamesRow {
+  team1: TeamRow | null;
+  team2: TeamRow | null;
+}
+
+// Define our extended interface for the rendered games
+interface RenderGame extends FetchedGame {
+  datetime?: DatetimeRow | null;
+  scores?: ScoresRow[];
 }
 
 interface GameComponentProps {
@@ -18,17 +35,52 @@ interface GameComponentProps {
 }
 
 const GameComponent: React.FC<GameComponentProps> = ({ divisionId, roundId }) => {
+  const { games: fetchedGames, loading, error } = useRoundIds(divisionId, roundId);
 
-  const { games, loading, error } = useRoundIds(Number(divisionId), roundId);
-  console.log(games)
-  
-  const renderItem = ({ item }: {item: Games}) => (
-    <Card containerStyle={styles.card}>
-      <Text>{item.pool_id}</Text>
-      <Text>{item.team1?.name}</Text>
-      <Text>vs</Text>
-      <Text>{item.team2?.name}</Text>
-    </Card>
+  const renderGame = ({ item }: { item: RenderGame }) => (
+    <View style={styles.gameCard}>
+      <View style={styles.gameHeader}>
+        <Text style={styles.dateText}>{formatDate(item.datetime?.date, 'short')}</Text>
+        <View style={styles.timeContainer}>
+          <Text style={styles.timeText}>{formatTime(item.datetime?.time)}</Text>
+        </View>
+        <Text style={styles.fieldText}>Field {item.field_id}</Text>
+      </View>
+      
+      {/* Teams and Score Container - New Layout */}
+      <View style={styles.matchupContainer}>
+        {/* Left side: Teams */}
+        <View style={styles.teamsSection}>
+          {/* Team 1 */}
+          <View style={styles.teamRow}>
+            <Image 
+              source={item.team1?.avatar_uri ? { uri: item.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
+              style={styles.teamLogo} 
+            />
+            <Text style={styles.teamText}>{item.team1?.name}</Text>
+          </View>
+          
+          {/* Team 2 */}
+          <View style={styles.teamRow}>
+            <Image 
+              source={item.team2?.avatar_uri ? { uri: item.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
+              style={styles.teamLogo} 
+            />
+            <Text style={styles.teamText}>{item.team2?.name}</Text>
+          </View>
+        </View>
+        
+        {/* Right side: Scores */}
+        <View style={styles.scoresSection}>
+          <Text style={styles.scoreText}>
+            {item.scores && item.scores[0] ? item.scores[0].team1_score : 0}
+          </Text>
+          <Text style={styles.scoreText}>
+            {item.scores && item.scores[0] ? item.scores[0].team2_score : 0}
+          </Text>
+        </View>
+      </View>
+    </View>
   );
 
   const renderPlaceholder = () => (
@@ -47,41 +99,104 @@ const GameComponent: React.FC<GameComponentProps> = ({ divisionId, roundId }) =>
 
   return (
     <View style={styles.container}>
-
-        {games.length > 0 ? (
-          <FlashList 
-            data={games}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderItem}
-            estimatedItemSize={50}
-          />
-        ) : renderPlaceholder()}
-
+      {fetchedGames && fetchedGames.length > 0 ? (
+        <View style={styles.listContainer}>
+          {fetchedGames.map((item) => (
+            <View key={item.id.toString()}>
+              {renderGame({ item: item as unknown as RenderGame })}
+            </View>
+          ))}
+        </View>
+      ) : (
+        renderPlaceholder()
+      )}
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  listContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 15
+  },
+  // Game Card Styles
+  gameCard: {
     backgroundColor: 'white',
-    borderTopWidth: 1,
-    borderTopColor: '#D9D9D9',
-    paddingTop: 10
-  },
-  card: {
+    padding: 10,
     borderRadius: 12,
+    marginTop: 10,
+    gap: 15,
+    elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    elevation: 8,
-    borderWidth: 1,
-    borderColor: '#CBCAD8',
-    marginTop: 0,
-    marginBottom: 12,
-    padding: 12,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
+  gameHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  dateText: {
+    ...typography.bodyBold,
+    color: '#999',
+    width: 100,
+  },
+  timeContainer: {
+    backgroundColor: '#999',
+    paddingHorizontal: 8,
+    borderRadius: 20,
+  },
+  timeText: {
+    ...typography.body,
+    color: '#fff'
+  },
+  fieldText: {
+    ...typography.bodyBold,
+    color: '#276B5D',
+    width: 100,
+    textAlign: 'right',
+  },
+  // New layout styles
+  matchupContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  teamsSection: {
+    flex: 3,
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  teamRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  teamLogo: {
+    width: 27,
+    height: 27,
+    borderRadius: 18,
+  },
+  teamText: {
+    ...typography.bodyBold,
+    color: '#444',
+  },
+  scoresSection: {
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  scoreText: {
+    ...typography.h3,
+    color: '#333',
+    textAlign: 'center',
+  },
+  // Placeholder styles
   placeholderContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -89,20 +204,18 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   placeholderTitle: {
-    fontFamily: 'Outfit-Bold',
-    fontSize: 24,
+    ...typography.h4,
     color: '#EA1D25',
     marginTop: 20,
     marginBottom: 10,
     textAlign: 'center',
   },
   loadingText: {
-    fontFamily: 'Outfit-Regular',
-    fontSize: 18,
+    ...typography.body,
     color: '#8F8DAA',
     textAlign: 'center',
     marginTop: 20,
   },
-})
+});
 
 export default GameComponent;

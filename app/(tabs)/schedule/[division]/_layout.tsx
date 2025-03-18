@@ -1,9 +1,8 @@
 // app/schedule/[division]/_layout.js
 import React from 'react';
 import { Stack } from 'expo-router';
-import { useLocalSearchParams } from 'expo-router';
-import { useScheduleOptions } from '@/hooks/useScheduleConfig';
 import CustomHeader from '@/components/headers/CustomHeader';
+import { useScheduleOptions } from '@/hooks/useScheduleConfig';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 
 export default function DivisionLayout() {

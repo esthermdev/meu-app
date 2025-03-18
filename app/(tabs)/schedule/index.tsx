@@ -1,17 +1,16 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';
 import { useDivisions } from '@/hooks/useScheduleConfig';
-import { FontAwesome6 } from '@expo/vector-icons';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import { typography } from '@/constants/Typography';
 
 export default function ScheduleIndex() {
   const { divisions, loading, error } = useDivisions();
 
   if (loading) {
     return (
-      <View>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
+      <LoadingIndicator message='Loading Divisions...' />
     );
   }
 
@@ -36,19 +35,8 @@ export default function ScheduleIndex() {
             asChild
           >
             <TouchableOpacity>
-              <View style={[styles.card, { borderLeftColor: division.color, borderLeftWidth: 4 }]}>
-                <FontAwesome6
-                  name={division.icon as any}
-                  size={24}
-                  color={division.color}
-                  style={styles.icon}
-                />
-                <Text style={styles.title}>{division.title}</Text>
-                <FontAwesome6
-                  name="chevron-right"
-                  size={24}
-                  color="#A0A0A0"
-                />
+              <View style={[styles.card, { borderColor: division.color, borderBottomWidth: 4 }]}>
+                <Text style={[styles.title, { color: division.color, textDecorationColor: division.color }]}>{division.title}</Text>
               </View>
             </TouchableOpacity>
           </Link>
@@ -64,23 +52,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  header: {
-    padding: 16,
-    backgroundColor: '#f5f5f5',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-  },
-  headerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
   content: {
-    padding: 16,
+    padding: 20,
     gap: 12,
   },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     padding: 16,
     backgroundColor: '#ffffff',
     borderRadius: 12,
@@ -92,16 +71,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
     elevation: 5,
-  },
-  icon: {
-    marginRight: 12,
+    borderWidth: 1,
   },
   title: {
-    fontSize: 16,
-    fontWeight: '600',
-    flex: 1,
+    ...typography.h4,
+    textDecorationLine: 'underline',
   },
-  chevron: {
-    marginLeft: 'auto',
-  },
+
 });

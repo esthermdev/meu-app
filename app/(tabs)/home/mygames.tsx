@@ -274,46 +274,48 @@ const MyGames = () => {
         <Text style={styles.fieldText}>Field {item.field_id}</Text>
       </View>
       
-      {/* Team 1 Container */}
-      <View style={styles.teamsContainer}>
-        <View style={styles.teamSideLeft}>
-          <Text 
-            style={[
+      {/* Teams and Score Container - Redesigned to match team screens */}
+      <View style={styles.matchupContainer}>
+        {/* Left side: Teams */}
+        <View style={styles.teamsSection}>
+          {/* Team 1 */}
+          <View style={styles.teamRow}>
+            <Image 
+              source={item.team1.avatar_uri ? { uri: item.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
+              style={styles.teamLogo} 
+            />
+            <Text style={[
               styles.teamText, 
               favoriteTeamIds.includes(item.team1.id) && styles.highlightedTeam
-            ]}
-          >
-            {item.team1.name}
-          </Text>
-        </View>
-        <Image 
-          source={item.team1.avatar_uri ? { uri: item.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
-          style={styles.teamLogo} 
-        />
-        
-        {/* Scores Container */}
-        <View style={styles.scoreContainer}>
-          <Text style={styles.scoreText}>
-            {item.scores && item.scores[0] ? item.scores[0].team1_score : 0} : {item.scores && item.scores[0] ? item.scores[0].team2_score : 0}
-          </Text>
-        </View>
-        
-        {/* Team 2 Container */}
-        <Image 
-          source={item.team2.avatar_uri ? { uri: item.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
-          style={styles.teamLogo} 
-        />
-        <View style={styles.teamSideRight}>
-          <Text 
-            style={[
+            ]}>
+              {item.team1.name}
+            </Text>
+          </View>
+          
+          {/* Team 2 */}
+          <View style={styles.teamRow}>
+            <Image 
+              source={item.team2.avatar_uri ? { uri: item.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
+              style={styles.teamLogo} 
+            />
+            <Text style={[
               styles.teamText,
               favoriteTeamIds.includes(item.team2.id) && styles.highlightedTeam
-            ]}
-          >
-            {item.team2.name}
+            ]}>
+              {item.team2.name}
+            </Text>
+          </View>
+        </View>
+        
+        {/* Right side: Scores */}
+        <View style={styles.scoresSection}>
+          <Text style={styles.scoreText}>
+            {item.scores && item.scores[0] ? item.scores[0].team1_score : 0}
+          </Text>
+          <Text style={styles.scoreText}>
+            {item.scores && item.scores[0] ? item.scores[0].team2_score : 0}
           </Text>
         </View>
-
       </View>
       
       <TouchableOpacity 
@@ -484,6 +486,27 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   // Game List Container
+  matchupContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  teamsSection: {
+    flex: 3,
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  teamRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  scoresSection: {
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
   listContainer: {
     paddingTop: 5,
     paddingHorizontal: 20,
@@ -508,7 +531,8 @@ const styles = StyleSheet.create({
   },
   dateText: {
     ...typography.bodyBold,
-    color: '#999'
+    color: '#999',
+    width: 100
   },
   timeContainer: {
     backgroundColor: '#999',
@@ -522,6 +546,8 @@ const styles = StyleSheet.create({
   fieldText: {
     ...typography.bodyBold,
     color: '#276B5D',
+    width: 100,
+    textAlign: 'right'
   },
   teamsContainer: {
     flexDirection: 'row',
