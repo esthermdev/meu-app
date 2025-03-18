@@ -91,6 +91,7 @@ export type Database = {
         Row: {
           code: string
           color: string
+          color_light: string | null
           display_order: number | null
           icon: string | null
           id: number
@@ -99,6 +100,7 @@ export type Database = {
         Insert: {
           code: string
           color: string
+          color_light?: string | null
           display_order?: number | null
           icon?: string | null
           id?: number
@@ -107,6 +109,7 @@ export type Database = {
         Update: {
           code?: string
           color?: string
+          color_light?: string | null
           display_order?: number | null
           icon?: string | null
           id?: number
@@ -350,6 +353,65 @@ export type Database = {
           },
         ]
       }
+      notification_read_status: {
+        Row: {
+          id: number
+          notification_id: number | null
+          read_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: number
+          notification_id?: number | null
+          read_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: number
+          notification_id?: number | null
+          read_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_read_status_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "notifications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: number
+          is_read: boolean | null
+          message: string
+          title: string
+          type: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          is_read?: boolean | null
+          message: string
+          title: string
+          type?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          is_read?: boolean | null
+          message?: string
+          title?: string
+          type?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       pools: {
         Row: {
           division: Database["public"]["Enums"]["division"] | null
@@ -506,7 +568,6 @@ export type Database = {
           icon: string | null
           icon_color: string | null
           id: number
-          round_id: number | null
           route: string
           title: string
         }
@@ -517,7 +578,6 @@ export type Database = {
           icon?: string | null
           icon_color?: string | null
           id?: number
-          round_id?: number | null
           route: string
           title: string
         }
@@ -528,7 +588,6 @@ export type Database = {
           icon?: string | null
           icon_color?: string | null
           id?: number
-          round_id?: number | null
           route?: string
           title?: string
         }
@@ -538,13 +597,6 @@ export type Database = {
             columns: ["division_id"]
             isOneToOne: false
             referencedRelation: "divisions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "schedule_options_round_id_fkey"
-            columns: ["round_id"]
-            isOneToOne: false
-            referencedRelation: "rounds"
             referencedColumns: ["id"]
           },
         ]
@@ -587,9 +639,7 @@ export type Database = {
       teams: {
         Row: {
           avatar_uri: string | null
-          border_color: string | null
-          color: string | null
-          division: string | null
+          division_id: number | null
           id: number
           name: string
           pool_id: number | null
@@ -597,9 +647,7 @@ export type Database = {
         }
         Insert: {
           avatar_uri?: string | null
-          border_color?: string | null
-          color?: string | null
-          division?: string | null
+          division_id?: number | null
           id: number
           name: string
           pool_id?: number | null
@@ -607,9 +655,7 @@ export type Database = {
         }
         Update: {
           avatar_uri?: string | null
-          border_color?: string | null
-          color?: string | null
-          division?: string | null
+          division_id?: number | null
           id?: number
           name?: string
           pool_id?: number | null
@@ -621,6 +667,13 @@ export type Database = {
             columns: ["pool_id"]
             isOneToOne: false
             referencedRelation: "pools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teams_division_id_fkey"
+            columns: ["division_id"]
+            isOneToOne: false
+            referencedRelation: "divisions"
             referencedColumns: ["id"]
           },
         ]
