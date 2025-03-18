@@ -8,6 +8,7 @@ import MyGamesBackground from '@/components/MyGamesBackground';
 import CartRequestButton from '@/components/requests/CartRequestButton';
 import CircleIconButton from '@/components/buttons/CircleIconButton';
 import TrainerRequestButton from '@/components/requests/TrainerRequestButton';
+import NotificationTester from '@/components/NotificationTester';
 
 
 export default function HomeScreen() {
@@ -28,13 +29,13 @@ export default function HomeScreen() {
               title="Report Spirit Scores"
               icon={<FontAwesome5 name="handshake" size={28} color="#fff" />}
               backgroundColor="#d89647"
-              route="/(tabs)/home"
+              route="https://docs.google.com/forms/d/15NrrAtvd2mt_RGdpkTYDTYHGXHP0RTiIJEI0GXFwfp4/viewform?edit_requested=true"
             />
             
             {/* Watch Live button with background image and play button */}
             <LargeCardButton
               title="Watch Live"
-              route="/(tabs)/home"
+              route="https://www.youtube.com/@maineultimate/streams"
               backgroundImage={require('@/assets/images/background-image.png')}
             />
           </View>
@@ -51,6 +52,8 @@ export default function HomeScreen() {
           <CartRequestButton />
           <TrainerRequestButton />
         </View>
+
+        <NotificationTester />
         
         {/* Spacer to push content down */}
         <View style={styles.spacer} />

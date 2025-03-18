@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
 import 'expo-dev-client';
+import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import { AuthProvider } from '@/context/AuthProvider';
 import { useFonts } from 'expo-font';
