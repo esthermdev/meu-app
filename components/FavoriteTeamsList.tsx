@@ -3,22 +3,22 @@ import React, {useEffect, useState} from 'react';
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { ListItem, Avatar } from '@rneui/themed';
 import { Ionicons } from '@expo/vector-icons';
-import { TeamWithPool } from '@/hooks/useFavorites';
+import { TeamWithDetails } from '@/hooks/useFavorites';
 import { typography } from '@/constants/Typography';
 
 interface TeamListItemProps {
-  item: TeamWithPool;
+  item: TeamWithDetails;
   isFavorited: boolean;
   onToggleFavorite: (teamId: number) => Promise<{ success: boolean; isFavorited: boolean }>;
   onRefreshData: () => Promise<void>;
 }
 
 // src/components/TeamListItem.tsx
-export const TeamListItem = React.memo(({ 
+export const FavoriteTeamsList = React.memo(({ 
   item, 
   isFavorited, 
   onToggleFavorite,
-  onRefreshData
+  onRefreshData,
 }: TeamListItemProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [localIsFavorited, setLocalIsFavorited] = useState(isFavorited);
@@ -61,8 +61,20 @@ export const TeamListItem = React.memo(({
           <ListItem.Title style={styles.name} maxFontSizeMultiplier={1.2}>
             {item.name}
           </ListItem.Title>
-          <View style={[styles.divisionContainer, { backgroundColor: item.color || '#ccc', borderWidth: 1, borderColor: item.border_color || '#ccc' }]}>
-            <Text style={[styles.divisionText, { color: item.border_color || '#fff' }]}>{item.division}</Text>
+          <View style={[
+            styles.divisionContainer, 
+            { 
+              backgroundColor: item.division_details?.color_light || '#ffffff', 
+              borderWidth: 1, 
+              borderColor: item.division_details?.color 
+            }
+          ]}>
+            <Text style={[
+              styles.divisionText, 
+              { color: item.division_details?.color }
+            ]}>
+              {item.division_details?.title || 'Unknown'}
+            </Text>
           </View>
         </View>
         {isLoading ? (
@@ -101,8 +113,7 @@ const styles = StyleSheet.create({
   divisionContainer: {
     borderRadius: 100,
     alignSelf: 'flex-start',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 7,
   },
   divisionText: {
     ...typography.caption,

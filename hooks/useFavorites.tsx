@@ -4,20 +4,21 @@ import { supabase } from '@/lib/supabase';
 import { Session } from '@supabase/supabase-js';
 import { Alert } from 'react-native';
 import { Database } from '@/database.types';
-import { debounce } from 'lodash';
 
 type TeamRow = Database['public']['Tables']['teams']['Row'];
 type PoolRow = Database['public']['Tables']['pools']['Row'];
+type DivisionRow = Database['public']['Tables']['divisions']['Row'];
 
-export interface TeamWithPool extends TeamRow {
+export interface TeamWithDetails extends TeamRow {
   pool: PoolRow | null;
+  division_details: DivisionRow | null;
   is_favorited?: boolean;
 }
 
 const MAX_FAVORITES = 5;
 
 export const useFavorites = (session: Session | null) => {
-  const [teams, setTeams] = useState<TeamWithPool[]>([]);
+  const [teams, setTeams] = useState<TeamWithDetails[]>([]);
   const [favorites, setFavorites] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
 
@@ -98,11 +99,15 @@ export const useFavorites = (session: Session | null) => {
     try {
       const { data, error } = await supabase
         .from('teams')
-        .select(`*, pool: pool_id (id, name, division)`)
+        .select(`
+          *, 
+          pool: pool_id (id, name, division),
+          division_details: division_id (*)
+        `)
         .order('name');
 
       if (error) throw error;
-      setTeams(data as unknown as TeamWithPool[]);
+      setTeams(data as unknown as TeamWithDetails[]);
     } catch (error) {
       console.error('Error fetching teams:', error);
       Alert.alert('Error', 'Failed to fetch teams. Please try again.');

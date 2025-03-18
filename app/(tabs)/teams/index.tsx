@@ -1,69 +1,97 @@
+// app/(tabs)/teams/index.tsx
+
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { StyleSheet, Text, View, RefreshControl, Keyboard, ActivityIndicator } from 'react-native';
-import { ListItem, Avatar, SearchBar } from '@rneui/themed';
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  RefreshControl, 
+  Keyboard, 
+  ActivityIndicator,
+  TextInput,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+  Image
+} from 'react-native';
 import { FlashList } from '@shopify/flash-list';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { router } from 'expo-router';
 import { Database } from '@/database.types';
-import { FilterButton } from '@/components/buttons/FilterButtons';
+import { fonts, typography } from '@/constants/Typography';
+import LoadingIndicator from '@/components/LoadingIndicator';
 
 type TeamRow = Database['public']['Tables']['teams']['Row'];
 type PoolRow = Database['public']['Tables']['pools']['Row'];
-type Division = Database['public']['Enums']['division'] | 'All';
+type DivisionRow = Database['public']['Tables']['divisions']['Row'];
 
-interface TeamWithPool extends TeamRow {
+interface TeamWithDetails extends TeamRow {
   pool: PoolRow | null;
+  division_details: DivisionRow | null;
 }
 
 interface DivisionInfo {
   title: string;
+  code: string;
   color: string;
-  division: Division;
+  color_light: string;
+  id: number;
 }
 
 const Teams = () => {
-  const [teams, setTeams] = useState<TeamWithPool[]>([]);
-  const [selectedDivision, setSelectedDivision] = useState<Division>('All');
+  const [teams, setTeams] = useState<TeamWithDetails[]>([]);
+  const [divisions, setDivisions] = useState<DivisionInfo[]>([]);
+  const [selectedDivision, setSelectedDivision] = useState<string>('All');
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
 
-  const divisionFilters = useMemo(() => {
-    const uniqueDivisions = new Map<string, DivisionInfo>([
-      ['All', {
-        title: 'All',
-        color: '#917120',
-        division: 'All'
-      }]
-    ]);
-  
-    teams.forEach(team => {
-      if (team.division && !uniqueDivisions.has(team.division)) {
-        uniqueDivisions.set(team.division, {
-          title: team.division,
-          color: team.color || '#ccc',
-          division: team.division as Division
-        });
-      }
-    });
-  
-    return Array.from(uniqueDivisions.values());
-  }, [teams]);
-
   const fetchTeams = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // Fetch teams with division details
+      const { data: teamsData, error: teamsError } = await supabase
         .from('teams')
-        .select(`*, pool: pool_id (id, name, division)`)
+        .select(`
+          *,
+          pool: pool_id (*),
+          division_details: division_id (*)
+        `)
         .order('name');
   
-      if (error) throw error;
+      if (teamsError) throw teamsError;
+      setTeams(teamsData as unknown as TeamWithDetails[]);
       
-      setTeams(data as unknown as TeamWithPool[]);
+      // Fetch divisions
+      const { data: divisionsData, error: divisionsError } = await supabase
+        .from('divisions')
+        .select('*')
+        .order('display_order');
+        
+      if (divisionsError) throw divisionsError;
+      
+      // Create "All" filter and add with fetched divisions
+      const allDivisions: DivisionInfo[] = [
+        {
+          id: 0,
+          title: 'All',
+          code: 'All',
+          color: '#EA1D25',
+          color_light: '#EA1D2517'
+        },
+        ...divisionsData.map((div: DivisionRow) => ({
+          id: div.id,
+          title: div.title,
+          code: div.code,
+          color: div.color,
+          color_light: div.color_light || '#FFFFFF'
+        }))
+      ];
+      
+      setDivisions(allDivisions);
+      
     } catch (error) {
-      console.error('Error fetching teams:', error);
-      // Consider adding user feedback here
+      console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
@@ -79,102 +107,154 @@ const Teams = () => {
     setRefreshing(false);
   };
 
-  const handleSearch = useCallback((text: string) => {
-    setSearchQuery(text);
-  }, []);
-
   const dismissKeyboard = useCallback(() => {
     Keyboard.dismiss();
   }, []);
 
+  const navigateToTeamDetails = (team: TeamWithDetails) => {
+    // Navigate to team details/games
+    router.push(`/teams/${team.id}`);
+  };
+
+  // Filter teams based on selected division and search query
   const filteredTeams = useMemo(() => {
     const lowercaseQuery = searchQuery.toLowerCase();
     return teams
       .filter(team => 
-        selectedDivision === 'All' || team.division === selectedDivision
+        selectedDivision === 'All' || team.division_details?.code === selectedDivision
       )
       .filter(team => 
         team.name.toLowerCase().includes(lowercaseQuery)
       );
   }, [teams, selectedDivision, searchQuery]);
 
-  const TeamListItem = React.memo(({ item }: { item: TeamWithPool }) => (
-    <View style={{ backgroundColor: '#fff' }}>
-      <ListItem.Content style={styles.teamListContainer}>
-        <Avatar
-          size={50}
-          rounded
-          title={item.name[0]}
-          titleStyle={{ color: '#000' }}
-          source={{ uri: item?.avatar_uri || undefined }}
-          avatarStyle={{ borderColor: '#000', borderWidth: 0.5 }}
-          containerStyle={{ backgroundColor: '#fff' }}
-        />
-        <View style={{ gap: 5 }}>
-          <ListItem.Title style={styles.teamName} maxFontSizeMultiplier={1.2}>
-            {item.name}
-          </ListItem.Title>
-          <View style={[{ backgroundColor: item.color || '#ccc' }, styles.divisionContainer]}>
-            <ListItem.Subtitle maxFontSizeMultiplier={1.2} style={styles.division}>
-              {item.division}
-            </ListItem.Subtitle>
+  const renderTeamItem = ({ item }: { item: TeamWithDetails }) => {
+    // Get division info either from division_details or find in divisions array by division code
+    let divisionInfo = {
+      title: item.division || 'Unknown',
+      color: '#EFEFEF',
+      color_light: '#EFEFEF',
+      textColor: '#333333'
+    };
+    
+    if (item.division_details) {
+      // Use division details directly from the team's joined division_details
+      divisionInfo = {
+        title: item.division_details.title,
+        color: item.division_details.color,
+        color_light: item.division_details.color_light || '#FFFFFF',
+        textColor: item.division_details.color
+      };
+    } else if (item.division) {
+      // Fallback to lookup by division code if division_details is null
+      const division = divisions.find(div => div.code === item.division);
+      if (division) {
+        divisionInfo = {
+          title: division.title,
+          color: division.color,
+          color_light: division.color_light,
+          textColor: division.color
+        };
+      }
+    }
+    
+    return (
+      <TouchableOpacity 
+        style={styles.teamItem}
+        onPress={() => navigateToTeamDetails(item)}
+      >
+        <View style={styles.teamContent}>
+          <View style={styles.teamAvatarContainer}>
+            <View style={styles.teamAvatar}>
+              {item.avatar_uri ? (
+                <Image 
+                  source={item.avatar_uri ? { uri: item.avatar_uri } : require('@/assets/images/avatar-placeholder.png') } 
+                  style={styles.teamAvatarImage} 
+                />
+              ) : (
+                <Text style={styles.teamAvatarText}>{item.name.charAt(0)}</Text>
+              )}
+            </View>
           </View>
+          
+          <View style={styles.teamInfo}>
+            <Text style={styles.teamName}>{item.name}</Text>
+            <View style={[
+              styles.divisionLabel, 
+              { 
+                backgroundColor: divisionInfo.color_light,
+                borderColor: divisionInfo.color,
+                borderWidth: 1
+              }
+            ]}>
+              <Text style={[
+                styles.divisionText,
+                { color: divisionInfo.textColor }
+              ]}>
+                {divisionInfo.title}
+              </Text>
+            </View>
+          </View>
+          <MaterialIcons name='keyboard-arrow-right' size={24} />
         </View>
-      </ListItem.Content>
-    </View>
-  ));
-
-  const renderItem = useCallback(({ item }: { item: TeamWithPool }) => (
-    <TeamListItem item={item} />
-  ), []);
-
-  const renderFilterButtons = () => (
-    <View style={styles.filterContainer}>
-      <Text maxFontSizeMultiplier={1.2} style={styles.filterTitle}>
-        Filters: 
-      </Text>
-      {divisionFilters.map((filter) => (
-        <FilterButton
-          key={filter.division}
-          title={filter.title}
-          color={filter.color}
-          division={filter.division}
-          onPress={setSelectedDivision}
-          isSelected={selectedDivision === filter.division}
-        />
-      ))}
-    </View>
-  );
+      </TouchableOpacity>
+    );
+  };
 
   return (
+    <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
-        <View style={styles.headerContainer}>
-          <SearchBar
+        
+        {/* Search Bar */}
+        <View style={styles.searchBarContainer}>
+          <Ionicons name="search" size={20} color="#86939e" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
             placeholder="Search teams..."
-            onChangeText={handleSearch}
             value={searchQuery}
-            containerStyle={styles.searchBarContainer}
-            inputContainerStyle={styles.searchBarInputContainer}
-            inputStyle={styles.searchBarInput}
-            round={true}
-            lightTheme={true}
-            clearIcon={{ color: '#86939e' }}
-            searchIcon={{ color: '#86939e' }}
-            onSubmitEditing={dismissKeyboard}
-            returnKeyType="done"
+            onChangeText={setSearchQuery}
+            placeholderTextColor="#86939e"
           />
-          {renderFilterButtons()}
         </View>
+        
+        {/* Filters Section */}
+        <View style={styles.filtersSection}>
+          <View style={styles.filterButtonsContainer}>
+            <Text style={styles.filterLabel}>Filter:</Text>
+            {divisions.map((division) => {       
+              return (
+                <TouchableOpacity
+                  key={division.code}
+                  style={[
+                    styles.filterButton,
+                    { 
+                      backgroundColor: division.color_light,
+                      borderColor: division.color,
+                      borderWidth: 1
+                    },
+                    selectedDivision === division.code && { 
+                      borderWidth: 1,
+                      borderColor: division.color
+                    }
+                  ]}
+                  onPress={() => setSelectedDivision(division.code)}
+                >
+                  <Text style={[styles.filterButtonText, { color: division.color }]} >{division.title}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+        
+        {/* Team List */}
         <View style={styles.listContainer}>
           {loading ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#EA1D25" />
-            </View>
+            <LoadingIndicator message='Loading Teams...' />
           ) : (
             <FlashList
               data={filteredTeams}
-              renderItem={renderItem}
-              estimatedItemSize={200}
+              renderItem={renderTeamItem}
+              estimatedItemSize={80}
               keyExtractor={(item) => item.id.toString()}
               refreshControl={
                 <RefreshControl
@@ -183,95 +263,143 @@ const Teams = () => {
                   colors={['#EA1D25']}
                 />
               }
-              showsVerticalScrollIndicator={true}
+              ListEmptyComponent={
+                <View style={styles.emptyContainer}>
+                  <Text style={styles.emptyText}>No teams found</Text>
+                </View>
+              }
             />
           )}
         </View>
       </View>
+    </TouchableWithoutFeedback>
   );
 };
 
-export default React.memo(Teams);
-
 const styles = StyleSheet.create({
-  // Layout containers
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#FFFFFF',
   },
-  headerContainer: {
-    borderBottomColor: '#D9D9D9',
-    borderBottomWidth: 1,
+  searchBarContainer: {
+    marginHorizontal: 20,
+    marginVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 100,
+    paddingHorizontal: 15,
+    borderWidth: 1,
+    borderColor: '#000',
+    marginBottom: 15,
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    fontFamily: fonts.light,
+    color: '#000',
+  },
+  filtersSection: {
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  filterLabel: {
+    ...typography.bodyBold,
+    color: '#808080',
+    marginRight: 5,
+  },
+  filterButtonsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 5
+  },
+  filterButton: {
+    paddingHorizontal: 7,
+    borderRadius: 100,
+    marginBottom: 8,
+  },
+  filterButtonText: {
+    ...typography.bodySmallBold,
   },
   listContainer: {
-    flex: 1
+    flex: 1,
+    borderTopWidth: 1,
+    borderTopColor: '#EFEFEF',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-
-  // Search bar styles
-  searchBarContainer: {
-    backgroundColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderTopColor: 'transparent',
-    paddingHorizontal: 15,
-    paddingVertical: 0
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
-  searchBarInputContainer: {
-    borderRadius: 100,
-    height: 40,
-  },
-  searchBarInput: {
-    fontFamily: 'OutfitRegular',
+  emptyText: {
+    fontFamily: 'GeistRegular',
     fontSize: 16,
+    color: '#8F8DAA',
+    textAlign: 'center',
   },
-
-  // Filter section
-  filterContainer: {
+  teamItem: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 5,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EFEFEF',
+  },
+  teamContent: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
-  filterTitle: {
-    fontFamily: 'OutfitLight',
-    fontSize: 14,
-    color: '#8F8DAA',
+  teamAvatarContainer: {
+    marginRight: 15,
   },
-
-  // Team list item
-  teamListContainer: {
-    gap: 10, 
-    flexDirection: 'row', 
-    justifyContent: 'flex-start', 
-    alignItems: 'center', 
-    borderColor: 'gray', 
-    borderBottomWidth: 0.2, 
-    backgroundColor: '#fff', 
-    paddingVertical: 14, 
-    marginHorizontal: 16
+  teamAvatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 0.5,
+    borderColor: '#000',
+  },
+  teamAvatarImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  teamAvatarText: {
+    fontFamily: 'GeistBold',
+    fontSize: 20,
+    color: '#333',
+  },
+  teamInfo: {
+    flex: 1,
   },
   teamName: {
-    fontFamily: 'OutfitBold',
+    fontFamily: 'GeistBold',
     fontSize: 16,
     color: '#333243',
+    marginBottom: 5,
   },
-  division: {
-    color: 'white',
-    fontFamily: 'OutfitLight',
-    fontSize: 12,
-    textAlign: 'center',
-    paddingHorizontal: 5,
-  },
-  divisionContainer: {
-    borderRadius: 100,
+  divisionLabel: {
     alignSelf: 'flex-start',
-    paddingHorizontal: 5,
-    paddingVertical: 2,
-  }
+    borderRadius: 100,
+    paddingHorizontal: 7,
+  },
+  divisionText: {
+    fontFamily: 'GeistMedium',
+    fontSize: 12,
+  },
 });
+
+export default Teams;

@@ -10,6 +10,10 @@ export default function TeamsLayout() {
                     header: () => <ScreenTitle title='Teams' route={'/(tabs)'} showBackButton={false} /> 
                 }}
             />
+            <Stack.Screen 
+                name='[id]' 
+                options={{ headerShown: false }}
+            />
         </Stack>
     );
 };

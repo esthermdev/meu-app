@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+// app/(user)/favorites.tsx
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   StyleSheet, 
   Text, 
@@ -13,13 +14,18 @@ import { Ionicons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { useAuth } from '@/context/AuthProvider';
 import { useFavorites } from '@/hooks/useFavorites';
-import { TeamListItem } from '@/components/TeamListItem';
+import { FavoriteTeamsList } from '@/components/FavoriteTeamsList';
 import CustomHeader from '@/components/headers/CustomHeader';
 import { typography } from '@/constants/Typography';
+import { supabase } from '@/lib/supabase';
+import { Database } from '@/database.types';
+
+type DivisionRow = Database['public']['Tables']['divisions']['Row'];
 
 const FavoritesScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [divisions, setDivisions] = useState<DivisionRow[]>([]);
   
   const { session } = useAuth();
   const { 
@@ -30,6 +36,25 @@ const FavoritesScreen = () => {
     remainingFavorites,
   } = useFavorites(session);
 
+  // Fetch divisions
+  const fetchDivisions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('divisions')
+        .select('*')
+        .order('display_order');
+        
+      if (error) throw error;
+      setDivisions(data || []);
+    } catch (error) {
+      console.error('Error fetching divisions:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDivisions();
+  }, []);
+
   const filteredTeams = useMemo(() => {
     const lowercaseQuery = searchQuery.toLowerCase();
     return teams.filter(team => 
@@ -39,7 +64,7 @@ const FavoritesScreen = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await loadData();
+    await Promise.all([loadData(), fetchDivisions()]);
     setRefreshing(false);
   };
 
@@ -83,7 +108,7 @@ const FavoritesScreen = () => {
       <FlashList
         data={filteredTeams}
         renderItem={({ item }) => (
-          <TeamListItem 
+          <FavoriteTeamsList 
             item={item}
             isFavorited={favorites.has(item.id)}
             onToggleFavorite={toggleFavorite}
