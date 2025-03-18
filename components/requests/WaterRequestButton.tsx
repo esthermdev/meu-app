@@ -84,7 +84,7 @@ const WaterRequestButton = () => {
         throw new Error('No volunteers available');
       }
 
-      Alert.alert('Refill of water jugs requested', 'Water is on the way');
+      Alert.alert('Water Requested', 'Volunteers will attend to your request shortly.');
 
     } catch (error) {
       console.error('Error requesting water:', error);

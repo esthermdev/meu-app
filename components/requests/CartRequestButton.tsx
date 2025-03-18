@@ -23,7 +23,7 @@ import { ms } from 'react-native-size-matters';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { typography } from '@/constants/Typography';
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 const modalHeight = height * 0.7; // 80% of screen height
 
 // Import the location_type enum directly from the database types
@@ -83,9 +83,9 @@ const CartRequestButton = () => {
 
       if (error) throw error;
 
-      Alert.alert('Success', 'Cart request submitted successfully. Please wait for a driver.');
+      Alert.alert('Cart Requested', 'Please wait for a driver.');
       setIsModalVisible(false);
-
+      resetInputs();
     } catch (error) {
       console.error('Error submitting cart request:', error);
       Alert.alert('Error', 'Failed to submit cart request');

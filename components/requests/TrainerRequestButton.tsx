@@ -91,10 +91,11 @@ const TrainerRequestButton = () => {
       }
 
       Alert.alert(
-        'Medical assistance requested', 
+        'Trainer Requested', 
         'Help is on the way. Please allow some time for a trainer to make their way to your location. If no trainer has arrived please try again later as trainers may be unavailable at the moment.'
       );
       setDescription('')
+      setPriorityLevel('Medium')
       setIsModalVisible(false);
 
     } catch (error) {
@@ -106,6 +107,7 @@ const TrainerRequestButton = () => {
   const handleCloseModal = () => {
     setIsModalVisible(false);
     setDescription('');
+    setPriorityLevel('Medium')
   };
 
   const renderPriorityButton = (level: PriorityLevel, color: string) => (
