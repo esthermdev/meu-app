@@ -37,6 +37,14 @@ export default function AdminLayout() {
             </SafeAreaView>
         }}
       />
+      <Stack.Screen name='announcements'
+        options={{
+          header: () =>
+            <SafeAreaView style={{ backgroundColor: '#fff' }}>
+              <CustomHeader title='Public Announcements' />
+            </SafeAreaView>
+        }}
+      />
     </Stack>
   );
 };

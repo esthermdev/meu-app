@@ -52,7 +52,7 @@ const AdminScreen = () => {
     {
       title: 'Send Public Announcement',
       iconName: 'campaign',
-      route: '/admin',
+      route: '/admin/announcements',
     },
   ];
 
