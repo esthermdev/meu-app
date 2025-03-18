@@ -51,6 +51,10 @@ export const typography = {
     fontFamily: fonts.bold,
     fontSize: 14,
   },
+  bodySmallBold: {
+    fontFamily: fonts.semiBold,
+    fontSize: 12,
+  },
   bodySmall: {
     fontFamily: fonts.regular,
     fontSize: 12,

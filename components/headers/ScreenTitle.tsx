@@ -33,9 +33,10 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    height: 50,
-    backgroundColor: '#fff'
+    paddingHorizontal: 20,
+    height: 60,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
   },
   backButton: {
     marginRight: 15,
