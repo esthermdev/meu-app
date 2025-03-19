@@ -271,8 +271,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   searchBarContainer: {
+    marginTop: 15,
     marginHorizontal: 20,
-    marginVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   },
   filtersSection: {
     paddingHorizontal: 20,
-    marginBottom: 10,
+    marginBottom: 15,
   },
   filterLabel: {
     ...typography.bodyBold,
@@ -308,7 +308,6 @@ const styles = StyleSheet.create({
   filterButton: {
     paddingHorizontal: 7,
     borderRadius: 100,
-    marginBottom: 8,
   },
   filterButtonText: {
     ...typography.bodySmallBold,

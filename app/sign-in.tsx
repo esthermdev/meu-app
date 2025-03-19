@@ -55,7 +55,7 @@ export default function SignIn() {
               <Image source={images.logoW} style={styles.image} />
               
               <Text style={styles.title}>Sign In</Text>
-              <Text style={{...typography.bodyMedium}}>Sign in to continue</Text>
+              <Text style={styles.subTitle}>Sign in to continue</Text>
 
               <View style={styles.inputContainer}>
                 <MaterialIcons name="email" size={20} color="#000" />
@@ -113,18 +113,22 @@ const styles = StyleSheet.create({
   },
   form: {
     flex: 1,
-    gap: 15,
   },
   image: {
     height: 90,
     width: 90,
     marginTop: 50,
-    marginBottom: 25,   
+    marginBottom: 25,
   },
   title: {
     ...typography.h1,
     color: '#EA1D25',
     marginTop: 10,
+  },
+  subTitle: {
+    marginTop: 10,
+    marginBottom: 20,
+    ...typography.bodyMedium
   },
   inputContainer: {
     flexDirection: 'row',
@@ -132,11 +136,13 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderWidth: 1,
     borderRadius: 12,
-    paddingHorizontal: 15,
+    paddingHorizontal: 16,
+    paddingVertical: 20,
+    marginBottom: 15
   },
   inputWithIcon: {
     flex: 1,
-    padding: 20,
+    marginLeft: 8,
     ...typography.bodyMedium,
   },
   errorContainer: {

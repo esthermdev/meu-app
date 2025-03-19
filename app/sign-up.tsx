@@ -51,7 +51,7 @@ export default function SignUp() {
               <Image source={images.logoW} style={styles.image} />
 
               <Text style={styles.title}>Sign Up</Text>
-              <Text style={{...typography.bodyMedium}}>Get started with a new account</Text>
+              <Text style={styles.subTitle}>Get started with a new account</Text>
 
               <View style={styles.inputContainer}>
                 <FontAwesome6 name="signature" size={20} color="#000" />
@@ -105,7 +105,6 @@ const styles = StyleSheet.create({
   },
   form: {
     flex: 1,
-    gap: 15,
   },
   image: {
     height: 90,
@@ -118,17 +117,24 @@ const styles = StyleSheet.create({
     color: '#EA1D25',
     marginTop: 10,
   },
+  subTitle: {
+    marginTop: 10,
+    marginBottom: 20,
+    ...typography.bodyMedium
+  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: '#000',
     borderWidth: 1,
     borderRadius: 12,
-    paddingHorizontal: 15,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    marginBottom: 15
   },
   inputWithIcon: {
     flex: 1,
-    padding: 20,
+    marginLeft: 8,
     ...typography.bodyMedium,
   },
   footer: {

@@ -81,10 +81,7 @@ export default function Account({ session }: { session: Session }) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={() => router.back()}>
-        <Ionicons name="arrow-back" size={30} color="#000" />
-      </TouchableOpacity>
+    <View style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -97,8 +94,7 @@ export default function Account({ session }: { session: Session }) {
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.form}>
-              <Image source={images.logoW} style={styles.image} />
-              <Text style={styles.title}>My Profile</Text>
+              <Text style={styles.title}>Update your profile details here.</Text>
               <Text style={styles.label}>Email</Text>
               <View style={[styles.inputContainer, styles.disabledInput]}>
                 <MaterialIcons name="email" size={20} color="#666" />
@@ -127,29 +123,21 @@ export default function Account({ session }: { session: Session }) {
           </TouchableWithoutFeedback>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 25,
+    padding: 20,
   },
   title: {
-    ...typography.h1,
-    color: '#EA1D25',
-    marginVertical: 20,
+    ...typography.h2,
   },
   form: {
     flex: 1,
     gap: 15,
-  },
-  image: {
-    height: 90,
-    width: 90,
-    marginTop: 50,
-    marginBottom: 25,   
   },
   label: {
     ...typography.bodyMedium,
@@ -160,7 +148,7 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderWidth: 1,
     borderRadius: 12,
-    paddingHorizontal: 15,
+    padding: 20
   },
   disabledInput: {
     backgroundColor: '#f0f0f0',
@@ -169,27 +157,15 @@ const styles = StyleSheet.create({
   disabledText: {
     ...typography.bodyMedium,
     color: '#666',
-    padding: 20,
+    marginLeft: 8,
     flex: 1,
   },
   inputWithIcon: {
     flex: 1,
-    padding: 20,
+    marginLeft: 8,
     ...typography.bodyMedium,
   },
   buttonContainer: {
     gap: 15,
-    marginTop: 15,
-  },
-  signOutButton: {
-    padding: 15,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#EA1D25',
-    alignItems: 'center',
-  },
-  signOutText: {
-    ...typography.bodyMedium,
-    color: '#EA1D25',
   }
 });

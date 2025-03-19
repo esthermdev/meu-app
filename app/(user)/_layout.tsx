@@ -64,7 +64,22 @@ export default function UserLayout() {
       <Stack.Screen 
         name='account'
         options={{
-          headerShown: false
+          title: 'My Profile',
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: '#EA1D25',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerLeft: () => (
+            <TouchableOpacity 
+              onPress={() => router.back()}
+            >
+              <MaterialIcons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+          ),
         }}
       />
       <Stack.Screen 
