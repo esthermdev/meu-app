@@ -22,6 +22,13 @@ import { Database } from '@/database.types';
 
 type DivisionRow = Database['public']['Tables']['divisions']['Row'];
 
+// Section header component
+const SectionHeader = ({ title }: { title: string }) => (
+  <View style={styles.sectionHeader}>
+    <Text style={styles.sectionHeaderText}>{title}</Text>
+  </View>
+);
+
 const FavoritesScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -57,10 +64,22 @@ const FavoritesScreen = () => {
 
   const filteredTeams = useMemo(() => {
     const lowercaseQuery = searchQuery.toLowerCase();
-    return teams.filter(team => 
+    const filtered = teams.filter(team => 
       team.name.toLowerCase().includes(lowercaseQuery)
     );
-  }, [teams, searchQuery]);
+    
+    // Sort teams with favorited ones at the top
+    return filtered.sort((a, b) => {
+      const aFavorited = favorites.has(a.id) ? 1 : 0;
+      const bFavorited = favorites.has(b.id) ? 1 : 0;
+      return bFavorited - aFavorited; // Descending order: favorites first
+    });
+  }, [teams, searchQuery, favorites]);
+
+  // Count favorited teams that match the current search
+  const favoritedTeamsCount = useMemo(() => {
+    return filteredTeams.filter(team => favorites.has(team.id)).length;
+  }, [filteredTeams, favorites]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -107,14 +126,30 @@ const FavoritesScreen = () => {
       
       <FlashList
         data={filteredTeams}
-        renderItem={({ item }) => (
-          <FavoriteTeamsList 
-            item={item}
-            isFavorited={favorites.has(item.id)}
-            onToggleFavorite={toggleFavorite}
-            onRefreshData={handleRefreshAfterToggle}
-          />
-        )}
+        renderItem={({ item, index }) => {
+          // Check if we should display a section header above this item
+          const currentItemFavorited = favorites.has(item.id);
+          const prevItemFavorited = index > 0 ? favorites.has(filteredTeams[index - 1].id) : false;
+          
+          // If this is the first item OR we're transitioning from favorited to non-favorited
+          const shouldShowHeader = index === 0 || (prevItemFavorited && !currentItemFavorited);
+          
+          return (
+            <>
+              {shouldShowHeader && (
+                <SectionHeader 
+                  title={currentItemFavorited ? "Favorite Teams" : "All Teams"} 
+                />
+              )}
+              <FavoriteTeamsList 
+                item={item}
+                isFavorited={currentItemFavorited}
+                onToggleFavorite={toggleFavorite}
+                onRefreshData={handleRefreshAfterToggle}
+              />
+            </>
+          );
+        }}
         estimatedItemSize={80}
         keyExtractor={(item) => item.id.toString()}
         refreshControl={
@@ -202,6 +237,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+  },
+  sectionHeader: {
+    backgroundColor: '#f8f8f8',
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EFEFEF',
+  },
+  sectionHeaderText: {
+    ...typography.bodyBold,
+    color: '#555',
   },
 });
 
