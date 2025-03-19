@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
 		padding: 20
 	},
 	content: {
-		...typography.bodyMedium
+		...typography.body
 	},
 	contentHeader: {
 		...typography.h5
