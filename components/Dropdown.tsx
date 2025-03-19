@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, FlatList, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ms } from 'react-native-size-matters';
-import { fonts, typography } from '@/constants/Typography';
+import { fonts } from '@/constants/Typography';
 
 interface DropdownProps {
   label: string;
@@ -78,8 +78,8 @@ const styles = StyleSheet.create({
 	dropdown: {
 		backgroundColor: 'white',
 		width: '60%',
-		maxHeight: '50%',
-		marginTop: 150,
+		maxHeight: '40%',
+		margin: 'auto',
 		borderRadius: 12,
 		shadowColor: '#000',
 		shadowOffset: { width: 0, height: 2 },

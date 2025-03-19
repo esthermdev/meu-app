@@ -22,6 +22,7 @@ import usePushNotifications from '@/hooks/usePushNotifications';
 import { ms } from 'react-native-size-matters';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { typography } from '@/constants/Typography';
+import ModalButton from '../buttons/ModalButtons';
 
 const { height } = Dimensions.get('window');
 const modalHeight = height * 0.7; // 80% of screen height
@@ -224,14 +225,11 @@ const CartRequestButton = () => {
                     maxLength={200}
                   />
 
-                  <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.cancelButton} onPress={handleCloseModal}>
-                      <Text style={styles.buttonText}>Cancel</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.confirmButton} onPress={handleRequestCart}>
-                      <Text style={styles.buttonText}>Request Cart</Text>
-                    </TouchableOpacity>
-                  </View>
+                  <ModalButton 
+                    onCancel={handleCloseModal}
+                    onConfirm={handleRequestCart}
+                    confirmText="Request Cart"
+                  />
                 </View>
               </TouchableWithoutFeedback>
             </KeyboardAwareScrollView>
@@ -309,7 +307,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 20,
   },
   cancelButton: {
     backgroundColor: '#000000',

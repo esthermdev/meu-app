@@ -13,12 +13,13 @@ import {
   KeyboardAvoidingView,
   TextInput
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import { supabase } from '@/lib/supabase';
 import { ScrollView } from 'react-native-gesture-handler';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { typography } from '@/constants/Typography';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import ModalButton from '../buttons/ModalButtons';
+import Dropdown from '../Dropdown';
 
 const { height } = Dimensions.get('window');
 const modalHeight = height * 0.8; // 80% of screen height
@@ -35,6 +36,8 @@ const TrainerRequestButton = () => {
   const [description, setDescription] = useState<string | undefined>('')
   const [fields, setFields] = useState<{ id: number; name: string }[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  // Add a string representation of the selected field for the dropdown
+  const [selectedFieldLabel, setSelectedFieldLabel] = useState<string>('');
 
   useEffect(() => {
     fetchFields();
@@ -51,8 +54,17 @@ const TrainerRequestButton = () => {
       setFields(data);
       if (data.length > 0) {
         setSelectedField(data[0].id);
+        setSelectedFieldLabel(`Select Field`);
       }
     }
+  };
+
+  // Function to handle field selection from dropdown
+  const handleFieldSelect = (fieldLabel: string) => {
+    // Extract the field ID from the label (e.g., "Field 1" -> 1)
+    const fieldId = parseInt(fieldLabel.replace('Field ', ''), 10);
+    setSelectedField(fieldId);
+    setSelectedFieldLabel(fieldLabel);
   };
 
   const requestTrainer = async () => {
@@ -108,6 +120,7 @@ const TrainerRequestButton = () => {
     setIsModalVisible(false);
     setDescription('');
     setPriorityLevel('Medium')
+    setSelectedFieldLabel('Select Field')
   };
 
   const renderPriorityButton = (level: PriorityLevel, color: string) => (
@@ -119,6 +132,9 @@ const TrainerRequestButton = () => {
       <Text style={styles.priorityButtonText} maxFontSizeMultiplier={1.2}>{level}</Text>
     </TouchableOpacity>
   );
+
+  // Prepare field labels for dropdown
+  const fieldLabels = fields.map(field => `Field ${field.id}`);
 
   return (
     <View>
@@ -174,41 +190,19 @@ const TrainerRequestButton = () => {
 
                     <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>Select Field Location:</Text>
                     
-                    {Platform.OS === 'ios' ? (
-                      <View>
-                        <Picker
-                          selectedValue={selectedField}
-                          onValueChange={(itemValue: number) => setSelectedField(itemValue)}
-                          itemStyle={styles.pickerItemStyle}
-                        >
-                          {fields.map((field) => (
-                            <Picker.Item key={field.id} label={`Field ${field.id}`} value={field.id} />
-                          ))}
-                        </Picker>
-                      </View>
-                    ) : (
-                      <View style={styles.androidPickerContainer}>
-                        <Picker
-                          selectedValue={selectedField}
-                          onValueChange={(itemValue: number) => setSelectedField(itemValue)}
-                          style={styles.picker}
-                          mode="dropdown"
-                        >
-                          {fields.map((field) => (
-                            <Picker.Item key={field.id} label={`Field ${field.id}`} value={field.id} />
-                          ))}
-                        </Picker>
-                      </View>
-                    )}
+                    {/* Replace Picker with Dropdown */}
+                    <Dropdown
+                      label="Select Field"
+                      data={fieldLabels}
+                      onSelect={handleFieldSelect}
+                      selectedValue={selectedFieldLabel}
+                    />
 
-                    <View style={styles.buttonContainer}>
-                      <TouchableOpacity style={styles.cancelButton} onPress={handleCloseModal}>
-                        <Text style={styles.buttonText} maxFontSizeMultiplier={1.2}>Cancel</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={styles.confirmButton} onPress={requestTrainer}>
-                        <Text style={styles.buttonText} maxFontSizeMultiplier={1.2}>Request Trainer</Text>
-                      </TouchableOpacity>
-                    </View>
+                    <ModalButton 
+                      onCancel={handleCloseModal}
+                      onConfirm={requestTrainer}
+                      confirmText="Request Trainer"
+                    />
                   </ScrollView>
                 </View>
               </TouchableWithoutFeedback>
@@ -263,12 +257,6 @@ const styles = StyleSheet.create({
     ...typography.bodyMedium,
     marginVertical: 10
   },
-  androidPickerContainer: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    overflow: 'hidden',
-  },
   priorityButtonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -296,36 +284,6 @@ const styles = StyleSheet.create({
     padding: 10,
     ...typography.body,
     textAlignVertical: 'top',
-  },
-  picker: {
-    width: '80%',
-  },
-  pickerItemStyle: {
-    ...typography.body,
-    height: 150
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  cancelButton: {
-    backgroundColor: '#000000',
-    padding: 12,
-    borderRadius: 6,
-    width: '48%',
-    justifyContent: 'center',
-  },
-  confirmButton: {
-    backgroundColor: '#E74C3C',
-    padding: 12,
-    borderRadius: 6,
-    width: '48%',
-    justifyContent: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    ...typography.bodyMedium,
   },
   closeButton: {
     alignSelf: 'flex-end',

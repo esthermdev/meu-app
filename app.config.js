@@ -49,6 +49,7 @@ export default ({ config }) => ({
   android: {
     ...config.android,
     package: getAndroidPackage(),
+    googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
   },
   extra: {
     ...config.extra,

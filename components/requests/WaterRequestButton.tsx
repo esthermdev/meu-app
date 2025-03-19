@@ -13,6 +13,7 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tables } from '@/database.types';
 import { typography } from '@/constants/Typography';
+import ModalButton from '../buttons/ModalButtons';
 
 type Field = Tables<'fields'>;
 
@@ -136,14 +137,11 @@ const WaterRequestButton = () => {
                   )}
                 />
                 
-                <View style={styles.buttonContainer}>
-                  <TouchableOpacity style={styles.cancelButton} onPress={hideModal}>
-                    <Text style={styles.buttonText}>Cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.confirmButton} onPress={requestWater}>
-                    <Text style={styles.buttonText}>Confirm</Text>
-                  </TouchableOpacity>
-                </View>
+                <ModalButton 
+                  onCancel={hideModal}
+                  onConfirm={requestWater}
+                  confirmText="Confirm"
+                />
               </View>
             </TouchableWithoutFeedback>
           </View>
