@@ -8,7 +8,14 @@ import { fonts, typography } from '@/constants/Typography';
 
 
 export default function UserDashboard() {
-  const { profile } = useAuth();
+  const { profile, signOut } = useAuth();
+
+  const handleOpenExternalDeleteAccount = () => {
+    // Use your new Render URL here
+    router.push('https://maine-ultimate-account-deletion.onrender.com');
+    signOut();
+  };
+  
 
   return (
     <ScrollView 
@@ -56,7 +63,11 @@ export default function UserDashboard() {
         <Ionicons name="arrow-back-circle" size={24} color="##000" style={styles.cardIcon} />
         <Text style={styles.quickActionLabels}>Back to App</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => null} style={styles.actionButton}>
+      <TouchableOpacity onPress={() => router.navigate('/(user)/feedback')} style={styles.actionButton}>
+        <MaterialIcons name="feedback" size={24} color="##000" style={styles.cardIcon} />
+        <Text style={styles.quickActionLabels}>Feedback</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleOpenExternalDeleteAccount} style={styles.actionButton}>
         <MaterialIcons name="delete-sweep" size={24} color="##000" style={styles.cardIcon} />
         <Text style={styles.quickActionLabels}>Delete Account</Text>
       </TouchableOpacity>

@@ -1,6 +1,6 @@
 import { Text, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Redirect, Stack } from 'expo-router';
+import { Redirect, router, Stack } from 'expo-router';
 
 import { useAuth } from '@/context/AuthProvider';
 import Header from '@/components/headers/Header';
@@ -44,7 +44,13 @@ export default function UserLayout() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          headerBackVisible: false,
+          headerLeft: () => (
+            <TouchableOpacity 
+            onPress={() => router.back()}
+          >
+            <MaterialIcons name="arrow-back" size={24} color="#fff" />
+          </TouchableOpacity>
+          ),
           headerRight: () => (
             <TouchableOpacity 
               onPress={handleSignOut}
@@ -62,6 +68,12 @@ export default function UserLayout() {
       />
       <Stack.Screen 
         name='favorites'
+        options={{
+          header: () => <Header />
+        }}
+      />
+      <Stack.Screen 
+        name='feedback'
         options={{
           header: () => <Header />
         }}
