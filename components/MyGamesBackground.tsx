@@ -1,7 +1,6 @@
 // components/backgrounds/MyGamesBackground.tsx
-import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { typography } from '@/constants/Typography';
 
 const MyGamesBackground = ({ title }: { title: string }) => {
@@ -11,7 +10,7 @@ const MyGamesBackground = ({ title }: { title: string }) => {
       <View style={styles.circleContainer} />
       
       {/* Icon */}
-      <FontAwesome5 name="bullseye" size={28} color="#fff" />
+      <Feather name="target" size={28} color="#fff" />
       
       {/* Title */}
       <Text style={styles.title}>{title}</Text>

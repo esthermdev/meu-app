@@ -1,6 +1,6 @@
 // app/(tabs)/home/index.tsx
 import { View, StyleSheet, ScrollView } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import LargeCardButton from '@/components/buttons/LargeCardButton';
 import FullWidthButton from '@/components/buttons/FullWidthButton';
 import WaterRequestButton from '@/components/requests/WaterRequestButton';
@@ -28,7 +28,7 @@ export default function HomeScreen() {
           <View style={styles.row}>
             <LargeCardButton
               title="Report Spirit Scores"
-              icon={<FontAwesome5 name="handshake" size={28} color="#fff" />}
+              icon={<MaterialCommunityIcons name="handshake-outline" size={28} color="#fff" />}
               backgroundColor="#d89647"
               route="https://docs.google.com/forms/d/15NrrAtvd2mt_RGdpkTYDTYHGXHP0RTiIJEI0GXFwfp4/viewform?edit_requested=true"
             />
