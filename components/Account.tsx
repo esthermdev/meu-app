@@ -9,10 +9,12 @@ import { typography } from '@/constants/Typography'
 import { images } from '@/constants'
 import { router } from 'expo-router'
 import PrimaryButton from '@/components/buttons/PrimaryButton'
+import { useAuth } from '@/context/AuthProvider'
 
 type ProfileUpdate = Database['public']['Tables']['profiles']['Insert'];
 
 export default function Account({ session }: { session: Session }) {
+  const { refreshProfile } = useAuth();
   const [loading, setLoading] = useState(true)
   const [fullName, setFullName] = useState('')
 
@@ -67,7 +69,7 @@ export default function Account({ session }: { session: Session }) {
       if (error) {
         throw error
       }
-      
+      await refreshProfile()
       Alert.alert('Profile updated successfully')
     } catch (error) {
       if (error instanceof Error) {
