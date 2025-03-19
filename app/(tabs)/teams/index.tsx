@@ -131,7 +131,7 @@ const Teams = () => {
   const renderTeamItem = ({ item }: { item: TeamWithDetails }) => {
     // Get division info either from division_details or find in divisions array by division code
     let divisionInfo = {
-      title: item.division || 'Unknown',
+      title: item.division_details?.title || 'Unknown',
       color: '#EFEFEF',
       color_light: '#EFEFEF',
       textColor: '#333333'
@@ -145,17 +145,6 @@ const Teams = () => {
         color_light: item.division_details.color_light || '#FFFFFF',
         textColor: item.division_details.color
       };
-    } else if (item.division) {
-      // Fallback to lookup by division code if division_details is null
-      const division = divisions.find(div => div.code === item.division);
-      if (division) {
-        divisionInfo = {
-          title: division.title,
-          color: division.color,
-          color_light: division.color_light,
-          textColor: division.color
-        };
-      }
     }
     
     return (
@@ -328,6 +317,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopWidth: 1,
     borderTopColor: '#EFEFEF',
+    paddingHorizontal: 20
   },
   loadingContainer: {
     flex: 1,
@@ -351,7 +341,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 15,
-    paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#EFEFEF',
   },
