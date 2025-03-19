@@ -8,6 +8,8 @@ import MyGamesBackground from '@/components/MyGamesBackground';
 import CartRequestButton from '@/components/requests/CartRequestButton';
 import CircleIconButton from '@/components/buttons/CircleIconButton';
 import TrainerRequestButton from '@/components/requests/TrainerRequestButton';
+import NotificationPermission from '@/components/NotificationPermission';
+import NotificationPrompt from '@/components/NotificationPrompt';
 
 
 export default function HomeScreen() {
@@ -73,6 +75,7 @@ export default function HomeScreen() {
             route='https://www.paypal.com/donate/?hosted_button_id=3HCQBB97LCV34'
           />
         </View>
+        <NotificationPrompt />
       </ScrollView>
     </View>
   );

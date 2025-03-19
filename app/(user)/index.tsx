@@ -1,10 +1,11 @@
-import { StyleSheet, View, ScrollView, Button, Text } from 'react-native';
+import { StyleSheet, View, ScrollView, Text } from 'react-native';
 import { Href, router } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
 import { Card } from '@/components/Card';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { fonts, typography } from '@/constants/Typography';
+import NotificationPermission from '@/components/NotificationPermission';
 
 
 export default function UserDashboard() {
@@ -71,6 +72,9 @@ export default function UserDashboard() {
         <MaterialIcons name="delete-sweep" size={24} color="##000" style={styles.cardIcon} />
         <Text style={styles.quickActionLabels}>Delete Account</Text>
       </TouchableOpacity>
+
+      {/* Notifications Section */}
+      <NotificationPermission />
     </ScrollView>
   );
 }
@@ -82,7 +86,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    marginBottom: 20,
+    marginBottom: 5,
   },
   welcomeText: {
     ...typography.h3,
@@ -120,5 +124,8 @@ const styles = StyleSheet.create({
     fontFamily: fonts.semiBold,
     fontSize: 16,
     color: '#000',
-  }
+  },
+  notificationSection: {
+    marginTop: 20,
+  },
 });

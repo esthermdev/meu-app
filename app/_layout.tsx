@@ -4,6 +4,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { AuthProvider } from '@/context/AuthProvider';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
+import usePushNotifications from '@/hooks/usePushNotifications';
 import 'expo-dev-client';
 import 'react-native-gesture-handler';
 
@@ -14,6 +15,7 @@ SplashScreen.preventAutoHideAsync().catch(error => {
 });
 
 export default function RootLayout() {
+  usePushNotifications();
 
   const [fontsLoaded] = useFonts({
     GeistThin: require('../assets/fonts/Geist-Thin.ttf'),
