@@ -126,7 +126,6 @@ const MyGames = () => {
       setLoading(false);
     }
   };
-  console.log('Game data structure:', JSON.stringify(games[0], null, 2));
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
