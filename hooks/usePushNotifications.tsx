@@ -1,7 +1,7 @@
 // hooks/usePushNotifications.tsx
 import { useState, useEffect, useRef } from 'react';
 import * as Notifications from 'expo-notifications';
-import { Platform, Alert } from 'react-native';
+import { Platform } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import Constants from 'expo-constants';
 
@@ -25,33 +25,36 @@ const usePushNotifications = () => {
   const responseListener = useRef<Notifications.Subscription>();
 
   useEffect(() => {
-    // Register for push notifications
-    registerForPushNotificationsAsync().then(result => {
-      if (result.token) {
-        console.log('Push token received:', result.token);
-        setExpoPushToken(result.token);
-        setNotificationPermission(result.permission);
-        // Update the user's profile with the token
-        updateUserPushToken(result.token);
-      } else {
-        console.error('Failed to get push token:', result.error);
-      }
-    });
-
-    // Listen for incoming notifications
+    // Setup notification listeners immediately for all users
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      console.log('Notification received:', notification);
       setNotification(notification);
     });
 
-    // Listen for notification responses (when user taps on notification)
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
       console.log('Notification response received:', response);
     });
 
-    // Add foreground notification handler for testing
-    const foregroundSubscription = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log('Foreground notification tapped:', response);
+    // Configure Android channel
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      }).catch(err => console.log('Error setting Android channel:', err));
+    }
+
+    // Check for existing permissions first, don't auto-request for non-logged in users
+    Notifications.getPermissionsAsync().then(({ status }) => {
+      setNotificationPermission(status === 'granted');
+      
+      // Only attempt to get push token if already granted permissions AND logged in
+      if (status === 'granted') {
+        registerForPushNotificationsIfLoggedIn().catch(err => {
+          // Silently handle errors - no console.error
+          console.log('Push registration skipped or failed');
+        });
+      }
     });
 
     // Cleanup on unmount
@@ -62,66 +65,59 @@ const usePushNotifications = () => {
       if (responseListener.current) {
         Notifications.removeNotificationSubscription(responseListener.current);
       }
-      foregroundSubscription.remove();
     };
   }, []);
 
-  // Update the user's profile with the push token
-  const updateUserPushToken = async (token: string) => {
+  // Check auth and register for push if user is logged in
+  const registerForPushNotificationsIfLoggedIn = async () => {
     try {
+      // Check authentication first
       const { data: { user } } = await supabase.auth.getUser();
       
-      if (user) {
-        console.log('Updating token for user:', user.id);
-        const { error, data } = await supabase
-          .from('profiles')
-          .update({ expo_push_token: token })
-          .eq('id', user.id)
-          .select();
-        
-        if (error) {
-          console.error('Error updating push token:', error);
-        } else {
-          console.log('Push token updated successfully:', data);
-        }
-      } else {
-        console.log('No authenticated user found');
+      if (!user) {
+        // User not logged in, exit silently without errors
+        return;
       }
-    } catch (error) {
-      console.error('Error in updateUserPushToken:', error);
+      
+      const projectId = Constants.expoConfig?.extra?.eas?.projectId;
+      if (!projectId) {
+        console.log('Missing project ID');
+        return;
+      }
+      
+      // Only get token if user is authenticated
+      const pushToken = await Notifications.getExpoPushTokenAsync({
+        projectId: projectId,
+      });
+      
+      setExpoPushToken(pushToken.data);
+      
+      // Update token in database
+      await supabase
+        .from('profiles')
+        .update({ expo_push_token: pushToken.data })
+        .eq('id', user.id);
+        
+    } catch (err) {
+      // Log quietly to avoid error messages
+      console.log('Push token registration issue');
     }
   };
 
-  // Test sending a notification to the current device
-  const sendTestNotification = async () => {
-    if (!expoPushToken) {
-      Alert.alert('Error', 'No push token available');
-      return;
-    }
-
+  // Function to request permissions explicitly - call this when user logs in
+  const requestNotificationPermissions = async () => {
     try {
-      const message = {
-        to: expoPushToken,
-        sound: 'default',
-        title: 'Test Notification',
-        body: 'This is a test notification from your app',
-        data: { type: 'test_notification' },
-      };
-
-      await fetch('https://exp.host/--/api/v2/push/send', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Accept-encoding': 'gzip, deflate',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-      });
-
-      Alert.alert('Success', 'Test notification sent');
-    } catch (error) {
-      console.error('Error sending test notification:', error);
-      Alert.alert('Error', 'Failed to send test notification');
+      const { status } = await Notifications.requestPermissionsAsync();
+      setNotificationPermission(status === 'granted');
+      
+      if (status === 'granted') {
+        await registerForPushNotificationsIfLoggedIn();
+      }
+      
+      return status === 'granted';
+    } catch (err) {
+      console.log('Permission request issue');
+      return false;
     }
   };
 
@@ -129,89 +125,9 @@ const usePushNotifications = () => {
     expoPushToken,
     notification,
     notificationPermission,
-    sendTestNotification,
+    requestNotificationPermissions,
+    registerForPushNotificationsIfLoggedIn,
   };
 };
-
-// Function to register for push notifications
-async function registerForPushNotificationsAsync() {
-  let token;
-  let errorMsg = '';
-  let hasPermission = false;
-
-  // Configure Android channel
-  if (Platform.OS === 'android') {
-    try {
-      await Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-      });
-      console.log('Android notification channel configured');
-    } catch (error) {
-      console.error('Error setting Android notification channel:', error);
-    }
-  }
-
-  try {
-    // Check existing permissions
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    console.log('Existing notification permission status:', existingStatus);
-    
-    let finalStatus = existingStatus;
-    
-    // Request permissions if not granted
-    if (existingStatus !== 'granted') {
-      console.log('Requesting notification permissions...');
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-      console.log('New notification permission status:', finalStatus);
-    }
-    
-    if (finalStatus !== 'granted') {
-      errorMsg = 'Failed to get push token for push notification!';
-      console.warn(errorMsg);
-      return { 
-        token: undefined, 
-        permission: false, 
-        error: errorMsg 
-      };
-    }
-    
-    hasPermission = true;
-    
-    // Verify project ID
-    const projectId = Constants.expoConfig?.extra?.eas?.projectId;
-    console.log("Project ID:", projectId);
-    
-    if (!projectId) {
-      errorMsg = 'Missing project ID in app config';
-      console.error(errorMsg);
-      return { 
-        token: undefined, 
-        permission: hasPermission, 
-        error: errorMsg 
-      };
-    }
-    
-    // Get the token
-    const pushToken = await Notifications.getExpoPushTokenAsync({
-      projectId: projectId,
-    });
-    
-    token = pushToken.data;
-    console.log("Received push token:", token);
-  } catch (error) {
-    console.error("Error in registerForPushNotificationsAsync:", error);
-    errorMsg = `Error getting push token: ${error}`;
-  }
-
-  return { 
-    token, 
-    permission: hasPermission, 
-    error: errorMsg || null 
-  };
-}
 
 export default usePushNotifications;

@@ -8,7 +8,6 @@ import MyGamesBackground from '@/components/MyGamesBackground';
 import CartRequestButton from '@/components/requests/CartRequestButton';
 import CircleIconButton from '@/components/buttons/CircleIconButton';
 import TrainerRequestButton from '@/components/requests/TrainerRequestButton';
-import NotificationTester from '@/components/NotificationTester';
 
 
 export default function HomeScreen() {
@@ -52,8 +51,6 @@ export default function HomeScreen() {
           <CartRequestButton />
           <TrainerRequestButton />
         </View>
-
-        <NotificationTester />
         
         {/* Spacer to push content down */}
         <View style={styles.spacer} />

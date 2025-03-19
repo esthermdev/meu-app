@@ -83,15 +83,13 @@ const WaterRequestButton = () => {
       if (!volunteers || volunteers.length === 0) {
         throw new Error('No volunteers available');
       }
-
+      hideModal();
       Alert.alert('Water Requested', 'Volunteers will attend to your request shortly.');
 
     } catch (error) {
       console.error('Error requesting water:', error);
       Alert.alert('Error', 'Failed to request water jug refill');
-    } finally {
-      hideModal();
-    }
+    } 
   };
 
   return (

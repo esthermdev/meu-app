@@ -5,66 +5,42 @@ import { Tabs, router } from 'expo-router';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import Header from '@/components/headers/Header';
 import { fonts } from '@/constants/Typography';
-import { Platform } from 'react-native';
+import { supabase } from '@/lib/supabase';
 
 export default function TabLayout() {
-  const { expoPushToken } = usePushNotifications();
-  const notificationListener = useRef<Notifications.Subscription>();
+  const { registerForPushNotificationsIfLoggedIn } = usePushNotifications();
   const responseListener = useRef<Notifications.Subscription>();
   
   useEffect(() => {
-    console.log('Tab layout mounted, setting up notification listeners');
-    
-    // Listen for incoming notifications while app is foregrounded
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      console.log('Notification received in foreground:', notification);
-    });
-    
-    // Handle notification interaction
+    // Set up notification response listener for navigation
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
       const { notification: { request: { content: { data } } } } = response;
-      console.log('Notification response received in tabs:', data);
       
-      // Handle different notification types with routing
+      // Handle notification navigation
       if (data.type === "new_water_request") {
         router.push('/(user)/admin/water-requests');
-        console.log('Navigating to water requests');
       } else if (data.type === "new_medic_request") {
         router.push('/(user)/admin/trainers-list');
-        console.log('Navigating to trainers list');
       } else if (data.type === "new_cart_request") {
         router.push('/(user)/admin/cart-requests');
-        console.log('Navigating to cart requests');
-      } else {
-        console.log('Unknown notification type:', data.type);
       }
     });
 
-    // Request notification permissions explicitly (redundant but helpful for testing)
-    const requestPermissions = async () => {
-      if (Platform.OS === 'ios') {
-        const { status } = await Notifications.requestPermissionsAsync({
-          ios: {
-            allowAlert: true,
-            allowBadge: true,
-            allowSound: true,
-          },
-        });
-        console.log('iOS notification permission status:', status);
+    // Listen for auth state changes
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        // When user signs in, try to register for push notifications
+        registerForPushNotificationsIfLoggedIn();
       }
-    };
-    
-    requestPermissions();
+    });
 
     return () => {
-      if (notificationListener.current) {
-        Notifications.removeNotificationSubscription(notificationListener.current);
-      }
       if (responseListener.current) {
         Notifications.removeNotificationSubscription(responseListener.current);
       }
+      authListener.subscription.unsubscribe();
     };
-  }, []);
+  }, [registerForPushNotificationsIfLoggedIn]);
 
   return (
       <Tabs
