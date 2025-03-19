@@ -37,6 +37,7 @@ export default function UserLayout() {
         name="index"
         options={{
           title: 'User',
+          headerTitleAlign: 'center',
           headerStyle: {
             backgroundColor: '#EA1D25',
           },
