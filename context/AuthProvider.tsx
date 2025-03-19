@@ -16,6 +16,7 @@ type AuthContextType = {
   signIn: (email: string) => Promise<void>;
   signUp: (email: string, full_name: string) => Promise<void>;
   signOut: () => Promise<void>;
+  refreshProfile: (userId?: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -178,10 +179,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
+        shouldCreateUser: false,
         emailRedirectTo: 'meu.app://(user)'
       },
     });
-    if (error) throw error;
+    if (error) {
+      // If the error mentions user doesn't exist or isn't confirmed
+      if (error.message.includes('Email not confirmed') || 
+          error.message.includes('User not found')) {
+        throw new Error('This email is not registered. Please sign up first.');
+      }
+      throw error;
+    }
   };
 
   const signUp = async (email: string, full_name: string) => {
@@ -203,6 +212,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error;
   };
 
+  const refreshProfile = async (userId?: string) => {
+    try {
+      const id = userId || user?.id;
+      if (!id) return;
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', id)
+        .single();
+  
+      if (error) throw error;
+      if (data) setProfile(data);
+    } catch (error) {
+      console.error('Error refreshing profile:', error);
+    }
+  };
+
   return (
     <AuthContext.Provider value={{
       session,
@@ -212,6 +239,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signIn,
       signUp,
       signOut,
+      refreshProfile
     }}>
       {children}
     </AuthContext.Provider>

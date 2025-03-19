@@ -11,18 +11,25 @@ import PrimaryButton from '@/components/buttons/PrimaryButton';
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { signIn } = useAuth();
 
   const handleSignIn = async () => {
+    if (!email || !email.includes('@')) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
     try {
       setLoading(true);
+      setError(null);
       await signIn(email);
       alert('Check your email for the link to log in!');
       setEmail('');
       Keyboard.dismiss();
     } catch (error) {
       console.error(error);
-      alert('Error signing in: ' + (error as Error).message);
+      setError("Email doesn't exist. Please create an account to continue.");
     } finally {
       setLoading(false);
     }
@@ -55,12 +62,26 @@ export default function SignIn() {
                 <TextInput
                   placeholder="Email"
                   value={email}
-                  onChangeText={setEmail}
+                  onChangeText={(text) => {
+                    setEmail(text);
+                    setError(null);
+                  }}
                   autoCapitalize="none"
                   keyboardType="email-address"
                   style={styles.inputWithIcon}
                 />
               </View>
+
+              {error && (
+                <View style={styles.errorContainer}>
+                  <Text style={styles.errorText}>{error}</Text>
+                  <Link href="/sign-up" asChild>
+                    <TouchableOpacity>
+                      <Text style={styles.signUpLink}>Create an account</Text>
+                    </TouchableOpacity>
+                  </Link>
+                </View>
+              )}
 
               <PrimaryButton
                 onPress={handleSignIn}
@@ -117,6 +138,23 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     ...typography.bodyMedium,
+  },
+  errorContainer: {
+    backgroundColor: '#FEE2E2',
+    borderRadius: 8,
+    padding: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#EF4444',
+  },
+  errorText: {
+    ...typography.body,
+    color: '#B91C1C',
+  },
+  signUpLink: {
+    ...typography.bodyMedium,
+    color: '#EA1D25',
+    marginTop: 5,
+    textDecorationLine: 'underline',
   },
   footer: {
     flexDirection: 'row',
