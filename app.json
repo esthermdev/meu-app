@@ -8,19 +8,21 @@
     "scheme": "meu.app",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/icons/splash-icon-dark.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.esmdev.TourneyAppMEU"
+      "bundleIdentifier": "com.esmdev.TourneyAppMEU",
+      "icon": "./assets/icons/ios-light.png"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.esmdev.TourneyAppMEU"
     },
     "web": {
       "bundler": "metro",
@@ -30,6 +32,7 @@
     "plugins": [
       "expo-router",
       "expo-font",
+      "expo-splash-screen",
       "expo-secure-store",
       "expo-notifications"
     ],
