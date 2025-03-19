@@ -46,10 +46,10 @@ export default function UserLayout() {
           },
           headerLeft: () => (
             <TouchableOpacity 
-            onPress={() => router.back()}
-          >
-            <MaterialIcons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
+              onPress={() => router.navigate('/(tabs)/home')}
+            >
+              <MaterialIcons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
           ),
           headerRight: () => (
             <TouchableOpacity 
