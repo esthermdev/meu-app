@@ -5,15 +5,15 @@ import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { fonts, typography } from '@/constants/Typography';
 
-interface CustomHeaderProps {
+interface CustomAdminHeader {
   title: string | string[];
 }
 
-export const CustomHeader: React.FC<CustomHeaderProps> = ({ title }) => {
+export const CustomAdminHeader: React.FC<CustomAdminHeader> = ({ title }) => {
   return (
     <View style={styles.headerContainer}>
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Ionicons name="arrow-back" size={23} color="#EA1D25" />
+        <Ionicons name="arrow-back" size={23} color="#fff" />
       </TouchableOpacity>
       <View style={styles.titleContainer}>
         <Text style={styles.header} maxFontSizeMultiplier={1}>{title}</Text>
@@ -30,13 +30,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#EA1D25',
     position: 'relative',
   },
   header: {
     fontFamily: fonts.semiBold,
     fontSize: 18,
-    color: '#000',
+    color: '#fff',
     textAlign: 'center',
   },
   backButton: {
@@ -51,4 +51,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomHeader;
+export default CustomAdminHeader;

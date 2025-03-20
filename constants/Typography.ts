@@ -63,7 +63,7 @@ export const typography = {
   // Other styles
   button: {
     fontFamily: fonts.bold,
-    fontSize: 18,
+    fontSize: 16,
   },
   caption: {
     fontFamily: fonts.regular,

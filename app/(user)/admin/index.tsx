@@ -32,7 +32,7 @@ const AdminScreen = () => {
     {
       title: 'Update Scores',
       iconName: 'scoreboard',
-      route: '/admin',
+      route: '/admin/update-scores',
     },
     {
       title: 'Trainers List',
