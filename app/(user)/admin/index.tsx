@@ -1,28 +1,27 @@
-import React from 'react';
-import { StatusBar, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 import { Href, router } from 'expo-router';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { typography } from '@/constants/Typography';
 
 // Define the type for Material Icons names
-type MaterialIconName = keyof typeof MaterialIcons.glyphMap;
+type MaterialCommunityIconName = keyof typeof MaterialCommunityIcons.glyphMap;
 
 interface AdminOptionProps {
   title: string;
-  iconName: MaterialIconName;
+  iconName: MaterialCommunityIconName;
   route: Href;
   onPress?: () => void;
 }
 
 interface AdminOptionType {
   title: string;
-  iconName: MaterialIconName;
+  iconName: MaterialCommunityIconName;
   route: Href;
 }
 
 const AdminOption = ({ title, iconName, onPress }: AdminOptionProps) => (
   <TouchableOpacity style={styles.optionButton} onPress={onPress}>
-    <MaterialIcons name={iconName} size={52} color="#FFFFFF" />
+    <MaterialCommunityIcons name={iconName} size={50} color="#EA1D25" />
     <Text maxFontSizeMultiplier={1} style={styles.optionText}>{title}</Text>
   </TouchableOpacity>
 );
@@ -36,30 +35,29 @@ const AdminScreen = () => {
     },
     {
       title: 'Trainers List',
-      iconName: 'sports',
+      iconName: 'whistle',
       route: '/admin/trainers-list',
     },
     {
       title: 'Cart Requests',
-      iconName: 'directions-car',
+      iconName: 'car',
       route: '/admin/cart-requests',
     },
     {
       title: 'Water Requests',
-      iconName: 'water-drop',
+      iconName: 'water',
       route: '/admin/water-requests',
     },
     {
       title: 'Send Public Announcement',
-      iconName: 'campaign',
+      iconName: 'bullhorn',
       route: '/admin/announcements',
     },
   ];
 
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.subtitle}>What do you need?</Text>
+    <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {adminOptions.map((option, index) => (
           <AdminOption
@@ -71,43 +69,36 @@ const AdminScreen = () => {
           />
         ))}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#333243',
-  },
-  subtitle: {
-    fontFamily: 'Outfit-Medium',
-    fontSize: 18,
-    color: '#FFFFFF',
-    marginTop: 20,
-    marginLeft: 20,
+    backgroundColor: '#000',
   },
   contentContainer: {
+    margin: 'auto',
+    backgroundColor: '#000',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 12,
   },
   optionButton: {
     width: '45%',
     aspectRatio: 1,
-    backgroundColor: '#EA1D25',
+    backgroundColor: '#262626',
     borderRadius: 15,
-    padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
   },
   optionText: {
+    marginTop: 5,
     color: '#FFFFFF',
-    fontSize: 16,
-    fontFamily: 'Outfit-SemiBold',
-    marginTop: 10,
+    ...typography.bodyMedium,
     textAlign: 'center',
   },
 });

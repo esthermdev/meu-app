@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar, SafeAreaView, ActivityIndicator } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useScheduleOptions } from '@/hooks/useScheduleConfig';
-import { fonts } from '@/constants/Typography';
+import { fonts, typography } from '@/constants/Typography';
 import { CustomUpdateScoresHeader } from '@/components/headers/CustomUpdateScoresHeader';
 import LoadingIndicator from '@/components/LoadingIndicator';
 
@@ -41,7 +41,9 @@ export default function GameTypesScreen() {
 
   if (loading) {
     return (
-      <LoadingIndicator message='Loading divisions...'/>
+      <SafeAreaView style={[styles.container, styles.centerContent]}>
+        <ActivityIndicator size="large" color="#EA1D25" />
+      </SafeAreaView>
     );
   }
 
@@ -72,7 +74,7 @@ export default function GameTypesScreen() {
               <MaterialCommunityIcons 
                 name={option.icon as any} 
                 size={24} 
-                color={option.icon_color || '#FF3B30'} 
+                color='#EA1D25' 
                 style={styles.icon} 
               />
             )}
@@ -107,23 +109,23 @@ const styles = StyleSheet.create({
     fontFamily: fonts.semiBold,
   },
   content: {
-    padding: 16,
+    padding: 20,
+    gap: 10
   },
   gameTypeItem: {
     backgroundColor: '#222',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 12,
+    padding: 20,
+    borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
   },
   icon: {
-    marginRight: 12,
+    marginRight: 15,
   },
   gameTypeText: {
+    ...typography.bodyLarge,
+    flex: 1,
     color: '#fff',
-    fontSize: 16,
-    fontFamily: fonts.medium,
   },
   errorText: {
     color: '#EA1D25',

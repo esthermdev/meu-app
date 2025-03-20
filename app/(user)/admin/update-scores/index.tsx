@@ -1,8 +1,7 @@
-// app/(user)/admin/update-scores/index.tsx
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
 import { useDivisions } from '@/hooks/useScheduleConfig';
-import { fonts } from '@/constants/Typography';
+import { fonts, typography } from '@/constants/Typography';
 
 export default function UpdateScoresDivisionsScreen() {
   const { divisions, loading, error } = useDivisions();
@@ -37,7 +36,7 @@ export default function UpdateScoresDivisionsScreen() {
           key={division.id}
           style={[
             styles.divisionItem,
-            { borderLeftColor: division.color || '#EA1D25' }
+            { shadowColor: division.color }
           ]}
           onPress={() => handleSelectDivision(division.id, division.title)}
         >
@@ -52,25 +51,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
-    padding: 20
+    padding: 20,
+    gap: 12,
   },
   centerContent: {
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   divisionItem: {
-    backgroundColor: '#222',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 12,
-    borderLeftWidth: 4,
+    backgroundColor: '#262626',
+    padding: 15,
+    borderRadius: 12,
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    shadowOffset: {
+      width: 0,
+      height: 3
+    }
   },
   divisionText: {
     color: '#fff',
-    fontSize: 16,
-    fontFamily: fonts.medium,
+    ...typography.h4,
     textAlign: 'center',
+    textDecorationLine: 'underline'
   },
   errorText: {
     color: '#EA1D25',
