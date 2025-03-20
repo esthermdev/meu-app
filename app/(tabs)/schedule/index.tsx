@@ -34,7 +34,7 @@ export default function ScheduleIndex() {
             asChild
           >
             <TouchableOpacity>
-              <View style={[styles.card, { borderColor: division.color, shadowColor: division.color }]}>
+              <View style={[styles.card, { borderColor: division.color, borderBottomWidth: 4 }]}>
                 <Text style={[styles.title, { color: division.color, textDecorationColor: division.color }]}>{division.title}</Text>
               </View>
             </TouchableOpacity>
@@ -63,12 +63,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: 12,
     borderWidth: 1,
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    shadowOffset: {
-      width: 0,
-      height: 3
-    }
   },
   title: {
     ...typography.h4,

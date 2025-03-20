@@ -4,6 +4,8 @@ import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthProvider';
 
 // Define notification behavior
 Notifications.setNotificationHandler({
@@ -23,6 +25,7 @@ const usePushNotifications = () => {
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
   const isInitialized = useRef(false);
+  const { user } = useAuth();
 
   // Register for push notifications
   const registerForPushNotifications = useCallback(async () => {
@@ -41,12 +44,106 @@ const usePushNotifications = () => {
       const token = pushTokenResponse.data;
       console.log('Push token obtained:', token);
       setExpoPushToken(token);
+
+      await saveTokenToStorage(token);
+
       return token;
     } catch (error) {
       console.error('Error getting push token:', error);
       return null;
     }
-  }, []);
+  }, [user]);
+
+  // Save token function - handles both authenticated and anonymous users
+  const saveTokenToStorage = async (token: string) => {
+    try {
+      // If user is authenticated, save to their profile
+      if (user) {
+        const { error } = await supabase
+          .from('profiles')
+          .update({ expo_push_token: token })
+          .eq('id', user.id);
+          
+        if (error) throw error;
+        console.log('Push token saved to user profile');
+      }
+      
+      // Always save token to local storage (for anonymous users or backup)
+      await AsyncStorage.setItem('expo_push_token', token);
+      
+      // Store a device identifier for anonymous users
+      const deviceId = await getOrCreateDeviceId();
+      await AsyncStorage.setItem('device_token_pair', JSON.stringify({
+        device_id: deviceId,
+        token: token
+      }));
+      
+      // If anonymous, register token in anonymous_tokens table
+      if (!user) {
+        await registerAnonymousToken(token);
+      }
+    } catch (error) {
+      console.error('Error saving push token:', error);
+    }
+  };
+
+  // Get or create a unique device ID
+  const getOrCreateDeviceId = async () => {
+    try {
+      const deviceId = await AsyncStorage.getItem('device_id');
+      if (deviceId) return deviceId;
+      
+      // Create a new UUID-like identifier
+      const newId = 'device_' + Math.random().toString(36).substring(2, 15) + 
+                    Math.random().toString(36).substring(2, 15);
+      await AsyncStorage.setItem('device_id', newId);
+      return newId;
+    } catch (error) {
+      console.error('Error with device ID:', error);
+      return 'unknown_device';
+    }
+  };
+
+  // Register token for anonymous users
+  const registerAnonymousToken = async (token: string) => {
+    try {
+      const deviceId = await getOrCreateDeviceId();
+      
+      // Check if this device already has a token registered
+      const { data, error: fetchError } = await supabase
+        .from('anonymous_tokens')
+        .select('*')
+        .eq('device_id', deviceId);
+        
+      if (fetchError) throw fetchError;
+      
+      if (data && data.length > 0) {
+        // Update existing token
+        const { error } = await supabase
+          .from('anonymous_tokens')
+          .update({ token: token, updated_at: new Date().toISOString() })
+          .eq('device_id', deviceId);
+          
+        if (error) throw error;
+      } else {
+        // Insert new token
+        const { error } = await supabase
+          .from('anonymous_tokens')
+          .insert({
+            device_id: deviceId,
+            token: token,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
+          
+        if (error) throw error;
+      }
+      
+      console.log('Anonymous token registered/updated');
+    } catch (error) {
+      console.error('Error registering anonymous token:', error);
+    }
+  };
 
   // Check if notification permissions are granted
   const checkPermissions = useCallback(async () => {

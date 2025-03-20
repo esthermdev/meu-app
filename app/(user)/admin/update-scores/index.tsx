@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   divisionItem: {
     backgroundColor: '#262626',
-    padding: 15,
+    padding: 16,
     borderRadius: 12,
     shadowOpacity: 1,
     shadowRadius: 0,

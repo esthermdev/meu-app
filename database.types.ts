@@ -9,6 +9,30 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      anonymous_tokens: {
+        Row: {
+          created_at: string | null
+          device_id: string
+          id: number
+          token: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          device_id: string
+          id?: number
+          token: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          device_id?: string
+          id?: number
+          token?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       cart_requests: {
         Row: {
           created_at: string | null
@@ -84,6 +108,30 @@ export type Database = {
           date?: string | null
           id?: number
           time?: string
+        }
+        Relationships: []
+      }
+      deletion_tokens: {
+        Row: {
+          created_at: string | null
+          expires_at: string
+          id: number
+          token: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at: string
+          id?: number
+          token: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string
+          id?: number
+          token?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -761,6 +809,10 @@ export type Database = {
     }
     Functions: {
       calculate_tiebreakers: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      create_deletion_tokens_table_if_not_exists: {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }

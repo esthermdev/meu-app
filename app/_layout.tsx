@@ -15,7 +15,6 @@ SplashScreen.preventAutoHideAsync().catch(error => {
 });
 
 export default function RootLayout() {
-  usePushNotifications();
 
   const [fontsLoaded] = useFonts({
     GeistThin: require('../assets/fonts/Geist-Thin.ttf'),

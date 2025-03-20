@@ -1,4 +1,3 @@
-// index.ts (Edge Function)
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const supabase = createClient(
@@ -81,23 +80,33 @@ Deno.serve(async (req: Request) => {
 
       console.log("Announcement saved to database");
 
-      // Then proceed with sending push notifications
-      const { data: users, error: fetchError } = await supabase
-        .from("profiles")
-        .select("expo_push_token")
-        .not("expo_push_token", "is", null);
+      // Collect tokens from both authenticated users and anonymous users
+      const [authUserResponse, anonymousResponse] = await Promise.all([
+        supabase.from("profiles").select("expo_push_token").not("expo_push_token", "is", null),
+        supabase.from("anonymous_tokens").select("token")
+      ]);
 
-      if (fetchError) throw fetchError;
+      if (authUserResponse.error) {
+        throw authUserResponse.error;
+      }
+      
+      if (anonymousResponse.error) {
+        throw anonymousResponse.error;
+      }
 
-      console.log("Fetched user tokens:", users.length);
+      // Extract tokens from both sources and deduplicate
+      const authTokens = authUserResponse.data.map(user => user.expo_push_token);
+      const anonymousTokens = anonymousResponse.data.map(entry => entry.token);
+      
+      // Combine and remove duplicates
+      const allTokens = [...new Set([...authTokens, ...anonymousTokens])];
+      
+      console.log(`Fetched total unique tokens: ${allTokens.length} (${authTokens.length} auth, ${anonymousTokens.length} anon)`);
 
-      const tokens = users.map((user: { expo_push_token: string }) =>
-        user.expo_push_token
-      );
-
+      // Send notifications in batches
       const results: ExpoPushResponse[] = [];
-      for (let i = 0; i < tokens.length; i += BATCH_SIZE) {
-        const batchTokens = tokens.slice(i, i + BATCH_SIZE);
+      for (let i = 0; i < allTokens.length; i += BATCH_SIZE) {
+        const batchTokens = allTokens.slice(i, i + BATCH_SIZE);
         const batchNotifications: Notification[] = batchTokens.map((token) => ({
           to: token,
           sound: "default",
@@ -108,7 +117,7 @@ Deno.serve(async (req: Request) => {
 
         console.log(
           `Preparing batch ${Math.floor(i / BATCH_SIZE) + 1} of ${
-            Math.ceil(tokens.length / BATCH_SIZE)
+            Math.ceil(allTokens.length / BATCH_SIZE)
           }`,
         );
         const result = await sendNotifications(batchNotifications);

@@ -5,6 +5,7 @@ import { Session, User } from '@supabase/supabase-js';
 import { Database } from '@/database.types'
 import * as Linking from "expo-linking";
 import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 
@@ -29,6 +30,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Flag to track if we're processing a deep link
   const [isProcessingDeepLink, setIsProcessingDeepLink] = useState(false);
+
+  const migrateAnonymousPushToken = async (userId: string) => {
+    try {
+      // Check if we have a token stored in AsyncStorage
+      const token = await AsyncStorage.getItem('expo_push_token');
+      const deviceId = await AsyncStorage.getItem('device_id');
+      
+      if (token && deviceId) {
+        // Update the user's profile with the token
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({ expo_push_token: token })
+          .eq('id', userId);
+          
+        if (updateError) throw updateError;
+        
+        // Delete the token from anonymous_tokens to avoid duplicate notifications
+        const { error: deleteError } = await supabase
+          .from('anonymous_tokens')
+          .delete()
+          .eq('device_id', deviceId);
+          
+        if (deleteError) throw deleteError;
+        
+        console.log('Successfully migrated anonymous push token to user profile');
+      }
+    } catch (error) {
+      console.error('Error migrating push token:', error);
+    }
+  };
 
   async function getProfile(userId: string) {
     try {
@@ -126,6 +157,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
       if (session?.user) {
         getProfile(session.user.id)
+        migrateAnonymousPushToken(session.user.id)
       }
       setLoading(false);
     });
@@ -136,6 +168,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
       if (session?.user) {
         getProfile(session.user.id)
+        migrateAnonymousPushToken(session.user.id)
       }
       setLoading(false);
 
@@ -208,8 +241,56 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
+    // Before signing out, ensure the token is saved to anonymous_tokens
+    try {
+      const token = await AsyncStorage.getItem('expo_push_token');
+      const deviceId = await AsyncStorage.getItem('device_id');
+      
+      if (token && deviceId) {
+        // Register as anonymous before logging out
+        await registerAnonymousToken(deviceId, token);
+      }
+    } catch (error) {
+      console.error('Error preserving push token before logout:', error);
+    }
+    
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
+  };
+
+  const registerAnonymousToken = async (deviceId: string, token: string) => {
+    try {
+      const { data, error: fetchError } = await supabase
+        .from('anonymous_tokens')
+        .select('*')
+        .eq('device_id', deviceId);
+        
+      if (fetchError) throw fetchError;
+      
+      if (data && data.length > 0) {
+        // Update existing token
+        const { error } = await supabase
+          .from('anonymous_tokens')
+          .update({ token, updated_at: new Date().toISOString() })
+          .eq('device_id', deviceId);
+          
+        if (error) throw error;
+      } else {
+        // Insert new token
+        const { error } = await supabase
+          .from('anonymous_tokens')
+          .insert({
+            device_id: deviceId,
+            token,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
+          
+        if (error) throw error;
+      }
+    } catch (error) {
+      console.error('Error registering anonymous token:', error);
+    }
   };
 
   const refreshProfile = async (userId?: string) => {
