@@ -39,24 +39,28 @@ const getAndroidPackage = () => {
   return 'com.esmdev.TourneyAppMEU';
 };
 
-export default ({ config }) => ({
-  ...config,
-  name: getAppName(),
-  ios: {
-    ...config.ios,
-    bundleIdentifier: getUniqueIdentifier(),
-  },
-  android: {
-    ...config.android,
-    package: getAndroidPackage(),
-    googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
-  },
-  extra: {
-    ...config.extra,
-    eas: {
-      ...config.extra?.eas,
-      projectId: "16c193f8-cab3-49c3-afed-39fcf60c01b5"
+export default ({ config }) => {
+  // Handle Google Services file
+  let googleServicesFile = './google-services.json';
+  
+  return {
+    ...config,
+    name: getAppName(),
+    ios: {
+      ...config.ios,
+      bundleIdentifier: getUniqueIdentifier(),
     },
-    appVariant: IS_DEV ? 'development' : IS_PREVIEW ? 'preview' : 'production'
-  }
-});
+    android: {
+      ...config.android,
+      package: getAndroidPackage(),
+    },
+    extra: {
+      ...config.extra,
+      eas: {
+        ...config.extra?.eas,
+        projectId: "16c193f8-cab3-49c3-afed-39fcf60c01b5"
+      },
+      appVariant: IS_DEV ? 'development' : IS_PREVIEW ? 'preview' : 'production'
+    }
+  };
+}
