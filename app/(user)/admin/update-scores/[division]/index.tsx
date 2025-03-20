@@ -1,11 +1,8 @@
-// app/(user)/admin/update-scores/[division].tsx
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, SafeAreaView, ActivityIndicator } from 'react-native';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar, SafeAreaView } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useScheduleOptions } from '@/hooks/useScheduleConfig';
 import { fonts } from '@/constants/Typography';
-import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
 import { CustomUpdateScoresHeader } from '@/components/headers/CustomUpdateScoresHeader';
 import LoadingIndicator from '@/components/LoadingIndicator';
 
