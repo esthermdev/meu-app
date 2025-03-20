@@ -4,7 +4,7 @@ import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import LargeCardButton from '@/components/buttons/LargeCardButton';
 import FullWidthButton from '@/components/buttons/FullWidthButton';
 import WaterRequestButton from '@/components/requests/WaterRequestButton';
-import MyGamesBackground from '@/components/MyGamesBackground';
+import MyGamesButtonBackground from '@/components/MyGamesButtonBackground';
 import CartRequestButton from '@/components/requests/CartRequestButton';
 import CircleIconButton from '@/components/buttons/CircleIconButton';
 import TrainerRequestButton from '@/components/requests/TrainerRequestButton';
@@ -21,13 +21,15 @@ export default function HomeScreen() {
         <View style={{ gap: 15 }}>
           <LargeCardButton
             title="My Games"
+            subtitle=""
             route="/(tabs)/home/mygames"
-            renderCustomBackground={() => <MyGamesBackground title="My Games" />}
+            renderCustomBackground={() => <MyGamesButtonBackground title="My Games" />}
           />
         
           <View style={styles.row}>
             <LargeCardButton
-              title="Report Spirit Scores"
+              title="Report"
+              subtitle="Spirit Scores"
               icon={<MaterialCommunityIcons name="handshake-outline" size={28} color="#fff" />}
               backgroundColor="#d89647"
               route="https://docs.google.com/forms/d/15NrrAtvd2mt_RGdpkTYDTYHGXHP0RTiIJEI0GXFwfp4/viewform?edit_requested=true"
@@ -36,6 +38,7 @@ export default function HomeScreen() {
             {/* Watch Live button with background image and play button */}
             <LargeCardButton
               title="Watch Live"
+              subtitle=""
               route="https://www.youtube.com/@maineultimate/streams"
               backgroundImage={require('@/assets/images/background-image.png')}
             />
@@ -105,7 +108,7 @@ const styles = StyleSheet.create({
     height: 40, // Adds some space before the bottom buttons
   },
   bottomButtons: {
-    gap: 10,
+    gap: 15,
     marginTop: 'auto', // Pushes the buttons to the bottom
   },
 });

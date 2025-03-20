@@ -1,9 +1,9 @@
 // components/backgrounds/MyGamesBackground.tsx
 import { View, StyleSheet, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { typography } from '@/constants/Typography';
+import { fonts, typography } from '@/constants/Typography';
 
-const MyGamesBackground = ({ title }: { title: string }) => {
+const MyGamesButtonBackground = ({ title }: { title: string }) => {
   return (
     <View style={styles.container}>
       {/* Decorative circle */}
@@ -38,8 +38,9 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#fff',
-    ...typography.h4,
+    fontFamily: fonts.semiBold,
+    fontSize: 18
   },
 });
 
-export default MyGamesBackground;
+export default MyGamesButtonBackground;

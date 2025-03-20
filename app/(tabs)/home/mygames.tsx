@@ -433,7 +433,6 @@ const MyGames = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   centerContainer: {
     flex: 1,
@@ -512,7 +511,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10
   },
   gameCard: {
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
     padding: 10,
     borderRadius: 12,
     marginBottom: 12,

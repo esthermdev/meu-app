@@ -10,12 +10,11 @@ import {
   KeyboardAvoidingView,
   Keyboard
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { useAuth } from '@/context/AuthProvider';
 import { useFavorites } from '@/hooks/useFavorites';
 import { FavoriteTeamsList } from '@/components/FavoriteTeamsList';
-import CustomHeader from '@/components/headers/CustomHeader';
 import { typography } from '@/constants/Typography';
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
@@ -76,11 +75,6 @@ const FavoritesScreen = () => {
     });
   }, [teams, searchQuery, favorites]);
 
-  // Count favorited teams that match the current search
-  const favoritedTeamsCount = useMemo(() => {
-    return filteredTeams.filter(team => favorites.has(team.id)).length;
-  }, [filteredTeams, favorites]);
-
   const onRefresh = async () => {
     setRefreshing(true);
     await Promise.all([loadData(), fetchDivisions()]);
@@ -93,7 +87,6 @@ const FavoritesScreen = () => {
 
   return (
     <View style={styles.container}>
-      <CustomHeader title="Favorites" />
       <KeyboardAvoidingView behavior="padding">
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.headerContainer}>
@@ -101,7 +94,7 @@ const FavoritesScreen = () => {
             
             {/* Custom Search Bar */}
             <View style={styles.searchBarContainer}>
-              <Ionicons name="search" size={20} color="#86939e" style={styles.searchIcon} />
+              <MaterialIcons name="search" size={20} color="#86939e" style={styles.searchIcon} />
               <TextInput
                 style={styles.searchInput}
                 placeholder="Search teams..."
@@ -188,10 +181,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#fff',
     borderRadius: 100,
-    paddingHorizontal: 15,
-    paddingVertical: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     marginBottom: 15,
     borderWidth: 1,
     borderColor: '#000',
@@ -201,8 +195,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    height: 40,
-    ...typography.bodyMedium,
+    ...typography.body,
     color: '#000',
   },
   statsContainer: {

@@ -14,8 +14,7 @@ import {
   ActivityIndicator
 } from 'react-native';
 import { supabase } from '@/lib/supabase';
-import { fonts, typography } from '@/constants/Typography';
-import CustomHeader from '@/components/headers/CustomHeader';
+import { fonts } from '@/constants/Typography';
 
 const FeedbackScreen = () => {
   const [subject, setSubject] = useState<string>('');
@@ -55,7 +54,6 @@ const FeedbackScreen = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <CustomHeader title="Feedback" />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <View style={styles.content}>

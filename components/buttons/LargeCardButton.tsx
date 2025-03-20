@@ -3,12 +3,13 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ImageBackground } from 'react-native';
 import { router, Href } from 'expo-router';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { typography } from '@/constants/Typography';
+import { fonts, typography } from '@/constants/Typography';
 
 type FontAwesomeNames = keyof typeof FontAwesome.glyphMap;
 
 interface LargeCardButtonProps {
   title: string;
+  subtitle: string;
   icon?: FontAwesomeNames | React.ReactNode;
   backgroundColor?: string;
   route?: Href<string | object>;
@@ -19,6 +20,7 @@ interface LargeCardButtonProps {
 
 const LargeCardButton: React.FC<LargeCardButtonProps> = ({
   title,
+  subtitle,
   icon,
   backgroundColor = '#333',
   route,
@@ -52,7 +54,7 @@ const LargeCardButton: React.FC<LargeCardButtonProps> = ({
           <View>{icon}</View>
         )}
 
-        <Text style={styles.text}>{title}</Text>
+        <Text style={styles.text}>{title}{'\n'}{subtitle}</Text>
       </View>
     );
   };
@@ -98,7 +100,8 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#fff',
-    ...typography.h4
+    fontFamily: fonts.semiBold,
+    fontSize: 18,
   },
 });
 

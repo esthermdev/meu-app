@@ -1,9 +1,9 @@
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Redirect, router, Stack } from 'expo-router';
-
 import { useAuth } from '@/context/AuthProvider';
-import Header from '@/components/headers/Header';
+import CustomHeader from '@/components/headers/CustomHeader';
+import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
 
 export default function UserLayout() {
   const { session, loading, signOut } = useAuth();
@@ -70,9 +70,6 @@ export default function UserLayout() {
             backgroundColor: '#EA1D25',
           },
           headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
           headerLeft: () => (
             <TouchableOpacity 
               onPress={() => router.back()}
@@ -85,13 +82,37 @@ export default function UserLayout() {
       <Stack.Screen 
         name='favorites'
         options={{
-          header: () => <Header />
+          title: 'Favorites',
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: '#EA1D25',
+          },
+          headerTintColor: '#fff',
+          headerLeft: () => (
+            <TouchableOpacity 
+              onPress={() => router.back()}
+            >
+              <MaterialIcons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+          ),
         }}
       />
       <Stack.Screen 
         name='feedback'
         options={{
-          header: () => <Header />
+          title: 'Feedback',
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: '#EA1D25',
+          },
+          headerTintColor: '#fff',
+          headerLeft: () => (
+            <TouchableOpacity 
+              onPress={() => router.back()}
+            >
+              <MaterialIcons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+          ),
         }}
       />
       <Stack.Screen 

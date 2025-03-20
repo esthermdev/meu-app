@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';
 import { useDivisions } from '@/hooks/useScheduleConfig';

@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
   },
   disabledText: {
-    ...typography.bodyMedium,
+    ...typography.button,
     color: '#666',
     marginLeft: 8,
     flex: 1,
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   inputWithIcon: {
     flex: 1,
     marginLeft: 8,
-    ...typography.bodyMedium,
+    ...typography.button,
   },
   buttonContainer: {
     gap: 15,

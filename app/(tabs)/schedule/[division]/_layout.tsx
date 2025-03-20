@@ -1,5 +1,3 @@
-// app/schedule/[division]/_layout.js
-import React from 'react';
 import { Stack } from 'expo-router';
 import CustomHeader from '@/components/headers/CustomHeader';
 import { useScheduleOptions } from '@/hooks/useScheduleConfig';
