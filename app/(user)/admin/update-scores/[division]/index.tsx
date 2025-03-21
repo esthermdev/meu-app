@@ -4,7 +4,6 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useScheduleOptions } from '@/hooks/useScheduleConfig';
 import { fonts, typography } from '@/constants/Typography';
 import { CustomUpdateScoresHeader } from '@/components/headers/CustomUpdateScoresHeader';
-import LoadingIndicator from '@/components/LoadingIndicator';
 
 export default function GameTypesScreen() {
   const params = useLocalSearchParams();

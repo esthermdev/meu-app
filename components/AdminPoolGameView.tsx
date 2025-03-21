@@ -12,7 +12,7 @@ import {
 import { supabase } from '@/lib/supabase';
 import { fonts } from '@/constants/Typography';
 import AdminGameComponent from './AdminGameComponent';
-import { router } from 'expo-router';
+import AdminBottomActionButtons from './buttons/AdminBottomActionButtons';
 
 interface PoolAdminViewProps {
   poolId: number;
@@ -178,21 +178,14 @@ const PoolAdminView: React.FC<PoolAdminViewProps> = ({ poolId, divisionId }) => 
       />
 
       {/* Bottom Action Buttons */}
-      <View style={styles.bottomActions}>
-        <TouchableOpacity 
-          style={styles.resetButton}
-          onPress={handleResetAllGames}
-        >
-          <Text style={styles.resetButtonText}>Reset All Games</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.completeAllButton}
-          onPress={handleMarkAllCompleted}
-        >
-          <Text style={styles.completeAllButtonText}>Mark All Games as Completed</Text>
-        </TouchableOpacity>
-      </View>
+      <AdminBottomActionButtons 
+        leftButton={() => null}
+        rightButton={() => null}
+        rightText='Reset All Games'
+        leftText='Mark All Games as Completed'
+        rightColor='#DDCF9B'
+        leftColor='#ED8C22'
+      />
     </View>
   );
 };
@@ -206,9 +199,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#000',
   },
   gamesList: {
-    padding: 16,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
   },
   emptyContainer: {
     padding: 40,
@@ -221,35 +216,45 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   bottomActions: {
+    borderTopColor: '#B3B3B34D',
+    borderTopWidth: 1,
     flexDirection: 'row',
-    padding: 16,
-    backgroundColor: '#151515',
+    paddingTop: 15,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    backgroundColor: '#242424',
+    gap: 12,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   resetButton: {
     flex: 1,
-    backgroundColor: '#E5D9B6',
-    paddingVertical: 16,
+    backgroundColor: '#DDCF9B',
+    paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
-    marginRight: 8,
+    height: 62,
+    justifyContent: 'center'
   },
   resetButtonText: {
     color: '#000',
     fontFamily: fonts.semiBold,
     fontSize: 14,
+    textAlign: 'center'
   },
   completeAllButton: {
     flex: 1,
-    backgroundColor: '#FF9500',
-    paddingVertical: 16,
+    backgroundColor: '#ED8C22',
+    paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
-    marginLeft: 8,
+    maxHeight: 62
   },
   completeAllButtonText: {
     color: '#fff',
     fontFamily: fonts.semiBold,
     fontSize: 14,
+    textAlign: 'center'
   },
   errorText: {
     color: '#EA1D25',

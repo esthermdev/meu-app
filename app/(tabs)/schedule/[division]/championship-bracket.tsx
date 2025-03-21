@@ -1,6 +1,6 @@
 // app/(tabs)/schedule/championship-bracket.tsx
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated, LayoutAnimation, Platform, UIManager } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, LayoutAnimation, Platform, UIManager } from 'react-native';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 import GameComponent from '@/components/GameComponent';
 import { supabase } from '@/lib/supabase';
@@ -8,7 +8,7 @@ import { Tables } from '@/database.types';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { formatDate } from '@/utils/formatDate';
 import { typography } from '@/constants/Typography';
-import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
 type Round = Tables<'rounds'>;
 type Game = Tables<'games'> & {

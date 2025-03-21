@@ -8,7 +8,10 @@ import {
   StatusBar, 
   SafeAreaView, 
   SectionList,
-  Alert
+  Alert,
+  LayoutAnimation, 
+  Platform, 
+  UIManager
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { supabase } from '@/lib/supabase';
@@ -17,9 +20,13 @@ import AdminGameComponent from '@/components/AdminGameComponent';
 import { useScheduleId } from '@/hooks/useGamesFilter';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { CustomUpdateScoresHeader } from '@/components/headers/CustomUpdateScoresHeader';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 
-
+if (Platform.OS === 'android') {
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+}
 
 export default function UpdateScoresScreen() {
   const params = useLocalSearchParams();
@@ -31,6 +38,29 @@ export default function UpdateScoresScreen() {
   const { games, loading, error } = useScheduleId(divisionId, scheduleId, refreshKey);
 
   const [collapsedSections, setCollapsedSections] = useState<{[key: string]: boolean}>({});
+
+  const toggleSection = useCallback((sectionId: string) => {
+    const animationConfig = {
+      duration: 300,
+      update: {
+        duration: 300,
+        property: LayoutAnimation.Properties.opacity,
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+      delete: {
+        duration: 200,
+        property: LayoutAnimation.Properties.opacity,
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    };
+    
+    LayoutAnimation.configureNext(animationConfig);
+    
+    setCollapsedSections(prev => ({
+      ...prev,
+      [sectionId]: !prev[sectionId]
+    }));
+  }, []);
 
   const refreshGames = useCallback(() => {
     setRefreshKey(prev => prev + 1);
@@ -189,17 +219,12 @@ export default function UpdateScoresScreen() {
             <TouchableOpacity 
               style={styles.sectionHeader}
               activeOpacity={0.7}
-              onPress={() => {
-                setCollapsedSections(prev => ({
-                  ...prev,
-                  [sectionId]: !prev[sectionId]
-                }));
-              }}
+              onPress={() => toggleSection(sectionId)}
             >
               <Text style={styles.sectionHeaderText}>{section.title}</Text>
-              <View style={styles.expandIcon}>
-                <Text style={styles.expandIconText}>{isCollapsed ? <FontAwesome name='caret-up' size={24} color={'#fff'} /> : <FontAwesome name='caret-down' size={24} color={'#fff'} />}</Text>
-              </View>
+              {isCollapsed ? 
+                <MaterialIcons name='keyboard-arrow-down' size={24} color='#fff' /> : 
+                <MaterialIcons name='keyboard-arrow-left' size={24} color='#fff' /> }
             </TouchableOpacity>
           );
         }}
@@ -242,19 +267,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   gamesList: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 15,
   },
   sectionHeader: {
     backgroundColor: '#1a0000',
     borderWidth: 1,
     borderColor: '#EA1D25',
     borderRadius: 8,
-    marginVertical: 8,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
+    padding: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 12
   },
   sectionHeaderText: {
     color: '#fff',
