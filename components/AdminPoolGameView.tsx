@@ -203,7 +203,8 @@ const styles = StyleSheet.create({
   },
   gamesList: {
     paddingHorizontal: 15,
-    paddingVertical: 12,
+    paddingTop: 3,
+    paddingBottom: 15
   },
   emptyContainer: {
     padding: 40,

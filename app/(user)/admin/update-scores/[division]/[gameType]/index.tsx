@@ -21,6 +21,7 @@ import { useScheduleId } from '@/hooks/useGamesFilter';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { CustomUpdateScoresHeader } from '@/components/headers/CustomUpdateScoresHeader';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import AdminBottomActionButtons from '@/components/buttons/AdminBottomActionButtons';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -238,21 +239,14 @@ export default function UpdateScoresScreen() {
       />
 
       {/* Bottom Action Buttons */}
-      <View style={styles.bottomActions}>
-        <TouchableOpacity 
-          style={styles.resetButton}
-          onPress={handleResetAllGames}
-        >
-          <Text style={styles.resetButtonText}>Reset All Games</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.completeAllButton}
-          onPress={handleMarkAllCompleted}
-        >
-          <Text style={styles.completeAllButtonText}>Mark All Games as Completed</Text>
-        </TouchableOpacity>
-      </View>
+      <AdminBottomActionButtons 
+        leftButton={() => null}
+        rightButton={() => null}
+        rightText='Reset All Games'
+        leftText='Mark All Games as Completed'
+        rightColor='#DDCF9B'
+        leftColor='#ED8C22'
+      />
     </View>
   );
 }
@@ -268,6 +262,7 @@ const styles = StyleSheet.create({
   },
   gamesList: {
     paddingHorizontal: 15,
+    paddingBottom: 15
   },
   sectionHeader: {
     backgroundColor: '#1a0000',
@@ -278,7 +273,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 12
+    marginTop: 15
   },
   sectionHeaderText: {
     color: '#fff',
