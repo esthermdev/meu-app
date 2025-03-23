@@ -33,10 +33,9 @@ export default function PoolPlayScreen() {
     <Tab.Navigator
       screenOptions={{
         tabBarActiveTintColor: '#EA1D25',
-        tabBarInactiveTintColor: '#fff',
+        tabBarInactiveTintColor: '#000',
         tabBarLabelStyle: { ...typography.bodySmall },
         tabBarIndicatorStyle: { backgroundColor: '#EA1D25' },
-        tabBarStyle: { backgroundColor: '#262626' },
         lazy: true,
       }}
     >

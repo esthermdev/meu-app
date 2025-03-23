@@ -5,10 +5,15 @@ import { Database } from '@/database.types';
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type TeamsRow = Database['public']['Tables']['teams']['Row'];
 type PoolsRow = Database['public']['Tables']['pools']['Row'];
+type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
+type ScoresRow = Database['public']['Tables']['scores']['Row'];
+
 
 interface Games extends GamesRow {
   team1: TeamsRow | null;
   team2: TeamsRow | null;
+  datetime: DatetimeRow | null;
+  scores: ScoresRow[] | null;
 }
 
 export function useRoundIds(divisionId: number, roundId: number) {

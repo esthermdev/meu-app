@@ -583,14 +583,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10
   },
   scoreText: {
-    ...typography.h3,
+    ...typography.h4,
     color: '#333',
   },
   updateScoreButton: {
     alignItems: 'center',
   },
   updateScoreText: {
-    ...typography.bodySmall,
+    ...typography.bodySmallBold,
     color: '#EA1D25',
     textDecorationLine: 'underline'
   },
