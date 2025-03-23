@@ -10,7 +10,6 @@ import { Database } from '@/database.types';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
 import { typography } from '@/constants/Typography';
-import { useRoundIds } from '@/hooks/useGamesFilter';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
@@ -21,23 +20,17 @@ type ScoresRow = Database['public']['Tables']['scores']['Row'];
 interface FetchedGame extends GamesRow {
   team1: TeamRow | null;
   team2: TeamRow | null;
-}
-
-// Define our extended interface for the rendered games
-interface RenderGame extends FetchedGame {
-  datetime?: DatetimeRow | null;
-  scores?: ScoresRow[];
+  datetime: DatetimeRow | null;
+  scores: ScoresRow[] | null;
 }
 
 interface GameComponentProps {
-  divisionId: number;
-  roundId: number;
+  game: FetchedGame;
 }
 
-const GameComponent: React.FC<GameComponentProps> = ({ divisionId, roundId }) => {
-  const { games: fetchedGames, loading, error } = useRoundIds(divisionId, roundId);
+const GameComponent: React.FC<GameComponentProps> = ({ game }) => {
 
-  const renderGame = ({ item }: { item: RenderGame }) => (
+  const renderGame = ({ item }: { item: FetchedGame }) => (
     <View style={styles.gameCard}>
       <View style={styles.gameHeader}>
         <Text style={styles.dateText}>{formatDate(item.datetime?.date, 'short')}</Text>
@@ -46,30 +39,30 @@ const GameComponent: React.FC<GameComponentProps> = ({ divisionId, roundId }) =>
         </View>
         <Text style={styles.fieldText}>Field {item.field_id}</Text>
       </View>
-      
+
       {/* Teams and Score Container - New Layout */}
       <View style={styles.matchupContainer}>
         {/* Left side: Teams */}
         <View style={styles.teamsSection}>
           {/* Team 1 */}
           <View style={styles.teamRow}>
-            <Image 
-              source={item.team1?.avatar_uri ? { uri: item.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
-              style={styles.teamLogo} 
+            <Image
+              source={item.team1?.avatar_uri ? { uri: item.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
+              style={styles.teamLogo}
             />
             <Text style={styles.teamText}>{item.team1?.name}</Text>
           </View>
-          
+
           {/* Team 2 */}
           <View style={styles.teamRow}>
-            <Image 
-              source={item.team2?.avatar_uri ? { uri: item.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
-              style={styles.teamLogo} 
+            <Image
+              source={item.team2?.avatar_uri ? { uri: item.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
+              style={styles.teamLogo}
             />
             <Text style={styles.teamText}>{item.team2?.name}</Text>
           </View>
         </View>
-        
+
         {/* Right side: Scores */}
         <View style={styles.scoresSection}>
           <Text style={styles.scoreText}>
@@ -83,33 +76,11 @@ const GameComponent: React.FC<GameComponentProps> = ({ divisionId, roundId }) =>
     </View>
   );
 
-  const renderPlaceholder = () => (
-    <View style={styles.placeholderContainer}>
-      <Text style={styles.placeholderTitle}>Games Coming Soon!</Text>
-    </View>
-  );
-
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.loadingText}>Loading...</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
-      {fetchedGames && fetchedGames.length > 0 ? (
-        <View style={styles.listContainer}>
-          {fetchedGames.map((item) => (
-            <View key={item.id.toString()}>
-              {renderGame({ item: item as unknown as RenderGame })}
-            </View>
-          ))}
-        </View>
-      ) : (
-        renderPlaceholder()
-      )}
+      <View key={game.id.toString()}>
+        {renderGame({ item: game as FetchedGame })}
+      </View>
     </View>
   );
 };
@@ -118,22 +89,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  listContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 15
-  },
   // Game Card Styles
   gameCard: {
     backgroundColor: 'white',
     padding: 10,
     borderRadius: 12,
-    marginTop: 10,
     gap: 15,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+    marginTop: 10
   },
   gameHeader: {
     flexDirection: 'row',

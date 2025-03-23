@@ -1,15 +1,16 @@
-import React from 'react';
 import { View, ActivityIndicator, Text } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { useDivisions } from '@/hooks/useScheduleConfig';
 import { usePoolIds } from '@/hooks/useGamesFilter';
+import { useLocalSearchParams } from 'expo-router';
+import { typography } from '@/constants/Typography';
 import PoolGameComponent from '@/components/PoolGameComponent';
 
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function PoolPlayScreen() {
-  const { divisionId } = useDivisions();
+  const params = useLocalSearchParams();
+  const divisionId = Number(params.division)
   const { pools, loading, error } = usePoolIds(divisionId);
 
   if (loading) {
@@ -32,9 +33,10 @@ export default function PoolPlayScreen() {
     <Tab.Navigator
       screenOptions={{
         tabBarActiveTintColor: '#EA1D25',
-        tabBarInactiveTintColor: '#8F8DAA',
-        tabBarLabelStyle: { fontFamily: 'Outfit-Semibold', fontSize: 12 },
+        tabBarInactiveTintColor: '#fff',
+        tabBarLabelStyle: { ...typography.bodySmall },
         tabBarIndicatorStyle: { backgroundColor: '#EA1D25' },
+        tabBarStyle: { backgroundColor: '#262626' },
         lazy: true,
       }}
     >

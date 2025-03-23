@@ -1,11 +1,18 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Link } from 'expo-router';
+import { router } from 'expo-router';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 import LoadingIndicator from '@/components/LoadingIndicator';
-import { typography } from '@/constants/Typography';
+import { fonts, typography } from '@/constants/Typography';
 
 export default function ScheduleIndex() {
   const { divisions, loading, error } = useDivisions();
+
+  const handleSelectDivision = (divisionId: number, divisionName: string) => {
+    router.push({
+      pathname: `/(tabs)/schedule/[division]`,
+      params: { division: divisionId, divisionName }
+    });
+  };
 
   if (loading) {
     return (
@@ -13,32 +20,26 @@ export default function ScheduleIndex() {
     );
   }
 
-  if (error) {
-    return (
-      <View>
-        <Text>{error}</Text>
-      </View>
-    );
-  }
+    if (error) {
+      return (
+        <View style={[styles.container, styles.centerContent]}>
+          <Text style={styles.errorText}>Error loading divisions: {error}</Text>
+        </View>
+      );
+    }
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         {divisions.map((division) => (
-          <Link
+          <TouchableOpacity
             key={division.id}
-            href={{
-              pathname: '/schedule/[division]',
-              params: { division: division.id, divisionName: division.title }
-            }}
-            asChild
+            onPress={() => handleSelectDivision(division.id, division.title)}
           >
-            <TouchableOpacity>
-              <View style={[styles.card, { borderColor: division.color, borderBottomWidth: 4 }]}>
-                <Text style={[styles.title, { color: division.color, textDecorationColor: division.color }]}>{division.title}</Text>
-              </View>
-            </TouchableOpacity>
-          </Link>
+            <View style={[styles.card, { borderColor: division.color, borderBottomWidth: 4 }]}>
+              <Text style={[styles.title, { color: division.color, textDecorationColor: division.color }]}>{division.title}</Text>
+            </View>
+          </TouchableOpacity>
         ))}
       </View>
     </View>
@@ -50,6 +51,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  centerContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
     padding: 20,
@@ -68,5 +73,9 @@ const styles = StyleSheet.create({
     ...typography.h4,
     textDecorationLine: 'underline',
   },
-
+  errorText: {
+    color: '#EA1D25',
+    fontSize: 16,
+    fontFamily: fonts.medium,
+  },
 });

@@ -14,7 +14,7 @@ export default function GameTypesScreen() {
 
   const handleSelectGameType = (gameTypeId: number, gameTypeTitle: string, route: string) => {
     // Check if it's a pool play route
-    if (route === '[poolplay]') {
+    if (route === 'poolplay') {
       router.push({
         pathname: `/(user)/admin/update-scores/[division]/[gameType]/poolplay`,
         params: {

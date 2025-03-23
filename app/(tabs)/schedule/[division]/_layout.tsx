@@ -4,8 +4,7 @@ import { useScheduleOptions } from '@/hooks/useScheduleConfig';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 
 export default function DivisionLayout() {
-	const { divisionId, divisionName } = useDivisions()
-	const { scheduleOptions } = useScheduleOptions(divisionId)
+	const { divisionName } = useDivisions()
 
 	return (
 		<Stack>
@@ -15,16 +14,10 @@ export default function DivisionLayout() {
 					header: () => <CustomHeader title={divisionName} />
 				}}
 			/>
-			{scheduleOptions.map(gameType => 
-				<Stack.Screen 
-					key={gameType.route}
-					name={gameType.route}
-					options={{
-						title: gameType.title,
-						header: () => <CustomHeader title={divisionName} />,
-					}}
-				/>
-			)}
+			<Stack.Screen
+				name="[gameType]"
+				options={{ headerShown: false }}
+			/>
 		</Stack>
 	);
 }

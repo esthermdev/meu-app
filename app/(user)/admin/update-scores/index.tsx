@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 import { fonts, typography } from '@/constants/Typography';
 
-export default function UpdateScoresDivisionsScreen() {
+export default function UpdateScoresIndex() {
   const { divisions, loading, error } = useDivisions();
 
   const handleSelectDivision = (divisionId: number, divisionName: string) => {

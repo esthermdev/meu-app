@@ -1,6 +1,5 @@
-import { SafeAreaView } from 'react-native';
-import { CustomUpdateScoresHeader } from '@/components/headers/CustomUpdateScoresHeader';
 import { Stack } from 'expo-router';
+import CustomHeader from '@/components/headers/CustomHeader';
 
 export default function GameTypeLayout() {
   return (
@@ -13,9 +12,7 @@ export default function GameTypeLayout() {
         name="poolplay"
         options={{
           header: () =>
-            <SafeAreaView style={{ backgroundColor: '#EA1D25' }}>
-              <CustomUpdateScoresHeader title='Pool Play' />
-            </SafeAreaView>
+            <CustomHeader title="Pool Play" />
         }}
       />
     </Stack>
