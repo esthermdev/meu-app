@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
-import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons, MaterialCommunityIcons, FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthProvider';
+import { typography } from '@/constants/Typography';
 
 interface Notification {
   id: number;
@@ -13,7 +14,7 @@ interface Notification {
   message: string;
   type: string;
   created_at: string;
-  is_read: boolean; // This will be derived from notification_read_status
+  is_read: boolean;
 }
 
 const NotificationScreen = () => {
@@ -52,6 +53,7 @@ const NotificationScreen = () => {
     };
   }, [session]);
 
+  // Keep all the existing functionality
   const fetchNotifications = async () => {
     try {
       setLoading(true);
@@ -154,36 +156,31 @@ const NotificationScreen = () => {
   };
 
   const formatDate = (dateString: string) => {
+    const now = new Date();
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    
+    if (diffInSeconds < 60) {
+      // Less than a minute ago
+      return `${diffInSeconds}s ago`;
+    } else if (diffInSeconds < 3600) {
+      // Less than an hour ago
+      const minutes = Math.floor(diffInSeconds / 60);
+      return `${minutes}m ago`;
+    } else if (diffInSeconds < 86400) {
+      // Less than a day ago
+      const hours = Math.floor(diffInSeconds / 3600);
+      return `${hours}h ago`;
+    } else {
+      // More than a day ago
+      return date.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
   };
-
-  const renderNotification = ({ item }: { item: Notification }) => (
-    <TouchableOpacity 
-      style={[
-        styles.notificationItem, 
-        !item.is_read && styles.unreadNotification
-      ]}
-      onPress={() => handleNotificationPress(item)}
-    >
-      <View style={styles.iconContainer}>
-        <MaterialIcons name="campaign" size={24} color="#444" />
-      </View>
-      <View style={styles.contentContainer}>
-        <Text style={styles.notificationTitle}>{item.title}</Text>
-        <Text style={styles.notificationMessage}>{item.message}</Text>
-        <Text style={styles.notificationTime}>{formatDate(item.created_at)}</Text>
-      </View>
-      {!item.is_read && (
-        <View style={styles.unreadIndicator} />
-      )}
-    </TouchableOpacity>
-  );
 
   const handleMarkAllAsRead = async () => {
     if (session?.user) {
@@ -220,47 +217,42 @@ const NotificationScreen = () => {
     }
   };
 
+  const renderNotification = ({ item }: { item: Notification }) => (
+    <TouchableOpacity style={styles.notificationItem} onPress={() => handleNotificationPress(item)}>
+      <View style={styles.iconContainer}>
+        <View style={styles.iconCircle}>
+          <MaterialCommunityIcons name="bullhorn" size={24} color="#EA1D25" />
+        </View>
+      </View>
+      <View style={styles.contentContainer}>
+        <Text style={styles.notificationTitle}>{item.title}</Text>
+        <Text>{item.message}</Text>
+        <Text style={styles.notificationTime}>{formatDate(item.created_at)}</Text>
+      </View>
+      {!item.is_read && (
+        <View style={styles.unreadIndicator} />
+      )}
+    </TouchableOpacity>
+  );
+
   return (
     <SafeAreaView edges={['bottom']} style={styles.container}>
       <Stack.Screen 
         options={{
-          headerTitle: 'Announcements',
-          headerLeft: () => (
-            <TouchableOpacity 
-              onPress={() => router.back()}
-              style={{ marginLeft: 10 }}
-            >
-              <Ionicons name="arrow-back" size={24} color="#000" />
-            </TouchableOpacity>
-          ),
-          headerRight: () => (
-            <View style={{ flexDirection: 'row' }}>
-              {session?.user && (
-                <TouchableOpacity 
-                  onPress={handleMarkAllAsRead}
-                  style={{ marginRight: 15 }}
-                  disabled={notifications.filter(n => !n.is_read).length === 0}
-                >
-                  <Text 
-                    style={{ 
-                      color: notifications.filter(n => !n.is_read).length === 0 ? '#ccc' : '#EA1D25',
-                      fontFamily: 'GeistMedium'
-                    }}
-                  >
-                    Mark all read
-                  </Text>
-                </TouchableOpacity>
-              )}
-              <TouchableOpacity 
-                onPress={fetchNotifications}
-                style={{ marginRight: 10 }}
-              >
-                <MaterialIcons name="refresh" size={24} color="#000" />
-              </TouchableOpacity>
-            </View>
-          )
+          headerTitle: "Notifications",
+          headerTitleStyle: {
+            fontFamily: 'GeistMedium',
+            fontSize: 28,
+            color: '#EA1D25'
+          },
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerShadowVisible: false,
         }} 
       />
+      
+      <View style={styles.divider} />
       
       {loading ? (
         <View style={styles.loadingContainer}>
@@ -288,7 +280,12 @@ const NotificationScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#e0e0e0',
+    width: '100%',
   },
   loadingContainer: {
     flex: 1,
@@ -296,58 +293,47 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   listContainer: {
-    padding: 16,
+    paddingHorizontal: 20
   },
   notificationItem: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-  },
-  unreadNotification: {
-    backgroundColor: '#f8f8f8',
-    borderLeftColor: '#EA1D25',
-    borderLeftWidth: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+    alignItems: 'center',
+    paddingVertical: 15
   },
   iconContainer: {
-    marginRight: 12,
+    marginRight: 15,
+  },
+  iconCircle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#F2F2F2',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 40,
   },
   contentContainer: {
     flex: 1,
   },
   notificationTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,
-    fontFamily: 'GeistMedium',
+    ...typography.bodyMedium,
+    color: '#333',
   },
   notificationMessage: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 6,
-    fontFamily: 'GeistRegular',
+    ...typography.bodyMediumRegular
   },
   notificationTime: {
-    fontSize: 12,
-    color: '#888',
-    fontFamily: 'GeistLight',
+    ...typography.body,
+    color: '#969696',
+    marginTop: 4
   },
   unreadIndicator: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: '#EA1D25',
-    alignSelf: 'flex-start',
-    margin: 4,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#f5a623',
+    marginLeft: 10,
   },
   emptyContainer: {
     flex: 1,
@@ -360,6 +346,28 @@ const styles = StyleSheet.create({
     color: '#888',
     marginTop: 16,
     fontFamily: 'GeistMedium',
+  },
+  // Tab Bar Styles
+  tabBar: {
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+    height: 60,
+    backgroundColor: 'white',
+  },
+  tabItem: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tabText: {
+    fontSize: 12,
+    color: '#888',
+    marginTop: 4,
+    fontFamily: 'GeistRegular',
+  },
+  activeTabText: {
+    color: '#EA1D25',
   },
 });
 
