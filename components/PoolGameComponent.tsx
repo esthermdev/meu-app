@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
       borderRadius: 18,
     },
     teamText: {
-      ...typography.bodyBold,
+      ...typography.bodyMedium,
       color: '#444',
     },
     scoresSection: {

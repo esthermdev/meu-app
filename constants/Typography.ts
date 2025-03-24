@@ -39,8 +39,16 @@ export const typography = {
     fontFamily: fonts.bold,
     fontSize: 18,
   },
+  bodyMediumBold: {
+    fontFamily: fonts.bold,
+    fontSize: 16,
+  },
   bodyMedium: {
     fontFamily: fonts.semiBold,
+    fontSize: 16,
+  },
+  bodyMediumRegular: {
+    fontFamily: fonts.regular,
     fontSize: 16,
   },
   body: {
