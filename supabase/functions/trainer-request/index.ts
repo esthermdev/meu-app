@@ -64,7 +64,7 @@ Deno.serve(async (req) => {
       const notification = {
         sound: "default",
         title: "Medical Assistance Required",
-        body: `Field ${payload.record.field_number}: ${payload.record.description_of_emergency}`,
+        body: `Location: Field ${payload.record.field_number}\n${payload.record.description_of_emergency}`,
         data: {
           requestId: payload.record.id,
           type: "new_medic_request",

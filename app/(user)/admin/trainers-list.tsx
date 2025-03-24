@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { StyleSheet, Text, View, FlatList, Switch, RefreshControl } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { supabase } from '@/lib/supabase';
-import TrainersList from '@/components/TrainersList';
-import { ms } from 'react-native-size-matters';
-import { Database } from '@/database.types';
+import { StyleSheet, Text, View, FlatList, Switch, RefreshControl, TouchableOpacityComponent } from 'react-native';
 import FulfilledRequestsList from '@/components/FulfilledRequestList';
+import RequestsList from '@/components/RequestsList';
+
+import { supabase } from '@/lib/supabase';
+import { Database } from '@/database.types';
+import { typography } from '@/constants/Typography';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -19,8 +19,8 @@ const TrainerManagementScreen = () => {
           tabBarActiveTintColor: '#EA1D25',
           tabBarInactiveTintColor: '#8F8DAA',
           tabBarLabelStyle: {
-            fontFamily: 'Outfit-Semibold',
-            fontSize: ms(12),
+            fontFamily: '',
+            fontSize: 12,
           },
           tabBarStyle: {
             backgroundColor: '#262537',
@@ -33,7 +33,7 @@ const TrainerManagementScreen = () => {
           },
         }}
       >
-        <Tab.Screen name="Requests" component={TrainersList} />
+        <Tab.Screen name="Requests" component={RequestsList} />
         <Tab.Screen name="Fulfilled" component={FulfilledRequestsList} />
         <Tab.Screen name="Trainers" component={TrainerAvailabilityScreen} />
       </Tab.Navigator>
@@ -136,15 +136,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   tabLabel: {
-    fontFamily: 'Outfit-Medium',
-    fontSize: 14,
+    ...typography.body
   },
   tabIndicator: {
     backgroundColor: '#EA1D25',
   },
   screenContainer: {
     flex: 1,
-    backgroundColor: '#333243',
+    backgroundColor: '#000',
   },
   trainerList: {
     padding: 10,
@@ -153,7 +152,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#1F1F2F',
+    backgroundColor: '#262626',
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
@@ -167,14 +166,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   trainerName: {
-    fontFamily: 'Outfit-SemiBold',
-    fontSize: 16,
-    color: '#fff',
+    ...typography.bodyMediumBold,
+    color: '#fff'
   },
   availabilityText: {
-    fontFamily: 'Outfit-Medium',
-    fontSize: 14,
-    marginTop: 5,
+    ...typography.body,
   },
 });
 
