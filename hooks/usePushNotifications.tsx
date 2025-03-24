@@ -77,11 +77,7 @@ const usePushNotifications = () => {
         device_id: deviceId,
         token: token
       }));
-      
-      // If anonymous, register token in anonymous_tokens table
-      if (!user) {
-        await registerAnonymousToken(token);
-      }
+    
     } catch (error) {
       console.error('Error saving push token:', error);
     }
@@ -101,47 +97,6 @@ const usePushNotifications = () => {
     } catch (error) {
       console.error('Error with device ID:', error);
       return 'unknown_device';
-    }
-  };
-
-  // Register token for anonymous users
-  const registerAnonymousToken = async (token: string) => {
-    try {
-      const deviceId = await getOrCreateDeviceId();
-      
-      // Check if this device already has a token registered
-      const { data, error: fetchError } = await supabase
-        .from('anonymous_tokens')
-        .select('*')
-        .eq('device_id', deviceId);
-        
-      if (fetchError) throw fetchError;
-      
-      if (data && data.length > 0) {
-        // Update existing token
-        const { error } = await supabase
-          .from('anonymous_tokens')
-          .update({ token: token, updated_at: new Date().toISOString() })
-          .eq('device_id', deviceId);
-          
-        if (error) throw error;
-      } else {
-        // Insert new token
-        const { error } = await supabase
-          .from('anonymous_tokens')
-          .insert({
-            device_id: deviceId,
-            token: token,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          });
-          
-        if (error) throw error;
-      }
-      
-      console.log('Anonymous token registered/updated');
-    } catch (error) {
-      console.error('Error registering anonymous token:', error);
     }
   };
 

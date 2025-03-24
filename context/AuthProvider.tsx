@@ -35,9 +35,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       // Check if we have a token stored in AsyncStorage
       const token = await AsyncStorage.getItem('expo_push_token');
-      const deviceId = await AsyncStorage.getItem('device_id');
       
-      if (token && deviceId) {
+      if (token) {
         // Update the user's profile with the token
         const { error: updateError } = await supabase
           .from('profiles')
@@ -45,14 +44,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .eq('id', userId);
           
         if (updateError) throw updateError;
-        
-        // Delete the token from anonymous_tokens to avoid duplicate notifications
-        const { error: deleteError } = await supabase
-          .from('anonymous_tokens')
-          .delete()
-          .eq('device_id', deviceId);
-          
-        if (deleteError) throw deleteError;
         
         console.log('Successfully migrated anonymous push token to user profile');
       }
@@ -158,6 +149,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (session?.user) {
         getProfile(session.user.id)
         migrateAnonymousPushToken(session.user.id)
+      } else {
+        // We're not logged in - check if we need to handle push token
+        handleAnonymousPushToken();
       }
       setLoading(false);
     });
@@ -169,6 +163,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (session?.user) {
         getProfile(session.user.id)
         migrateAnonymousPushToken(session.user.id)
+      } else if (_event === 'SIGNED_OUT') {
+        // Handle anonymous token after sign out
+        setTimeout(() => {
+          handleAnonymousPushToken();
+        }, 1000);
       }
       setLoading(false);
 
@@ -208,6 +207,76 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   }, []);
 
+  // Completely revised approach for token handling
+  const handleAnonymousPushToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem('expo_push_token');
+      const deviceId = await AsyncStorage.getItem('device_id');
+      
+      if (!token || !deviceId) {
+        console.log('No push token or device ID to register');
+        return;
+      }
+      
+      console.log('Handling anonymous push token');
+      
+      // Call a custom SQL function to handle this safely
+      const { error } = await supabase.rpc('handle_anonymous_token', {
+        p_device_id: deviceId,
+        p_token: token
+      });
+      
+      if (error) {
+        console.error('Error handling anonymous token with RPC:', error);
+        
+        // Fallback approach if RPC fails
+        console.log('Attempting fallback approach for token registration');
+        await registerTokenFallback(deviceId, token);
+      } else {
+        console.log('Successfully handled anonymous token via RPC');
+      }
+    } catch (error) {
+      console.error('Error in anonymous token handling:', error);
+    }
+  };
+  
+  // Fallback method if RPC fails
+  const registerTokenFallback = async (deviceId: string, token: string) => {
+    try {
+      // Try to delete first
+      try {
+        await supabase
+          .from('anonymous_tokens')
+          .delete()
+          .eq('device_id', deviceId);
+        console.log('Deleted any existing token in fallback');
+      } catch (error) {
+        console.log('No existing token or delete failed in fallback');
+      }
+      
+      // Wait a moment
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Then try to insert
+      const { error } = await supabase
+        .from('anonymous_tokens')
+        .insert({
+          device_id: deviceId,
+          token: token,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
+        
+      if (error) {
+        throw error;
+      }
+      
+      console.log('Successfully registered token via fallback');
+    } catch (error) {
+      console.error('Fallback token registration failed:', error);
+    }
+  };
+
   const signIn = async (email: string) => {
     const { error } = await supabase.auth.signInWithOtp({
       email,
@@ -241,56 +310,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
-    // Before signing out, ensure the token is saved to anonymous_tokens
-    try {
-      const token = await AsyncStorage.getItem('expo_push_token');
-      const deviceId = await AsyncStorage.getItem('device_id');
-      
-      if (token && deviceId) {
-        // Register as anonymous before logging out
-        await registerAnonymousToken(deviceId, token);
-      }
-    } catch (error) {
-      console.error('Error preserving push token before logout:', error);
-    }
-    
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
-  };
-
-  const registerAnonymousToken = async (deviceId: string, token: string) => {
-    try {
-      const { data, error: fetchError } = await supabase
-        .from('anonymous_tokens')
-        .select('*')
-        .eq('device_id', deviceId);
-        
-      if (fetchError) throw fetchError;
-      
-      if (data && data.length > 0) {
-        // Update existing token
-        const { error } = await supabase
-          .from('anonymous_tokens')
-          .update({ token, updated_at: new Date().toISOString() })
-          .eq('device_id', deviceId);
-          
-        if (error) throw error;
-      } else {
-        // Insert new token
-        const { error } = await supabase
-          .from('anonymous_tokens')
-          .insert({
-            device_id: deviceId,
-            token,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          });
-          
-        if (error) throw error;
-      }
-    } catch (error) {
-      console.error('Error registering anonymous token:', error);
-    }
   };
 
   const refreshProfile = async (userId?: string) => {
