@@ -830,6 +830,13 @@ export type Database = {
         }
         Returns: undefined
       }
+      handle_anonymous_token: {
+        Args: {
+          p_device_id: string
+          p_token: string
+        }
+        Returns: undefined
+      }
       reset_bracket_scores: {
         Args: {
           round_id_param: number
