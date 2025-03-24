@@ -1,9 +1,7 @@
-import { Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Redirect, router, Stack } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
-import CustomHeader from '@/components/headers/CustomHeader';
-import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
 
 export default function UserLayout() {
   const { session, loading, signOut } = useAuth();

@@ -9,12 +9,11 @@ import NotificationPermission from '@/components/NotificationPermission';
 
 
 export default function UserDashboard() {
-  const { profile, signOut } = useAuth();
+  const { profile } = useAuth();
 
   const handleOpenExternalDeleteAccount = () => {
     // Use your new Render URL here
     router.push('https://maine-ultimate-account-deletion.onrender.com');
-    signOut();
   };
   
 
