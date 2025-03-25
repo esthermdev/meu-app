@@ -43,7 +43,7 @@ export default function DivisionStandings() {
         teams!inner (id, pool_id, seed, name, avatar_uri)
       `)
       .in('teams.pool_id', poolIds)
-      .order('teams(pool_id)', { ascending: true })
+      .order('teams(seed)', { ascending: true })
       .order('pool_rank', { ascending: true });
 
     if (error) {

@@ -101,7 +101,7 @@ export const useFavorites = (session: Session | null) => {
         .from('teams')
         .select(`
           *, 
-          pool: pool_id (id, name, division),
+          pool: pool_id (id, name, division_id),
           division_details: division_id (*)
         `)
         .order('name');
