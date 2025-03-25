@@ -1,10 +1,10 @@
 // components/CustomHeader.js
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { fonts, typography } from '@/constants/Typography';
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { fonts } from '@/constants/Typography';
+import { MaterialIcons } from '@expo/vector-icons';
 
 interface CustomUpdateScoresHeader {
   title: string | string[];

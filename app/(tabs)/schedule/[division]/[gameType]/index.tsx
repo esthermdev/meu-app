@@ -1,27 +1,21 @@
 // app/(user)/admin/update-scores/[division]/[gameType]/index.tsx
-import React, { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { 
   View, 
   Text, 
   StyleSheet, 
   TouchableOpacity, 
-  StatusBar, 
   SafeAreaView, 
   SectionList,
-  Alert,
   LayoutAnimation, 
   Platform, 
   UIManager
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { supabase } from '@/lib/supabase';
 import { fonts } from '@/constants/Typography';
-import AdminGameComponent from '@/components/AdminGameComponent';
 import { useScheduleId } from '@/hooks/useGamesFilter';
 import LoadingIndicator from '@/components/LoadingIndicator';
-import { CustomUpdateScoresHeader } from '@/components/headers/CustomUpdateScoresHeader';
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import AdminBottomActionButtons from '@/components/buttons/AdminBottomActionButtons';
+import { MaterialIcons } from '@expo/vector-icons';
 import GameComponent from '@/components/GameComponent';
 import CustomHeader from '@/components/headers/CustomHeader';
 
@@ -63,10 +57,6 @@ export default function ScheduleScreen() {
       ...prev,
       [sectionId]: !prev[sectionId]
     }));
-  }, []);
-
-  const refreshGames = useCallback(() => {
-    setRefreshKey(prev => prev + 1);
   }, []);
 
   // Group games by round_id

@@ -20,7 +20,7 @@ import AdminGameComponent from '@/components/AdminGameComponent';
 import { useScheduleId } from '@/hooks/useGamesFilter';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { CustomUpdateScoresHeader } from '@/components/headers/CustomUpdateScoresHeader';
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import AdminBottomActionButtons from '@/components/buttons/AdminBottomActionButtons';
 
 if (Platform.OS === 'android') {

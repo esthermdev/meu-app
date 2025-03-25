@@ -1,9 +1,8 @@
 // app/(tabs)/home/notifications.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack, useRouter } from 'expo-router';
-import { MaterialIcons, Ionicons, MaterialCommunityIcons, FontAwesome, FontAwesome5 } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthProvider';
 import { typography } from '@/constants/Typography';
@@ -21,7 +20,6 @@ const NotificationScreen = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const { session } = useAuth();
-  const router = useRouter();
 
   useEffect(() => {
     fetchNotifications();
@@ -53,7 +51,6 @@ const NotificationScreen = () => {
     };
   }, [session]);
 
-  // Keep all the existing functionality
   const fetchNotifications = async () => {
     try {
       setLoading(true);
@@ -236,24 +233,7 @@ const NotificationScreen = () => {
   );
 
   return (
-    <SafeAreaView edges={['bottom']} style={styles.container}>
-      <Stack.Screen 
-        options={{
-          headerTitle: "Notifications",
-          headerTitleStyle: {
-            fontFamily: 'GeistMedium',
-            fontSize: 28,
-            color: '#EA1D25'
-          },
-          headerStyle: {
-            backgroundColor: 'white',
-          },
-          headerShadowVisible: false,
-        }} 
-      />
-      
-      <View style={styles.divider} />
-      
+    <View style={styles.container}>      
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#EA1D25" />
@@ -273,7 +253,7 @@ const NotificationScreen = () => {
           <Text style={styles.emptyText}>No announcements yet</Text>
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
