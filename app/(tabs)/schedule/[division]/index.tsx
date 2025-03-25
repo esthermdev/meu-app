@@ -1,16 +1,16 @@
 import { View, Text, StyleSheet, TouchableOpacity, StatusBar, SafeAreaView, ActivityIndicator } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useScheduleOptions } from '@/hooks/useScheduleConfig';
+import { useGametypes } from '@/hooks/useScheduleConfig';
 import { fonts, typography } from '@/constants/Typography';
-import { CustomUpdateScoresHeader } from '@/components/headers/CustomUpdateScoresHeader';
+
 
 export default function GameTypesScreen() {
   const params = useLocalSearchParams();
   const divisionId = Number(params.division);
   const divisionName = params.divisionName as string;
   
-  const { scheduleOptions, loading, error } = useScheduleOptions(divisionId);
+  const { gametypes, loading, error } = useGametypes(divisionId);
 
   const handleSelectGameType = (gameTypeId: number, gameTypeTitle: string, route: string) => {
     // Check if it's a pool play route
@@ -57,7 +57,7 @@ export default function GameTypesScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        {scheduleOptions.map((option) => (
+        {gametypes.map((option) => (
           <TouchableOpacity
             key={option.id}
             style={styles.gameTypeItem}

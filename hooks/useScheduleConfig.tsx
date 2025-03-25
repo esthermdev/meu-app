@@ -4,7 +4,7 @@ import { Database } from '@/database.types';
 import { useLocalSearchParams } from 'expo-router';
 
 type Division = Database['public']['Tables']['divisions']['Row'];
-type ScheduleOption = Database['public']['Tables']['schedule_options']['Row'];
+type GameTypes = Database['public']['Tables']['gametypes']['Row'];
 
 export function useDivisions() {
   const [divisions, setDivisions] = useState<Division[]>([]);
@@ -38,22 +38,22 @@ export function useDivisions() {
   return { divisionId, divisionName, divisions, loading, error };
 }
 
-export function useScheduleOptions(divisionId: number) {
-  const [scheduleOptions, setScheduleOptions] = useState<ScheduleOption[]>([]);
+export function useGametypes(divisionId: number) {
+  const [gametypes, setGametypes] = useState<GameTypes[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchScheduleOptions() {
+    async function fetchGametypes() {
       try {
         const { data, error } = await supabase
-          .from('schedule_options')
+          .from('gametypes')
           .select('*')
           .eq('division_id', divisionId)
           .order('display_order');
 
         if (error) throw error;
-        setScheduleOptions(data);
+        setGametypes(data);
       } catch (e) {
         setError(e instanceof Error ? e.message : 'An error occurred');
       } finally {
@@ -62,9 +62,9 @@ export function useScheduleOptions(divisionId: number) {
     }
 
     if (divisionId) {
-      fetchScheduleOptions();
+      fetchGametypes();
     }
   }, [divisionId]);
 
-  return { scheduleOptions, loading, error };
+  return { gametypes, loading, error };
 }

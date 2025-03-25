@@ -1,6 +1,5 @@
 import { Stack } from 'expo-router';
 import CustomHeader from '@/components/headers/CustomHeader';
-import { useScheduleOptions } from '@/hooks/useScheduleConfig';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 
 export default function DivisionLayout() {

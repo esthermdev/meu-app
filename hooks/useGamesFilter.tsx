@@ -89,7 +89,7 @@ export function useScheduleId(divisionId: number, scheduleId: number, refreshKey
             rounds: round_id (*)
           `)
           .eq('division_id', divisionId)
-          .eq('schedule_id', scheduleId)
+          .eq('gametype_id', scheduleId)
           .order('round_id, id'); // Order by round_id first, then by game id
 
         if (error) throw error;
