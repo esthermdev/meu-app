@@ -254,40 +254,34 @@ export type Database = {
       games: {
         Row: {
           datetime_id: number | null
-          division: Database["public"]["Enums"]["division"] | null
           division_id: number | null
           field_id: number | null
+          gametype_id: number | null
           id: number
-          name: Database["public"]["Enums"]["game_id"] | null
           pool_id: number | null
           round_id: number | null
-          schedule_id: number | null
           team1_id: number | null
           team2_id: number | null
         }
         Insert: {
           datetime_id?: number | null
-          division?: Database["public"]["Enums"]["division"] | null
           division_id?: number | null
           field_id?: number | null
+          gametype_id?: number | null
           id?: number
-          name?: Database["public"]["Enums"]["game_id"] | null
           pool_id?: number | null
           round_id?: number | null
-          schedule_id?: number | null
           team1_id?: number | null
           team2_id?: number | null
         }
         Update: {
           datetime_id?: number | null
-          division?: Database["public"]["Enums"]["division"] | null
           division_id?: number | null
           field_id?: number | null
+          gametype_id?: number | null
           id?: number
-          name?: Database["public"]["Enums"]["game_id"] | null
           pool_id?: number | null
           round_id?: number | null
-          schedule_id?: number | null
           team1_id?: number | null
           team2_id?: number | null
         }
@@ -314,6 +308,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "games_gametype_id_fkey"
+            columns: ["gametype_id"]
+            isOneToOne: false
+            referencedRelation: "gametypes"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "games_pool_id_fkey"
             columns: ["pool_id"]
             isOneToOne: false
@@ -328,13 +329,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "games_schedule_id_fkey"
-            columns: ["schedule_id"]
-            isOneToOne: false
-            referencedRelation: "schedule_options"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "games_team1_id_fkey"
             columns: ["team1_id"]
             isOneToOne: false
@@ -346,6 +340,47 @@ export type Database = {
             columns: ["team2_id"]
             isOneToOne: false
             referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gametypes: {
+        Row: {
+          bg_color: string | null
+          display_order: number | null
+          division_id: number | null
+          icon: string | null
+          icon_color: string | null
+          id: number
+          route: string
+          title: string
+        }
+        Insert: {
+          bg_color?: string | null
+          display_order?: number | null
+          division_id?: number | null
+          icon?: string | null
+          icon_color?: string | null
+          id?: number
+          route: string
+          title: string
+        }
+        Update: {
+          bg_color?: string | null
+          display_order?: number | null
+          division_id?: number | null
+          icon?: string | null
+          icon_color?: string | null
+          id?: number
+          route?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gametypes_division_id_fkey"
+            columns: ["division_id"]
+            isOneToOne: false
+            referencedRelation: "divisions"
             referencedColumns: ["id"]
           },
         ]
@@ -462,19 +497,16 @@ export type Database = {
       }
       pools: {
         Row: {
-          division: Database["public"]["Enums"]["division"] | null
           division_id: number | null
           id: number
           name: string
         }
         Insert: {
-          division?: Database["public"]["Enums"]["division"] | null
           division_id?: number | null
           id?: number
           name: string
         }
         Update: {
-          division?: Database["public"]["Enums"]["division"] | null
           division_id?: number | null
           id?: number
           name?: string
@@ -592,62 +624,18 @@ export type Database = {
           id: number
           place: number | null
           stage: string
-          title: string | null
         }
         Insert: {
           id?: number
           place?: number | null
           stage: string
-          title?: string | null
         }
         Update: {
           id?: number
           place?: number | null
           stage?: string
-          title?: string | null
         }
         Relationships: []
-      }
-      schedule_options: {
-        Row: {
-          bg_color: string | null
-          display_order: number | null
-          division_id: number | null
-          icon: string | null
-          icon_color: string | null
-          id: number
-          route: string
-          title: string
-        }
-        Insert: {
-          bg_color?: string | null
-          display_order?: number | null
-          division_id?: number | null
-          icon?: string | null
-          icon_color?: string | null
-          id?: number
-          route: string
-          title: string
-        }
-        Update: {
-          bg_color?: string | null
-          display_order?: number | null
-          division_id?: number | null
-          icon?: string | null
-          icon_color?: string | null
-          id?: number
-          route?: string
-          title?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "schedule_options_division_id_fkey"
-            columns: ["division_id"]
-            isOneToOne: false
-            referencedRelation: "divisions"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       scores: {
         Row: {
