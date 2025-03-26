@@ -2,7 +2,7 @@ import { View, ActivityIndicator, Text } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { usePoolIds } from '@/hooks/useGamesFilter';
 import { useLocalSearchParams } from 'expo-router';
-import PoolAdminView from '@/components/AdminPoolGameView';
+import PoolAdminView from '@/components/features/gameviews/AdminPoolGameView';
 import { typography } from '@/constants/Typography';
 
 

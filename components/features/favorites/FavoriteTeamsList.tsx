@@ -1,4 +1,3 @@
-// src/components/TeamListItem.tsx
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { ListItem, Avatar } from '@rneui/themed';

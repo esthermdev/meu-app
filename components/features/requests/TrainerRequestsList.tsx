@@ -1,8 +1,8 @@
 // components/medical/RequestsList.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
-import { Card } from '@rneui/themed';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Card } from '@/components/Card'
+import { MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthProvider';
 import { Database } from '@/database.types';
@@ -17,7 +17,7 @@ type MedicalRequest = Database['public']['Tables']['medical_requests']['Row'] & 
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
-const RequestsList = () => {
+const TrainerRequestsList = () => {
   const [requests, setRequests] = useState<MedicalRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { profile } = useAuth() as { profile: Profile };
@@ -121,7 +121,7 @@ const RequestsList = () => {
   };
 
   const renderItem = ({ item }: { item: MedicalRequest }) => (
-    <Card containerStyle={styles.cardContainer}>
+    <Card style={styles.cardContainer}>
       <View style={styles.cardHeader}>
         <View style={[styles.priorityBadge, getPriorityColor(item.priority_level)]}>
           <Text style={styles.priorityText}>{item.priority_level || 'Medium'}</Text>
@@ -145,12 +145,6 @@ const RequestsList = () => {
           <Text style={styles.labelText}>Created:</Text>
           <Text style={styles.valueText}>{formatDate(item.created_at)}</Text>
         </View>
-        {item.updated_at && item.updated_at !== item.created_at && (
-          <View style={styles.infoRow}>
-            <Text style={styles.labelText}>Updated:</Text>
-            <Text style={styles.valueText}>{formatDate(item.updated_at)}</Text>
-          </View>
-        )}
       </View>
 
       {item.description_of_emergency && (
@@ -208,6 +202,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
   },
+  // Loading and empty 
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -228,13 +223,14 @@ const styles = StyleSheet.create({
     ...typography.bodyBold,
     color: '#fff'
   },
+  // Request card styles
   listContainer: {
-    paddingVertical: 3,
+    paddingHorizontal: 20,
+    paddingTop: 3
   },
   cardContainer: {
     borderRadius: 12,
     padding: 10,
-    marginHorizontal: 20,
     marginVertical: 12,
     backgroundColor: '#262626',
     borderWidth: 0
@@ -271,7 +267,7 @@ const styles = StyleSheet.create({
   },
   infoSection: {
     gap: 8,
-    marginVertical: 8
+    marginVertical: 15
   },
   infoRow: {
     flexDirection: 'row',
@@ -293,7 +289,7 @@ const styles = StyleSheet.create({
   descriptionContainer: {
     paddingVertical: 7,
     paddingHorizontal: 10,
-    marginBottom: 8,
+    marginBottom: 15,
     backgroundColor: '#262626',
     borderRadius: 5,
     borderLeftWidth: 4,
@@ -331,4 +327,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RequestsList;
+export default TrainerRequestsList;

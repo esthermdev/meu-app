@@ -12,7 +12,7 @@ import {
 import { supabase } from '@/lib/supabase';
 import { fonts } from '@/constants/Typography';
 import AdminGameComponent from './AdminGameComponent';
-import AdminBottomActionButtons from './buttons/AdminBottomActionButtons';
+import AdminBottomActionButtons from '../../buttons/AdminBottomActionButtons';
 
 interface PoolAdminViewProps {
   poolId: number;

@@ -1,8 +1,7 @@
-// components/medical/FulfilledRequestsList.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
 import { Card } from '@rneui/themed';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthProvider';
 import { Database } from '@/database.types';
@@ -17,7 +16,7 @@ type MedicalRequest = Database['public']['Tables']['medical_requests']['Row'] & 
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
-const FulfilledRequestsList = () => {
+const FulfilledTrainerRequestList = () => {
   const [requests, setRequests] = useState<MedicalRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { profile } = useAuth() as { profile: Profile };
@@ -108,32 +107,6 @@ const FulfilledRequestsList = () => {
     }
   };
 
-  const markAsResolved = async (requestId: number) => {
-    try {
-      const { data, error } = await supabase
-        .from('medical_requests')
-        .update({
-          status: 'resolved' as Database['public']['Enums']['request_status'],
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', requestId)
-        .select();
-
-      if (error) {
-        console.error('Supabase error details:', error);
-        throw error;
-      }
-
-      if (data) {
-        Alert.alert('Success', 'Medical request has been marked as resolved.');
-        fetchFulfilledRequests(); // Refresh the list
-      }
-    } catch (error) {
-      console.error('Error resolving request:', error);
-      Alert.alert('Error', 'Failed to update the request. Please try again.');
-    }
-  };
-
   const renderItem = ({ item }: { item: MedicalRequest }) => {
     const statusBadge = getStatusBadge(item.status);
     
@@ -217,6 +190,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
   },
+  // Loading and empty 
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -237,6 +211,7 @@ const styles = StyleSheet.create({
     ...typography.bodyBold,
     color: '#fff'
   },
+  // Card styles
   listContainer: {
     paddingVertical: 3,
   },
@@ -330,4 +305,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FulfilledRequestsList;
+export default FulfilledTrainerRequestList;

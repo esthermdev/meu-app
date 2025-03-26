@@ -71,9 +71,9 @@ Deno.serve(async (req) => {
         title: "Cart Requested",
         body: `From: ${cartRequest.from_location}${
           cartRequest.from_field_number ? ` ${cartRequest.from_field_number}` : ""
-        }\nTo: ${cartRequest.to_location}${
+        } -> To: ${cartRequest.to_location}${
           cartRequest.to_field_number ? ` ${cartRequest.to_field_number}` : ""
-        } - Passengers: ${cartRequest.passenger_count}\n${cartRequest.special_request ? cartRequest.special_request : ""}`,
+        }\nPassengers: ${cartRequest.passenger_count}\n${cartRequest.special_request ? cartRequest.special_request : ""}`,
         data: {
           requestId: cartRequest.id,
           type: "new_cart_request",

@@ -1,4 +1,3 @@
-// components/GameComponent.tsx
 import React from 'react';
 import {
   View,
