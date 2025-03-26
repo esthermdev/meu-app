@@ -8,8 +8,8 @@ import MyGamesButtonBackground from '@/components/MyGamesButtonBackground';
 import CartRequestButton from '@/components/requests/CartRequestButton';
 import CircleIconButton from '@/components/buttons/CircleIconButton';
 import TrainerRequestButton from '@/components/requests/TrainerRequestButton';
-import NotificationPermission from '@/components/NotificationPermission';
-import NotificationPrompt from '@/components/NotificationPrompt';
+import NotificationPermission from '@/components/features/notifications/NotificationPermission';
+import NotificationPrompt from '@/components/features/notifications/NotificationPrompt';
 
 
 export default function HomeScreen() {

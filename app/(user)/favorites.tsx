@@ -14,7 +14,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { useAuth } from '@/context/AuthProvider';
 import { useFavorites } from '@/hooks/useFavorites';
-import { FavoriteTeamsList } from '@/components/FavoriteTeamsList';
+import { FavoriteTeamsList } from '@/components/features/favorites/FavoriteTeamsList';
 import { typography } from '@/constants/Typography';
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';

@@ -16,7 +16,7 @@ import { fonts } from '@/constants/Typography';
 import { useScheduleId } from '@/hooks/useGamesFilter';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { MaterialIcons } from '@expo/vector-icons';
-import GameComponent from '@/components/GameComponent';
+import GameComponent from '@/components/features/gameviews/GameComponent';
 import CustomHeader from '@/components/headers/CustomHeader';
 
 if (Platform.OS === 'android') {

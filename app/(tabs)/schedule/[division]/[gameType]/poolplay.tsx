@@ -3,7 +3,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { usePoolIds } from '@/hooks/useGamesFilter';
 import { useLocalSearchParams } from 'expo-router';
 import { typography } from '@/constants/Typography';
-import PoolGameComponent from '@/components/PoolGameComponent';
+import PoolGameComponent from '@/components/features/gameviews/PoolGameComponent';
 
 
 const Tab = createMaterialTopTabNavigator();
