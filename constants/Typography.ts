@@ -39,6 +39,10 @@ export const typography = {
     fontFamily: fonts.bold,
     fontSize: 18,
   },
+  bodyLargeRegular: {
+    fontFamily: fonts.regular,
+    fontSize: 18,
+  },
   bodyMediumBold: {
     fontFamily: fonts.bold,
     fontSize: 16,

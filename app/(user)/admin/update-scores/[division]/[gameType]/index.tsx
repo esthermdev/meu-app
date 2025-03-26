@@ -16,7 +16,7 @@ import {
 import { useLocalSearchParams } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { fonts } from '@/constants/Typography';
-import AdminGameComponent from '@/components/AdminGameComponent';
+import AdminGameComponent from '@/components/features/gameviews/AdminGameComponent';
 import { useScheduleId } from '@/hooks/useGamesFilter';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { CustomUpdateScoresHeader } from '@/components/headers/CustomUpdateScoresHeader';

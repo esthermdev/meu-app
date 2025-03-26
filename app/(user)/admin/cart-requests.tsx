@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import * as Notifications from 'expo-notifications';
 import { StyleSheet, Text, View, FlatList, Switch, RefreshControl, TouchableOpacity, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '@/lib/supabase';
-import { Ionicons } from '@expo/vector-icons';
-import { Card } from '@rneui/themed';
-import { ms } from 'react-native-size-matters';
+import { Card } from '@/components/Card';
 import { useAuth } from '@/context/AuthProvider';
 import { Database } from '@/database.types';
+import { typography } from '@/constants/Typography';
+import FulfilledCartRequestsList from '@/components/features/requests/FulfilledCartRequestList';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -23,8 +23,7 @@ const CartManagementScreen = () => {
           tabBarActiveTintColor: '#EA1D25',
           tabBarInactiveTintColor: '#8F8DAA',
           tabBarLabelStyle: {
-            fontFamily: 'Outfit-Semibold',
-            fontSize: ms(12),
+            ...typography.bodySmall
           },
           tabBarStyle: {
             backgroundColor: '#262537',
@@ -37,7 +36,8 @@ const CartManagementScreen = () => {
           },
         }}
       >
-        <Tab.Screen name="Active Requests" component={CartRequestsList} />
+        <Tab.Screen name="Requests" component={CartRequestsList} />
+        <Tab.Screen name="Fulfilled" component={FulfilledCartRequestsList} />
         <Tab.Screen name="Drivers" component={DriversAvailabilityScreen} />
       </Tab.Navigator>
   );
@@ -96,8 +96,8 @@ const CartRequestsList = () => {
       }
 
       if (data) {
-        Alert.alert('Success', 'You have accepted the cart request.');
         fetchRequests();
+        sendPushNotification(data[0].requester_token || '')
       } else {
         Alert.alert('Request Unavailable', 'This request has already been accepted by another driver.');
       }
@@ -106,6 +106,25 @@ const CartRequestsList = () => {
       Alert.alert('Error', 'Failed to accept the request. Please try again.');
     }
   };
+
+  async function sendPushNotification(expoPushToken: string) {
+    const message = {
+      to: expoPushToken,
+      sound: 'default',
+      title: 'Driver is on the way',
+      body: 'Please wait patiently as a driver is making their way to you now.',
+    };
+  
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+  }
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'N/A';
@@ -136,57 +155,64 @@ const CartRequestsList = () => {
     }
   };
 
+  // Modified renderItem function for CartRequestsList with horizontal route line
   const renderItem = ({ item }: { item: CartRequest }) => (
-    <Card containerStyle={styles.cardContainer}>
+    <Card style={styles.cardContainer}>
       <View style={styles.cardHeader}>
-        <View style={styles.headerLeft}>
-          <Text style={styles.requestTitle}>Transport Request</Text>
-        </View>
-        <Text style={styles.requestTime}>{formatDate(item.created_at)}</Text>
+        <Text style={styles.transportTitle}>Transport</Text>
+        <Text style={styles.requestTime}>
+          {formatDate(item.created_at)}
+        </Text>
       </View>
-      
-      <View style={styles.cardContent}>
-        <View style={styles.locationContainer}>
-          <View style={styles.locationBox}>
-            <Text style={styles.locationLabel}>From:</Text>
-            <Text style={styles.locationValue}>
-              {getLocationLabel(item.from_location)}
-              {item.from_field_number ? ` ${item.from_field_number}` : ''}
-            </Text>
-          </View>
-          
-          <Ionicons name="arrow-forward" size={20} color="#B0B0B0" />
-          
-          <View style={styles.locationBox}>
-            <Text style={styles.locationLabel}>To:</Text>
-            <Text style={styles.locationValue}>
-              {getLocationLabel(item.to_location)}
-              {item.to_field_number ? ` ${item.to_field_number}` : ''}
-            </Text>
-          </View>
+            
+      <View style={styles.locationsContainer}>
+        {/* Vertical route line with points on the left */}
+        <View style={styles.routeVisualization}>
+          <View style={styles.routePoint} />
+          <View style={styles.routeLine} />
+          <View style={styles.routePoint} />
         </View>
         
-        <View style={styles.detailsContainer}>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Passengers:</Text>
-            <Text style={styles.detailValue}>{item.passenger_count || 1}</Text>
+        {/* Locations information on the right */}
+        <View style={styles.routeInfo}>
+          {/* From section */}
+          <View style={styles.locationInfo}>
+            <Text style={styles.routeLabel}>From:</Text>
+            <Text style={styles.locationText}>
+              {item.from_location === 'Field' ? 'Field ' : ''}
+              {item.from_location === 'Field' ? item.from_field_number : getLocationLabel(item.from_location)}
+            </Text>
           </View>
           
-          {item.special_request && (
-            <View style={styles.specialRequestContainer}>
-              <Text style={styles.specialRequestLabel}>Special Request:</Text>
-              <Text style={styles.specialRequestText}>{item.special_request}</Text>
-            </View>
-          )}
+          {/* To section */}
+          <View style={styles.locationInfo}>
+            <Text style={styles.routeLabel}>To:</Text>
+            <Text style={styles.locationText}>
+              {item.to_location === 'Field' ? 'Field ' : ''}
+              {item.to_location === 'Field' ? item.to_field_number : getLocationLabel(item.to_location)}
+            </Text>
+          </View>
         </View>
-
-        <TouchableOpacity
-          style={styles.acceptButton}
-          onPress={() => acceptRequest(item.id)}
-        >
-          <Text style={styles.buttonText}>Accept Request</Text>
-        </TouchableOpacity>
       </View>
+      
+      <View style={styles.passengerRow}>
+        <Text style={styles.passengerLabel}>Passengers:</Text>
+        <Text style={styles.passengerCount}>{item.passenger_count || 0}</Text>
+      </View>
+      
+      {item.special_request && (
+        <View style={styles.specialRequestContainer}>
+          <Text style={styles.specialRequestLabel}>Special Request:</Text>
+          <Text style={styles.specialRequestText}>{item.special_request}</Text>
+        </View>
+      )}
+      
+      <TouchableOpacity
+        style={styles.acceptButton}
+        onPress={() => acceptRequest(item.id)}
+      >
+        <Text style={styles.acceptButtonText}>Accept Request</Text>
+      </TouchableOpacity>
     </Card>
   );
 
@@ -199,7 +225,7 @@ const CartRequestsList = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {requests.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>No active cart requests</Text>
@@ -214,7 +240,7 @@ const CartRequestsList = () => {
           onRefresh={fetchRequests}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -308,155 +334,141 @@ const DriversAvailabilityScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#333243',
+    backgroundColor: '#000',
   },
+  // Loading and empty 
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#333243',
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    fontFamily: 'Outfit-Regular',
-    color: '#B0B0B0',
+    backgroundColor: '#000',
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#333243',
+    backgroundColor: '#000',
   },
   emptyText: {
-    fontSize: 18,
-    fontFamily: 'Outfit-Medium',
+    ...typography.bodyMedium,
     color: '#B0B0B0',
   },
+  loadingText: {
+    ...typography.bodyBold,
+    color: '#fff'
+  },
+  // Cart request card styles
+  listContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 3,
+    paddingBottom: 20
+  },
   cardContainer: {
-    borderRadius: 10,
-    padding: 12,
-    marginHorizontal: 16,
-    marginVertical: 8,
-    backgroundColor: '#1F1F2F',
-    borderWidth: 0,
+    borderRadius: 12,
+    padding: 10,
+    marginTop: 12,
+    backgroundColor: '#262626',
+    borderWidth: 0
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
-    paddingBottom: 10,
+    paddingBottom: 8,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: '#CCCCCC66'
   },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  requestTitle: {
-    fontSize: 16,
-    fontFamily: 'Outfit-Bold',
-    color: 'white',
+  transportTitle: {
+    ...typography.bodyMediumBold,
+    color: '#fff',
   },
   requestTime: {
-    fontSize: 14,
-    fontFamily: 'Outfit-Regular',
-    color: '#B0B0B0',
+    ...typography.bodyMediumRegular,
+    color: '#aaa',
   },
-  statusBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 20,
-    marginRight: 8,
-  },
-  statusText: {
-    color: 'white',
-    fontSize: 14,
-    fontFamily: 'Outfit-SemiBold',
-  },
-  cardContent: {
-    flexDirection: 'column',
-  },
-  locationContainer: {
+  locationsContainer: {
     flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCCCCC66',
+  },
+  routeVisualization: {
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 15,
+    paddingHorizontal: 8,
+    height: '80%',
+    marginVertical: 'auto'
   },
-  locationBox: {
+  routeInfo: {
     flex: 1,
+    justifyContent: 'space-between',
   },
-  locationLabel: {
-    fontSize: 14,
-    fontFamily: 'Outfit-Regular',
-    color: '#B0B0B0',
-    marginBottom: 4,
+  locationInfo: {
+    marginVertical: 8
   },
-  locationValue: {
-    fontSize: 16,
-    fontFamily: 'Outfit-SemiBold',
-    color: 'white',
+  routeLabel: {
+    ...typography.bodyMediumRegular,
+    color: '#CCCCCC',
   },
-  detailsContainer: {
-    marginBottom: 15,
+  locationText: {
+    ...typography.bodyMediumBold,
+    color: '#fff',
   },
-  detailRow: {
+  routePoint: {
+    width: 10,
+    height: 10,
+    borderRadius: 6,
+    backgroundColor: '#EA1D25',
+  },
+  routeLine: {
+    width: 2,
+    flex: 1, // Makes the line fill the space between the points
+    backgroundColor: '#EA1D25',
+  },
+  passengerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 5,
+    paddingBottom: 8,
     marginBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCCCCC66',
   },
-  detailLabel: {
-    fontSize: 14,
-    fontFamily: 'Outfit-Regular',
-    color: '#B0B0B0',
+  passengerLabel: {
+    ...typography.bodyMediumRegular,
+    color: '#CCCCCCB2',
   },
-  detailValue: {
-    fontSize: 16,
-    fontFamily: 'Outfit-Medium',
-    color: 'white',
+  passengerCount: {
+    ...typography.bodyMediumBold,
+    color: '#fff',
   },
   specialRequestContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 8,
+    borderWidth: 1,
     borderLeftWidth: 3,
-    borderLeftColor: '#FFA500',
+    borderColor: '#EA1D25',
+    borderRadius: 5,
+    padding: 7,
+    marginBottom: 8,
   },
   specialRequestLabel: {
-    fontSize: 14,
-    fontFamily: 'Outfit-SemiBold',
-    color: '#B0B0B0',
-    marginBottom: 4,
+    ...typography.body,
+    color: '#CCCCCCB2',
   },
   specialRequestText: {
-    fontSize: 14,
-    fontFamily: 'Outfit-Regular',
-    color: 'white',
+    ...typography.bodyMediumRegular,
+    color: '#fff',
   },
   acceptButton: {
-    backgroundColor: '#4CAF50',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    backgroundColor: '#73BF44',
+    paddingVertical: 5,
     borderRadius: 5,
+    paddingHorizontal: 15,
     alignItems: 'center',
   },
-  completeButton: {
-    backgroundColor: '#00B0FB',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-    alignItems: 'center',
+  acceptButtonText: {
+    ...typography.bodyMediumBold,
+    color: '#fff',
   },
-  buttonText: {
-    fontFamily: 'Outfit-SemiBold',
-    fontSize: 16,
-    color: 'white',
-  },
-  listContainer: {
-    paddingVertical: 15,
-  },
+  // Driver availability screen styles
   screenContainer: {
     flex: 1,
     backgroundColor: '#333243',
@@ -482,13 +494,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   driverName: {
-    fontFamily: 'Outfit-SemiBold',
-    fontSize: 16,
+    ...typography.bodyMediumBold,
     color: '#fff',
   },
   availabilityText: {
-    fontFamily: 'Outfit-Medium',
-    fontSize: 14,
+    ...typography.body,
     marginTop: 5,
   },
 });

@@ -1,29 +1,24 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { StyleSheet, View, Text, FlatList, TouchableOpacity, ActivityIndicator, Switch, RefreshControl } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { StyleSheet, View, Text, FlatList, Switch, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
-import { Card } from '@rneui/themed';
-import { Ionicons } from '@expo/vector-icons';
-import { capitalizeWords } from '@/utils/capitalizeWords';
-import { ms } from 'react-native-size-matters';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Database } from '@/database.types';
+import { typography } from '@/constants/Typography';
 
 type WaterRequests = Database['public']['Tables']['water_requests']['Row'];
 type Volunteer = Database['public']['Tables']['profiles']['Row'];
 
-
 const Tab = createMaterialTopTabNavigator();
 
-
-const WaterRequestsManagementScreen = () => {
+const WaterRequestsScreen = () => {
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarActiveTintColor: '#EA1D25',
         tabBarInactiveTintColor: '#8F8DAA',
         tabBarLabelStyle: {
-          fontFamily: 'Outfit-Semibold',
-          fontSize: ms(12),
+          ...typography.bodySmall
         },
         tabBarStyle: {
           backgroundColor: '#262537',
@@ -42,11 +37,11 @@ const WaterRequestsManagementScreen = () => {
   );
 };
 
-const WaterRequestsList: React.FC = () => {
+const WaterRequestsList = () => {
   const [requests, setRequests] = useState<WaterRequests[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const fetchRequests = useCallback(async (): Promise<void> => {
+  const fetchRequests = useCallback(async () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
@@ -55,7 +50,7 @@ const WaterRequestsList: React.FC = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setRequests(data);
+      setRequests(data || []);
     } catch (error) {
       console.error('Error fetching requests:', error);
     } finally {
@@ -68,8 +63,8 @@ const WaterRequestsList: React.FC = () => {
 
     // Set up real-time subscription
     const subscription = supabase
-      .channel('water_refill_changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'water_refill' }, fetchRequests)
+      .channel('water_requests_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'water_requests' }, fetchRequests)
       .subscribe();
 
     return () => {
@@ -77,85 +72,66 @@ const WaterRequestsList: React.FC = () => {
     };
   }, [fetchRequests]);
 
-  const formatDate = (dateString: string): string => {
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleString('en-US', {
+      weekday: 'short',
+      day: '2-digit',
       year: 'numeric',
-      month: 'short',
-      day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     });
   };
 
-  const getStatusColor = (status: WaterRequests['status']) => {
-    switch (status) {
-      case 'expired':
-        return styles.statusExpired;
-      case 'pending':
-        return styles.statusPending;
-      case 'confirmed':
-        return styles.statusConfirmed;
-      default:
-        return {};
-    }
-  };
-
-  const handleAcceptRequest = async (requestId: number): Promise<void> => {
+  const handleResolveRequest = async (requestId: number) => {
     try {
+      // Instead of updating the status, delete the request
       const { error } = await supabase
         .from('water_requests')
         .delete()
-        .eq('id', requestId)
-
+        .eq('id', requestId);
+  
       if (error) throw error;
-
-      fetchRequests(); // Refresh the list
-
+      
+      // Filter out the resolved request from the local state
+      setRequests(current => current.filter(request => request.id !== requestId));
     } catch (error) {
-      console.error('Error deleting water refill request:', error);
+      console.error('Error resolving water request:', error);
     }
   };
 
   const renderItem = ({ item }: { item: WaterRequests }) => (
-    <Card containerStyle={styles.cardContainer}>
-      <View style={styles.locationContainer}>
-        <View style={[styles.locationTextContainer, { backgroundColor: '#FF9821' }]}>
-          <Text maxFontSizeMultiplier={1} style={styles.locationText}>Field {item.field_number}</Text>
-        </View>
+    <View style={styles.cardContainer}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerTitle}>Water</Text>
+        <Text style={styles.headerDate}>{formatDate(item.created_at)}</Text>
       </View>
+      
+      <View style={styles.divider} />
 
       <View style={styles.infoRow}>
-        <Text maxFontSizeMultiplier={1} style={styles.infoLabel}>ID:</Text>
-        <Text maxFontSizeMultiplier={1} style={styles.infoValue}>{item.id}</Text>
+        <Text style={styles.infoLabel}>Field:</Text>
+        <Text style={styles.infoValue}>{item.field_number}</Text>
       </View>
-
+           
       <View style={styles.infoRow}>
-        <Text maxFontSizeMultiplier={1} style={styles.infoLabel}>Status:</Text>
-        <Text maxFontSizeMultiplier={1} style={[styles.infoValue, getStatusColor(item.status)]}>
-          {capitalizeWords(item.status || '')}
+        <Text style={styles.infoLabel}>Status:</Text>
+        <Text style={[styles.infoValue, styles.statusPending]}>
+          {item.status === 'pending' ? 'Pending' : item.status}
         </Text>
       </View>
-
-      <View style={styles.infoRow}>
-        <Text maxFontSizeMultiplier={1} style={styles.infoLabel}>Volunteer:</Text>
-        <Text maxFontSizeMultiplier={1} style={styles.infoValue}>{item.volunteer}</Text>
-      </View>
-
-      <View style={styles.infoRow}>
-        <Text maxFontSizeMultiplier={1} style={styles.infoLabel}>Created:</Text>
-        <Text maxFontSizeMultiplier={1} style={styles.infoValue}>{formatDate(item.created_at || '')}</Text>
-      </View>
-
+      
       {item.status === 'pending' && (
-        <TouchableOpacity
-          style={styles.acceptButton}
-          onPress={() => handleAcceptRequest(item.id)}
+       <TouchableOpacity
+          style={styles.resolveButton}
+          onPress={() => handleResolveRequest(item.id)}
         >
-          <Ionicons name="checkmark-circle" size={40} color="black" />
+          <Text style={styles.resolveButtonText}>Resolved</Text>
+          <MaterialIcons name="check" size={14} color="white" />
         </TouchableOpacity>
-      )}
-    </Card>
+          )}
+    </View>
   );
 
   if (loading) {
@@ -169,23 +145,31 @@ const WaterRequestsList: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={requests}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.listContainer}
-        refreshing={loading}
-        onRefresh={fetchRequests}
-      />
+      {requests.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>No water requests</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={requests}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={styles.listContainer}
+          refreshing={loading}
+          onRefresh={fetchRequests}
+        />
+      )}
     </View>
   );
 };
 
-const VolunteerAvailabilityScreen: React.FC = () => {
+// This would be part of the water-requests-new.tsx file above
+
+const VolunteerAvailabilityScreen = () => {
   const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
-  const fetchVolunteers = async (): Promise<void> => {
+  const fetchVolunteers = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -194,17 +178,17 @@ const VolunteerAvailabilityScreen: React.FC = () => {
         .order('full_name');
 
       if (error) throw error;
-      setVolunteers(data);
+      setVolunteers(data || []);
     } catch (error) {
       console.error('Error fetching volunteers:', error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchVolunteers();
-  }, []);
+  }, [fetchVolunteers]);
 
-  const toggleAvailability = async (volunteerId: string, currentAvailability: boolean): Promise<void> => {
+  const toggleAvailability = async (volunteerId: string, currentAvailability: boolean | null) => {
     try {
       const { error } = await supabase
         .from('profiles')
@@ -218,13 +202,12 @@ const VolunteerAvailabilityScreen: React.FC = () => {
           ? { ...volunteer, is_available: !currentAvailability }
           : volunteer
       ));
-
     } catch (error) {
       console.error('Error updating volunteer availability:', error);
     }
   };
 
-  const onRefresh = useCallback(async (): Promise<void> => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await fetchVolunteers();
     setRefreshing(false);
@@ -233,15 +216,15 @@ const VolunteerAvailabilityScreen: React.FC = () => {
   const renderVolunteerItem = ({ item }: { item: Volunteer }) => (
     <View style={styles.volunteerItem}>
       <View style={styles.volunteerInfo}>
-        <Text style={styles.volunteerName}>{item.full_name}</Text>
+        <Text style={styles.volunteerName}>{item.full_name || 'Unnamed Volunteer'}</Text>
         <Text style={[styles.availabilityText,
         { color: item.is_available ? '#59DE07' : '#EA1D25' }]}>
           {item.is_available ? 'Available' : 'Unavailable'}
         </Text>
       </View>
       <Switch
-        value={item.is_available || false}
-        onValueChange={() => toggleAvailability(item.id, item.is_available || false)}
+        value={!!item.is_available}
+        onValueChange={() => toggleAvailability(item.id, item.is_available)}
         trackColor={{ false: "#fff", true: "whitesmoke" }}
         thumbColor={item.is_available ? "#59DE07" : "#828282"}
       />
@@ -249,7 +232,7 @@ const VolunteerAvailabilityScreen: React.FC = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={styles.screenContainer}>
       <FlatList
         data={volunteers}
         renderItem={renderVolunteerItem}
@@ -268,79 +251,99 @@ const VolunteerAvailabilityScreen: React.FC = () => {
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#333243',
+    backgroundColor: '#000',
   },
+  // Loading and empty 
   loadingContainer: {
     flex: 1,
-    backgroundColor: '#333243',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#000',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#000',
+  },
+  emptyText: {
+    ...typography.bodyMedium,
+    color: '#B0B0B0',
   },
   loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    fontFamily: 'Outfit-Regular',
-    color: '#666',
+    ...typography.bodyBold,
+    color: '#fff'
   },
+  // Card styles
   listContainer: {
-    paddingVertical: 10,
+    paddingHorizontal: 20,
+    paddingTop: 3,
+    paddingBottom: 20
   },
   cardContainer: {
-    borderColor: '#1F1F2F',
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 10,
-    backgroundColor: '#1F1F2F',
-    marginHorizontal: 15,
-    marginVertical: 10,
+    marginTop: 12,
+    backgroundColor: '#262626',
+    borderWidth: 0
   },
-  locationContainer: {
+  headerContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 15,
   },
-  locationTextContainer: {
-    flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderRadius: 5
+  headerTitle: {
+    ...typography.bodyMediumBold,
+    color: '#fff',
   },
-  locationText: {
-    textAlign: 'center',
-    fontFamily: 'Outfit-Bold',
-    fontSize: 18,
-    color: '#FFFFFF',
+  headerDate: {
+    ...typography.bodyMediumRegular,
+    color: '#aaa',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#444',
+    marginVertical: 8,
   },
   infoRow: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    alignItems: 'center',
+    marginBottom: 8,
   },
   infoLabel: {
-    fontFamily: 'Outfit-Regular',
-    fontSize: 16,
-    color: '#8F8DAA',
+    ...typography.bodyLargeRegular,
+    color: '#CCCCCC',
   },
   infoValue: {
-    fontFamily: 'Outfit-SemiBold',
-    fontSize: 16,
-    color: '#FFFFFF',
-  },
-  statusExpired: {
-    color: '#F9200C',
+    ...typography.bodyLarge,
+    color: '#fff',
   },
   statusPending: {
-    color: '#D828FF',
+    color: '#EA1D25', // Red color for pending status
+    ...typography.bodyLarge
   },
-  statusConfirmed: {
-    color: '#BACF16',
+  resolveButton: {
+    backgroundColor: '#73BF44',
+    paddingVertical: 5,
+    borderRadius: 5,
+    paddingHorizontal: 15,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center'
   },
+  resolveButtonText: {
+    ...typography.bodyMediumBold,
+    color: '#fff',
+    marginRight: 5
+  },
+  // Volunteer screen
   volunteerList: {
-    paddingVertical: 10,
+    padding: 10,
   },
   volunteerItem: {
     flexDirection: 'row',
@@ -348,36 +351,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#1F1F2F',
     padding: 15,
-    marginVertical: 5,
-    marginHorizontal: 15,
     borderRadius: 10,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   volunteerInfo: {
     flex: 1,
   },
   volunteerName: {
-    fontFamily: 'Outfit-SemiBold',
     fontSize: 16,
-    color: '#FFFFFF',
+    fontFamily: 'GeistSemiBold',
+    color: '#fff',
   },
   availabilityText: {
-    fontFamily: 'Outfit-Medium',
     fontSize: 14,
+    fontFamily: 'GeistRegular',
     marginTop: 5,
   },
-  acceptButton: {
-    backgroundColor: '#4CAF50',
-    borderRadius: 5,
-    marginTop: 10,
-    alignSelf: 'center',
-    width: 'auto'
-  },
-  acceptButtonText: {
-    color: 'white',
-    fontFamily: 'Outfit-Bold',
-    fontSize: 18,
-    textAlign: 'center'
+  screenContainer: {
+    flex: 1,
+    backgroundColor: '#333243',
   },
 });
 
-export default WaterRequestsManagementScreen;
+export default WaterRequestsScreen;

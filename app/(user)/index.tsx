@@ -5,7 +5,7 @@ import { Card } from '@/components/Card';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { fonts, typography } from '@/constants/Typography';
-import NotificationPermission from '@/components/NotificationPermission';
+import NotificationPermission from '@/components/features/notifications/NotificationPermission';
 
 
 export default function UserDashboard() {
@@ -97,7 +97,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
-    borderRadius: 12
+    borderRadius: 12,
+    marginVertical: 8,
   },
   cardIcon: {
     marginRight: 15,

@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { StyleSheet, Text, View, FlatList, Switch, RefreshControl, TouchableOpacityComponent } from 'react-native';
-import FulfilledRequestsList from '@/components/FulfilledRequestList';
-import RequestsList from '@/components/RequestsList';
+import FulfilledTrainerRequestList from '@/components/features/requests/FulfilledTrainerRequestList';
+import TrainerRequestsList from '@/components/features/requests/TrainerRequestsList';
 
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
@@ -19,8 +19,7 @@ const TrainerManagementScreen = () => {
           tabBarActiveTintColor: '#EA1D25',
           tabBarInactiveTintColor: '#8F8DAA',
           tabBarLabelStyle: {
-            fontFamily: '',
-            fontSize: 12,
+            ...typography.bodySmall
           },
           tabBarStyle: {
             backgroundColor: '#262537',
@@ -33,8 +32,8 @@ const TrainerManagementScreen = () => {
           },
         }}
       >
-        <Tab.Screen name="Requests" component={RequestsList} />
-        <Tab.Screen name="Fulfilled" component={FulfilledRequestsList} />
+        <Tab.Screen name="Requests" component={TrainerRequestsList} />
+        <Tab.Screen name="Fulfilled" component={FulfilledTrainerRequestList} />
         <Tab.Screen name="Trainers" component={TrainerAvailabilityScreen} />
       </Tab.Navigator>
   );
