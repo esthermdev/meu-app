@@ -5,14 +5,11 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  ActivityIndicator,
   RefreshControl,
   Alert,
   TouchableOpacity,
-  Modal,
-  TextInput,
-  ScrollView,
   Image,
+  ScrollView,
 } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
@@ -24,6 +21,7 @@ import LoadingIndicator from '@/components/LoadingIndicator';
 import { router } from 'expo-router';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import UpdateScoreModal from '@/components/features/modals/UpdateScoreModal';
+import { updateGameScore } from '@/utils/updateGameScore';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
@@ -41,11 +39,15 @@ const MyGames = () => {
   const [games, setGames] = useState<Games[]>([]);
   const [filteredGames, setFilteredGames] = useState<Games[]>([]);
   const [favoriteTeamIds, setFavoriteTeamIds] = useState<number[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
   const [dates, setDates] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>('');
+
   const [modalVisible, setModalVisible] = useState(false);
+
   const [currentGame, setCurrentGame] = useState<Games | null>(null);
   const [team1Score, setTeam1Score] = useState('0');
   const [team2Score, setTeam2Score] = useState('0');
@@ -137,7 +139,8 @@ const MyGames = () => {
     }
   }, [session]);
 
-  const handleUpdateScore = (game: Games) => {
+  // This function prepares the modal with game data and shows it
+  const openScoreModal = (game: Games) => {
     setCurrentGame(game);
     // Set initial scores from existing data if available
     if (game.scores && game.scores[0]) {
@@ -150,92 +153,77 @@ const MyGames = () => {
     setModalVisible(true);
   };
 
-  const submitScore = async () => {
+  // Helper function to update local state optimistically
+  const updateLocalGameState = (gameId: number, team1Score: number, team2Score: number) => {
+    const updatedGames = games.map(game => {
+      if (game.id === gameId) {
+        // Create proper structure for scores array
+        const updatedScores = game.scores && game.scores.length > 0 
+          ? [...game.scores] // Copy existing scores array
+          : []; // Create new array if none exists
+          
+        if (updatedScores.length > 0) {
+          // Update first score in array
+          updatedScores[0] = {
+            ...updatedScores[0],
+            team1_score: team1Score,
+            team2_score: team2Score,
+            game_id: gameId
+          };
+        } else {
+          // Add new score to array
+          updatedScores.push({
+            team1_score: team1Score,
+            team2_score: team2Score,
+            game_id: gameId,
+            id: 0, // Temporary ID, will be replaced on next fetch
+            is_finished: false, // Default value
+            round_id: null // Default value
+          });
+        }
+        
+        return {
+          ...game,
+          scores: updatedScores
+        };
+      }
+      return game;
+    });
+    
+    setGames(updatedGames);
+    setFilteredGames(prev => prev.map(game => {
+      if (game.id === gameId) {
+        const found = updatedGames.find(g => g.id === game.id);
+        return found || game;
+      }
+      return game;
+    }));
+  };
+
+  // This function processes the score update with optimistic UI
+  const submitScore = async (team1ScoreStr: string, team2ScoreStr: string) => {
     if (!currentGame) return;
     
-    try {
-      // Check if score record exists for this game
-      const { data, error: checkError } = await supabase
-        .from('scores')
-        .select('*')
-        .eq('game_id', currentGame.id);
-      
-      if (checkError) throw checkError;
-      
-      let result;
-      
-      if (data && data.length > 0) {
-        // Update existing score
-        result = await supabase
-          .from('scores')
-          .update({
-            team1_score: parseInt(team1Score),
-            team2_score: parseInt(team2Score),
-          })
-          .eq('game_id', currentGame.id);
-      } else {
-        // Insert new score
-        result = await supabase
-          .from('scores')
-          .insert({
-            game_id: currentGame.id,
-            team1_score: parseInt(team1Score),
-            team2_score: parseInt(team2Score),
-          });
-      }
-      
-      if (result.error) throw result.error;
-      
-      // Update the local state
-      const updatedGames = games.map(game => {
-        if (game.id === currentGame.id) {
-          // Create proper structure for scores array
-          const updatedScores = game.scores && game.scores.length > 0 
-            ? [...game.scores] // Copy existing scores array
-            : []; // Create new array if none exists
-            
-          if (updatedScores.length > 0) {
-            // Update first score in array
-            updatedScores[0] = {
-              ...updatedScores[0],
-              team1_score: parseInt(team1Score),
-              team2_score: parseInt(team2Score),
-              game_id: currentGame.id
-            };
-          } else {
-            // Add new score to array
-            updatedScores.push({
-              team1_score: parseInt(team1Score),
-              team2_score: parseInt(team2Score),
-              game_id: currentGame.id,
-              id: 0, // Temporary ID, will be replaced on next fetch
-              is_finished: false, // Default value
-              round_id: null // Default value
-            });
-          }
-          
-          return {
-            ...game,
-            scores: updatedScores
-          };
-        }
-        return game;
-      });
-      
-      setGames(updatedGames);
-      setFilteredGames(prev => prev.map(game => {
-        if (game.id === currentGame.id) {
-          const found = updatedGames.find(g => g.id === game.id);
-          return found || game;
-        }
-        return game;
-      }));
-
-      setModalVisible(false);
-      
-    } catch (error) {
-      console.error('Error updating score:', error);
-      Alert.alert('Error', 'Failed to update score');
+    const team1ScoreNum = parseInt(team1ScoreStr);
+    const team2ScoreNum = parseInt(team2ScoreStr);
+    
+    // Immediately update UI optimistically
+    updateLocalGameState(currentGame.id, team1ScoreNum, team2ScoreNum);
+    
+    // Close modal right away for better UX
+    setModalVisible(false);
+    
+    // Then perform the actual update
+    const success = await updateGameScore({
+      gameId: currentGame.id,
+      team1Score: team1ScoreNum,
+      team2Score: team2ScoreNum,
+      scoreId: currentGame.scores?.[0]?.id,
+    });
+    
+    // If the update failed, refresh to get correct data
+    if (!success && session) {
+      fetchFavoriteGames(session.user.id);
     }
   };
 
@@ -274,7 +262,7 @@ const MyGames = () => {
         <Text style={styles.fieldText}>Field {item.field_id}</Text>
       </View>
       
-      {/* Teams and Score Container - Redesigned to match team screens */}
+      {/* Teams and Score Container */}
       <View style={styles.matchupContainer}>
         {/* Left side: Teams */}
         <View style={styles.teamsSection}>
@@ -320,7 +308,7 @@ const MyGames = () => {
       
       <TouchableOpacity 
         style={styles.updateScoreButton} 
-        onPress={() => handleUpdateScore(item)}
+        onPress={() => openScoreModal(item)}
       >
         <Text style={styles.updateScoreText}>Update Score</Text>
       </TouchableOpacity>
@@ -330,7 +318,7 @@ const MyGames = () => {
   if (!session) {
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.messageText}>Please log in to view your favorite games</Text>
+        <Text style={styles.messageText}>Please <Text style={styles.linkText} onPress={() => router.push('/(user)')}>log in</Text> to view your favorite games</Text>
       </View>
     );
   }
@@ -355,6 +343,8 @@ const MyGames = () => {
             }
             contentContainerStyle={styles.listContainer}
           />
+          
+          {/* Using the reusable modal component */}
           {currentGame && (
             <UpdateScoreModal
               visible={modalVisible}
@@ -505,24 +495,6 @@ const styles = StyleSheet.create({
     width: 100,
     textAlign: 'right'
   },
-  teamsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  teamSideLeft: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    marginRight: 8
-  },
-  teamSideRight: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginLeft: 8
-  },
   teamText: {
     ...typography.bodyMedium,
     color: '#444',
@@ -536,10 +508,6 @@ const styles = StyleSheet.create({
     height: 27,
     borderRadius: 18,
   },
-  scoreContainer: {
-    backgroundColor: 'white',
-    paddingHorizontal: 10
-  },
   scoreText: {
     ...typography.h4,
     color: '#333',
@@ -551,70 +519,6 @@ const styles = StyleSheet.create({
     ...typography.bodySmallBold,
     color: '#EA1D25',
     textDecorationLine: 'underline'
-  },
-  // Modal styles
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalView: {
-    width: '80%',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalTitle: {
-    ...typography.h4,
-    marginBottom: 15
-  },
-  teamScoreRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  modalTeamName: {
-    ...typography.h5,
-    flex: 1,
-  },
-  scoreInput: {
-    width: 48,
-    height: 40,
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    textAlign: 'center',
-    ...typography.h5,
-  },
-  modalButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  cancelButton: {
-    backgroundColor: '#000000',
-    padding: 12,
-    borderRadius: 6,
-    width: '48%',
-    justifyContent: 'center',
-  },
-  updateButton: {
-    backgroundColor: '#EA1D25',
-    padding: 12,
-    borderRadius: 6,
-    width: '48%',
-    justifyContent: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    ...typography.bodyMedium
   },
 });
 

@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
-  Modal,
 } from 'react-native';
 import { Database } from '@/database.types';
 import { formatDate } from '@/utils/formatDate';
@@ -17,6 +16,7 @@ import { typography } from '@/constants/Typography';
 import { supabase } from '@/lib/supabase';
 import { fonts } from '@/constants/Typography';
 import UpdateScoreModal from '../modals/UpdateScoreModal';
+import { updateGameScore } from '@/utils/updateGameScore';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
@@ -49,50 +49,43 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
-  const handleUpdateScore = async (team1Score: string, team2Score: string) => {
+  const openScoreModal = () => {
+    setModalVisible(true);
+  };
+
+  const submitScore = async (team1ScoreStr: string, team2ScoreStr: string) => {
     setIsLoading(true);
-    
-    try {
-      // Check if score record exists
-      if (game.scores && game.scores.length > 0) {
-        // Update existing score
-        const { error } = await supabase
-          .from('scores')
-          .update({
-            team1_score: parseInt(team1Score),
-            team2_score: parseInt(team2Score),
-          })
-          .eq('id', game.scores[0].id);
-          
-        if (error) throw error;
-      } else {
-        // Create new score record
-        const { error } = await supabase
-          .from('scores')
-          .insert({
-            game_id: game.id,
-            team1_score: parseInt(team1Score),
-            team2_score: parseInt(team2Score),
-            is_finished: false,
-            round_id: game.round_id
-          });
-          
-        if (error) throw error;
+
+    // Update local state immediately for UI feedback
+    setTeam1Score(team1ScoreStr);
+    setTeam2Score(team2ScoreStr);
+
+    const success = await updateGameScore({
+      gameId: game.id,
+      team1Score: team1ScoreStr,
+      team2Score: team2ScoreStr,
+      scoreId: game.scores && game.scores.length > 0 ? game.scores[0].id : null,
+      roundId: game.round_id,
+      onSuccess: () => {
+        setModalVisible(false);
+        Alert.alert('Success', 'Score updated successfully');
+        onGameStatusChange();
       }
-      
+    });
+
+    // If failed, we don't need to do anything special here as the UI is already showing
+    // the updated scores that the user entered
+    setIsLoading(false);
+
+    // Close modal on failure too (UI already has user's input values)
+    if (!success) {
       setModalVisible(false);
-      onGameStatusChange();
-    } catch (error) {
-      console.error('Error updating score:', error);
-      Alert.alert('Error', 'Failed to update score');
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const handleMarkCompleted = async () => {
     setIsLoading(true);
-    
+
     try {
       if (game.scores && game.scores.length > 0) {
         // Update existing score record
@@ -102,9 +95,9 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
             is_finished: true
           })
           .eq('id', game.scores[0].id);
-          
+
         if (error) throw error;
-        
+
         setIsCompleted(true);
         Alert.alert('Success', 'Game marked as completed');
         onGameStatusChange();
@@ -119,9 +112,9 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
             is_finished: true,
             round_id: game.round_id
           });
-          
+
         if (error) throw error;
-        
+
         setIsCompleted(true);
         Alert.alert('Success', 'Game marked as completed');
         onGameStatusChange();
@@ -134,10 +127,6 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
     }
   };
 
-  const openScoreModal = () => {
-    setModalVisible(true);
-  };
-
   return (
     <View style={styles.gameCard}>
       <View style={styles.gameHeader}>
@@ -147,16 +136,16 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
         </View>
         <Text style={styles.fieldText}>Field {game.field_id}</Text>
       </View>
-      
+
       {/* Teams and Score Container */}
       <View style={styles.matchupContainer}>
         {/* Left side: Teams */}
         <View style={styles.teamsSection}>
           {/* Team 1 */}
           <View style={styles.teamRow}>
-            <Image 
-              source={game.team1?.avatar_uri ? { uri: game.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
-              style={styles.teamLogo} 
+            <Image
+              source={game.team1?.avatar_uri ? { uri: game.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
+              style={styles.teamLogo}
             />
             <Text style={styles.teamText}>{game.team1?.name}</Text>
             <View style={styles.scoresSection}>
@@ -169,12 +158,12 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
               />
             </View>
           </View>
-          
+
           {/* Team 2 */}
           <View style={styles.teamRow}>
-            <Image 
-              source={game.team2?.avatar_uri ? { uri: game.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
-              style={styles.teamLogo} 
+            <Image
+              source={game.team2?.avatar_uri ? { uri: game.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
+              style={styles.teamLogo}
             />
             <Text style={styles.teamText}>{game.team2?.name}</Text>
             <View style={styles.scoresSection}>
@@ -192,21 +181,21 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
 
       {/* Action buttons */}
       <View style={styles.actionContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[
-            styles.actionButton, 
+            styles.actionButton,
             styles.markCompletedButton,
             isCompleted && styles.completedButton
           ]}
           onPress={handleMarkCompleted}
           disabled={isCompleted || isLoading}
         >
-          <Text style={[styles.buttonText, isCompleted ? { color: '#ED8C22' } : { color: '#242424' } ]}>
+          <Text style={[styles.buttonText, isCompleted ? { color: '#ED8C22' } : { color: '#242424' }]}>
             {isCompleted ? 'COMPLETED' : 'Mark Completed'}
           </Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={[styles.actionButton, styles.updateScoreButton]}
           onPress={openScoreModal}
         >
@@ -214,17 +203,18 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
         </TouchableOpacity>
       </View>
 
-      {/* Score Update Modal */}
-      <UpdateScoreModal 
+      {/* Reusable Score Update Modal */}
+      <UpdateScoreModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        onSubmit={handleUpdateScore}
+        onSubmit={submitScore}
         team1Name={game.team1?.name || 'Team 1'}
         team2Name={game.team2?.name || 'Team 2'}
         team1Score={team1Score}
         team2Score={team2Score}
         setTeam1Score={setTeam1Score}
         setTeam2Score={setTeam2Score}
+        isLoading={isLoading}
       />
     </View>
   );
@@ -328,80 +318,6 @@ const styles = StyleSheet.create({
     color: '#242424',
     fontFamily: fonts.semiBold,
     fontSize: 14,
-  },
-  
-  // Modal Styles
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: '80%',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalTitle: {
-    ...typography.h4,
-    marginBottom: 15
-  },
-  modalTeamContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  modalTeamName: {
-    ...typography.h5,
-    flex: 1,
-  },
-  modalScoreInputContainer: {
-    width: 48,
-    height: 40,
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-  },
-  modalScoreInput: {
-    width: '100%',
-    height: '100%',
-    textAlign: 'center',
-    ...typography.h5,
-  },
-  modalButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  modalCancelButton: {
-    backgroundColor: '#000000',
-    padding: 12,
-    borderRadius: 6,
-    width: '48%',
-    justifyContent: 'center',
-  },
-  modalCancelButtonText: {
-    color: 'white',
-    textAlign: 'center',
-    ...typography.bodyMedium
-  },
-  modalUpdateButton: {
-    backgroundColor: '#EA1D25',
-    padding: 12,
-    borderRadius: 6,
-    width: '48%',
-    justifyContent: 'center',
-  },
-  modalUpdateButtonText: {
-    color: 'white',
-    textAlign: 'center',
-    ...typography.bodyMedium
   },
 });
 
