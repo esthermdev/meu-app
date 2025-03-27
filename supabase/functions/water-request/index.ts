@@ -38,7 +38,8 @@ Deno.serve(async (req) => {
       .from("profiles")
       .select("id, expo_push_token")
       .eq("is_volunteer", true)
-      .eq("is_available", true);
+      .eq("is_available", true)
+      .eq("is_logged_in", true)
       
     if (error) {
       console.error("Error querying volunteers:", error);

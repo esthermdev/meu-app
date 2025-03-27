@@ -142,11 +142,6 @@ const TrainerRequestButton = () => {
       newErrors.field = "Please select a field number";
     }
 
-    // Validate description
-    if (!description) {
-      newErrors.description = "Please provide a description of your situation.";
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -216,19 +211,10 @@ const TrainerRequestButton = () => {
 
                     <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>Describe your emergency:</Text>
                     <TextInput
-                      style={[
-                        styles.descriptionInput,
-                        errors.description ? styles.inputError : null
-                      ]}
+                      style={styles.descriptionInput}
                       placeholder="e.g., Head injury, ACL tear, minor sprain, cramping..."
                       value={description}
-                      onChangeText={(text) => {
-                        setDescription(text);
-                        // Clear error once user types enough
-                        if (errors.description) {
-                          setErrors(prev => ({ ...prev, description: undefined }));
-                        }
-                      }}
+                      onChangeText={(text) => setDescription(text)}
                       multiline
                       numberOfLines={3}
                       maxLength={200}

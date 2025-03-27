@@ -39,7 +39,8 @@ Deno.serve(async (req) => {
       .from("profiles")
       .select("id, expo_push_token")
       .eq("is_medical_staff", true)
-      .eq("is_available", true);
+      .eq("is_available", true)
+      .eq("is_logged_in", true)
 
     if (error) {
       console.error("Error fetching medical staff:", error);

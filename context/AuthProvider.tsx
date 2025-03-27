@@ -31,6 +31,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Flag to track if we're processing a deep link
   const [isProcessingDeepLink, setIsProcessingDeepLink] = useState(false);
 
+  // Simple function to update login status
+  const updateLoginStatus = async (userId: string, isLoggedIn: boolean) => {
+    try {
+      await supabase
+        .from('profiles')
+        .update({ 
+          is_logged_in: isLoggedIn
+        })
+        .eq('id', userId);
+      
+      console.log(`Updated login status for user ${userId} to ${isLoggedIn ? 'online' : 'offline'}`);
+    } catch (error) {
+      // Just log the error, don't disrupt the flow
+      console.error('Error updating login status:', error);
+    }
+  };
+
   const migrateAnonymousPushToken = async (userId: string) => {
     try {
       // Check if we have a token stored in AsyncStorage
@@ -123,6 +140,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               
               if (data.session.user) {
                 await getProfile(data.session.user.id);
+                // Update login status after successful sign-in via deep link
+                updateLoginStatus(data.session.user.id, true);
               }
               
               // Navigate to the user page after a slight delay
@@ -147,8 +166,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        getProfile(session.user.id)
-        migrateAnonymousPushToken(session.user.id)
+        getProfile(session.user.id);
+        migrateAnonymousPushToken(session.user.id);
+        // Update login status for initial session
+        updateLoginStatus(session.user.id, true);
       } else {
         // We're not logged in - check if we need to handle push token
         handleAnonymousPushToken();
@@ -158,19 +179,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("Auth state change:", _event);
       setSession(session);
       setUser(session?.user ?? null);
+      
       if (session?.user) {
-        getProfile(session.user.id)
-        migrateAnonymousPushToken(session.user.id)
+        getProfile(session.user.id);
+        migrateAnonymousPushToken(session.user.id);
+        
+        // Update login status when a user signs in
+        if (_event === 'SIGNED_IN') {
+          updateLoginStatus(session.user.id, true);
+        }
       } else if (_event === 'SIGNED_OUT') {
+        // We don't have the user ID here anymore (already signed out)
         // Handle anonymous token after sign out
         setTimeout(() => {
           handleAnonymousPushToken();
         }, 1000);
       }
-      setLoading(false);
-
+      
       // Only update loading if we're not processing a deep link
       if (!isProcessingDeepLink) {
         setLoading(false);
@@ -310,8 +338,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    try {
+      // Store the user ID before we sign out
+      const currentUserId = user?.id;
+      
+      if (currentUserId) {
+        console.log(`Attempting to update login status to offline for user ${currentUserId} before sign-out`);
+        
+        // Update login status to false with explicit await
+        await supabase
+          .from('profiles')
+          .update({ is_logged_in: false })
+          .eq('id', currentUserId);
+          
+        console.log(`Successfully updated login status to offline for user ${currentUserId} before sign-out`);
+      } else {
+        console.log('No user ID available for updating login status during sign-out');
+      }
+      
+      // Proceed with sign out
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      console.log('User successfully signed out');
+    } catch (error) {
+      console.error("Error during sign out:", error);
+      throw error;
+    }
   };
 
   const refreshProfile = async (userId?: string) => {

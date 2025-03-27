@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import * as Notifications from 'expo-notifications';
 import { StyleSheet, Text, View, FlatList, Switch, RefreshControl, TouchableOpacity, Alert } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { Card } from '@/components/Card';
@@ -97,7 +96,6 @@ const CartRequestsList = () => {
 
       if (data) {
         fetchRequests();
-        sendPushNotification(data[0].requester_token || '')
       } else {
         Alert.alert('Request Unavailable', 'This request has already been accepted by another driver.');
       }
@@ -106,25 +104,6 @@ const CartRequestsList = () => {
       Alert.alert('Error', 'Failed to accept the request. Please try again.');
     }
   };
-
-  async function sendPushNotification(expoPushToken: string) {
-    const message = {
-      to: expoPushToken,
-      sound: 'default',
-      title: 'Driver is on the way',
-      body: 'Please wait patiently as a driver is making their way to you now.',
-    };
-  
-    await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    });
-  }
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'N/A';

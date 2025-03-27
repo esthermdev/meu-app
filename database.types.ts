@@ -35,6 +35,7 @@ export type Database = {
       }
       cart_requests: {
         Row: {
+          anon_device_id: string | null
           created_at: string | null
           driver: string | null
           from_field_number: number | null
@@ -49,6 +50,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          anon_device_id?: string | null
           created_at?: string | null
           driver?: string | null
           from_field_number?: number | null
@@ -63,6 +65,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          anon_device_id?: string | null
           created_at?: string | null
           driver?: string | null
           from_field_number?: number | null
@@ -77,6 +80,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "cart_requests_anon_device_id_fkey"
+            columns: ["anon_device_id"]
+            isOneToOne: false
+            referencedRelation: "anonymous_tokens"
+            referencedColumns: ["device_id"]
+          },
           {
             foreignKeyName: "cart_requests_from_field_number_fkey"
             columns: ["from_field_number"]
