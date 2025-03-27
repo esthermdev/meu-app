@@ -23,6 +23,7 @@ import { ms } from 'react-native-size-matters';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { typography } from '@/constants/Typography';
 import ModalButton from '../buttons/ModalButtons';
+import ErrorMessage from '../ErrorMessage';
 
 const { height } = Dimensions.get('window');
 const modalHeight = height * 0.7; // 80% of screen height
@@ -43,6 +44,14 @@ const CartRequestButton = () => {
   const [fields, setFields] = useState<string[]>([]);
   const [passengerCount, setPassengerCount] = useState(1);
   const [specialRequest, setSpecialRequest] = useState('');
+  // Error states
+  const [errors, setErrors] = useState<{
+    fromLocation?: string;
+    toLocation?: string;
+    fromFieldNumber?: string;
+    toFieldNumber?: string;
+    general?: string;
+  }>({});
 
   const { expoPushToken } = usePushNotifications();
 
@@ -62,6 +71,10 @@ const CartRequestButton = () => {
   };
 
   const handleRequestCart = async () => {
+    if (!validateForm()) {
+      return; // Stop if validation fails
+    }
+
     try {
       // Create insert object with proper types
       const insertData: Database['public']['Tables']['cart_requests']['Insert'] = {
@@ -110,12 +123,33 @@ const CartRequestButton = () => {
     );
   };
 
-  const isFormValid = () => {
-    if (!fromLocation || !toLocation) return false;
-    if (fromLocation === 'Field' && !fromFieldNumber) return false;
-    if (toLocation === 'Field' && !toFieldNumber) return false;
-    if (fromLocation === toLocation && fromFieldNumber === toFieldNumber) return false;
-    return true;
+  const validateForm = (): boolean => {
+    const newErrors: {[key: string]: string} = {};
+    
+    // Validate locations
+    if (fromLocation === toLocation) {
+      if (fromLocation === 'Field') {
+        // For fields, check if the field numbers are the same
+        if (fromFieldNumber === toFieldNumber) {
+          newErrors.toFieldNumber = "From and To field numbers cannot be the same";
+        }
+      } else {
+        // For non-field locations (like 'Lot 1'), they can't be the same
+        newErrors.toLocation = "From and To locations cannot be the same";
+      }
+    }
+    
+    // Validate field numbers
+    if (fromLocation === 'Field' && !fromFieldNumber) {
+      newErrors.fromFieldNumber = "Please select a field number";
+    }
+    
+    if (toLocation === 'Field' && !toFieldNumber) {
+      newErrors.toFieldNumber = "Please select a field number";
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const resetInputs = () => {
@@ -130,6 +164,7 @@ const CartRequestButton = () => {
   const handleCloseModal = () => {
     setIsModalVisible(false);
     resetInputs();
+    setErrors({});
   };
 
   return (
@@ -156,6 +191,13 @@ const CartRequestButton = () => {
             <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
               <Ionicons name="close" size={20} color="#8F8DAA" />
             </TouchableOpacity>
+
+            {errors.general && (
+              <View style={styles.generalErrorContainer}>
+                <Text style={styles.generalErrorText}>{errors.general}</Text>
+              </View>
+            )}
+
             <KeyboardAwareScrollView
               enableOnAndroid={true}
               enableAutomaticScroll={Platform.OS === 'ios'}
@@ -184,35 +226,59 @@ const CartRequestButton = () => {
                   <Dropdown
                     label="From Location"
                     data={LOCATIONS}
-                    onSelect={(item) => setFromLocation(item as LocationType)}
+                    onSelect={(item) => {
+                      setFromLocation(item as LocationType);
+                      // Clear error when user makes a selection
+                      setErrors(prev => ({...prev, fromLocation: undefined}));
+                    }}
                     selectedValue={fromLocation}
+                    error={!!errors.fromLocation}
                   />
+                  <ErrorMessage message={errors.fromLocation} />
 
                   {fromLocation === 'Field' && (
                     <Dropdown
                       label="From Field Number"
                       data={fields}
-                      onSelect={(item: string) => setFromFieldNumber(item)}
+                      onSelect={(item: string) => {
+                        setFromFieldNumber(item);
+                        // Clear error when user makes a selection
+                        setErrors(prev => ({...prev, fromFieldNumber: undefined}));
+                      }}
                       selectedValue={fromFieldNumber}
+                      error={!!errors.fromFieldNumber}
                     />
                   )}
+                  <ErrorMessage message={errors.fromFieldNumber} />
 
                   <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>To:</Text>
                   <Dropdown
                     label="To Location"
                     data={LOCATIONS}
-                    onSelect={(item: string) => setToLocation(item as LocationType)}
+                    onSelect={(item) => {
+                      setToLocation(item as LocationType);
+                      // Clear error when user makes a selection
+                      setErrors(prev => ({...prev, toLocation: undefined}));
+                    }}
                     selectedValue={toLocation}
+                    error={!!errors.toLocation}
                   />
+                  <ErrorMessage message={errors.toLocation} />
 
                   {toLocation === 'Field' && (
                     <Dropdown
                       label="To Field Number"
                       data={fields}
-                      onSelect={(item: string) => setToFieldNumber(item)}
+                      onSelect={(item: string) => {
+                        setToFieldNumber(item);
+                        // Clear error when user makes a selection
+                        setErrors(prev => ({...prev, toFieldNumber: undefined}));
+                      }}
                       selectedValue={toFieldNumber}
+                      error={!!errors.toFieldNumber}
                     />
                   )}
+                  <ErrorMessage message={errors.toFieldNumber} />
 
                   <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>Special Request:</Text>
                   <TextInput
@@ -330,6 +396,18 @@ const styles = StyleSheet.create({
   closeButton: {
     alignSelf: 'flex-end',
     zIndex: 1,
+  },
+  generalErrorContainer: {
+    backgroundColor: '#FFEEEE',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+    borderLeftWidth: 4,
+    borderLeftColor: '#DD3333',
+  },
+  generalErrorText: {
+    color: '#DD3333',
+    fontFamily: 'GeistRegular',
   },
 });
 

@@ -9,9 +9,10 @@ interface DropdownProps {
   data: Array<string>;
   onSelect: (item: string) => void;
   selectedValue?: string;
+	error?: boolean;
 }
 
-export const Dropdown: React.FC<DropdownProps> = ({ label, data, onSelect, selectedValue }) => {
+export const Dropdown: React.FC<DropdownProps> = ({ label, data, onSelect, selectedValue, error }) => {
 	const [visible, setVisible] = useState(false);
 
 	const toggleDropdown = () => {
@@ -29,7 +30,7 @@ export const Dropdown: React.FC<DropdownProps> = ({ label, data, onSelect, selec
 
 	return (
 		<View style={styles.container}>
-			<TouchableOpacity style={styles.button} onPress={toggleDropdown}>
+			<TouchableOpacity style={[styles.button, error ? { borderColor: '#EA1D25' } : null]} onPress={toggleDropdown}>
 				<Text style={styles.buttonText} maxFontSizeMultiplier={1.1}>
 					{selectedValue || label}
 				</Text>
@@ -97,7 +98,11 @@ const styles = StyleSheet.create({
 	listItem: {
 		fontFamily: fonts.regular,
 		fontSize: ms(16),
-	}
+	},
+  inputError: {
+    borderColor: '#DD3333',
+    borderWidth: 1,
+  },
 });
 
 export default Dropdown;

@@ -20,6 +20,7 @@ import { typography } from '@/constants/Typography';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import ModalButton from '../buttons/ModalButtons';
 import Dropdown from '../Dropdown';
+import ErrorMessage from '../ErrorMessage';
 
 const { height } = Dimensions.get('window');
 const modalHeight = height * 0.8; // 80% of screen height
@@ -30,14 +31,21 @@ type RequestStatus = Database['public']['Enums']['request_status'];
 // Define priority level type
 type PriorityLevel = 'High' | 'Medium' | 'Low';
 
+const FIELD_PLACEHOLDER = "Select Field";
+
 const TrainerRequestButton = () => {
-  const [selectedField, setSelectedField] = useState<number | undefined>(undefined);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [priorityLevel, setPriorityLevel] = useState<PriorityLevel>('Medium');
   const [description, setDescription] = useState<string | undefined>('')
   const [fields, setFields] = useState<{ id: number; name: string }[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  // Add a string representation of the selected field for the dropdown
-  const [selectedFieldLabel, setSelectedFieldLabel] = useState<string>('');
+  const [selectedField, setSelectedField] = useState<number | undefined>(undefined);
+  const [selectedFieldLabel, setSelectedFieldLabel] = useState<string>(FIELD_PLACEHOLDER);
+  // Error states
+  const [errors, setErrors] = useState<{
+    field?: string;
+    description?: string;
+    general?: string;
+  }>({});
 
   useEffect(() => {
     fetchFields();
@@ -47,27 +55,37 @@ const TrainerRequestButton = () => {
     const { data, error } = await supabase
       .from('fields')
       .select('id, name');
-    
+
     if (error) {
       console.error('Error fetching fields:', error);
     } else if (data) {
       setFields(data);
       if (data.length > 0) {
         setSelectedField(data[0].id);
-        setSelectedFieldLabel(`Select Field`);
+        setSelectedFieldLabel(FIELD_PLACEHOLDER);
       }
     }
   };
 
-  // Function to handle field selection from dropdown
   const handleFieldSelect = (fieldLabel: string) => {
+    if (fieldLabel === FIELD_PLACEHOLDER) return;
+
     // Extract the field ID from the label (e.g., "Field 1" -> 1)
     const fieldId = parseInt(fieldLabel.replace('Field ', ''), 10);
     setSelectedField(fieldId);
     setSelectedFieldLabel(fieldLabel);
+
+    // Clear the field error when a valid selection is made
+    if (errors.field) {
+      setErrors(prev => ({ ...prev, field: undefined }));
+    }
   };
 
   const requestTrainer = async () => {
+    if (!validateForm()) {
+      return; // Stop if validation fails
+    }
+
     try {
       if (selectedField === undefined) {
         Alert.alert('Error', 'Please select a field');
@@ -103,7 +121,7 @@ const TrainerRequestButton = () => {
       }
 
       Alert.alert(
-        'Trainer Requested', 
+        'Trainer Requested',
         'Help is on the way. Please allow some time for a trainer to make their way to your location. If no trainer has arrived please try again later as trainers may be unavailable at the moment.'
       );
       setDescription('')
@@ -116,11 +134,30 @@ const TrainerRequestButton = () => {
     }
   };
 
+  const validateForm = (): boolean => {
+    const newErrors: { [key: string]: string } = {};
+
+    // More specific validation for field selection
+    if (selectedField === undefined || selectedFieldLabel === 'Select Field' || selectedFieldLabel === '') {
+      newErrors.field = "Please select a field number";
+    }
+
+    // Validate description
+    if (!description) {
+      newErrors.description = "Please provide a description of your situation.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleCloseModal = () => {
     setIsModalVisible(false);
     setDescription('');
     setPriorityLevel('Medium')
-    setSelectedFieldLabel('Select Field')
+    setSelectedField(undefined);
+    setSelectedFieldLabel(FIELD_PLACEHOLDER);
+    setErrors({});
   };
 
   const renderPriorityButton = (level: PriorityLevel, color: string) => (
@@ -163,10 +200,10 @@ const TrainerRequestButton = () => {
                   <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
                     <Ionicons name="close" size={20} color="#8F8DAA" />
                   </TouchableOpacity>
-                  
+
                   <ScrollView showsVerticalScrollIndicator={false}>
                     <Text style={styles.noteText} maxFontSizeMultiplier={1.2}>
-                      Note: Medical staff will respond as quickly as possible based on priority level and availability. 
+                      Note: Medical staff will respond as quickly as possible based on priority level and availability.
                       Please ensure the field number is correct so trainers can locate you efficiently.
                     </Text>
 
@@ -179,26 +216,36 @@ const TrainerRequestButton = () => {
 
                     <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>Describe your emergency:</Text>
                     <TextInput
-                      style={styles.descriptionInput}
+                      style={[
+                        styles.descriptionInput,
+                        errors.description ? styles.inputError : null
+                      ]}
                       placeholder="e.g., Head injury, ACL tear, minor sprain, cramping..."
                       value={description}
-                      onChangeText={setDescription}
+                      onChangeText={(text) => {
+                        setDescription(text);
+                        // Clear error once user types enough
+                        if (errors.description) {
+                          setErrors(prev => ({ ...prev, description: undefined }));
+                        }
+                      }}
                       multiline
                       numberOfLines={3}
                       maxLength={200}
                     />
+                    <ErrorMessage message={errors.description} />
 
                     <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>Select Field Location:</Text>
-                    
-                    {/* Replace Picker with Dropdown */}
                     <Dropdown
                       label="Select Field"
-                      data={fieldLabels}
+                      data={[FIELD_PLACEHOLDER, ...fieldLabels]}
                       onSelect={handleFieldSelect}
                       selectedValue={selectedFieldLabel}
+                      error={!!errors.field}
                     />
+                    <ErrorMessage message={errors.field} />
 
-                    <ModalButton 
+                    <ModalButton
                       onCancel={handleCloseModal}
                       onConfirm={requestTrainer}
                       confirmText="Request Trainer"
@@ -252,15 +299,17 @@ const styles = StyleSheet.create({
   noteText: {
     ...typography.bodySmall,
     color: '#666',
+    marginBottom: 10,
   },
   labelHeader: {
     ...typography.bodyMedium,
-    marginVertical: 10
+    marginVertical: 5
   },
   priorityButtonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: 10,
   },
   priorityButton: {
     padding: 10,
@@ -284,10 +333,19 @@ const styles = StyleSheet.create({
     padding: 10,
     ...typography.body,
     textAlignVertical: 'top',
+    marginBottom: 10,
   },
   closeButton: {
     alignSelf: 'flex-end',
     zIndex: 1,
+  },
+  errorText: {
+    color: '#DD3333',
+    ...typography.bodySmall,
+  },
+  inputError: {
+    borderColor: '#DD3333',
+    borderWidth: 1,
   },
 });
 
