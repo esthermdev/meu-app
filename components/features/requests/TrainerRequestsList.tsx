@@ -70,7 +70,6 @@ const TrainerRequestsList = () => {
       if (error) throw error;
 
       if (data) {
-        Alert.alert('Success', 'Medical request has been marked as resolved.');
         fetchRequests();
       } else {
         Alert.alert('Request Unavailable', 'This request has already been handled by another trainer.');

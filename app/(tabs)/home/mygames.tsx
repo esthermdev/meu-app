@@ -23,6 +23,7 @@ import { typography } from '@/constants/Typography';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { router } from 'expo-router';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
+import UpdateScoreModal from '@/components/features/modals/UpdateScoreModal';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
@@ -326,61 +327,6 @@ const MyGames = () => {
     </View>
   );
 
-  const renderScoreUpdateModal = () => (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => setModalVisible(false)}
-    >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalTitle}>Update Score</Text>
-          
-          <View>
-            <View style={styles.teamScoreRow}>
-              <Text style={styles.modalTeamName}>{currentGame?.team1.name}</Text>
-              <TextInput
-                style={styles.scoreInput}
-                keyboardType="number-pad"
-                value={team1Score}
-                onChangeText={setTeam1Score}
-                maxLength={3}
-              />
-            </View>
-            
-            <View style={styles.teamScoreRow}>
-              <Text style={styles.modalTeamName}>{currentGame?.team2.name}</Text>
-              <TextInput
-                style={styles.scoreInput}
-                keyboardType="number-pad"
-                value={team2Score}
-                onChangeText={setTeam2Score}
-                maxLength={3}
-              />
-            </View>
-          </View>
-          
-          <View style={styles.modalButtonsContainer}>
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              style={styles.updateButton}
-              onPress={submitScore}
-            >
-              <Text style={styles.buttonText}>Update Score</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal>
-  );
-
   if (!session) {
     return (
       <View style={styles.centerContainer}>
@@ -409,7 +355,19 @@ const MyGames = () => {
             }
             contentContainerStyle={styles.listContainer}
           />
-          {renderScoreUpdateModal()}
+          {currentGame && (
+            <UpdateScoreModal
+              visible={modalVisible}
+              onClose={() => setModalVisible(false)}
+              onSubmit={submitScore}
+              team1Name={currentGame.team1.name}
+              team2Name={currentGame.team2.name}
+              team1Score={team1Score}
+              team2Score={team2Score}
+              setTeam1Score={setTeam1Score}
+              setTeam2Score={setTeam2Score}
+            />
+          )}
         </>
       ) : (
         <View style={styles.centerContainer}>

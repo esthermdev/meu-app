@@ -1,13 +1,29 @@
 // announcements.tsx
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
-import { supabase } from '@/lib/supabase';
+import { 
+  View, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  StyleSheet, 
+  Alert, 
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { supabase } from '@/lib/supabase';
+import PrimaryButton from '@/components/buttons/PrimaryButton';
+import { typography } from '@/constants/Typography';
 
 const AnnouncementScreen = () => {
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async () => {
     if (!title.trim() || !message.trim()) {
@@ -44,102 +60,73 @@ const AnnouncementScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Send Announcement</Text>
-        <Text style={styles.description}>
-          This will send a push notification to all users and appear in the announcements section.
-        </Text>
-        
-        <Text style={styles.label}>Title</Text>
-        <TextInput
-          style={styles.input}
-          value={title}
-          onChangeText={setTitle}
-          placeholder="Enter title"
-          placeholderTextColor="#999"
-          editable={!loading}
-        />
-        
-        <Text style={styles.label}>Message</Text>
-        <TextInput
-          style={[styles.input, styles.messageInput]}
-          value={message}
-          onChangeText={setMessage}
-          placeholder="Enter message"
-          placeholderTextColor="#999"
-          multiline
-          editable={!loading}
-        />
-        
-        <TouchableOpacity 
-          style={[styles.submitButton, loading && styles.disabledButton]} 
-          onPress={handleSubmit}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator size="small" color="#fff" />
-          ) : (
-            <Text style={styles.submitButtonText}>Post</Text>
-          )}
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+    <View style={styles.container}>      
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardAvoidView}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <View style={styles.content}>           
+            <Text style={styles.label}>Title</Text>
+            <TextInput
+              style={styles.input}
+              value={title}
+              onChangeText={setTitle}
+              placeholder="Enter subject title"
+              placeholderTextColor="#999"
+              editable={!loading}
+            />
+            
+            <Text style={styles.label}>Message</Text>
+            <TextInput
+              style={[styles.input, styles.messageInput]}
+              value={message}
+              onChangeText={setMessage}
+              placeholder="Enter message"
+              placeholderTextColor="#999"
+              multiline
+              editable={!loading}
+            />
+            
+            <PrimaryButton onPress={handleSubmit} title='Post' />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#333243',
+    backgroundColor: '#000000',
+  },
+  keyboardAvoidView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
   },
   content: {
     padding: 20,
   },
-  title: {
-    fontSize: 24,
-    fontFamily: 'GeistBold',
-    marginBottom: 10,
-    color: '#fff'
-  },
-  description: {
-    fontSize: 14,
-    fontFamily: 'GeistRegular',
-    marginBottom: 20,
-    color: '#ccc'
-  },
   label: {
-    fontSize: 16,
-    fontFamily: 'GeistMedium',
-    marginBottom: 5,
+    ...typography.bodyMediumBold,
+    marginBottom: 8,
     color: '#fff'
   },
   input: {
     borderWidth: 1,
     borderColor: '#fff',
     backgroundColor: '#fff',
-    borderRadius: 5,
-    padding: 10,
+    borderRadius: 8,
+    padding: 12,
     marginBottom: 20,
-    fontFamily: 'GeistRegular',
+    ...typography.bodyMediumRegular
   },
   messageInput: {
-    height: 100,
+    height: 120,
     textAlignVertical: 'top',
-  },
-  submitButton: {
-    backgroundColor: '#EA1D25',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  disabledButton: {
-    backgroundColor: '#9E9E9E',
-  },
-  submitButtonText: {
-    color: 'white',
-    fontFamily: 'GeistBold',
-    fontSize: 16,
   },
 });
 

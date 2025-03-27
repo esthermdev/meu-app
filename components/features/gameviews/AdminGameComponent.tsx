@@ -16,6 +16,7 @@ import { formatTime } from '@/utils/formatTime';
 import { typography } from '@/constants/Typography';
 import { supabase } from '@/lib/supabase';
 import { fonts } from '@/constants/Typography';
+import UpdateScoreModal from '../modals/UpdateScoreModal';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
@@ -48,7 +49,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
-  const handleUpdateScore = async () => {
+  const handleUpdateScore = async (team1Score: string, team2Score: string) => {
     setIsLoading(true);
     
     try {
@@ -80,7 +81,6 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
       }
       
       setModalVisible(false);
-      Alert.alert('Success', 'Score updated successfully');
       onGameStatusChange();
     } catch (error) {
       console.error('Error updating score:', error);
@@ -215,65 +215,17 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
       </View>
 
       {/* Score Update Modal */}
-      <Modal
-        animationType="fade"
-        transparent={true}
+      <UpdateScoreModal 
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Update Score</Text>
-            
-            {/* Team 1 Score */}
-            <View style={styles.modalTeamContainer}>
-              <Text style={styles.modalTeamName}>{game.team1?.name || 'Team 1'}</Text>
-              <View style={styles.modalScoreInputContainer}>
-                <TextInput
-                  style={styles.modalScoreInput}
-                  keyboardType="number-pad"
-                  value={team1Score}
-                  onChangeText={setTeam1Score}
-                  maxLength={2}
-                />
-              </View>
-            </View>
-            
-            {/* Team 2 Score */}
-            <View style={styles.modalTeamContainer}>
-              <Text style={styles.modalTeamName}>{game.team2?.name || 'Team 2'}</Text>
-              <View style={styles.modalScoreInputContainer}>
-                <TextInput
-                  style={styles.modalScoreInput}
-                  keyboardType="number-pad"
-                  value={team2Score}
-                  onChangeText={setTeam2Score}
-                  maxLength={2}
-                />
-              </View>
-            </View>
-            
-            {/* Action Buttons */}
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity 
-                style={styles.modalCancelButton}
-                onPress={() => setModalVisible(false)}
-                disabled={isLoading}
-              >
-                <Text style={styles.modalCancelButtonText}>Cancel</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={styles.modalUpdateButton}
-                onPress={handleUpdateScore}
-                disabled={isLoading}
-              >
-                <Text style={styles.modalUpdateButtonText}>Update Score</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        onClose={() => setModalVisible(false)}
+        onSubmit={handleUpdateScore}
+        team1Name={game.team1?.name || 'Team 1'}
+        team2Name={game.team2?.name || 'Team 2'}
+        team1Score={team1Score}
+        team2Score={team2Score}
+        setTeam1Score={setTeam1Score}
+        setTeam2Score={setTeam2Score}
+      />
     </View>
   );
 };

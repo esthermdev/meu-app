@@ -21,6 +21,8 @@ export default function TabLayout() {
         router.push('/(user)/admin/trainers-list');
       } else if (data.type === "new_cart_request") {
         router.push('/(user)/admin/cart-requests');
+      } else if (data.type === "announcement") {
+        router.push('/(tabs)/home/notifications')
       }
     });
 
