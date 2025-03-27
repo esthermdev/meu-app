@@ -26,10 +26,18 @@
     },
     "production": {
       "autoIncrement": true,
-      "channel": "production"
+      "channel": "production",
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "https://opleqymigooimduhlvym.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wbGVxeW1pZ29vaW1kdWhsdnltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTk0OTgxNDAsImV4cCI6MjAzNTA3NDE0MH0.2vvrpj3_y4JmWbgYEnOQO0TEM3ofehRvDjkAh6mVOPA"
+      }
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "ascAppId": "6695720383"
+      }
+    }
   }
 }
