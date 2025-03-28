@@ -38,7 +38,7 @@ const AdminScreen = () => {
     try {
       
       // Call the Supabase RPC function
-      const { error } = await supabase.rpc('update_pool_rankings');
+      const { error } = await supabase.rpc('client_update_rankings_and_tiebreakers');
       
       if (error) {
         console.error('Error updating rankings:', error);

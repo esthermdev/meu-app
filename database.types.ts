@@ -806,10 +806,60 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      full_ranking: {
+        Row: {
+          id: number | null
+          losses: number | null
+          name: string | null
+          pool_id: number | null
+          pool_rank: number | null
+          team_id: number | null
+          wins: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_pool"
+            columns: ["pool_id"]
+            isOneToOne: false
+            referencedRelation: "pools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rankings_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: true
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      full_scores: {
+        Row: {
+          id: number | null
+          is_finished: boolean | null
+          pool_id: number | null
+          team1_name: string | null
+          team1_score: number | null
+          team2_name: string | null
+          team2_score: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "games_pool_id_fkey"
+            columns: ["pool_id"]
+            isOneToOne: false
+            referencedRelation: "pools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       calculate_tiebreakers: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      client_update_rankings_and_tiebreakers: {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
