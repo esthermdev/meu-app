@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator, Platform } from 'react-native';
 import { router } from 'expo-router';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 import { fonts, typography } from '@/constants/Typography';
@@ -36,7 +36,7 @@ export default function UpdateScoresIndex() {
           key={division.id}
           style={[
             styles.divisionItem,
-            { shadowColor: division.color }
+            Platform.OS === 'android' ? { borderBottomColor: division.color } : { shadowColor: division.color }
           ]}
           onPress={() => handleSelectDivision(division.id, division.title)}
         >
@@ -62,16 +62,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#262626',
     padding: 16,
     borderRadius: 12,
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    shadowOffset: {
-      width: 0,
-      height: 3
-    }
+    ...Platform.select({
+      ios: {
+        shadowOpacity: 1,
+        shadowRadius: 0,
+        shadowOffset: {
+          width: 0,
+          height: 3
+        }
+      },
+      android: {
+        // On Android, use both elevation AND a bottom border to simulate the line effect
+        elevation: 4, // General shadow
+        borderBottomWidth: 3, // This creates the line effect
+      }
+    })
   },
   divisionText: {
     color: '#fff',
-    ...typography.h4,
+    ...typography.bodyLarge,
     textAlign: 'center',
     textDecorationLine: 'underline'
   },

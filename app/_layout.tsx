@@ -4,7 +4,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import { AuthProvider } from '@/context/AuthProvider';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import usePushNotifications from '@/hooks/usePushNotifications';
 import 'expo-dev-client';
 import 'react-native-gesture-handler';
 

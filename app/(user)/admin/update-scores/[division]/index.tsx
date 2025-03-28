@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar, SafeAreaView, ActivityIndicator, Platform } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useGametypes } from '@/hooks/useScheduleConfig';
 import { fonts, typography } from '@/constants/Typography';
-import { CustomUpdateScoresHeader } from '@/components/headers/CustomUpdateScoresHeader';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
 
 export default function GameTypesScreen() {
   const params = useLocalSearchParams();
@@ -11,6 +12,12 @@ export default function GameTypesScreen() {
   const divisionName = params.divisionName as string;
   
   const { gametypes, loading, error } = useGametypes(divisionId);
+
+  const insets = useSafeAreaInsets();
+  
+  // Calculate proper padding for Android
+  const statusBarHeight = Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0;
+  
 
   const handleSelectGameType = (gameTypeId: number, gameTypeTitle: string, route: string) => {
     // Check if it's a pool play route
@@ -56,12 +63,15 @@ export default function GameTypesScreen() {
 
   return (
     <View style={styles.container}>
+
       <StatusBar barStyle="light-content" backgroundColor="#EA1D25" />
-
-      <SafeAreaView style={{ backgroundColor: "#EA1D25" }}>
-        <CustomUpdateScoresHeader title={divisionName} />
-      </SafeAreaView>
-
+      <View style={{ 
+        paddingTop: Platform.OS === 'android' ? statusBarHeight : insets.top,
+        backgroundColor: '#EA1D25' 
+      }}>
+        <CustomAdminHeader title={divisionName} />
+      </View>
+      
       <View style={styles.content}>
         {gametypes.map((option) => (
           <TouchableOpacity
@@ -109,11 +119,11 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
-    gap: 10
+    gap: 12
   },
   gameTypeItem: {
     backgroundColor: '#222',
-    padding: 20,
+    padding: 16,
     borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',

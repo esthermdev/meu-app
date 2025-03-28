@@ -1,7 +1,10 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, ViewStyle, Dimensions } from 'react-native';
 import { Href, router } from 'expo-router';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { typography } from '@/constants/Typography';
+
+const { width } = Dimensions.get('window')
+const buttonWidth = (width - 40);
 
 // Define the type for Material Icons names
 type MaterialCommunityIconName = keyof typeof MaterialCommunityIcons.glyphMap;
@@ -11,16 +14,18 @@ interface AdminOptionProps {
   iconName: MaterialCommunityIconName;
   route: Href;
   onPress?: () => void;
+  style?: ViewStyle;
 }
 
 interface AdminOptionType {
   title: string;
   iconName: MaterialCommunityIconName;
   route: Href;
+  style?: ViewStyle;
 }
 
-const AdminOption = ({ title, iconName, onPress }: AdminOptionProps) => (
-  <TouchableOpacity style={styles.optionButton} onPress={onPress}>
+const AdminOption = ({ title, iconName, onPress, style }: AdminOptionProps) => (
+  <TouchableOpacity style={[styles.optionButton, style]} onPress={onPress}>
     <MaterialCommunityIcons name={iconName} size={50} color="#EA1D25" />
     <Text maxFontSizeMultiplier={1} style={styles.optionText}>{title}</Text>
   </TouchableOpacity>
@@ -48,16 +53,12 @@ const AdminScreen = () => {
       iconName: 'water',
       route: '/admin/water-requests',
     },
-    {
-      title: 'Send Public Announcement',
-      iconName: 'bullhorn',
-      route: '/admin/announcements',
-    },
   ];
 
 
   return (
     <View style={styles.container}>
+      <Text style={styles.headerText}>What do you need?</Text>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {adminOptions.map((option, index) => (
           <AdminOption
@@ -68,6 +69,13 @@ const AdminScreen = () => {
             onPress={() => option.route ? router.push(option.route) : null}
           />
         ))}
+        <AdminOption 
+          title='Send Public Announcement'
+          iconName='bullhorn'
+          route='/admin/announcements'
+          style={{ width: width - 40, maxHeight: 150 }}
+          onPress={() => router.push('/admin/announcements')}
+        />
       </ScrollView>
     </View>
   );
@@ -78,17 +86,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
   },
+  headerText: {
+    ...typography.h3,
+    color: "#fff",
+    paddingLeft: 20,
+    marginBottom: 12,
+    marginTop: 20
+  },
   contentContainer: {
-    margin: 'auto',
-    backgroundColor: '#000',
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 12,
+    gap: 12
   },
   optionButton: {
-    width: '45%',
+    width: buttonWidth / 2 - 6,
+    maxHeight: 150,
     aspectRatio: 1,
     backgroundColor: '#262626',
     borderRadius: 15,

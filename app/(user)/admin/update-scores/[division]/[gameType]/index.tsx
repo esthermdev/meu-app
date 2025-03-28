@@ -11,7 +11,8 @@ import {
   Alert,
   LayoutAnimation, 
   Platform, 
-  UIManager
+  UIManager,
+  ActivityIndicator
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { supabase } from '@/lib/supabase';
@@ -19,9 +20,10 @@ import { fonts } from '@/constants/Typography';
 import AdminGameComponent from '@/components/features/gameviews/AdminGameComponent';
 import { useScheduleId } from '@/hooks/useGamesFilter';
 import LoadingIndicator from '@/components/LoadingIndicator';
-import { CustomUpdateScoresHeader } from '@/components/headers/CustomUpdateScoresHeader';
 import { MaterialIcons } from '@expo/vector-icons';
 import AdminBottomActionButtons from '@/components/buttons/AdminBottomActionButtons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -39,6 +41,10 @@ export default function UpdateScoresScreen() {
   const { games, loading, error } = useScheduleId(divisionId, scheduleId, refreshKey);
 
   const [collapsedSections, setCollapsedSections] = useState<{[key: string]: boolean}>({});
+
+  const insets = useSafeAreaInsets();
+
+  const statusBarHeight = Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0;
 
   const toggleSection = useCallback((sectionId: string) => {
     const animationConfig = {
@@ -177,7 +183,11 @@ export default function UpdateScoresScreen() {
   };
 
   if (loading && (!games || games.length === 0)) {
-    return <LoadingIndicator message='Loading games...' />;
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
+        <ActivityIndicator size="large" color="#EA1D25" />
+      </View>
+    )
   }
 
   if (error) {
@@ -192,9 +202,12 @@ export default function UpdateScoresScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#EA1D25" />
       
-      <SafeAreaView style={{ backgroundColor: "#EA1D25" }}>
-        <CustomUpdateScoresHeader title={gameTypeTitle} />
-      </SafeAreaView>
+      <View style={{ 
+        paddingTop: Platform.OS === 'android' ? statusBarHeight : insets.top,
+        backgroundColor: '#EA1D25' 
+      }}>
+        <CustomAdminHeader title={gameTypeTitle} />
+      </View>
 
       {/* Games List with Sections */}
       <SectionList

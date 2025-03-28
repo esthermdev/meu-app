@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
-import { Card } from '@rneui/themed';
-import { MaterialIcons } from '@expo/vector-icons';
+import { Card } from '@/components/Card';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthProvider';
 import { Database } from '@/database.types';
@@ -82,12 +81,12 @@ const FulfilledCartRequestsList = () => {
     if (status === 'completed') {
       return {
         text: 'Completed',
-        color: '#73BF44' // Green for completed
+        color: '#6EDF28' // Green for completed
       };
     } else {
       return {
         text: 'Confirmed',
-        color: '#28D4C0' // Cyan for confirmed
+        color: '#6EDF28' // Cyan for confirmed
       };
     }
   };
@@ -115,7 +114,7 @@ const FulfilledCartRequestsList = () => {
     const statusBadge = getStatusBadge(item.status);
     
     return (
-      <Card containerStyle={styles.cardContainer}>
+      <Card style={styles.cardContainer}>
         <View style={styles.cardHeader}>
           <Text style={styles.transportTitle}>Transport</Text>
           <View style={[styles.statusBadge, { borderColor: statusBadge.color, borderWidth: 1, backgroundColor: `${statusBadge.color}3D` }]}>
@@ -135,7 +134,7 @@ const FulfilledCartRequestsList = () => {
           <View style={styles.routeInfo}>
             {/* From section */}
             <View style={styles.locationInfo}>
-              <Text style={styles.routeLabel}>From:</Text>
+              <Text style={styles.routeLabel}>From: </Text>
               <Text style={styles.locationText}>
                 {item.from_location === 'Field' ? 'Field ' : ''}
                 {item.from_location === 'Field' ? item.from_field_number : getLocationLabel(item.from_location)}
@@ -144,7 +143,7 @@ const FulfilledCartRequestsList = () => {
             
             {/* To section */}
             <View style={styles.locationInfo}>
-              <Text style={styles.routeLabel}>To:</Text>
+              <Text style={styles.routeLabel}>To: </Text>
               <Text style={styles.locationText}>
                 {item.to_location === 'Field' ? 'Field ' : ''}
                 {item.to_location === 'Field' ? item.to_field_number : getLocationLabel(item.to_location)}
@@ -155,16 +154,16 @@ const FulfilledCartRequestsList = () => {
         
         <View style={styles.infoSection}>
           <View style={styles.infoRow}>
-            <Text style={styles.labelText}>Request ID:</Text>
-            <Text style={styles.valueText}>{item.id}</Text>
+            <Text style={styles.labelText}>Passengers:</Text>
+            <Text style={styles.valueText}>{item.passenger_count || 0}</Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.labelText}>Driver:</Text>
             <Text style={styles.driverText}>{driverName}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.labelText}>Passengers:</Text>
-            <Text style={styles.valueText}>{item.passenger_count || 0}</Text>
+            <Text style={styles.labelText}>Request ID:</Text>
+            <Text style={styles.valueText}>{item.id}</Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.labelText}>Created:</Text>
@@ -250,12 +249,13 @@ const styles = StyleSheet.create({
   },
   // Card styles
   listContainer: {
-    paddingVertical: 3,
+    paddingHorizontal: 15,
+    paddingTop: 3,
+    paddingBottom: 15
   },
   cardContainer: {
     borderRadius: 12,
     padding: 10,
-    marginHorizontal: 20,
     marginVertical: 12,
     backgroundColor: '#262626',
     borderWidth: 0
@@ -285,27 +285,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC66',
-    paddingVertical: 5
   },
   routeVisualization: {
     alignItems: 'center',
     paddingHorizontal: 8,
-    height: '80%',
+    height: '60%',
     marginVertical: 'auto'
   },
   routeInfo: {
     flex: 1,
     justifyContent: 'space-between',
+    gap: 10,
+    marginVertical: 10
   },
   locationInfo: {
-    marginVertical: 8
+    flexDirection: 'row',
   },
   routeLabel: {
-    ...typography.bodyMediumRegular,
+    ...typography.bodyLargeRegular,
     color: '#CCCCCC',
   },
   locationText: {
-    ...typography.bodyMediumBold,
+    ...typography.bodyLarge,
     color: '#fff',
   },
   routePoint: {
@@ -361,7 +362,7 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     backgroundColor: '#EA1D25',
-    paddingVertical: 5,
+    paddingVertical: 8,
     borderRadius: 5,
     paddingHorizontal: 15,
     alignItems: 'center',

@@ -1,6 +1,6 @@
 // app/(tabs)/home/index.tsx
 import { View, StyleSheet, ScrollView } from 'react-native';
-import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import LargeCardButton from '@/components/buttons/LargeCardButton';
 import FullWidthButton from '@/components/buttons/FullWidthButton';
 import WaterRequestButton from '@/components/requests/WaterRequestButton';
@@ -8,7 +8,6 @@ import MyGamesButtonBackground from '@/components/MyGamesButtonBackground';
 import CartRequestButton from '@/components/requests/CartRequestButton';
 import CircleIconButton from '@/components/buttons/CircleIconButton';
 import TrainerRequestButton from '@/components/requests/TrainerRequestButton';
-import NotificationPermission from '@/components/features/notifications/NotificationPermission';
 import NotificationPrompt from '@/components/features/notifications/NotificationPrompt';
 
 

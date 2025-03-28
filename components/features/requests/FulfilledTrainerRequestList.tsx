@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
-import { Card } from '@rneui/themed';
+import { Card } from '@/components/Card';
 import { MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthProvider';
@@ -111,7 +111,7 @@ const FulfilledTrainerRequestList = () => {
     const statusBadge = getStatusBadge(item.status);
     
     return (
-      <Card containerStyle={styles.cardContainer}>
+      <Card style={styles.cardContainer}>
         <View style={styles.cardHeader}>
           <View style={[styles.priorityBadge, getPriorityColor(item.priority_level) ]}>
             <Text style={styles.priorityText}>{item.priority_level || 'Medium'}</Text>
@@ -213,13 +213,14 @@ const styles = StyleSheet.create({
   },
   // Card styles
   listContainer: {
-    paddingVertical: 3,
+    paddingHorizontal: 15,
+    paddingTop: 3,
+    paddingBottom: 15
   },
   cardContainer: {
     borderRadius: 12,
     padding: 10,
-    marginHorizontal: 20,
-    marginVertical: 12,
+    marginTop: 12,
     backgroundColor: '#262626',
     borderWidth: 0
   },
@@ -228,7 +229,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 8,
     borderBottomWidth: 1,
-    borderColor: '#CCCCCC'
+    borderColor: '#CCCCCC66'
   },
   priorityBadge: {
     paddingHorizontal: 7,

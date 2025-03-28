@@ -224,13 +224,14 @@ const styles = StyleSheet.create({
   },
   // Request card styles
   listContainer: {
-    paddingHorizontal: 20,
-    paddingTop: 3
+    paddingHorizontal: 15,
+    paddingTop: 3,
+    paddingBottom: 15
   },
   cardContainer: {
     borderRadius: 12,
     padding: 10,
-    marginVertical: 12,
+    marginTop: 12,
     backgroundColor: '#262626',
     borderWidth: 0
   },
@@ -240,7 +241,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 8,
     borderBottomWidth: 1,
-    borderColor: '#CCCCCC'
+    borderColor: '#CCCCCC66'
   },
   priorityBadge: {
     paddingHorizontal: 7,
@@ -312,7 +313,7 @@ const styles = StyleSheet.create({
   resolveButton: {
     flex: 1,
     backgroundColor: '#73BF44',
-    paddingVertical: 5,
+    paddingVertical: 8,
     paddingHorizontal: 15,
     borderRadius: 8,
     alignItems: 'center',

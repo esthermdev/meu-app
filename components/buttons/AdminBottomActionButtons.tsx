@@ -39,7 +39,7 @@ const AdminBottomActionButtons: React.FC<AdminBottomActionButtons> = ({
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    borderTopColor: '#B3B3B34D',
+    borderTopColor: '#B3B3B38D',
     borderTopWidth: 1,
     flexDirection: 'row',
     paddingTop: 15,

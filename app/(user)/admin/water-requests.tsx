@@ -16,14 +16,12 @@ const WaterRequestsScreen = () => {
     <Tab.Navigator
       screenOptions={{
         tabBarActiveTintColor: '#EA1D25',
-        tabBarInactiveTintColor: '#8F8DAA',
+        tabBarInactiveTintColor: '#fff',
         tabBarLabelStyle: {
           ...typography.bodySmall
         },
         tabBarStyle: {
-          backgroundColor: '#262537',
-          borderBottomWidth: 1,
-          borderBottomColor: '#8F8DAA',
+          backgroundColor: '#262626',
         },
         tabBarIndicatorStyle: {
           backgroundColor: '#EA1D25',
@@ -91,9 +89,9 @@ const WaterRequestsList = () => {
         .from('water_requests')
         .delete()
         .eq('id', requestId);
-  
+
       if (error) throw error;
-      
+
       // Filter out the resolved request from the local state
       setRequests(current => current.filter(request => request.id !== requestId));
     } catch (error) {
@@ -107,30 +105,30 @@ const WaterRequestsList = () => {
         <Text style={styles.headerTitle}>Water</Text>
         <Text style={styles.headerDate}>{formatDate(item.created_at)}</Text>
       </View>
-      
+
       <View style={styles.divider} />
 
       <View style={styles.infoRow}>
         <Text style={styles.infoLabel}>Field:</Text>
         <Text style={styles.infoValue}>{item.field_number}</Text>
       </View>
-           
+
       <View style={styles.infoRow}>
         <Text style={styles.infoLabel}>Status:</Text>
         <Text style={[styles.infoValue, styles.statusPending]}>
           {item.status === 'pending' ? 'Pending' : item.status}
         </Text>
       </View>
-      
+
       {item.status === 'pending' && (
-       <TouchableOpacity
+        <TouchableOpacity
           style={styles.resolveButton}
           onPress={() => handleResolveRequest(item.id)}
         >
           <Text style={styles.resolveButtonText}>Resolved</Text>
           <MaterialIcons name="check" size={14} color="white" />
         </TouchableOpacity>
-          )}
+      )}
     </View>
   );
 
@@ -280,9 +278,9 @@ const styles = StyleSheet.create({
   },
   // Card styles
   listContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     paddingTop: 3,
-    paddingBottom: 20
+    paddingBottom: 15
   },
   cardContainer: {
     borderRadius: 12,
@@ -316,20 +314,20 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   infoLabel: {
-    ...typography.bodyLargeRegular,
+    ...typography.bodyMediumRegular,
     color: '#CCCCCC',
   },
   infoValue: {
-    ...typography.bodyLarge,
+    ...typography.bodyMediumBold,
     color: '#fff',
   },
   statusPending: {
     color: '#EA1D25', // Red color for pending status
-    ...typography.bodyLarge
+    ...typography.bodyMediumBold
   },
   resolveButton: {
     backgroundColor: '#73BF44',
-    paddingVertical: 5,
+    paddingVertical: 8,
     borderRadius: 5,
     paddingHorizontal: 15,
     alignItems: 'center',
@@ -343,13 +341,13 @@ const styles = StyleSheet.create({
   },
   // Volunteer screen
   volunteerList: {
-    padding: 10,
+    padding: 15,
   },
   volunteerItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#1F1F2F',
+    backgroundColor: '#262626',
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
@@ -374,7 +372,7 @@ const styles = StyleSheet.create({
   },
   screenContainer: {
     flex: 1,
-    backgroundColor: '#333243',
+    backgroundColor: '#000',
   },
 });
 

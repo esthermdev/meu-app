@@ -17,14 +17,12 @@ const TrainerManagementScreen = () => {
       <Tab.Navigator
         screenOptions={{
           tabBarActiveTintColor: '#EA1D25',
-          tabBarInactiveTintColor: '#8F8DAA',
+          tabBarInactiveTintColor: '#fff',
           tabBarLabelStyle: {
             ...typography.bodySmall
           },
           tabBarStyle: {
-            backgroundColor: '#262537',
-            borderBottomWidth: 1,
-            borderBottomColor: '#8F8DAA',
+            backgroundColor: '#262626',
           },
           tabBarIndicatorStyle: {
             backgroundColor: '#EA1D25',
@@ -145,7 +143,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
   trainerList: {
-    padding: 10,
+    paddingHorizontal: 15,
+    paddingTop: 15,
+    paddingBottom: 15
   },
   trainerItem: {
     flexDirection: 'row',

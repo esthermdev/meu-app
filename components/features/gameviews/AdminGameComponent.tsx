@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   },
   dateText: {
     ...typography.bodyBold,
-    color: '#fff',
+    color: '#CCCCCC',
     width: 100,
   },
   timeContainer: {
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
   },
   fieldText: {
     ...typography.bodyBold,
-    color: '#fff',
+    color: '#CCCCCC',
     width: 100,
     textAlign: 'right',
   },

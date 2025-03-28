@@ -4,16 +4,12 @@ import {
   View, 
   Text, 
   TextInput, 
-  TouchableOpacity, 
   StyleSheet, 
   Alert, 
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
@@ -23,7 +19,6 @@ const AnnouncementScreen = () => {
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleSubmit = async () => {
     if (!title.trim() || !message.trim()) {
@@ -66,7 +61,9 @@ const AnnouncementScreen = () => {
         style={styles.keyboardAvoidView}
       >
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          <View style={styles.content}>           
+          <Text style={styles.title}>Send Announcement</Text>
+          <Text style={styles.subtitle}>This will send a push notification to all users and appear in the notifications window.</Text>
+          <View>           
             <Text style={styles.label}>Title</Text>
             <TextInput
               style={styles.input}
@@ -106,9 +103,16 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
+    padding: 20
   },
-  content: {
-    padding: 20,
+  title: {
+    color: '#fff',
+    ...typography.h3
+  },
+  subtitle: {
+    color: '#fff',
+    ...typography.bodyMediumRegular,
+    marginVertical: 15
   },
   label: {
     ...typography.bodyMediumBold,
@@ -119,8 +123,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#fff',
     backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 12,
+    borderRadius: 12,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
     marginBottom: 20,
     ...typography.bodyMediumRegular
   },

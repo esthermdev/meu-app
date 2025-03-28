@@ -17,28 +17,26 @@ type LocationType = Database['public']['Enums']['location_type'];
 
 const CartManagementScreen = () => {
   return (
-      <Tab.Navigator
-        screenOptions={{
-          tabBarActiveTintColor: '#EA1D25',
-          tabBarInactiveTintColor: '#8F8DAA',
-          tabBarLabelStyle: {
-            ...typography.bodySmall
-          },
-          tabBarStyle: {
-            backgroundColor: '#262537',
-            borderBottomWidth: 1,
-            borderBottomColor: '#8F8DAA',
-          },
-          tabBarIndicatorStyle: {
-            backgroundColor: '#EA1D25',
-            height: 3,
-          },
-        }}
-      >
-        <Tab.Screen name="Requests" component={CartRequestsList} />
-        <Tab.Screen name="Fulfilled" component={FulfilledCartRequestsList} />
-        <Tab.Screen name="Drivers" component={DriversAvailabilityScreen} />
-      </Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: '#EA1D25',
+        tabBarInactiveTintColor: '#fff',
+        tabBarLabelStyle: {
+          ...typography.bodySmall
+        },
+        tabBarStyle: {
+          backgroundColor: '#262626',
+        },
+        tabBarIndicatorStyle: {
+          backgroundColor: '#EA1D25',
+          height: 3,
+        },
+      }}
+    >
+      <Tab.Screen name="Requests" component={CartRequestsList} />
+      <Tab.Screen name="Fulfilled" component={FulfilledCartRequestsList} />
+      <Tab.Screen name="Drivers" component={DriversAvailabilityScreen} />
+    </Tab.Navigator>
   );
 };
 
@@ -143,7 +141,7 @@ const CartRequestsList = () => {
           {formatDate(item.created_at)}
         </Text>
       </View>
-            
+
       <View style={styles.locationsContainer}>
         {/* Vertical route line with points on the left */}
         <View style={styles.routeVisualization}>
@@ -151,21 +149,20 @@ const CartRequestsList = () => {
           <View style={styles.routeLine} />
           <View style={styles.routePoint} />
         </View>
-        
+
         {/* Locations information on the right */}
         <View style={styles.routeInfo}>
           {/* From section */}
           <View style={styles.locationInfo}>
-            <Text style={styles.routeLabel}>From:</Text>
-            <Text style={styles.locationText}>
+            <Text style={styles.routeLabel}>From: </Text><Text style={styles.locationText}>
               {item.from_location === 'Field' ? 'Field ' : ''}
               {item.from_location === 'Field' ? item.from_field_number : getLocationLabel(item.from_location)}
             </Text>
           </View>
-          
+
           {/* To section */}
           <View style={styles.locationInfo}>
-            <Text style={styles.routeLabel}>To:</Text>
+            <Text style={styles.routeLabel}>To: </Text>
             <Text style={styles.locationText}>
               {item.to_location === 'Field' ? 'Field ' : ''}
               {item.to_location === 'Field' ? item.to_field_number : getLocationLabel(item.to_location)}
@@ -173,19 +170,19 @@ const CartRequestsList = () => {
           </View>
         </View>
       </View>
-      
+
       <View style={styles.passengerRow}>
         <Text style={styles.passengerLabel}>Passengers:</Text>
         <Text style={styles.passengerCount}>{item.passenger_count || 0}</Text>
       </View>
-      
+
       {item.special_request && (
         <View style={styles.specialRequestContainer}>
           <Text style={styles.specialRequestLabel}>Special Request:</Text>
           <Text style={styles.specialRequestText}>{item.special_request}</Text>
         </View>
       )}
-      
+
       <TouchableOpacity
         style={styles.acceptButton}
         onPress={() => acceptRequest(item.id)}
@@ -338,9 +335,9 @@ const styles = StyleSheet.create({
   },
   // Cart request card styles
   listContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     paddingTop: 3,
-    paddingBottom: 20
+    paddingBottom: 15
   },
   cardContainer: {
     borderRadius: 12,
@@ -373,22 +370,24 @@ const styles = StyleSheet.create({
   routeVisualization: {
     alignItems: 'center',
     paddingHorizontal: 8,
-    height: '80%',
+    height: '60%',
     marginVertical: 'auto'
   },
   routeInfo: {
     flex: 1,
     justifyContent: 'space-between',
+    gap: 10,
+    marginVertical: 10
   },
   locationInfo: {
-    marginVertical: 8
+    flexDirection: 'row',
   },
   routeLabel: {
-    ...typography.bodyMediumRegular,
+    ...typography.bodyLargeRegular,
     color: '#CCCCCC',
   },
   locationText: {
-    ...typography.bodyMediumBold,
+    ...typography.bodyLarge,
     color: '#fff',
   },
   routePoint: {
@@ -438,7 +437,7 @@ const styles = StyleSheet.create({
   },
   acceptButton: {
     backgroundColor: '#73BF44',
-    paddingVertical: 5,
+    paddingVertical: 8,
     borderRadius: 5,
     paddingHorizontal: 15,
     alignItems: 'center',
@@ -450,16 +449,18 @@ const styles = StyleSheet.create({
   // Driver availability screen styles
   screenContainer: {
     flex: 1,
-    backgroundColor: '#333243',
+    backgroundColor: '#000',
   },
   driverList: {
-    padding: 10,
+    paddingHorizontal: 15,
+    paddingTop: 15,
+    paddingBottom: 15
   },
   driverItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#1F1F2F',
+    backgroundColor: '#262626',
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
