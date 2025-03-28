@@ -448,18 +448,21 @@ export type Database = {
       }
       notification_read_status: {
         Row: {
+          device_id: string | null
           id: number
           notification_id: number | null
           read_at: string | null
           user_id: string | null
         }
         Insert: {
+          device_id?: string | null
           id?: number
           notification_id?: number | null
           read_at?: string | null
           user_id?: string | null
         }
         Update: {
+          device_id?: string | null
           id?: number
           notification_id?: number | null
           read_at?: string | null
@@ -597,7 +600,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "pool_standings_team_id_fkey"
+            foreignKeyName: "rankings_team_id_fkey"
             columns: ["team_id"]
             isOneToOne: true
             referencedRelation: "teams"

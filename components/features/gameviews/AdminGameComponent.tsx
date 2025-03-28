@@ -1,5 +1,5 @@
 // components/AdminGameComponent.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -37,17 +37,24 @@ interface AdminGameComponentProps {
 }
 
 const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameStatusChange }) => {
-  const [team1Score, setTeam1Score] = useState<string>(
-    game.scores && game.scores[0] ? game.scores[0].team1_score.toString() : '0'
-  );
-  const [team2Score, setTeam2Score] = useState<string>(
-    game.scores && game.scores[0] ? game.scores[0].team2_score.toString() : '0'
-  );
-  const [isCompleted, setIsCompleted] = useState<boolean>(
-    game.scores && game.scores[0] ? game.scores[0].is_finished || false : false
-  );
+  const [team1Score, setTeam1Score] = useState<string>('0');
+  const [team2Score, setTeam2Score] = useState<string>('0');
+  const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  // Update the local state when the game prop changes
+  useEffect(() => {
+    if (game.scores && game.scores.length > 0) {
+      setTeam1Score(game.scores[0].team1_score.toString());
+      setTeam2Score(game.scores[0].team2_score.toString());
+      setIsCompleted(game.scores[0].is_finished || false);
+    } else {
+      setTeam1Score('0');
+      setTeam2Score('0');
+      setIsCompleted(false);
+    }
+  }, [game]);
 
   const openScoreModal = () => {
     setModalVisible(true);
@@ -68,7 +75,6 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
       roundId: game.round_id,
       onSuccess: () => {
         setModalVisible(false);
-        Alert.alert('Success', 'Score updated successfully');
         onGameStatusChange();
       }
     });
@@ -87,36 +93,37 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
     setIsLoading(true);
 
     try {
-      if (game.scores && game.scores.length > 0) {
-        // Update existing score record
-        const { error } = await supabase
-          .from('scores')
-          .update({
-            is_finished: true
-          })
-          .eq('id', game.scores[0].id);
+      if (game) {
+        // Check if the game already has a score record
+        if (game.scores && game.scores.length > 0) {
+          // Update existing score record
+          const { error } = await supabase
+            .from('scores')
+            .update({
+              is_finished: true
+            })
+            .eq('id', game.scores[0].id);
 
-        if (error) throw error;
+          if (error) throw error;
+        } else {
+          // Create a new score record if none exists
+          const { error } = await supabase
+            .from('scores')
+            .insert({
+              game_id: game.id,
+              team1_score: parseInt(team1Score),
+              team2_score: parseInt(team2Score),
+              is_finished: true,
+              round_id: game.round_id
+            });
 
+          if (error) throw error;
+        }
+
+        // Update local state
         setIsCompleted(true);
-        Alert.alert('Success', 'Game marked as completed');
-        onGameStatusChange();
-      } else {
-        // Create new score record and mark as completed
-        const { error } = await supabase
-          .from('scores')
-          .insert({
-            game_id: game.id,
-            team1_score: parseInt(team1Score),
-            team2_score: parseInt(team2Score),
-            is_finished: true,
-            round_id: game.round_id
-          });
-
-        if (error) throw error;
-
-        setIsCompleted(true);
-        Alert.alert('Success', 'Game marked as completed');
+        
+        // Notify parent component to refresh
         onGameStatusChange();
       }
     } catch (error) {
@@ -305,6 +312,8 @@ const styles = StyleSheet.create({
   },
   markCompletedButton: {
     backgroundColor: '#ED8C22',
+    borderColor: '#ED8C22',
+    borderWidth: 1,
   },
   completedButton: {
     backgroundColor: '#242424',
@@ -313,6 +322,8 @@ const styles = StyleSheet.create({
   },
   updateScoreButton: {
     backgroundColor: '#CCCCCC',
+    borderColor: '#CCCCCC',
+    borderWidth: 1,
   },
   buttonText: {
     color: '#242424',

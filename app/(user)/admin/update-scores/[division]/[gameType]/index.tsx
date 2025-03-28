@@ -120,17 +120,6 @@ export default function UpdateScoresScreen() {
                     .from('scores')
                     .update({ is_finished: true })
                     .eq('id', game.scores[0].id);
-                } else {
-                  // Create new score record
-                  await supabase
-                    .from('scores')
-                    .insert({
-                      game_id: game.id,
-                      team1_score: 0,
-                      team2_score: 0,
-                      is_finished: true,
-                      round_id: game.round_id
-                    });
                 }
               }
               
@@ -253,7 +242,7 @@ export default function UpdateScoresScreen() {
 
       {/* Bottom Action Buttons */}
       <AdminBottomActionButtons 
-        leftButton={() => null}
+        leftButton={() => handleMarkAllCompleted}
         rightButton={() => null}
         rightText='Reset All Games'
         leftText='Mark All Games as Completed'

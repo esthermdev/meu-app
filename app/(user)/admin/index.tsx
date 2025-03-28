@@ -1,7 +1,8 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, ViewStyle, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, ViewStyle, Dimensions, Alert } from 'react-native';
 import { Href, router } from 'expo-router';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { typography } from '@/constants/Typography';
+import { supabase } from '@/lib/supabase';
 
 const { width } = Dimensions.get('window')
 const buttonWidth = (width - 40);
@@ -12,7 +13,7 @@ type MaterialCommunityIconName = keyof typeof MaterialCommunityIcons.glyphMap;
 interface AdminOptionProps {
   title: string;
   iconName: MaterialCommunityIconName;
-  route: Href;
+  route?: Href;
   onPress?: () => void;
   style?: ViewStyle;
 }
@@ -20,7 +21,8 @@ interface AdminOptionProps {
 interface AdminOptionType {
   title: string;
   iconName: MaterialCommunityIconName;
-  route: Href;
+  route?: Href;
+  onPress?: () => void;
   style?: ViewStyle;
 }
 
@@ -32,11 +34,35 @@ const AdminOption = ({ title, iconName, onPress, style }: AdminOptionProps) => (
 );
 
 const AdminScreen = () => {
+  const updateStandings = async () => {
+    try {
+      
+      // Call the Supabase RPC function
+      const { error } = await supabase.rpc('update_pool_rankings');
+      
+      if (error) {
+        console.error('Error updating rankings:', error);
+        Alert.alert('Error', 'Failed to update rankings. Please try again.');
+        return;
+      }
+      
+      Alert.alert('Success', 'Rankings have been updated successfully!');
+    } catch (error) {
+      console.error('Error updating rankings:', error);
+      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+    }
+  };
+
   const adminOptions: AdminOptionType[] = [
     {
       title: 'Update Scores',
       iconName: 'scoreboard',
       route: '/admin/update-scores',
+    },
+    {
+      title: 'Update Standings',
+      iconName: 'trophy',
+      onPress: updateStandings
     },
     {
       title: 'Trainers List',
@@ -53,6 +79,11 @@ const AdminScreen = () => {
       iconName: 'water',
       route: '/admin/water-requests',
     },
+    {
+      title: 'Send Public Announcement',
+      iconName: 'bullhorn',
+      route: '/admin/announcements',
+    },
   ];
 
 
@@ -66,16 +97,9 @@ const AdminScreen = () => {
             title={option.title}
             iconName={option.iconName}
             route={option.route}
-            onPress={() => option.route ? router.push(option.route) : null}
+            onPress={option.onPress || (option.route !== undefined ? () => router.push(option.route as Href<string | object>) : undefined)}
           />
         ))}
-        <AdminOption 
-          title='Send Public Announcement'
-          iconName='bullhorn'
-          route='/admin/announcements'
-          style={{ width: width - 40, maxHeight: 150 }}
-          onPress={() => router.push('/admin/announcements')}
-        />
       </ScrollView>
     </View>
   );

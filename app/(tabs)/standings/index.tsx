@@ -1,8 +1,6 @@
-import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';
 import { useDivisions } from '@/hooks/useScheduleConfig';
-import { FontAwesome6 } from '@expo/vector-icons';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { typography } from '@/constants/Typography';
 
