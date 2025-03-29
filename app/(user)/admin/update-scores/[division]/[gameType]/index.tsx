@@ -1,5 +1,5 @@
 // app/(user)/admin/update-scores/[division]/[gameType]/index.tsx
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -38,13 +38,51 @@ export default function UpdateScoresScreen() {
   const gameTypeTitle = params.gameTypeTitle as string;
   const [refreshKey, setRefreshKey] = useState(0);
   
-  const { games, loading, error } = useScheduleId(divisionId, scheduleId, refreshKey);
-
+  // Maintain our own games state locally
+  const [games, setGames] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [actionLoading, setActionLoading] = useState(false); // New - separate loading state for actions
+  
   const [collapsedSections, setCollapsedSections] = useState<{[key: string]: boolean}>({});
 
   const insets = useSafeAreaInsets();
 
   const statusBarHeight = Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0;
+
+  // Fetch games function
+  const fetchGames = useCallback(async () => {
+    if (!actionLoading) setLoading(true); // Only show loading if not in middle of an action
+    try {
+              const { data, error: fetchError } = await supabase
+        .from('games')
+        .select(`
+          *,
+          datetime: datetime_id (*),
+          team1: team1_id (*),
+          team2: team2_id (*),
+          scores(*),
+          rounds: round_id (*)
+        `)
+        .eq('division_id', divisionId)
+        .eq('gametype_id', scheduleId)
+        .order('id');
+      
+      if (fetchError) throw fetchError;
+      setGames(data || []);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load games');
+      console.error('Error fetching games:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [divisionId, scheduleId, actionLoading]);
+
+  // Initial fetch
+  useEffect(() => {
+    fetchGames();
+  }, [fetchGames, refreshKey]);
 
   const toggleSection = useCallback((sectionId: string) => {
     const animationConfig = {
@@ -111,23 +149,44 @@ export default function UpdateScoresScreen() {
         { 
           text: 'Yes', 
           onPress: async () => {
+            setActionLoading(true);
             try {
               // For each game, see if it has a score record
-              for (const game of games) {
+              const updatePromises = games.map(async (game) => {
                 if (game.scores && game.scores.length > 0) {
                   // Update existing score record
-                  await supabase
+                  const { error: updateError } = await supabase
                     .from('scores')
                     .update({ is_finished: true })
                     .eq('id', game.scores[0].id);
+                  
+                  if (updateError) throw updateError;
                 }
-              }
+              });
               
+              await Promise.all(updatePromises);
+              
+              // Update local state to reflect changes before re-fetching
+              const updatedGames = games.map(game => {
+                if (game.scores && game.scores.length > 0) {
+                  return {
+                    ...game,
+                    scores: [{
+                      ...game.scores[0],
+                      is_finished: true
+                    }]
+                  };
+                }
+                return game;
+              });
+              
+              setGames(updatedGames);
               Alert.alert('Success', 'All games marked as completed');
-              refreshGames();
-            } catch (error) {
-              console.error('Error marking all games as completed:', error);
+            } catch (err) {
+              console.error('Error marking all games as completed:', err);
               Alert.alert('Error', 'Failed to mark all games as completed');
+            } finally {
+              setActionLoading(false);
             }
           }
         }
@@ -145,6 +204,7 @@ export default function UpdateScoresScreen() {
         { 
           text: 'Yes', 
           onPress: async () => {
+            setActionLoading(true);
             try {
               // Get all score IDs associated with these games
               const scoreIds = games
@@ -152,18 +212,43 @@ export default function UpdateScoresScreen() {
                 .map(game => game.scores[0].id);
               
               if (scoreIds.length > 0) {
-                // Delete all score records
-                await supabase
+                // Update score records to reset them
+                const { error: updateError } = await supabase
                   .from('scores')
-                  .delete()
+                  .update({ 
+                    is_finished: false,
+                    team1_score: 0,
+                    team2_score: 0
+                  })
                   .in('id', scoreIds);
+                  
+                if (updateError) throw updateError;
+                
+                // Update local state to reflect changes before re-fetching
+                const updatedGames = games.map(game => {
+                  if (game.scores && game.scores.length > 0) {
+                    return {
+                      ...game,
+                      scores: [{
+                        ...game.scores[0],
+                        is_finished: false,
+                        team1_score: 0,
+                        team2_score: 0
+                      }]
+                    };
+                  }
+                  return game;
+                });
+                
+                setGames(updatedGames);
               }
               
               Alert.alert('Success', 'All games have been reset');
-              refreshGames();
-            } catch (error) {
-              console.error('Error resetting games:', error);
+            } catch (err) {
+              console.error('Error resetting games:', err);
               Alert.alert('Error', 'Failed to reset games');
+            } finally {
+              setActionLoading(false);
             }
           }
         }
@@ -171,12 +256,17 @@ export default function UpdateScoresScreen() {
     );
   };
 
+  const handleGameStatusChange = useCallback(() => {
+    // Refresh games when a game status changes
+    refreshGames();
+  }, [refreshGames]);
+
   if (loading && (!games || games.length === 0)) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
         <ActivityIndicator size="large" color="#EA1D25" />
       </View>
-    )
+    );
   }
 
   if (error) {
@@ -198,6 +288,13 @@ export default function UpdateScoresScreen() {
         <CustomAdminHeader title={gameTypeTitle} />
       </View>
 
+      {/* Action loading overlay */}
+      {actionLoading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="#EA1D25" />
+        </View>
+      )}
+
       {/* Games List with Sections */}
       <SectionList
         sections={sections}
@@ -210,7 +307,7 @@ export default function UpdateScoresScreen() {
           return (
             <AdminGameComponent 
               game={item} 
-              onGameStatusChange={refreshGames}
+              onGameStatusChange={handleGameStatusChange}
             />
           );
         }}
@@ -238,12 +335,13 @@ export default function UpdateScoresScreen() {
             <Text style={styles.emptyText}>No games found for this selection</Text>
           </View>
         )}
+        extraData={[games, collapsedSections]} // Add extraData to ensure re-render when these states change
       />
 
       {/* Bottom Action Buttons */}
       <AdminBottomActionButtons 
-        leftButton={() => handleMarkAllCompleted}
-        rightButton={() => null}
+        leftButton={handleMarkAllCompleted}
+        rightButton={handleResetAllGames} // Updated to use handleResetAllGames
         rightText='Reset All Games'
         leftText='Mark All Games as Completed'
         rightColor='#DDCF9B'
@@ -337,5 +435,16 @@ const styles = StyleSheet.create({
     color: '#EA1D25',
     fontSize: 16,
     fontFamily: fonts.medium,
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
   },
 });
