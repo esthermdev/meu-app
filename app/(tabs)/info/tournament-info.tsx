@@ -1,6 +1,7 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { Link } from 'expo-router';
 import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 const TournamentInfo = () => {
 	return (
@@ -8,8 +9,8 @@ const TournamentInfo = () => {
 			<ScrollView
 				contentContainerStyle={styles.contentContainer}
 			>
-				<Text style={styles.content}>
-					On behalf of <Text style={{ ...typography.bodyMedium, color: '#EA1D25'}}>Maine Ultimate</Text> in conjunction with the City of South Portland, Tyler Technologies, Revision Energy and a host of other groups and organizations we are pleased to welcome you and your team to the Lobster Pot.  We genuinely hope that you find this to be one of the more well run events that you participate in. We have been working hard behind the scenes to ensure this happens.
+				<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>
+					On behalf of <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={{ ...typography.bodyMedium, color: '#EA1D25'}}>Maine Ultimate</CustomText> in conjunction with the City of South Portland, Tyler Technologies, Revision Energy and a host of other groups and organizations we are pleased to welcome you and your team to the Lobster Pot.  We genuinely hope that you find this to be one of the more well run events that you participate in. We have been working hard behind the scenes to ensure this happens.
 					{'\n\n'}
 					So...
 					{'\n'}
@@ -23,11 +24,11 @@ const TournamentInfo = () => {
 					{'\n\n'}
 					Rich and the Lobster Pot crew
 					{'\n\n'}
-				</Text>
-				<Text style={styles.content}>Richard Young</Text>
-				<Text style={styles.contentSubHeader}>Cell: (207) 807-8727</Text>
-				<Text style={styles.contentSubHeader}>Pronouns: he, him, his <Link style={{ color: 'blue', textDecorationLine: 'underline' }} href='https://pronouns.org/'>What's this?</Link></Text>
-				<Link href='https://www.maineultimate.org/'>Maine Ultimate</Link>
+				</CustomText>
+				<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>Richard Young</CustomText>
+				<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentSubHeader}>Cell: (207) 807-8727</CustomText>
+				<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentSubHeader}>Pronouns: he, him, his <Link style={{ color: 'blue', textDecorationLine: 'underline' }} href='https://pronouns.org/'>What's this?</Link></CustomText>
+				<Link href='https://www.maineultimate.org/'><CustomText allowFontScaling maxFontSizeMultiplier={1.3}>Maine Ultimate</CustomText></Link>
 			</ScrollView>
 		</View>
 	);
@@ -42,13 +43,13 @@ const styles = StyleSheet.create({
 		padding: 20
 	},
 	content: {
-		...typography.body
+		...typography.text
 	},
 	contentHeader: {
-		...typography.h5
+		...typography.heading5
 	},
 	contentSubHeader: {
-		...typography.bodyBold
+		...typography.textBold
 	}
 });
 

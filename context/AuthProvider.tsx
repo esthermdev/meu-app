@@ -18,6 +18,7 @@ type AuthContextType = {
   signUp: (email: string, full_name: string) => Promise<void>;
   signOut: () => Promise<void>;
   refreshProfile: (userId?: string) => Promise<void>;
+  reviewerSignIn: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -384,6 +385,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Error refreshing profile:', error);
     }
   };
+  
+  // Add this function
+  const reviewerSignIn = async () => {
+    try {
+      // Create a session for the reviewer
+      // This creates a "fake" session for the reviewer without requiring email verification
+      const reviewSession = {
+        user: {
+          id: 'app-reviewer',
+          email: 'reviewer@maineultimateapp.org',
+          user_metadata: {
+            full_name: 'App Reviewer'
+          }
+        }
+      };
+      
+      // Set the session state
+      setSession(reviewSession as any);
+      setUser(reviewSession.user as any);
+      
+      // Create a fake profile
+      const fakeProfile = {
+        id: 'reviewer-id',
+        full_name: 'App Reviewer',
+        is_admin: true, // Grant admin access to see all features
+        is_logged_in: true
+      };
+      
+      setProfile(fakeProfile as any);
+      setLoading(false);
+      
+      // Navigate to the user section
+      router.replace('/(user)');
+    } catch (error) {
+      console.error('Error with reviewer sign-in:', error);
+    }
+  };
+  
 
   return (
     <AuthContext.Provider value={{
@@ -394,7 +433,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signIn,
       signUp,
       signOut,
-      refreshProfile
+      refreshProfile,
+      reviewerSignIn
     }}>
       {children}
     </AuthContext.Provider>

@@ -1,8 +1,7 @@
 // app/(user)/favorites.tsx
 import { useState, useEffect, useMemo } from 'react';
 import { 
-  StyleSheet, 
-  Text, 
+  StyleSheet,
   View, 
   RefreshControl,
   TextInput,
@@ -18,13 +17,14 @@ import { FavoriteTeamsList } from '@/components/features/favorites/FavoriteTeams
 import { typography } from '@/constants/Typography';
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
+import CustomText from '@/components/CustomText';
 
 type DivisionRow = Database['public']['Tables']['divisions']['Row'];
 
 // Section header component
 const SectionHeader = ({ title }: { title: string }) => (
   <View style={styles.sectionHeader}>
-    <Text style={styles.sectionHeaderText}>{title}</Text>
+    <CustomText style={styles.sectionHeaderText}>{title}</CustomText>
   </View>
 );
 
@@ -90,7 +90,8 @@ const FavoritesScreen = () => {
       <KeyboardAvoidingView behavior="padding">
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.headerContainer}>
-            <Text style={styles.title}>Select your favorite teams!</Text>
+            <CustomText style={styles.title}>Select your favorite teams!</CustomText>
+            <CustomText style={styles.subtitle}>Follow their games on the My Games screen.</CustomText>
             
             {/* Custom Search Bar */}
             <View style={styles.searchBarContainer}>
@@ -101,17 +102,19 @@ const FavoritesScreen = () => {
                 value={searchQuery}
                 onChangeText={setSearchQuery}
                 placeholderTextColor="#86939e"
+                allowFontScaling={false}
               />
+              <MaterialIcons name='close' size={15} color="#86939e" onPress={() => setSearchQuery('')} />
             </View>
             
             {/* Status Bar */}
             <View style={styles.statsContainer}>
-              <Text style={styles.favoritesCount}>
-                <Text style={styles.favoritesCountNumber}>{favorites.size} teams </Text>selected
-              </Text>
-              <Text style={styles.remainingSlots}>
-                <Text style={styles.remainingSlotsNumber}>{remainingFavorites} slots </Text>remaining
-              </Text>
+              <CustomText style={styles.favoritesCount}>
+                <CustomText style={styles.favoritesCountNumber}>{favorites.size} teams </CustomText>selected
+              </CustomText>
+              <CustomText style={styles.remainingSlots}>
+                <CustomText style={styles.remainingSlotsNumber}>{remainingFavorites} slots </CustomText>remaining
+              </CustomText>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -154,7 +157,7 @@ const FavoritesScreen = () => {
         }
         ListEmptyComponent={
           <View style={styles.centeredContainer}>
-            <Text style={styles.messageText}>No teams found</Text>
+            <CustomText style={styles.messageText}>No teams found</CustomText>
           </View>
         }
       />
@@ -173,9 +176,14 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   title: {
-    ...typography.h4,
+    ...typography.heading4,
     paddingHorizontal: 20,
-    paddingVertical: 15,
+    marginTop: 15,
+  },
+  subtitle: {
+    ...typography.text,
+    paddingHorizontal: 20,
+    marginBottom: 15
   },
   searchBarContainer: {
     marginHorizontal: 20,
@@ -195,7 +203,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    ...typography.body,
+    ...typography.text,
     color: '#000',
   },
   statsContainer: {
@@ -205,23 +213,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   favoritesCount: {
-    ...typography.body,
+    ...typography.text,
     color: '#EA1D25',
   },
   favoritesCountNumber: {
-    ...typography.bodyBold,
+    ...typography.textBold,
     color: '#EA1D25',
   },
   remainingSlots: {
-    ...typography.body,
+    ...typography.text,
     color: '#666',
   },
   remainingSlotsNumber: {
-    ...typography.bodyBold,
+    ...typography.textBold,
   },
   messageText: {
-    fontFamily: 'GeistRegular',
-    fontSize: 16,
+    ...typography.text,
     color: '#8F8DAA',
     textAlign: 'center',
   },
@@ -239,7 +246,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#EFEFEF',
   },
   sectionHeaderText: {
-    ...typography.bodyBold,
+    ...typography.textBold,
     color: '#555',
   },
 });

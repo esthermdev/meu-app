@@ -14,6 +14,7 @@ import { useRouter } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 const AnnouncementScreen = () => {
   const [title, setTitle] = useState('');
@@ -61,10 +62,10 @@ const AnnouncementScreen = () => {
         style={styles.keyboardAvoidView}
       >
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          <Text style={styles.title}>Send Announcement</Text>
-          <Text style={styles.subtitle}>This will send a push notification to all users and appear in the notifications window.</Text>
+          <CustomText style={styles.title}>Send Announcement</CustomText>
+          <CustomText style={styles.subtitle}>This will send a push notification to all users and appear in the notifications window.</CustomText>
           <View>           
-            <Text style={styles.label}>Title</Text>
+            <CustomText style={styles.label}>Title</CustomText>
             <TextInput
               style={styles.input}
               value={title}
@@ -72,9 +73,10 @@ const AnnouncementScreen = () => {
               placeholder="Enter subject title"
               placeholderTextColor="#999"
               editable={!loading}
+              allowFontScaling={false}
             />
             
-            <Text style={styles.label}>Message</Text>
+            <CustomText style={styles.label}>Message</CustomText>
             <TextInput
               style={[styles.input, styles.messageInput]}
               value={message}
@@ -83,6 +85,7 @@ const AnnouncementScreen = () => {
               placeholderTextColor="#999"
               multiline
               editable={!loading}
+              allowFontScaling={false}
             />
             
             <PrimaryButton onPress={handleSubmit} title='Post' />
@@ -107,15 +110,15 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#fff',
-    ...typography.h3
+    ...typography.heading3
   },
   subtitle: {
     color: '#fff',
-    ...typography.bodyMediumRegular,
+    ...typography.textMedium,
     marginVertical: 15
   },
   label: {
-    ...typography.bodyMediumBold,
+    ...typography.textLargeBold,
     marginBottom: 8,
     color: '#fff'
   },
@@ -127,7 +130,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 16,
     marginBottom: 20,
-    ...typography.bodyMediumRegular
+    ...typography.textMedium
   },
   messageInput: {
     height: 120,

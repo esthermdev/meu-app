@@ -22,6 +22,7 @@ import { router } from 'expo-router';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import UpdateScoreModal from '@/components/features/modals/UpdateScoreModal';
 import { updateGameScore } from '@/utils/updateGameScore';
+import CustomText from '@/components/CustomText';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
@@ -229,7 +230,7 @@ const MyGames = () => {
 
   const renderDateFilter = () => (
     <View style={styles.dateFilterContainer}>
-      <Text style={styles.dateLabel}>Date</Text>
+      <CustomText style={styles.dateLabel}>Date</CustomText>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dateScroll}>
         {dates.map((date) => (
           <TouchableOpacity
@@ -240,12 +241,12 @@ const MyGames = () => {
             ]}
             onPress={() => setSelectedDate(date)}
           >
-            <Text style={[
+            <CustomText style={[
               styles.dateButtonText,
               selectedDate === date && styles.selectedDateText
             ]}>
               {formatDate(date, 'short')}
-            </Text>
+            </CustomText>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -255,11 +256,11 @@ const MyGames = () => {
   const renderGame = ({ item }: { item: Games }) => (
     <View style={styles.gameCard}>
       <View style={styles.gameHeader}>
-        <Text style={styles.dateText}>{formatDate(item.datetime?.date, 'short')}</Text>
+        <CustomText style={styles.dateText}>{formatDate(item.datetime?.date, 'short')}</CustomText>
         <View style={styles.timeContainer}>
-          <Text style={styles.timeText}>{formatTime(item.datetime?.time)}</Text>
+          <CustomText style={styles.timeText}>{formatTime(item.datetime?.time)}</CustomText>
         </View>
-        <Text style={styles.fieldText}>Field {item.field_id}</Text>
+        <CustomText style={styles.fieldText}>Field {item.field_id}</CustomText>
       </View>
       
       {/* Teams and Score Container */}
@@ -272,12 +273,12 @@ const MyGames = () => {
               source={item.team1.avatar_uri ? { uri: item.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
               style={styles.teamLogo} 
             />
-            <Text style={[
+            <CustomText style={[
               styles.teamText, 
               favoriteTeamIds.includes(item.team1.id) && styles.highlightedTeam
             ]}>
               {item.team1.name}
-            </Text>
+            </CustomText>
           </View>
           
           {/* Team 2 */}
@@ -286,23 +287,23 @@ const MyGames = () => {
               source={item.team2.avatar_uri ? { uri: item.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
               style={styles.teamLogo} 
             />
-            <Text style={[
+            <CustomText style={[
               styles.teamText,
               favoriteTeamIds.includes(item.team2.id) && styles.highlightedTeam
             ]}>
               {item.team2.name}
-            </Text>
+            </CustomText>
           </View>
         </View>
         
         {/* Right side: Scores */}
         <View style={styles.scoresSection}>
-          <Text style={styles.scoreText}>
+          <CustomText style={styles.scoreText}>
             {item.scores && item.scores[0] ? item.scores[0].team1_score : 0}
-          </Text>
-          <Text style={styles.scoreText}>
+          </CustomText>
+          <CustomText style={styles.scoreText}>
             {item.scores && item.scores[0] ? item.scores[0].team2_score : 0}
-          </Text>
+          </CustomText>
         </View>
       </View>
       
@@ -310,7 +311,7 @@ const MyGames = () => {
         style={styles.updateScoreButton} 
         onPress={() => openScoreModal(item)}
       >
-        <Text style={styles.updateScoreText}>Update Score</Text>
+        <CustomText style={styles.updateScoreText}>Update Score</CustomText>
       </TouchableOpacity>
     </View>
   );
@@ -391,11 +392,11 @@ const styles = StyleSheet.create({
   },
   linkText: {
     color: '#EA1D25',
-    ...typography.h5,
+    ...typography.heading5,
     textDecorationLine: 'underline'
   },
   messageText: {
-    ...typography.h5,
+    ...typography.heading5,
     color: '#00000066',
     textAlign: 'center',
   },
@@ -406,7 +407,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dateLabel: {
-    ...typography.bodyMedium,
+    ...typography.textBold,
     color: '#333',
     marginRight: 12
   },
@@ -422,14 +423,14 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   dateButtonText: {
-    ...typography.bodyMedium,
+    ...typography.textMedium,
     color: '#999999'
   },
   selectedDateButton: {
     backgroundColor: '#FE0000',
   },
   selectedDateText: {
-    color: 'white',
+    color: '#fff',
   },
   // Game List Container
   matchupContainer: {
@@ -476,7 +477,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dateText: {
-    ...typography.bodyBold,
+    ...typography.textBold,
     color: '#999',
     width: 100
   },
@@ -486,17 +487,17 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   timeText: {
-    ...typography.body,
+    ...typography.text,
     color: '#fff'
   },
   fieldText: {
-    ...typography.bodyBold,
+    ...typography.textBold,
     color: '#276B5D',
     width: 100,
     textAlign: 'right'
   },
   teamText: {
-    ...typography.bodyMedium,
+    ...typography.textLargeSemiBold,
     color: '#444',
   },
   highlightedTeam: {
@@ -509,14 +510,14 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   scoreText: {
-    ...typography.h4,
+    ...typography.heading4,
     color: '#333',
   },
   updateScoreButton: {
     alignItems: 'center',
   },
   updateScoreText: {
-    ...typography.bodySmallBold,
+    ...typography.textSmallBold,
     color: '#EA1D25',
     textDecorationLine: 'underline'
   },

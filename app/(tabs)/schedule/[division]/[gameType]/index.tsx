@@ -12,12 +12,13 @@ import {
   UIManager
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { fonts } from '@/constants/Typography';
+import { fonts, typography } from '@/constants/Typography';
 import { useScheduleId } from '@/hooks/useGamesFilter';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { MaterialIcons } from '@expo/vector-icons';
 import GameComponent from '@/components/features/gameviews/GameComponent';
 import CustomHeader from '@/components/headers/CustomHeader';
+import CustomText from '@/components/CustomText';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -125,7 +126,7 @@ export default function ScheduleScreen() {
               activeOpacity={0.7}
               onPress={() => toggleSection(sectionId)}
             >
-              <Text style={styles.sectionHeaderText}>{section.title}</Text>
+              <CustomText style={styles.sectionHeaderText}>{section.title}</CustomText>
               {isCollapsed ? 
                 <MaterialIcons name='keyboard-arrow-down' size={24} color='#fff' /> : 
                 <MaterialIcons name='keyboard-arrow-left' size={24} color='#fff' /> }
@@ -169,18 +170,7 @@ const styles = StyleSheet.create({
   },
   sectionHeaderText: {
     color: '#fff',
-    fontSize: 16,
-    fontFamily: fonts.semiBold,
-  },
-  expandIcon: {
-    width: 24,
-    height: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  expandIconText: {
-    color: '#fff',
-    fontSize: 12,
+    ...typography.textLargeSemiBold
   },
   emptyContainer: {
     padding: 40,
@@ -188,44 +178,11 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     color: '#888',
-    fontFamily: fonts.medium,
-    fontSize: 16,
+    ...typography.textMedium,
     textAlign: 'center',
-  },
-  bottomActions: {
-    flexDirection: 'row',
-    padding: 16,
-    backgroundColor: '#151515',
-  },
-  resetButton: {
-    flex: 1,
-    backgroundColor: '#E5D9B6',
-    paddingVertical: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginRight: 8,
-  },
-  resetButtonText: {
-    color: '#000',
-    fontFamily: fonts.semiBold,
-    fontSize: 14,
-  },
-  completeAllButton: {
-    flex: 1,
-    backgroundColor: '#FF9500',
-    paddingVertical: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginLeft: 8,
-  },
-  completeAllButtonText: {
-    color: '#fff',
-    fontFamily: fonts.semiBold,
-    fontSize: 14,
   },
   errorText: {
     color: '#EA1D25',
-    fontSize: 16,
-    fontFamily: fonts.medium,
+    ...typography.textMedium
   },
 });

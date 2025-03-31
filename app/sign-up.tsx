@@ -9,18 +9,37 @@ import { images } from '@/constants';
 import { typography } from '@/constants/Typography';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import { ScrollView } from 'react-native-gesture-handler';
+import CustomText from '@/components/CustomText';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
   const { signUp } = useAuth();
 
   const handleSignUp = async () => {
+    // Reset any previous errors
+    setNameError(null);
+    setEmailError(null);
+    
+    // Validate full name
+    if (!fullName.trim()) {
+      setNameError('Please enter your name');
+      return;
+    }
+    
+    // Validate email
+    if (!email.trim() || !email.includes('@')) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+
     try {
       setLoading(true);
       await signUp(email, fullName);
-      alert('Check your email for the confirmation link!');
+      alert('Check your email for the confirmation link!\n\nIf you don\'t receive an email, please:\n- Check your spam folder\n- Verify you entered the correct email address\n\nFor additional support, contact support@maineultimateapp.org');
       setEmail('');
       setFullName('');
     } catch (error) {
@@ -50,31 +69,51 @@ export default function SignUp() {
             <View style={styles.form}>
               <Image source={images.logoW} style={styles.image} />
 
-              <Text style={styles.title}>Sign Up</Text>
-              <Text style={styles.subTitle}>Get started with a new account</Text>
+              <CustomText style={styles.title}>Sign Up</CustomText>
+              <CustomText style={styles.subtitle}>Get started with a new account</CustomText>
 
               <View style={styles.inputContainer}>
                 <FontAwesome6 name="signature" size={20} color="#000" />
                 <TextInput
                   placeholder="Full Name"
                   value={fullName}
-                  onChangeText={setFullName}
-                  autoCapitalize="none"
+                  onChangeText={(text) => {
+                    setFullName(text);
+                    setNameError(null);
+                  }}
+                  allowFontScaling={false}
+                  autoCapitalize="words"
                   style={styles.inputWithIcon}
                 />
               </View>
+              
+              {nameError && (
+                <View style={styles.errorContainer}>
+                  <Text style={styles.errorText}>{nameError}</Text>
+                </View>
+              )}
               
               <View style={styles.inputContainer}>
                 <MaterialIcons name="email" size={20} color="#000" />
                 <TextInput
                   placeholder="Email"
                   value={email}
-                  onChangeText={setEmail}
+                  onChangeText={(text) => {
+                    setEmail(text);
+                    setEmailError(null);
+                  }}
+                  allowFontScaling={false}
                   autoCapitalize="none"
                   keyboardType="email-address"
                   style={styles.inputWithIcon}
                 />
               </View>
+              
+              {emailError && (
+                <View style={styles.errorContainer}>
+                  <Text style={styles.errorText}>{emailError}</Text>
+                </View>
+              )}
 
               <PrimaryButton 
                 onPress={handleSignUp}
@@ -83,17 +122,17 @@ export default function SignUp() {
               />
 
               <View style={styles.footer}>
-                <Text style={styles.text}>Already have an account? </Text>
+                <CustomText style={styles.text}>Already have an account? </CustomText>
                 <Link href={'../sign-in'} asChild>
                   <TouchableOpacity>
-                    <Text style={styles.link}>Sign In</Text>
+                    <CustomText style={styles.link}>Sign In</CustomText>
                   </TouchableOpacity>
                 </Link>
               </View>
             </View>
           </TouchableWithoutFeedback>
         </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -113,14 +152,14 @@ const styles = StyleSheet.create({
     marginBottom: 25,   
   },
   title: {
-    ...typography.h1,
+    ...typography.heading1,
     color: '#EA1D25',
     marginTop: 10,
   },
-  subTitle: {
+  subtitle: {
     marginTop: 10,
     marginBottom: 20,
-    ...typography.bodyMedium
+    ...typography.heading5
   },
   inputContainer: {
     flexDirection: 'row',
@@ -130,12 +169,24 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 20,
     paddingHorizontal: 16,
-    marginBottom: 15
+    marginBottom: 8
   },
   inputWithIcon: {
     flex: 1,
     marginLeft: 8,
-    ...typography.bodyMedium,
+    ...typography.textSemiBold
+  },
+  errorContainer: {
+    backgroundColor: '#FEE2E2',
+    borderRadius: 8,
+    padding: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#EF4444',
+    marginBottom: 15,
+  },
+  errorText: {
+    ...typography.body,
+    color: '#B91C1C',
   },
   footer: {
     flexDirection: 'row',
@@ -143,10 +194,10 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   text: {
-    ...typography.body,
+    ...typography.text,
   },
   link: {
-    ...typography.body,
+    ...typography.text,
     color: '#EA1D25',
     textDecorationLine: 'underline',
   },

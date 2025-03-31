@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Database } from '@/database.types';
 import {
   StyleSheet,
@@ -19,11 +19,11 @@ import { supabase } from '@/lib/supabase';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Dropdown from '../Dropdown';
 import usePushNotifications from '@/hooks/usePushNotifications';
-import { ms } from 'react-native-size-matters';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { typography } from '@/constants/Typography';
 import ModalButton from '../buttons/ModalButtons';
 import ErrorMessage from '../ErrorMessage';
+import CustomText from '../CustomText';
 
 const { height } = Dimensions.get('window');
 const modalHeight = height * 0.7; // 80% of screen height
@@ -115,7 +115,7 @@ const CartRequestButton = () => {
         <TouchableOpacity onPress={decrement} style={styles.passengerCountButton}>
           <Ionicons name="remove" size={24} color="#EA1D25" />
         </TouchableOpacity>
-        <Text style={styles.passengerCountText}>{value}</Text>
+        <CustomText style={styles.passengerCountText} allowFontScaling maxFontSizeMultiplier={1.3}>{value}</CustomText>
         <TouchableOpacity onPress={increment} style={styles.passengerCountButton}>
           <Ionicons name="add" size={24} color="#EA1D25" />
         </TouchableOpacity>
@@ -175,7 +175,7 @@ const CartRequestButton = () => {
       >
         <MaterialCommunityIcons name="car" size={28} color="#347764" />
       </TouchableOpacity>
-      <Text style={styles.label}>Cart</Text>
+      <CustomText style={styles.label} allowFontScaling maxFontSizeMultiplier={1.2}>Cart</CustomText>
 
       <Modal
         visible={isModalVisible}
@@ -206,7 +206,7 @@ const CartRequestButton = () => {
             >
               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View>
-                  <Text style={styles.noteText} maxFontSizeMultiplier={1.2}>
+                  <CustomText style={styles.noteText} allowFontScaling maxFontSizeMultiplier={1.3}>
                     Note: Our volunteer drivers are dedicated to assisting you as quickly as possible. To help us serve everyone efficiently:
                     {'\n\n'}
                     • If you're in a group, please submit only one request.{'\n'}
@@ -214,9 +214,9 @@ const CartRequestButton = () => {
                     • If no driver arrives after 5 minutes, feel free to submit another request.
                     {'\n\n'}
                     Thank you for your patience and understanding as we work to accommodate everyone's transportation needs.
-                  </Text>
+                  </CustomText>
 
-                  <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>Number of Passengers:</Text>
+                  <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Number of Passengers:</CustomText>
                   <PassengerCountInput
                     value={passengerCount}
                     onValueChange={setPassengerCount}
@@ -289,6 +289,7 @@ const CartRequestButton = () => {
                     multiline
                     numberOfLines={3}
                     maxLength={200}
+                    maxFontSizeMultiplier={1.2}
                   />
 
                   <ModalButton 
@@ -320,7 +321,7 @@ const styles = StyleSheet.create({
   label: {
     textAlign: 'center',
     marginTop: 5,
-    ...typography.bodyBold
+    ...typography.textSmallBold
   },
   modalContainer: {
     flex: 1,
@@ -337,11 +338,11 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   },
   labelHeader: {
-    ...typography.bodyMedium,
+    ...typography.labelBold,
     marginVertical: 8
   },
   noteText: {
-    ...typography.bodySmall,
+    ...typography.textXSmall,
     color: '#666',
   },
   passengerCountContainer: {
@@ -358,8 +359,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   passengerCountText: {
-    fontFamily: 'Outfit-Bold',
-    fontSize: ms(18),
+    ...typography.textMedium,
     marginHorizontal: 20,
   },
   specialRequestInput: {
@@ -388,11 +388,6 @@ const styles = StyleSheet.create({
     width: '48%',
     justifyContent: 'center',
   },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    ...typography.bodyMedium
-  },
   closeButton: {
     alignSelf: 'flex-end',
     zIndex: 1,
@@ -407,7 +402,7 @@ const styles = StyleSheet.create({
   },
   generalErrorText: {
     color: '#DD3333',
-    fontFamily: 'GeistRegular',
+    ...typography.text
   },
 });
 

@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { typography } from '@/constants/Typography';
+import CustomText from '../CustomText';
 
 interface ModalButtonContainerProps {
   onCancel: () => void;
@@ -25,13 +26,13 @@ const ModalButton: React.FC<ModalButtonContainerProps> = ({
         style={[styles.cancelButton, { backgroundColor: cancelColor }]} 
         onPress={onCancel}
       >
-        <Text style={styles.buttonText} maxFontSizeMultiplier={1.2}>{cancelText}</Text>
+        <CustomText style={styles.buttonText}>{cancelText}</CustomText>
       </TouchableOpacity>
       <TouchableOpacity 
         style={[styles.confirmButton, { backgroundColor: confirmColor }]} 
         onPress={onConfirm}
       >
-        <Text style={styles.buttonText} maxFontSizeMultiplier={1.2}>{confirmText}</Text>
+        <CustomText style={styles.buttonText}>{confirmText}</CustomText>
       </TouchableOpacity>
     </View>
   );

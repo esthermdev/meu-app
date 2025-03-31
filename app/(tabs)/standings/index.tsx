@@ -3,6 +3,7 @@ import { Link } from 'expo-router';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 export default function StandingsIndex() {
   const { divisions, loading, error } = useDivisions();
@@ -15,8 +16,8 @@ export default function StandingsIndex() {
 
   if (error) {
     return (
-      <View>
-        <Text>{error}</Text>
+      <View style={[styles.container, styles.centerContent]}>
+        <Text style={styles.errorText}>Error loading divisions: {error}</Text>
       </View>
     );
   }
@@ -35,7 +36,7 @@ export default function StandingsIndex() {
           >
             <TouchableOpacity>
               <View style={[styles.card, { borderColor: division.color, borderBottomWidth: 4 }]}>
-                <Text style={[styles.title, { color: division.color, textDecorationColor: division.color }]}>{division.title}</Text>
+                <CustomText style={[styles.title, { color: division.color, textDecorationColor: division.color }]}>{division.title}</CustomText>
               </View>
             </TouchableOpacity>
           </Link>
@@ -50,6 +51,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  centerContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
     padding: 20,
@@ -68,5 +73,8 @@ const styles = StyleSheet.create({
     ...typography.h4,
     textDecorationLine: 'underline',
   },
-
+  errorText: {
+    color: '#EA1D25',
+    ...typography.textMedium
+  },
 });

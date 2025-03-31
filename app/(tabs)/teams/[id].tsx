@@ -1,6 +1,4 @@
-// app/(tabs)/teams/[id].tsx
-
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { 
   StyleSheet, 
   Text, 
@@ -8,7 +6,7 @@ import {
   ScrollView, 
   Image
 } from 'react-native';
-import { useLocalSearchParams, router } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
 import { formatDate } from '@/utils/formatDate';
@@ -16,6 +14,7 @@ import { formatTime } from '@/utils/formatTime';
 import { typography } from '@/constants/Typography';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import CustomHeader from '@/components/headers/CustomHeader';
+import CustomText from '@/components/CustomText';
 
 type TeamRow = Database['public']['Tables']['teams']['Row'];
 type GameRow = Database['public']['Tables']['games']['Row'];
@@ -90,11 +89,11 @@ const TeamDetails = () => {
   const renderGameCard = (game: GameWithDetails) => (
     <View key={game.id} style={styles.gameCard}>
       <View style={styles.gameHeader}>
-        <Text style={styles.dateText}>{formatDate(game.datetime?.date, 'short')}</Text>
+        <CustomText style={styles.dateText}>{formatDate(game.datetime?.date, 'short')}</CustomText>
         <View style={styles.timeContainer}>
-          <Text style={styles.timeText}>{formatTime(game.datetime?.time)}</Text>
+          <CustomText style={styles.timeText}>{formatTime(game.datetime?.time)}</CustomText>
         </View>
-        <Text style={styles.fieldText}>Field {game.field?.id}</Text>
+        <CustomText style={styles.fieldText}>Field {game.field?.id}</CustomText>
       </View>
       
       {/* Teams and Score Container */}
@@ -107,12 +106,12 @@ const TeamDetails = () => {
               source={game.team1?.avatar_uri ? { uri: game.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
               style={styles.teamLogo}
             />
-            <Text style={[
+            <CustomText style={[
               styles.teamText,
               game.team1?.id.toString() === id ? styles.highlightedTeam : null
             ]}>
               {game.team1?.name || 'TBD'}
-            </Text>
+            </CustomText>
           </View>  
 
           {/* Team 2 */}
@@ -121,23 +120,23 @@ const TeamDetails = () => {
               source={game.team2?.avatar_uri ? { uri: game.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
               style={styles.teamLogo}
             />
-            <Text style={[
+            <CustomText style={[
               styles.teamText,
               game.team2?.id.toString() === id ? styles.highlightedTeam : null
             ]}>
               {game.team2?.name || 'TBD'}
-            </Text>
+            </CustomText>
           </View>
         </View>
 
         {/* Right side: Scores */}
         <View style={styles.scoresSection}>
-          <Text style={styles.scoreText}>
+          <CustomText style={styles.scoreText}>
             {game.scores && game.scores.length > 0 ? game.scores[0].team1_score : '-'}
-          </Text>
-          <Text style={styles.scoreText}>
+          </CustomText>
+          <CustomText style={styles.scoreText}>
             {game.scores && game.scores.length > 0 ? game.scores[0].team2_score : '-'}
-          </Text>
+          </CustomText>
         </View>
       </View>
       </View>
@@ -166,16 +165,16 @@ const TeamDetails = () => {
                   borderWidth: 1
                 }
               ]}>
-                <Text style={[styles.divisionText, { color: team.division_details.color }]}>
+                <CustomText style={[styles.divisionText, { color: team.division_details.color }]}>
                   {team.division_details.title}
-                </Text>
+                </CustomText>
               </View>
             )}
           </View>
           
           {/* Games Section */}
           <View style={styles.gamesSection}>
-            <Text style={styles.sectionTitle}>Games</Text>
+            <CustomText style={styles.sectionTitle}>Games</CustomText>
             
             {games.length > 0 ? (
               <View style={styles.gamesList}>
@@ -183,14 +182,14 @@ const TeamDetails = () => {
               </View>
             ) : (
               <View style={styles.noGamesContainer}>
-                <Text style={styles.noGamesText}>No games scheduled</Text>
+                <CustomText style={styles.noGamesText}>No games scheduled</CustomText>
               </View>
             )}
           </View>
         </ScrollView>
       ) : (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>Team not found</Text>
+          <CustomText style={styles.errorText}>Team not found</CustomText>
         </View>
       )}
     </View>
@@ -201,31 +200,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EFEFEF',
-  },
-  backButton: {
-    padding: 5,
-  },
-  headerTitle: {
-    fontFamily: 'GeistBold',
-    fontSize: 18,
-    color: '#333',
-  },
-  placeholder: {
-    width: 24,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   content: {
     flex: 1,
@@ -241,27 +215,19 @@ const styles = StyleSheet.create({
     height: 70,
     borderRadius: 100,
   },
-  teamName: {
-    fontFamily: 'GeistBold',
-    fontSize: 24,
-    color: '#333',
-    marginBottom: 5,
-  },
   divisionContainer: {
     marginTop: 10,
     paddingHorizontal: 10,
     borderRadius: 100,
   },
   divisionText: {
-    fontFamily: 'GeistMedium',
-    fontSize: 14,
+    ...typography.textMedium
   },
   gamesSection: {
     padding: 20,
   },
   sectionTitle: {
-    fontFamily: 'GeistBold',
-    fontSize: 18,
+    ...typography.textLargeBold,
     color: '#333',
     marginBottom: 15,
   },
@@ -287,7 +253,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dateText: {
-    ...typography.bodyBold,
+    ...typography.textBold,
     color: '#999',
     width: 100,
   },
@@ -297,11 +263,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   timeText: {
-    ...typography.body,
+    ...typography.text,
     color: '#fff'
   },
   fieldText: {
-    ...typography.bodyBold,
+    ...typography.textBold,
     color: '#276B5D',
     width: 100,
     textAlign: 'right',
@@ -327,7 +293,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   teamText: {
-    ...typography.bodyBold,
+    ...typography.textSemiBold,
     color: '#444',
   },
   highlightedTeam: {
@@ -340,8 +306,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   scoreText: {
-    fontFamily: 'GeistBold',
-    fontSize: 18,
+    ...typography.textLargeBold,
     color: '#333',
     textAlign: 'center',
   },
@@ -351,8 +316,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   noGamesText: {
-    fontFamily: 'GeistRegular',
-    fontSize: 16,
+    ...typography.text,
     color: '#999',
   },
   errorContainer: {
@@ -362,8 +326,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   errorText: {
-    fontFamily: 'GeistRegular',
-    fontSize: 16,
+    ...typography.textMedium,
     color: '#EA1D25',
   },
 });

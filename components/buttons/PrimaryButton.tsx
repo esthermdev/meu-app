@@ -1,6 +1,7 @@
 import { typography } from '@/constants/Typography';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
+import CustomText from '../CustomText';
 
 interface PrimaryButtonProps {
   title: string;
@@ -33,7 +34,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
       {loading ? (
         <ActivityIndicator color="#FFFFFF" size="small" />
       ) : (
-        <Text style={[styles.buttonText, textStyle]}>{title}</Text>
+        <CustomText style={[styles.buttonText, textStyle]}>{title}</CustomText>
       )}
     </TouchableOpacity>
   );
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#FFFFFF',
-    ...typography.button,
+    ...typography.buttonLarge,
     textAlign: 'center',
   },
 });

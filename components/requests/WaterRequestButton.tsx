@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import {
   StyleSheet,
-  Text,
   Alert,
   View,
   Modal,
@@ -14,6 +13,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tables } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import ModalButton from '../buttons/ModalButtons';
+import CustomText from '../CustomText';
 
 type Field = Tables<'fields'>;
 
@@ -101,7 +101,7 @@ const WaterRequestButton = () => {
       >
         <MaterialCommunityIcons name="water" size={28} color="#347764" />
       </TouchableOpacity>
-      <Text style={styles.label}>Water</Text>
+      <CustomText style={styles.label} allowFontScaling maxFontSizeMultiplier={1.2}>Water</CustomText>
 
       <Modal
         visible={isModalVisible}
@@ -113,7 +113,7 @@ const WaterRequestButton = () => {
           <View style={styles.modalContainer}>
             <TouchableWithoutFeedback>
               <View style={styles.pickerContainer}>
-                <Text style={styles.pickerTitle}>Select Field</Text>
+                <CustomText style={styles.pickerTitle}>Select Field</CustomText>
                 
                 <FlatList
                   data={fields}
@@ -127,12 +127,15 @@ const WaterRequestButton = () => {
                       ]}
                       onPress={() => selectField(item.id, item.name)}
                     >
-                      <Text style={[
-                        styles.fieldItemText,
-                        selectedField === item.id && styles.selectedFieldText
-                      ]}>
+                      <CustomText style={[
+                          styles.fieldItemText,
+                          selectedField === item.id && styles.selectedFieldText
+                        ]}
+                        allowFontScaling
+                        maxFontSizeMultiplier={1.4}  
+                      >
                         Field {item.name}
-                      </Text>
+                      </CustomText>
                     </TouchableOpacity>
                   )}
                 />
@@ -170,7 +173,7 @@ const styles = StyleSheet.create({
   label: {
     textAlign: 'center',
     marginTop: 5,
-    ...typography.bodyBold
+    ...typography.labelBold
   },
   modalContainer: {
     flex: 1,
@@ -186,7 +189,7 @@ const styles = StyleSheet.create({
     maxHeight: '60%',
   },
   pickerTitle: {
-    ...typography.h4,
+    ...typography.heading4,
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -210,29 +213,5 @@ const styles = StyleSheet.create({
   selectedFieldText: {
     ...typography.bodyBold,
     color: '#E74C3C',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  cancelButton: {
-    backgroundColor: '#000000',
-    padding: 12,
-    borderRadius: 6,
-    width: '48%',
-    justifyContent: 'center',
-  },
-  confirmButton: {
-    backgroundColor: '#E74C3C',
-    padding: 12,
-    borderRadius: 6,
-    width: '48%',
-    justifyContent: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    ...typography.bodyMedium
   },
 });

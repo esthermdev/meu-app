@@ -1,12 +1,13 @@
 // components/medical/RequestsList.tsx
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
 import { Card } from '@/components/Card'
 import { MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthProvider';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 // Define types based on your Supabase schema
 type MedicalRequest = Database['public']['Tables']['medical_requests']['Row'] & {
@@ -123,35 +124,35 @@ const TrainerRequestsList = () => {
     <Card style={styles.cardContainer}>
       <View style={styles.cardHeader}>
         <View style={[styles.priorityBadge, getPriorityColor(item.priority_level)]}>
-          <Text style={styles.priorityText}>{item.priority_level || 'Medium'}</Text>
+          <CustomText style={styles.priorityText}>{item.priority_level || 'Medium'}</CustomText>
         </View>
         <View style={styles.fieldBadge}>
           <MaterialIcons name="location-on" size={14} color="#262626" />
-          <Text style={styles.fieldText}>Field {item.field_number}</Text>
+          <CustomText style={styles.fieldText}>Field {item.field_number}</CustomText>
         </View>
       </View>
       
       <View style={styles.infoSection}>
         <View style={styles.infoRow}>
-          <Text style={styles.labelText}>Request ID: </Text>
-          <Text style={styles.valueText}>{item.id}</Text>
+          <CustomText style={styles.labelText}>Request ID: </CustomText>
+          <CustomText style={styles.valueText}>{item.id}</CustomText>
         </View>
         <View style={styles.infoRow}>
-          <Text style={styles.labelText}>Trainer:</Text>
-          <Text style={styles.trainerNameText}>{item.trainer ? item.trainer.full_name : 'Unassigned'}</Text>
+          <CustomText style={styles.labelText}>Trainer:</CustomText>
+          <CustomText style={styles.trainerNameText}>{item.trainer ? item.trainer.full_name : 'Unassigned'}</CustomText>
         </View>
         <View style={styles.infoRow}>
-          <Text style={styles.labelText}>Created:</Text>
-          <Text style={styles.valueText}>{formatDate(item.created_at)}</Text>
+          <CustomText style={styles.labelText}>Created:</CustomText>
+          <CustomText style={styles.valueText}>{formatDate(item.created_at)}</CustomText>
         </View>
       </View>
 
       {item.description_of_emergency && (
         <View style={styles.descriptionContainer}>
-          <Text style={styles.descriptionLabel}>Emergency Description:</Text>
-          <Text style={styles.descriptionText}>
+          <CustomText style={styles.descriptionLabel}>Emergency Description:</CustomText>
+          <CustomText style={styles.descriptionText}>
             {item.description_of_emergency}
-          </Text>
+          </CustomText>
         </View>
       )}
 
@@ -160,7 +161,7 @@ const TrainerRequestsList = () => {
           style={styles.resolveButton}
           onPress={() => resolveRequest(item.id)}
         >
-          <Text style={styles.buttonText}>Resolved</Text>
+          <CustomText style={styles.buttonText}>Resolved</CustomText>
           <MaterialIcons name="check" size={14} color="white" />
         </TouchableOpacity>
       </View>
@@ -171,7 +172,7 @@ const TrainerRequestsList = () => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#EA1D25" />
-        <Text style={styles.loadingText}>Loading requests...</Text>
+        <CustomText style={styles.loadingText}>Loading requests...</CustomText>
       </View>
     );
   }
@@ -180,7 +181,7 @@ const TrainerRequestsList = () => {
     <SafeAreaView style={styles.container}>
       {requests.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No pending requests</Text>
+          <CustomText style={styles.emptyText}>No pending requests</CustomText>
         </View>
       ) : (
         <FlatList
@@ -215,11 +216,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
   emptyText: {
-    ...typography.bodyMedium,
+    ...typography.textMedium,
     color: '#B0B0B0',
   },
   loadingText: {
-    ...typography.bodyBold,
+    ...typography.textBold,
     color: '#fff'
   },
   // Request card styles
@@ -249,8 +250,8 @@ const styles = StyleSheet.create({
     paddingVertical: 2
   },
   priorityText: {
-    color: 'white',
-    ...typography.body
+    color: '#fff',
+    ...typography.text
   },
   fieldBadge: {
     flexDirection: 'row',
@@ -263,7 +264,7 @@ const styles = StyleSheet.create({
   },
   fieldText: {
     color: '#262626',
-    ...typography.bodyBold,
+    ...typography.textBold,
   },
   infoSection: {
     gap: 8,
@@ -275,15 +276,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   labelText: {
-    ...typography.bodyMediumRegular,
+    ...typography.text,
     color: '#CCCCCC80',
   },
   trainerNameText: {
-    ...typography.bodyMedium,
+    ...typography.textBold,
     color: '#fff',
   },
   valueText: {
-    ...typography.bodyMedium,
+    ...typography.textMedium,
     color: '#CCCCCCBF',
   },
   descriptionContainer: {
@@ -298,11 +299,11 @@ const styles = StyleSheet.create({
     borderLeftColor: '#EA1D25',
   },
   descriptionLabel: {
-    ...typography.bodyMediumRegular,
+    ...typography.text,
     color: '#CCCCCC80',
   },
   descriptionText: {
-    ...typography.bodyMediumRegular,
+    ...typography.textMedium,
     color: '#fff',
   },
   buttonContainer: {
@@ -321,7 +322,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonText: {
-    ...typography.bodyMedium,
+    ...typography.textBold,
     color: '#fff',
     marginRight: 5,
   },

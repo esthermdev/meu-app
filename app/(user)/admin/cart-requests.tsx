@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { StyleSheet, Text, View, FlatList, Switch, RefreshControl, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, View, FlatList, Switch, RefreshControl, TouchableOpacity, Alert } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { Card } from '@/components/Card';
 import { useAuth } from '@/context/AuthProvider';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import FulfilledCartRequestsList from '@/components/features/requests/FulfilledCartRequestList';
+import CustomText from '@/components/CustomText';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -22,7 +23,7 @@ const CartManagementScreen = () => {
         tabBarActiveTintColor: '#EA1D25',
         tabBarInactiveTintColor: '#fff',
         tabBarLabelStyle: {
-          ...typography.bodySmall
+          ...typography.textSmall
         },
         tabBarStyle: {
           backgroundColor: '#262626',
@@ -31,6 +32,7 @@ const CartManagementScreen = () => {
           backgroundColor: '#EA1D25',
           height: 3,
         },
+        tabBarAllowFontScaling: false
       }}
     >
       <Tab.Screen name="Requests" component={CartRequestsList} />
@@ -136,10 +138,10 @@ const CartRequestsList = () => {
   const renderItem = ({ item }: { item: CartRequest }) => (
     <Card style={styles.cardContainer}>
       <View style={styles.cardHeader}>
-        <Text style={styles.transportTitle}>Transport</Text>
-        <Text style={styles.requestTime}>
+        <CustomText style={styles.transportTitle}>Transport</CustomText>
+        <CustomText style={styles.requestTime}>
           {formatDate(item.created_at)}
-        </Text>
+        </CustomText>
       </View>
 
       <View style={styles.locationsContainer}>
@@ -154,32 +156,32 @@ const CartRequestsList = () => {
         <View style={styles.routeInfo}>
           {/* From section */}
           <View style={styles.locationInfo}>
-            <Text style={styles.routeLabel}>From: </Text><Text style={styles.locationText}>
+            <CustomText style={styles.routeLabel}>From: </CustomText><CustomText style={styles.locationText}>
               {item.from_location === 'Field' ? 'Field ' : ''}
               {item.from_location === 'Field' ? item.from_field_number : getLocationLabel(item.from_location)}
-            </Text>
+            </CustomText>
           </View>
 
           {/* To section */}
           <View style={styles.locationInfo}>
-            <Text style={styles.routeLabel}>To: </Text>
-            <Text style={styles.locationText}>
+            <CustomText style={styles.routeLabel}>To: </CustomText>
+            <CustomText style={styles.locationText}>
               {item.to_location === 'Field' ? 'Field ' : ''}
               {item.to_location === 'Field' ? item.to_field_number : getLocationLabel(item.to_location)}
-            </Text>
+            </CustomText>
           </View>
         </View>
       </View>
 
       <View style={styles.passengerRow}>
-        <Text style={styles.passengerLabel}>Passengers:</Text>
-        <Text style={styles.passengerCount}>{item.passenger_count || 0}</Text>
+        <CustomText style={styles.passengerLabel}>Passengers:</CustomText>
+        <CustomText style={styles.passengerCount}>{item.passenger_count || 0}</CustomText>
       </View>
 
       {item.special_request && (
         <View style={styles.specialRequestContainer}>
-          <Text style={styles.specialRequestLabel}>Special Request:</Text>
-          <Text style={styles.specialRequestText}>{item.special_request}</Text>
+          <CustomText style={styles.specialRequestLabel}>Special Request:</CustomText>
+          <CustomText style={styles.specialRequestText}>{item.special_request}</CustomText>
         </View>
       )}
 
@@ -187,7 +189,7 @@ const CartRequestsList = () => {
         style={styles.acceptButton}
         onPress={() => acceptRequest(item.id)}
       >
-        <Text style={styles.acceptButtonText}>Accept Request</Text>
+        <CustomText style={styles.acceptButtonText}>Accept Request</CustomText>
       </TouchableOpacity>
     </Card>
   );
@@ -195,7 +197,7 @@ const CartRequestsList = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Loading cart requests...</Text>
+        <CustomText style={styles.loadingText}>Loading cart requests...</CustomText>
       </View>
     );
   }
@@ -204,7 +206,7 @@ const CartRequestsList = () => {
     <View style={styles.container}>
       {requests.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No active cart requests</Text>
+          <CustomText style={styles.emptyText}>No active cart requests</CustomText>
         </View>
       ) : (
         <FlatList
@@ -272,11 +274,11 @@ const DriversAvailabilityScreen = () => {
   const renderDriverItem = ({ item }: { item: Profile }) => (
     <View style={styles.driverItem}>
       <View style={styles.driverInfo}>
-        <Text style={styles.driverName}>{item.full_name || 'Unnamed Driver'}</Text>
-        <Text style={[styles.availabilityText,
+        <CustomText style={styles.driverName}>{item.full_name || 'Unnamed Driver'}</CustomText>
+        <CustomText style={[styles.availabilityText,
         { color: item.is_available ? '#59DE07' : '#EA1D25' }]}>
           {item.is_available ? 'Available' : 'Unavailable'}
-        </Text>
+        </CustomText>
       </View>
       <Switch
         value={!!item.is_available}
@@ -326,11 +328,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
   emptyText: {
-    ...typography.bodyMedium,
+    ...typography.textMedium,
     color: '#B0B0B0',
   },
   loadingText: {
-    ...typography.bodyBold,
+    ...typography.textBold,
     color: '#fff'
   },
   // Cart request card styles
@@ -355,11 +357,11 @@ const styles = StyleSheet.create({
     borderColor: '#CCCCCC66'
   },
   transportTitle: {
-    ...typography.bodyMediumBold,
+    ...typography.textLargeBold,
     color: '#fff',
   },
   requestTime: {
-    ...typography.bodyMediumRegular,
+    ...typography.textLarge,
     color: '#aaa',
   },
   locationsContainer: {
@@ -383,11 +385,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   routeLabel: {
-    ...typography.bodyLargeRegular,
+    ...typography.textLarge,
     color: '#CCCCCC',
   },
   locationText: {
-    ...typography.bodyLarge,
+    ...typography.textLargeBold,
     color: '#fff',
   },
   routePoint: {
@@ -412,11 +414,11 @@ const styles = StyleSheet.create({
     borderBottomColor: '#CCCCCC66',
   },
   passengerLabel: {
-    ...typography.bodyMediumRegular,
+    ...typography.textLarge,
     color: '#CCCCCCB2',
   },
   passengerCount: {
-    ...typography.bodyMediumBold,
+    ...typography.textLargeBold,
     color: '#fff',
   },
   specialRequestContainer: {
@@ -428,11 +430,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   specialRequestLabel: {
-    ...typography.body,
+    ...typography.text,
     color: '#CCCCCCB2',
   },
   specialRequestText: {
-    ...typography.bodyMediumRegular,
+    ...typography.textMedium,
     color: '#fff',
   },
   acceptButton: {
@@ -443,7 +445,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   acceptButtonText: {
-    ...typography.bodyMediumBold,
+    ...typography.textBold,
     color: '#fff',
   },
   // Driver availability screen styles
@@ -474,11 +476,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   driverName: {
-    ...typography.bodyMediumBold,
+    ...typography.textLargeBold,
     color: '#fff',
   },
   availabilityText: {
-    ...typography.body,
+    ...typography.text,
     marginTop: 5,
   },
 });

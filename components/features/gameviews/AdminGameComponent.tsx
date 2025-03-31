@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   Image,
   TouchableOpacity,
@@ -17,6 +16,7 @@ import { supabase } from '@/lib/supabase';
 import { fonts } from '@/constants/Typography';
 import UpdateScoreModal from '../modals/UpdateScoreModal';
 import { updateGameScore } from '@/utils/updateGameScore';
+import CustomText from '@/components/CustomText';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
@@ -137,11 +137,11 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
   return (
     <View style={styles.gameCard}>
       <View style={styles.gameHeader}>
-        <Text style={styles.dateText}>{formatDate(game.datetime?.date, 'short')}</Text>
+        <CustomText style={styles.dateText}>{formatDate(game.datetime?.date, 'short')}</CustomText>
         <View style={styles.timeContainer}>
-          <Text style={styles.timeText}>{formatTime(game.datetime?.time)}</Text>
+          <CustomText style={styles.timeText}>{formatTime(game.datetime?.time)}</CustomText>
         </View>
-        <Text style={styles.fieldText}>Field {game.field_id}</Text>
+        <CustomText style={styles.fieldText}>Field {game.field_id}</CustomText>
       </View>
 
       {/* Teams and Score Container */}
@@ -154,7 +154,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
               source={game.team1?.avatar_uri ? { uri: game.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
               style={styles.teamLogo}
             />
-            <Text style={styles.teamText}>{game.team1?.name}</Text>
+            <CustomText style={styles.teamText}>{game.team1?.name}</CustomText>
             <View style={styles.scoresSection}>
               <TextInput
                 style={styles.scoreInput}
@@ -162,6 +162,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
                 onChangeText={setTeam1Score}
                 keyboardType="number-pad"
                 editable={!isCompleted}
+                allowFontScaling={false}
               />
             </View>
           </View>
@@ -172,7 +173,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
               source={game.team2?.avatar_uri ? { uri: game.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
               style={styles.teamLogo}
             />
-            <Text style={styles.teamText}>{game.team2?.name}</Text>
+            <CustomText style={styles.teamText}>{game.team2?.name}</CustomText>
             <View style={styles.scoresSection}>
               <TextInput
                 style={styles.scoreInput}
@@ -180,6 +181,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
                 onChangeText={setTeam2Score}
                 keyboardType="number-pad"
                 editable={!isCompleted}
+                allowFontScaling={false}
               />
             </View>
           </View>
@@ -197,16 +199,16 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
           onPress={handleMarkCompleted}
           disabled={isCompleted || isLoading}
         >
-          <Text style={[styles.buttonText, isCompleted ? { color: '#ED8C22' } : { color: '#242424' }]}>
+          <CustomText style={[styles.buttonText, isCompleted ? { color: '#ED8C22' } : { color: '#242424' }]}>
             {isCompleted ? 'COMPLETED' : 'Mark Completed'}
-          </Text>
+          </CustomText>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.actionButton, styles.updateScoreButton]}
           onPress={openScoreModal}
         >
-          <Text style={styles.buttonText}>Update Score</Text>
+          <CustomText style={styles.buttonText}>Update Score</CustomText>
         </TouchableOpacity>
       </View>
 
@@ -241,7 +243,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dateText: {
-    ...typography.bodyBold,
+    ...typography.textBold,
     color: '#CCCCCC',
     width: 100,
   },
@@ -253,11 +255,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   timeText: {
-    ...typography.body,
+    ...typography.text,
     color: '#fff'
   },
   fieldText: {
-    ...typography.bodyBold,
+    ...typography.textBold,
     color: '#CCCCCC',
     width: 100,
     textAlign: 'right',
@@ -283,8 +285,7 @@ const styles = StyleSheet.create({
     marginRight: 8
   },
   teamText: {
-    fontFamily: fonts.bold,
-    fontSize: 18,
+    ...typography.textLargeSemiBold,
     color: '#FFF',
   },
   scoresSection: {
@@ -294,8 +295,7 @@ const styles = StyleSheet.create({
   },
   scoreInput: {
     color: '#FFF',
-    fontSize: 20,
-    fontFamily: fonts.bold,
+    ...typography.heading3,
     textAlign: 'right'
   },
   actionContainer: {
@@ -327,8 +327,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#242424',
-    fontFamily: fonts.semiBold,
-    fontSize: 14,
+    ...typography.textSemiBold
   },
 });
 

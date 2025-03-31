@@ -1,8 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, ViewStyle, Dimensions, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ViewStyle, Dimensions, Alert } from 'react-native';
 import { Href, router } from 'expo-router';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { typography } from '@/constants/Typography';
 import { supabase } from '@/lib/supabase';
+import CustomText from '@/components/CustomText';
 
 const { width } = Dimensions.get('window')
 const buttonWidth = (width - 40);
@@ -89,7 +90,7 @@ const AdminScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>What do you need?</Text>
+      <CustomText style={styles.headerText}>What do you need?</CustomText>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {adminOptions.map((option, index) => (
           <AdminOption
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
   headerText: {
-    ...typography.h3,
+    ...typography.heading3,
     color: "#fff",
     paddingLeft: 20,
     marginBottom: 12,
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
   optionText: {
     marginTop: 5,
     color: '#FFFFFF',
-    ...typography.bodyMedium,
+    ...typography.textSemiBold,
     textAlign: 'center',
   },
 });

@@ -1,11 +1,12 @@
-import { StyleSheet, View, ScrollView, Text, StatusBar } from 'react-native';
+import { StyleSheet, View, ScrollView, StatusBar } from 'react-native';
 import { Href, router } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
 import { Card } from '@/components/Card';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { fonts, typography } from '@/constants/Typography';
+import { typography } from '@/constants/Typography';
 import NotificationPermission from '@/components/features/notifications/NotificationPermission';
+import CustomText from '@/components/CustomText';
 
 
 export default function UserDashboard() {
@@ -22,9 +23,9 @@ export default function UserDashboard() {
       <StatusBar barStyle={'light-content'} />
       
       <View style={styles.header}>
-        <Text style={styles.welcomeText}>
-          Welcome, <Text style={{ color: '#000' }}>{profile?.full_name}!</Text>
-        </Text>
+        <CustomText style={styles.welcomeText}>
+          Welcome, <CustomText style={styles.username}>{profile?.full_name}!</CustomText>
+        </CustomText>
       </View>
 
       {/* Cards */}
@@ -32,7 +33,7 @@ export default function UserDashboard() {
         <TouchableOpacity onPress={() => router.push('/(user)/account')}>
           <Card style={styles.card}>
             <MaterialIcons name="account-box" size={24} color="#FE0000" style={styles.cardIcon} />
-            <Text style={styles.cardLabel}>My Profile</Text>
+            <CustomText style={styles.cardLabel}>My Profile</CustomText>
             <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
           </Card>
         </TouchableOpacity>
@@ -40,7 +41,7 @@ export default function UserDashboard() {
         <TouchableOpacity onPress={() => router.push('/favorites')}>
           <Card style={styles.card}>
             <Ionicons name="heart" size={24} color="#FE0000" style={styles.cardIcon} />
-            <Text style={styles.cardLabel}>Favorites</Text>
+            <CustomText style={styles.cardLabel}>Favorites</CustomText>
             <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
           </Card>
         </TouchableOpacity>
@@ -49,7 +50,7 @@ export default function UserDashboard() {
           <TouchableOpacity onPress={() => router.push('/admin' as Href)}>
             <Card style={styles.card}>
               <Ionicons name="settings" size={24} color="#FE0000" style={styles.cardIcon} />
-              <Text style={styles.cardLabel}>Admin</Text>
+              <CustomText style={styles.cardLabel}>Admin</CustomText>
               <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
             </Card>
           </TouchableOpacity>  :
@@ -58,18 +59,18 @@ export default function UserDashboard() {
       </View>
 
       {/* Quick Actions */}
-      <Text style={styles.sectionTitle}>Quick Actions</Text>
+      <CustomText style={styles.sectionTitle}>Quick Actions</CustomText>
       <TouchableOpacity onPress={() => router.navigate('/(tabs)/home')} style={styles.actionButton}>
         <Ionicons name="arrow-back-circle" size={24} color="##000" style={styles.cardIcon} />
-        <Text style={styles.quickActionLabels}>Back to App</Text>
+        <CustomText style={styles.quickActionLabels}>Back to App</CustomText>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => router.navigate('/(user)/feedback')} style={styles.actionButton}>
         <MaterialIcons name="feedback" size={24} color="##000" style={styles.cardIcon} />
-        <Text style={styles.quickActionLabels}>Feedback</Text>
+        <CustomText style={styles.quickActionLabels}>Feedback</CustomText>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleOpenExternalDeleteAccount} style={styles.actionButton}>
         <MaterialIcons name="delete-sweep" size={24} color="##000" style={styles.cardIcon} />
-        <Text style={styles.quickActionLabels}>Delete Account</Text>
+        <CustomText style={styles.quickActionLabels}>Delete Account</CustomText>
       </TouchableOpacity>
 
       {/* Notifications Section */}
@@ -85,12 +86,15 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    marginBottom: 5,
+    marginBottom: 12,
   },
   welcomeText: {
-    ...typography.h3,
-    marginBottom: 4,
+    ...typography.heading3,
     color: '#B3B3B3',
+  },
+  username: {
+    color: '#000',
+    ...typography.heading3
   },
   card: {
     backgroundColor: '#FFF0F0',
@@ -105,13 +109,12 @@ const styles = StyleSheet.create({
   },
   cardLabel: {
     flex: 1,
-    ...typography.label,
+    ...typography.textLargeBold,
     color: '#FE0000',
   },
   sectionTitle: {
-    fontFamily: fonts.bold,
-    fontSize: 20,
-    paddingVertical: 15
+    ...typography.textLargeBold,
+    marginTop: 20,
   },
   actionButton: {
     borderBottomColor: '#E5E5E5',
@@ -121,11 +124,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   quickActionLabels: {
-    fontFamily: fonts.semiBold,
-    fontSize: 16,
+    ...typography.textLargeMedium,
     color: '#000',
-  },
-  notificationSection: {
-    marginTop: 20,
   },
 });

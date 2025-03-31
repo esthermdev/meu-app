@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-nati
 import { Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { typography } from "@/constants/Typography";
+import CustomText from "@/components/CustomText";
 
 // Define menu items with their exact paths
 const menuItems = [
@@ -21,7 +22,7 @@ export default function InfoScreen() {
       {menuItems.map((item, index) => (
         <Link key={index} href={item.route} asChild>
           <TouchableOpacity style={styles.menuItem}>
-            <Text style={styles.menuText}>{item.title}</Text>
+            <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.menuText}>{item.title}</CustomText>
           </TouchableOpacity>
         </Link>
       ))}
@@ -33,17 +34,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    paddingHorizontal: 20,
   },
   menuItem: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 25,
-    marginHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },
   menuText: {
-    ...typography.h5
+    ...typography.heading5
   },
 });

@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Tables } from '@/database.types';
 import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 type Vendor = Tables<'vendors'>;
 
@@ -59,11 +60,11 @@ const VendorsScreen = () => {
           </View>
         )}
         <View style={styles.vendorInfo}>
-          <Text style={styles.vendorName}>{item.name}</Text>
+          <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.vendorName}>{item.name}</CustomText>
           {item.website && (
             <View style={styles.websiteContainer}>
               <FontAwesome5 name="link" size={14} color="#2871FF" style={styles.websiteIcon} />
-              <Text style={styles.websiteText}>Visit website</Text>
+              <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.websiteText}>Visit website</CustomText>
             </View>
           )}
         </View>
@@ -83,12 +84,12 @@ const VendorsScreen = () => {
     return (
       <View style={styles.errorContainer}>
         <FontAwesome5 name="exclamation-circle" size={40} color="#EA1D25" />
-        <Text style={styles.errorText}>{error}</Text>
+        <CustomText style={styles.errorText}>{error}</CustomText>
         <TouchableOpacity 
           style={styles.retryButton}
           onPress={fetchVendors}
         >
-          <Text style={styles.retryButtonText}>Retry</Text>
+          <CustomText style={styles.retryButtonText}>Retry</CustomText>
         </TouchableOpacity>
       </View>
     );
@@ -102,7 +103,7 @@ const VendorsScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContainer}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>No vendors available at the moment.</Text>
+          <CustomText style={styles.emptyText}>No vendors available at the moment.</CustomText>
         }
       />
     </SafeAreaView>
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   errorText: {
-    ...typography.bodyMedium,
+    ...typography.textMedium,
     color: '#333',
     textAlign: 'center',
     marginTop: 10,
@@ -141,7 +142,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   retryButtonText: {
-    ...typography.bodyMedium,
+    ...typography.textMedium,
     color: 'white',
   },
   listContainer: {
@@ -181,7 +182,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   vendorName: {
-    ...typography.bodyMedium,
+    ...typography.textLargeBold,
     color: '#333',
     marginBottom: 4,
   },
@@ -194,11 +195,11 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   websiteText: {
-    ...typography.bodySmallBold,
+    ...typography.textSmall,
     color: '#2871FF',
   },
   emptyText: {
-    ...typography.body,
+    ...typography.text,
     color: '#666',
     textAlign: 'center',
     marginTop: 40,

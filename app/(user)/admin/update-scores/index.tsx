@@ -1,7 +1,8 @@
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator, Platform } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator, Platform } from 'react-native';
 import { router } from 'expo-router';
 import { useDivisions } from '@/hooks/useScheduleConfig';
-import { fonts, typography } from '@/constants/Typography';
+import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 export default function UpdateScoresIndex() {
   const { divisions, loading, error } = useDivisions();
@@ -24,7 +25,7 @@ export default function UpdateScoresIndex() {
   if (error) {
     return (
       <SafeAreaView style={[styles.container, styles.centerContent]}>
-        <Text style={styles.errorText}>Error loading divisions: {error}</Text>
+        <CustomText style={styles.errorText}>Error loading divisions: {error}</CustomText>
       </SafeAreaView>
     );
   }
@@ -40,7 +41,7 @@ export default function UpdateScoresIndex() {
           ]}
           onPress={() => handleSelectDivision(division.id, division.title)}
         >
-          <Text style={styles.divisionText}>{division.title}</Text>
+          <CustomText style={styles.divisionText}>{division.title}</CustomText>
         </TouchableOpacity>
       ))}
     </View>
@@ -80,13 +81,12 @@ const styles = StyleSheet.create({
   },
   divisionText: {
     color: '#fff',
-    ...typography.bodyLarge,
+    ...typography.textLargeSemiBold,
     textAlign: 'center',
     textDecorationLine: 'underline'
   },
   errorText: {
     color: '#EA1D25',
-    fontSize: 16,
-    fontFamily: fonts.medium,
+    ...typography.textMedium
   },
 });

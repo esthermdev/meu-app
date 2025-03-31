@@ -10,7 +10,7 @@ import {
   RefreshControl
 } from 'react-native';
 import { supabase } from '@/lib/supabase';
-import { fonts } from '@/constants/Typography';
+import { typography } from '@/constants/Typography';
 import AdminGameComponent from './AdminGameComponent';
 import AdminBottomActionButtons from '../../buttons/AdminBottomActionButtons';
 
@@ -279,8 +279,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     color: '#888',
-    fontFamily: fonts.medium,
-    fontSize: 16,
+    ...typography.textMedium,
     textAlign: 'center',
   },
   loadingOverlay: {
@@ -296,8 +295,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: '#EA1D25',
-    fontSize: 16,
-    fontFamily: fonts.medium,
+    ...typography.textMedium
   },
 });
 

@@ -2,7 +2,8 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 import LoadingIndicator from '@/components/LoadingIndicator';
-import { fonts, typography } from '@/constants/Typography';
+import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 export default function ScheduleIndex() {
   const { divisions, loading, error } = useDivisions();
@@ -37,7 +38,7 @@ export default function ScheduleIndex() {
             onPress={() => handleSelectDivision(division.id, division.title)}
           >
             <View style={[styles.card, { borderColor: division.color, borderBottomWidth: 4 }]}>
-              <Text style={[styles.title, { color: division.color, textDecorationColor: division.color }]}>{division.title}</Text>
+              <CustomText style={[styles.title, { color: division.color, textDecorationColor: division.color }]}>{division.title}</CustomText>
             </View>
           </TouchableOpacity>
         ))}
@@ -70,12 +71,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   title: {
-    ...typography.h4,
+    ...typography.heading4,
     textDecorationLine: 'underline',
   },
   errorText: {
     color: '#EA1D25',
-    fontSize: 16,
-    fontFamily: fonts.medium,
+    ...typography.textMedium
   },
 });

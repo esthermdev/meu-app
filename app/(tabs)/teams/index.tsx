@@ -20,6 +20,7 @@ import { router } from 'expo-router';
 import { Database } from '@/database.types';
 import { fonts, typography } from '@/constants/Typography';
 import LoadingIndicator from '@/components/LoadingIndicator';
+import CustomText from '@/components/CustomText';
 
 type TeamRow = Database['public']['Tables']['teams']['Row'];
 type PoolRow = Database['public']['Tables']['pools']['Row'];
@@ -167,7 +168,7 @@ const Teams = () => {
           </View>
           
           <View style={styles.teamInfo}>
-            <Text style={styles.teamName}>{item.name}</Text>
+            <CustomText style={styles.teamName}>{item.name}</CustomText>
             <View style={[
               styles.divisionLabel, 
               { 
@@ -176,12 +177,12 @@ const Teams = () => {
                 borderWidth: 1
               }
             ]}>
-              <Text style={[
+              <CustomText style={[
                 styles.divisionText,
                 { color: divisionInfo.textColor }
               ]}>
                 {divisionInfo.title}
-              </Text>
+              </CustomText>
             </View>
           </View>
           <MaterialIcons name='keyboard-arrow-right' size={24} />
@@ -203,13 +204,15 @@ const Teams = () => {
             value={searchQuery}
             onChangeText={setSearchQuery}
             placeholderTextColor="#86939e"
+            allowFontScaling={false}
           />
+          <MaterialIcons name='close' size={15} color="#86939e" onPress={() => setSearchQuery('')} />
         </View>
         
         {/* Filters Section */}
         <View style={styles.filtersSection}>
           <View style={styles.filterButtonsContainer}>
-            <Text style={styles.filterLabel}>Filter:</Text>
+            <CustomText style={styles.filterLabel}>Filter:</CustomText>
             {divisions.map((division) => {       
               return (
                 <TouchableOpacity
@@ -228,7 +231,7 @@ const Teams = () => {
                   ]}
                   onPress={() => setSelectedDivision(division.code)}
                 >
-                  <Text style={[styles.filterButtonText, { color: division.color }]} >{division.title}</Text>
+                  <CustomText style={[styles.filterButtonText, { color: division.color }]} >{division.title}</CustomText>
                 </TouchableOpacity>
               );
             })}
@@ -288,7 +291,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    ...typography.body,
+    ...typography.text,
     color: '#000',
   },
   filtersSection: {
@@ -296,7 +299,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   filterLabel: {
-    ...typography.bodyBold,
+    ...typography.textBold,
     color: '#808080',
     marginRight: 5,
   },
@@ -310,7 +313,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   filterButtonText: {
-    ...typography.bodySmallBold,
+    ...typography.textSmallMedium,
   },
   listContainer: {
     flex: 1,
@@ -330,8 +333,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   emptyText: {
-    fontFamily: 'GeistRegular',
-    fontSize: 16,
+    ...typography.textMedium,
     color: '#8F8DAA',
     textAlign: 'center',
   },
@@ -366,16 +368,14 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   teamAvatarText: {
-    fontFamily: 'GeistBold',
-    fontSize: 20,
+    ...typography.textBold,
     color: '#333',
   },
   teamInfo: {
     flex: 1,
   },
   teamName: {
-    fontFamily: 'GeistBold',
-    fontSize: 16,
+    ...typography.textBold,
     color: '#333243',
     marginBottom: 5,
   },
@@ -385,8 +385,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7,
   },
   divisionText: {
-    fontFamily: 'GeistMedium',
-    fontSize: 12,
+    ...typography.textXSmall
   },
 });
 

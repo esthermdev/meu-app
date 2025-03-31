@@ -14,7 +14,9 @@ import {
   ActivityIndicator
 } from 'react-native';
 import { supabase } from '@/lib/supabase';
-import { fonts } from '@/constants/Typography';
+import { fonts, typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
+import PrimaryButton from '@/components/buttons/PrimaryButton';
 
 const FeedbackScreen = () => {
   const [subject, setSubject] = useState<string>('');
@@ -57,32 +59,28 @@ const FeedbackScreen = () => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <View style={styles.content}>
-            <Text style={styles.label}>Subject:</Text>
+            <CustomText style={styles.label}>Subject:</CustomText>
             <TextInput
               style={styles.input}
               value={subject}
               onChangeText={setSubject}
               placeholder="Enter subject"
+              allowFontScaling={false}
             />
-            <Text style={styles.label}>Message:</Text>
+            <CustomText style={styles.label}>Message:</CustomText>
             <TextInput
               style={[styles.input, styles.messageInput]}
               value={message}
               onChangeText={setMessage}
               placeholder="Enter your feedback or report a bug"
               multiline
+              allowFontScaling={false}
             />
-            <TouchableOpacity
-              style={[styles.submitButton, isSubmitting && styles.disabledButton]}
-              onPress={handleSubmit}
+            <PrimaryButton 
+              title='Submit Feedback'
               disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <ActivityIndicator color="#FFF" />
-              ) : (
-                <Text style={styles.submitButtonText}>Submit Feedback</Text>
-              )}
-            </TouchableOpacity>
+              onPress={handleSubmit}
+            />
           </View>
         </ScrollView>
       </TouchableWithoutFeedback>
@@ -102,8 +100,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   label: {
-    fontFamily: fonts.bold,
-    fontSize: 16,
+    ...typography.textLargeBold,
     marginBottom: 5,
   },
   input: {
@@ -112,8 +109,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 15,
-    fontFamily: fonts.regular,
-    fontSize: 14,
+    ...typography.text
   },
   messageInput: {
     height: 150,

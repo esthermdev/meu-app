@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   Image,
 } from 'react-native';
@@ -9,6 +8,7 @@ import { Database } from '@/database.types';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
 import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
@@ -32,11 +32,11 @@ const GameComponent: React.FC<GameComponentProps> = ({ game }) => {
   const renderGame = ({ item }: { item: FetchedGame }) => (
     <View style={styles.gameCard}>
       <View style={styles.gameHeader}>
-        <Text style={styles.dateText}>{formatDate(item.datetime?.date, 'short')}</Text>
+        <CustomText style={styles.dateText}>{formatDate(item.datetime?.date, 'short')}</CustomText>
         <View style={styles.timeContainer}>
-          <Text style={styles.timeText}>{formatTime(item.datetime?.time)}</Text>
+          <CustomText style={styles.timeText}>{formatTime(item.datetime?.time)}</CustomText>
         </View>
-        <Text style={styles.fieldText}>Field {item.field_id}</Text>
+        <CustomText style={styles.fieldText}>Field {item.field_id}</CustomText>
       </View>
 
       {/* Teams and Score Container - New Layout */}
@@ -49,7 +49,7 @@ const GameComponent: React.FC<GameComponentProps> = ({ game }) => {
               source={item.team1?.avatar_uri ? { uri: item.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
               style={styles.teamLogo}
             />
-            <Text style={styles.teamText}>{item.team1?.name}</Text>
+            <CustomText style={styles.teamText}>{item.team1?.name}</CustomText>
           </View>
 
           {/* Team 2 */}
@@ -58,18 +58,18 @@ const GameComponent: React.FC<GameComponentProps> = ({ game }) => {
               source={item.team2?.avatar_uri ? { uri: item.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
               style={styles.teamLogo}
             />
-            <Text style={styles.teamText}>{item.team2?.name}</Text>
+            <CustomText style={styles.teamText}>{item.team2?.name}</CustomText>
           </View>
         </View>
 
         {/* Right side: Scores */}
         <View style={styles.scoresSection}>
-          <Text style={styles.scoreText}>
+          <CustomText style={styles.scoreText}>
             {item.scores && item.scores[0] ? item.scores[0].team1_score : 0}
-          </Text>
-          <Text style={styles.scoreText}>
+          </CustomText>
+          <CustomText style={styles.scoreText}>
             {item.scores && item.scores[0] ? item.scores[0].team2_score : 0}
-          </Text>
+          </CustomText>
         </View>
       </View>
     </View>
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dateText: {
-    ...typography.bodyBold,
+    ...typography.textBold,
     color: '#999',
     width: 100,
   },
@@ -117,11 +117,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   timeText: {
-    ...typography.body,
+    ...typography.text,
     color: '#fff'
   },
   fieldText: {
-    ...typography.bodyBold,
+    ...typography.textBold,
     color: '#276B5D',
     width: 100,
     textAlign: 'right',
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   teamText: {
-    ...typography.bodyMedium,
+    ...typography.textSemiBold,
     color: '#444',
   },
   scoresSection: {
@@ -158,29 +158,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   scoreText: {
-    ...typography.h3,
+    ...typography.textLargeBold,
     color: '#333',
     textAlign: 'center',
-  },
-  // Placeholder styles
-  placeholderContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  placeholderTitle: {
-    ...typography.h4,
-    color: '#EA1D25',
-    marginTop: 20,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  loadingText: {
-    ...typography.body,
-    color: '#8F8DAA',
-    textAlign: 'center',
-    marginTop: 20,
   },
 });
 

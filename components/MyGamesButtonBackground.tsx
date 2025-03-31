@@ -2,6 +2,7 @@
 import { View, StyleSheet, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { fonts, typography } from '@/constants/Typography';
+import CustomText from './CustomText';
 
 const MyGamesButtonBackground = ({ title }: { title: string }) => {
   return (
@@ -13,7 +14,7 @@ const MyGamesButtonBackground = ({ title }: { title: string }) => {
       <Feather name="target" size={28} color="#fff" />
       
       {/* Title */}
-      <Text style={styles.title}>{title}</Text>
+      <CustomText style={styles.title}>{title}</CustomText>
     </View>
   );
 };
@@ -38,8 +39,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#fff',
-    fontFamily: fonts.semiBold,
-    fontSize: 18
+    ...typography.heading4
   },
 });
 

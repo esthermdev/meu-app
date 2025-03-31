@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { StyleSheet, Text, View, FlatList, Switch, RefreshControl, TouchableOpacityComponent } from 'react-native';
+import { StyleSheet, View, FlatList, Switch, RefreshControl } from 'react-native';
 import FulfilledTrainerRequestList from '@/components/features/requests/FulfilledTrainerRequestList';
 import TrainerRequestsList from '@/components/features/requests/TrainerRequestsList';
+import CustomText from '@/components/CustomText';
 
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
@@ -28,6 +29,7 @@ const TrainerManagementScreen = () => {
             backgroundColor: '#EA1D25',
             height: 3,
           },
+          tabBarAllowFontScaling: false
         }}
       >
         <Tab.Screen name="Requests" component={TrainerRequestsList} />
@@ -89,11 +91,11 @@ const TrainerAvailabilityScreen = () => {
   const renderTrainerItem = ({ item }: { item: Profile }) => (
     <View style={styles.trainerItem}>
       <View style={styles.trainerInfo}>
-        <Text style={styles.trainerName}>{item.full_name || 'Unnamed Trainer'}</Text>
-        <Text style={[styles.availabilityText,
+        <CustomText style={styles.trainerName}>{item.full_name || 'Unnamed Trainer'}</CustomText>
+        <CustomText style={[styles.availabilityText,
         { color: item.is_available ? '#59DE07' : '#EA1D25' }]}>
           {item.is_available ? 'Available' : 'Unavailable'}
-        </Text>
+        </CustomText>
       </View>
       <Switch
         value={!!item.is_available}
@@ -133,7 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   tabLabel: {
-    ...typography.body
+    ...typography.text
   },
   tabIndicator: {
     backgroundColor: '#EA1D25',
@@ -165,11 +167,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   trainerName: {
-    ...typography.bodyMediumBold,
+    ...typography.textLargeBold,
     color: '#fff'
   },
   availabilityText: {
-    ...typography.body,
+    ...typography.text,
+    marginTop: 5,
   },
 });
 

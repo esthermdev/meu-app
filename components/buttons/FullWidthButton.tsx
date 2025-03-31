@@ -1,8 +1,9 @@
 // components/buttons/FullWidthButton.tsx
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { router, Href } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { typography } from '@/constants/Typography';
+import CustomText from '../CustomText';
 
 type MaterialIconNames = keyof typeof MaterialCommunityIcons.glyphMap;
 
@@ -31,7 +32,7 @@ const FullWidthButton: React.FC<FullWidthButtonProps> = ({
     >
       <View style={styles.content}>
         <MaterialCommunityIcons name={icon} size={24} color={iconColor} />
-        <Text style={[styles.text, {color: iconColor}]}>{title}</Text>
+        <CustomText style={[styles.text, {color: iconColor}]}>{title}</CustomText>
       </View>
     </TouchableOpacity>
   );
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
   },
   text: {
     marginLeft: 15,
-    ...typography.bodyMedium,
+    ...typography.textLargeSemiBold
   },
 });
 

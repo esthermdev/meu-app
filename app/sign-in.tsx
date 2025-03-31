@@ -1,5 +1,8 @@
+// Add this to your sign-in.tsx file
+
 import { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard, Text, Image, ScrollView } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, TextInput, KeyboardAvoidingView, 
+  TouchableWithoutFeedback, Platform, Keyboard, Text, Image, ScrollView, Alert } from 'react-native';
 import { Link, router } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
@@ -7,6 +10,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { images } from '@/constants';
 import { typography } from '@/constants/Typography';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
+import { supabase } from '@/lib/supabase';
+import CustomText from '@/components/CustomText';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -35,6 +40,30 @@ export default function SignIn() {
     }
   };
 
+  // New function for reviewer login
+  const handleReviewerSignIn = async () => {
+    try {
+      setLoading(true);
+      
+      // Direct sign-in with the reviewer account using Supabase's auth.signInWithPassword
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: 'reviewer@maineultimateapp.org',  // Use the email you set up for the reviewer
+        password: 'app-review-25'   // Use the password you set up for the reviewer
+      });
+      
+      if (error) throw error;
+      
+      // Navigate to the user section after successful sign-in
+      router.replace('/(user)');
+      
+    } catch (error) {
+      console.error('Reviewer sign-in error:', error);
+      Alert.alert('Error', 'Could not sign in with reviewer account. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity onPress={() => router.dismiss()}>
@@ -54,8 +83,8 @@ export default function SignIn() {
             <View style={styles.form}>
               <Image source={images.logoW} style={styles.image} />
               
-              <Text style={styles.title}>Sign In</Text>
-              <Text style={styles.subTitle}>Sign in to continue</Text>
+              <CustomText style={styles.title}>Sign In</CustomText>
+              <CustomText style={styles.subtitle}>Sign in to continue</CustomText>
 
               <View style={styles.inputContainer}>
                 <MaterialIcons name="email" size={20} color="#000" />
@@ -66,6 +95,7 @@ export default function SignIn() {
                     setEmail(text);
                     setError(null);
                   }}
+                  allowFontScaling={false}
                   autoCapitalize="none"
                   keyboardType="email-address"
                   style={styles.inputWithIcon}
@@ -74,10 +104,10 @@ export default function SignIn() {
 
               {error && (
                 <View style={styles.errorContainer}>
-                  <Text style={styles.errorText}>{error}</Text>
+                  <CustomText style={styles.errorText}>{error}</CustomText>
                   <Link href="/sign-up" asChild>
                     <TouchableOpacity>
-                      <Text style={styles.signUpLink}>Create an account</Text>
+                      <CustomText style={styles.signUpLink}>Create an account</CustomText>
                     </TouchableOpacity>
                   </Link>
                 </View>
@@ -89,11 +119,20 @@ export default function SignIn() {
                 disabled={loading}
               />
 
+              {/* Add the App Store Reviewer button */}
+              <TouchableOpacity 
+                style={styles.reviewerButton} 
+                onPress={handleReviewerSignIn}
+                disabled={loading}
+              >
+                <CustomText style={styles.reviewerButtonText}>App Store Reviewer Sign In</CustomText>
+              </TouchableOpacity>
+
               <View style={styles.footer}>
-                <Text style={styles.text}>Don't have an account? </Text>
+                <CustomText style={styles.text}>Don't have an account? </CustomText>
                 <Link href={'/sign-up'} asChild>
                   <TouchableOpacity>
-                    <Text style={styles.link}>Sign Up</Text>
+                    <CustomText style={styles.link}>Sign Up</CustomText>
                   </TouchableOpacity>
                 </Link>
               </View>
@@ -121,14 +160,14 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   title: {
-    ...typography.h1,
+    ...typography.heading1,
     color: '#EA1D25',
     marginTop: 10,
   },
-  subTitle: {
+  subtitle: {
     marginTop: 10,
     marginBottom: 20,
-    ...typography.bodyMedium
+    ...typography.heading5
   },
   inputContainer: {
     flexDirection: 'row',
@@ -143,7 +182,7 @@ const styles = StyleSheet.create({
   inputWithIcon: {
     flex: 1,
     marginLeft: 8,
-    ...typography.bodyMedium,
+    ...typography.textSemiBold
   },
   errorContainer: {
     backgroundColor: '#FEE2E2',
@@ -168,11 +207,22 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   text: {
-    ...typography.body,
+    ...typography.text,
   },
   link: {
-    ...typography.body,
+    ...typography.text,
     color: '#EA1D25',
     textDecorationLine: 'underline',
   },
+  reviewerButton: {
+    backgroundColor: '#E5E5E5',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  reviewerButtonText: {
+    ...typography.bodyMedium,
+    color: '#333333',
+  }
 });

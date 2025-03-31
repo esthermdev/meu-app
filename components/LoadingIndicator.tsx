@@ -1,7 +1,8 @@
 // components/LoadingIndicator.tsx
 import { typography } from '@/constants/Typography';
 import React from 'react';
-import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import CustomText from './CustomText';
 
 type LoadingIndicatorProps = {
   size?: 'small' | 'large';
@@ -27,7 +28,7 @@ const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
       ]}
     >
       <ActivityIndicator size={size} color={color} />
-      {message ? <Text style={styles.text}>{message}</Text> : null}
+      {message ? <CustomText style={styles.text}>{message}</CustomText> : null}
     </View>
   );
 };
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
   },
   text: {
     marginTop: 10,
-    ...typography.bodyMedium,
+    ...typography.heading4,
     color: '#000',
   }
 });

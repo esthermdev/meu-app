@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, SafeAreaView } from 'react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { Tables } from '@/database.types';
+import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
 
 type FAQ = Tables<'faq'>;
 
 const FAQItem = ({ item }: { item: FAQ }) => (
   <View style={styles.faqItem}>
-    <Text style={styles.question}>{item.question}</Text>
-    <Text style={styles.answer}>{item.answer}</Text>
+    <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.question}>{item.question}</CustomText>
+    <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.answer}>{item.answer}</CustomText>
   </View>
 );
 
@@ -56,7 +58,7 @@ const FAQScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContainer}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>No FAQs available at the moment.</Text>
+          <CustomText style={styles.emptyText}>No FAQs available at the moment.</CustomText>
         }
       />
     </SafeAreaView>
@@ -84,20 +86,17 @@ const styles = StyleSheet.create({
     borderLeftColor: '#EA1D25',
   },
   question: {
-    fontFamily: 'GeistBold',
-    fontSize: 18,
+    ...typography.textLargeBold,
     color: '#EA1D25',
     marginBottom: 8,
   },
   answer: {
-    fontFamily: 'GeistRegular',
-    fontSize: 16,
+    ...typography.text,
     color: '#333',
     lineHeight: 22,
   },
   emptyText: {
-    fontFamily: 'GeistRegular',
-    fontSize: 16,
+    ...typography.textMedium,
     color: '#666',
     textAlign: 'center',
     marginTop: 40,

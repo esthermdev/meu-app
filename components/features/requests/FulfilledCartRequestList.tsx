@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
 import { Card } from '@/components/Card';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthProvider';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 // Define types based on your Supabase schema
 type CartRequest = Database['public']['Tables']['cart_requests']['Row'];
@@ -116,9 +117,9 @@ const FulfilledCartRequestsList = () => {
     return (
       <Card style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <Text style={styles.transportTitle}>Transport</Text>
+          <CustomText style={styles.transportTitle}>Transport</CustomText>
           <View style={[styles.statusBadge, { borderColor: statusBadge.color, borderWidth: 1, backgroundColor: `${statusBadge.color}3D` }]}>
-            <Text style={styles.statusText}>{statusBadge.text}</Text>
+            <CustomText style={styles.statusText}>{statusBadge.text}</CustomText>
           </View>
         </View>
         
@@ -134,51 +135,51 @@ const FulfilledCartRequestsList = () => {
           <View style={styles.routeInfo}>
             {/* From section */}
             <View style={styles.locationInfo}>
-              <Text style={styles.routeLabel}>From: </Text>
-              <Text style={styles.locationText}>
+              <CustomText style={styles.routeLabel}>From: </CustomText>
+              <CustomText style={styles.locationText}>
                 {item.from_location === 'Field' ? 'Field ' : ''}
                 {item.from_location === 'Field' ? item.from_field_number : getLocationLabel(item.from_location)}
-              </Text>
+              </CustomText>
             </View>
             
             {/* To section */}
             <View style={styles.locationInfo}>
-              <Text style={styles.routeLabel}>To: </Text>
-              <Text style={styles.locationText}>
+              <CustomText style={styles.routeLabel}>To: </CustomText>
+              <CustomText style={styles.locationText}>
                 {item.to_location === 'Field' ? 'Field ' : ''}
                 {item.to_location === 'Field' ? item.to_field_number : getLocationLabel(item.to_location)}
-              </Text>
+              </CustomText>
             </View>
           </View>
         </View>
         
         <View style={styles.infoSection}>
           <View style={styles.infoRow}>
-            <Text style={styles.labelText}>Passengers:</Text>
-            <Text style={styles.valueText}>{item.passenger_count || 0}</Text>
+            <CustomText style={styles.labelText}>Passengers:</CustomText>
+            <CustomText style={styles.valueText}>{item.passenger_count || 0}</CustomText>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.labelText}>Driver:</Text>
-            <Text style={styles.driverText}>{driverName}</Text>
+            <CustomText style={styles.labelText}>Driver:</CustomText>
+            <CustomText style={styles.driverText}>{driverName}</CustomText>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.labelText}>Request ID:</Text>
-            <Text style={styles.valueText}>{item.id}</Text>
+            <CustomText style={styles.labelText}>Request ID:</CustomText>
+            <CustomText style={styles.valueText}>{item.id}</CustomText>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.labelText}>Created:</Text>
-            <Text style={styles.valueText}>{formatDate(item.created_at)}</Text>
+            <CustomText style={styles.labelText}>Created:</CustomText>
+            <CustomText style={styles.valueText}>{formatDate(item.created_at)}</CustomText>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.labelText}>Completed:</Text>
-            <Text style={styles.valueText}>{formatDate(item.updated_at)}</Text>
+            <CustomText style={styles.labelText}>Completed:</CustomText>
+            <CustomText style={styles.valueText}>{formatDate(item.updated_at)}</CustomText>
           </View>
         </View>
 
         {item.special_request && (
           <View style={styles.specialRequestContainer}>
-            <Text style={styles.specialRequestLabel}>Special Request:</Text>
-            <Text style={styles.specialRequestText}>{item.special_request}</Text>
+            <CustomText style={styles.specialRequestLabel}>Special Request:</CustomText>
+            <CustomText style={styles.specialRequestText}>{item.special_request}</CustomText>
           </View>
         )}
         
@@ -186,7 +187,7 @@ const FulfilledCartRequestsList = () => {
           style={styles.deleteButton}
           onPress={() => deleteRequest(item.id)}
         >
-          <Text style={styles.deleteButtonText}>Remove</Text>
+          <CustomText style={styles.deleteButtonText}>Remove</CustomText>
         </TouchableOpacity>
       </Card>
     );
@@ -196,7 +197,7 @@ const FulfilledCartRequestsList = () => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#EA1D25" />
-        <Text style={styles.loadingText}>Loading fulfilled requests...</Text>
+        <CustomText style={styles.loadingText}>Loading fulfilled requests...</CustomText>
       </View>
     );
   }
@@ -205,7 +206,7 @@ const FulfilledCartRequestsList = () => {
     <SafeAreaView style={styles.container}>
       {requests.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No fulfilled transport requests found</Text>
+          <CustomText style={styles.emptyText}>No fulfilled transport requests found</CustomText>
         </View>
       ) : (
         <FlatList
@@ -240,11 +241,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
   emptyText: {
-    ...typography.bodyMedium,
+    ...typography.textMedium,
     color: '#B0B0B0',
   },
   loadingText: {
-    ...typography.bodyBold,
+    ...typography.textBold,
     color: '#fff'
   },
   // Card styles
@@ -268,7 +269,7 @@ const styles = StyleSheet.create({
     borderColor: '#CCCCCC66'
   },
   transportTitle: {
-    ...typography.bodyMediumBold,
+    ...typography.textLargeBold,
     color: '#fff',
     marginRight: 'auto'
   },
@@ -278,7 +279,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   statusText: {
-    ...typography.body,
+    ...typography.text,
     color: '#fff'
   },
   locationsContainer: {
@@ -302,11 +303,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   routeLabel: {
-    ...typography.bodyLargeRegular,
+    ...typography.textLarge,
     color: '#CCCCCC',
   },
   locationText: {
-    ...typography.bodyLarge,
+    ...typography.textLargeBold,
     color: '#fff',
   },
   routePoint: {
@@ -333,15 +334,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   labelText: {
-    ...typography.bodyMediumRegular,
+    ...typography.text,
     color: '#CCCCCC80',
   },
   valueText: {
-    ...typography.bodyMedium,
+    ...typography.textSemiBold,
     color: '#CCCCCCBF',
   },
   driverText: {
-    ...typography.bodyMedium,
+    ...typography.textBold,
     color: '#fff',
   },
   specialRequestContainer: {
@@ -353,11 +354,11 @@ const styles = StyleSheet.create({
     marginVertical: 8
   },
   specialRequestLabel: {
-    ...typography.body,
+    ...typography.text,
     color: '#CCCCCCB2',
   },
   specialRequestText: {
-    ...typography.bodyMediumRegular,
+    ...typography.textMedium,
     color: '#fff',
   },
   deleteButton: {
@@ -369,7 +370,7 @@ const styles = StyleSheet.create({
     marginTop: 5
   },
   deleteButtonText: {
-    ...typography.bodyMediumBold,
+    ...typography.textBold,
     color: '#fff',
   },
 });

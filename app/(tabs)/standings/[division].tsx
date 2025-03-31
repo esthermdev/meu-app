@@ -5,7 +5,8 @@ import { usePoolIds } from '@/hooks/useGamesFilter';
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
 import CustomHeader from '@/components/headers/CustomHeader';
-import { fonts, typography } from '@/constants/Typography';
+import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 type StandingsRow = Database['public']['Tables']['rankings']['Row']
 type TeamsRow = Database['public']['Tables']['teams']['Row'];
@@ -66,28 +67,28 @@ export default function DivisionStandings() {
   const renderSectionHeader = ({ section }: { section: StandingsSection }) => (
     <View style={styles.sectionHeader}>
       <View style={styles.poolLabelContainer}>
-        <Text style={styles.poolLabel}>{section.title}</Text>
+        <CustomText style={styles.poolLabel}>{section.title}</CustomText>
       </View>
       <View style={styles.recordHeaderContainer}>
-        <Text style={styles.recordHeaderText}>W</Text>
-        <Text style={styles.recordDivider}>—</Text>
-        <Text style={styles.recordHeaderText}>L</Text>
+        <CustomText style={styles.recordHeaderText}>W</CustomText>
+        <CustomText style={styles.recordDivider}>—</CustomText>
+        <CustomText style={styles.recordHeaderText}>L</CustomText>
       </View>
     </View>
   );
 
   const renderItem = ({ item, index }: { item: Standings, index: number }) => (
     <View style={styles.itemContainer}>
-      <Text style={styles.rankNumber}>{item.teams?.seed}</Text>
+      <CustomText style={styles.rankNumber}>{item.teams?.seed}</CustomText>
       <Image 
         source={item.teams?.avatar_uri ? { uri: item.teams.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
         style={styles.teamLogo} 
       />
-      <Text style={styles.teamName}>{item.teams?.name}</Text>
+      <CustomText style={styles.teamName}>{item.teams?.name}</CustomText>
       <View style={styles.recordContainer}>
-        <Text style={styles.recordText}>{item.wins}</Text>
-        <Text style={[styles.recordDivider, { color: '#000', ...typography.body }]}>—</Text>
-        <Text style={styles.recordText}>{item.losses}</Text>
+        <CustomText style={styles.recordText}>{item.wins}</CustomText>
+        <CustomText style={[styles.recordDivider, { color: '#000', ...typography.body }]}>—</CustomText>
+        <CustomText style={styles.recordText}>{item.losses}</CustomText>
       </View>
     </View>
   );
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   poolLabel: {
-    ...typography.bodyLarge,
+    ...typography.textLargeBold,
     color: '#EA1D25'
   },
   recordHeaderContainer: {
@@ -160,13 +161,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   recordHeaderText: {
-    ...typography.bodyLarge,
+    ...typography.textLargeBold,
     textAlign: 'center',
     width: 30,
     color: '#fff'
   },
   recordDivider: {
-    ...typography.body,
+    ...typography.text,
     color: '#fff'
   },
   itemContainer: {
@@ -178,7 +179,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   rankNumber: {
-    ...typography.body,
+    ...typography.textSmall,
     color: '#9E9E9E',
     width: 15,
   },
@@ -190,14 +191,14 @@ const styles = StyleSheet.create({
   },
   teamName: {
     flex: 1,
-    ...typography.bodyMedium
+    ...typography.textSemiBold
   },
   recordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   recordText: {
-    ...typography.body,
+    ...typography.text,
     textAlign: 'center',
     width: 30,
   },

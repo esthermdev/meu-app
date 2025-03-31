@@ -5,6 +5,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Tables } from '@/database.types';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 // Define types for our data structure
 type Restaurant = Tables<'restaurants'>;
@@ -63,11 +64,11 @@ const RestaurantsHotelsScreen = () => {
       onPress={() => item.website ? Linking.openURL(item.website) : null}
     >
       <View style={styles.itemContent}>
-        <Text style={styles.itemName}>{item.name}</Text>
+        <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.itemName}>{item.name}</CustomText>
         {item.discount && (
           <View style={styles.discountContainer}>
             <FontAwesome name="tag" size={14} color="#EA1D25" />
-            <Text style={styles.itemDiscount}>{item.discount}</Text>
+            <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.itemDiscount}>{item.discount}</CustomText>
           </View>
         )}
       </View>
@@ -82,7 +83,7 @@ const RestaurantsHotelsScreen = () => {
 
   const renderSectionHeader = ({ section }: { section: SectionData }) => (
     <View style={styles.sectionHeader}>
-      <Text style={styles.sectionHeaderText}>{section.title}</Text>
+      <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.sectionHeaderText}>{section.title}</CustomText>
     </View>
   );
 
@@ -96,12 +97,12 @@ const RestaurantsHotelsScreen = () => {
     return (
       <View style={styles.errorContainer}>
         <FontAwesome name="exclamation-circle" size={40} color="#EA1D25" />
-        <Text style={styles.errorText}>{error}</Text>
+        <CustomText style={styles.errorText}>{error}</CustomText>
         <TouchableOpacity 
           style={styles.retryButton}
           onPress={fetchRestaurantsHotels}
         >
-          <Text style={styles.retryButtonText}>Retry</Text>
+          <CustomText style={styles.retryButtonText}>Retry</CustomText>
         </TouchableOpacity>
       </View>
     );
@@ -142,8 +143,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   errorText: {
-    fontFamily: 'GeistMedium',
-    fontSize: 16,
+    ...typography.textMedium,
     color: '#333',
     textAlign: 'center',
     marginTop: 10,
@@ -156,9 +156,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   retryButtonText: {
-    fontFamily: 'GeistSemiBold',
+    ...typography.textSemiBold,
     color: 'white',
-    fontSize: 16,
   },
   item: {
     padding: 10,
@@ -179,8 +178,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemName: {
-    fontFamily: 'GeistSemiBold',
-    fontSize: 16,
+    ...typography.textBold,
     color: '#333',
   },
   discountContainer: {
@@ -189,8 +187,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   itemDiscount: {
-    fontFamily: 'GeistMedium',
-    fontSize: 14,
+    ...typography.textSmall,
     color: '#EA1D25',
     marginLeft: 6,
   },
@@ -206,7 +203,7 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   sectionHeaderText: {
-    ...typography.bodyLarge,
+    ...typography.textLargeBold,
     color: '#fff',
   },
 });

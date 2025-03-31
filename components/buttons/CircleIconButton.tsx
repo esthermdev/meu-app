@@ -1,8 +1,9 @@
 // components/buttons/CircleIconButton.tsx
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { router, Href } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { typography } from '@/constants/Typography';
+import CustomText from '../CustomText';
 
 type MaterialIconNames = keyof typeof MaterialCommunityIcons.glyphMap;
 
@@ -28,7 +29,7 @@ const CircleIconButton: React.FC<CircleIconButtonProps> = ({
       >
         <MaterialCommunityIcons name={icon} size={28} color="#347764" />
       </TouchableOpacity>
-      <Text style={styles.label}>{label}</Text>
+      <CustomText style={styles.label} allowFontScaling maxFontSizeMultiplier={1.2}>{label}</CustomText>
     </View>
   );
 };
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
   label: {
     textAlign: 'center',
     marginTop: 5,
-    ...typography.bodyBold
+    ...typography.textSmallBold
   },
 });
 

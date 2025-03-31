@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
 import { Card } from '@/components/Card';
 import { MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthProvider';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 // Define types based on your Supabase schema
 type MedicalRequest = Database['public']['Tables']['medical_requests']['Row'] & {
@@ -114,42 +115,42 @@ const FulfilledTrainerRequestList = () => {
       <Card style={styles.cardContainer}>
         <View style={styles.cardHeader}>
           <View style={[styles.priorityBadge, getPriorityColor(item.priority_level) ]}>
-            <Text style={styles.priorityText}>{item.priority_level || 'Medium'}</Text>
+            <CustomText style={styles.priorityText}>{item.priority_level || 'Medium'}</CustomText>
           </View>
           <View style={[styles.statusBadge, { borderColor: statusBadge.color, borderWidth: 1, backgroundColor: '#73BF443D' }]}>
-            <Text style={styles.statusText}>{statusBadge.text}</Text>
+            <CustomText style={styles.statusText}>{statusBadge.text}</CustomText>
           </View>
           <View style={styles.fieldBadge}>
             <MaterialIcons name="location-on" size={14} color="#262626" />
-            <Text style={styles.fieldText}>Field {item.field_number}</Text>
+            <CustomText style={styles.fieldText}>Field {item.field_number}</CustomText>
           </View>
         </View>
         
         <View style={styles.infoSection}>
           <View style={styles.infoRow}>
-            <Text style={styles.labelText}>Request ID: </Text>
-            <Text style={styles.valueText}>{item.id}</Text>
+            <CustomText style={styles.labelText}>Request ID: </CustomText>
+            <CustomText style={styles.valueText}>{item.id}</CustomText>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.labelText}>Trainer:</Text>
-            <Text style={styles.trainerNameText}>{item.trainer ? item.trainer.full_name : 'Unassigned'}</Text>
+            <CustomText style={styles.labelText}>Trainer:</CustomText>
+            <CustomText style={styles.trainerNameText}>{item.trainer ? item.trainer.full_name : 'Unassigned'}</CustomText>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.labelText}>Created:</Text>
-            <Text style={styles.valueText}>{formatDate(item.created_at)}</Text>
+            <CustomText style={styles.labelText}>Created:</CustomText>
+            <CustomText style={styles.valueText}>{formatDate(item.created_at)}</CustomText>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.labelText}>Updated:</Text>
-            <Text style={styles.valueText}>{formatDate(item.updated_at)}</Text>
+            <CustomText style={styles.labelText}>Updated:</CustomText>
+            <CustomText style={styles.valueText}>{formatDate(item.updated_at)}</CustomText>
           </View>
         </View>
 
         {item.description_of_emergency && (
           <View style={styles.descriptionContainer}>
-            <Text style={styles.descriptionLabel}>Emergency Description:</Text>
-            <Text style={styles.descriptionText}>
+            <CustomText style={styles.descriptionLabel}>Emergency Description:</CustomText>
+            <CustomText style={styles.descriptionText}>
               {item.description_of_emergency}
-            </Text>
+            </CustomText>
           </View>
         )}
       </Card>
@@ -160,7 +161,7 @@ const FulfilledTrainerRequestList = () => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#EA1D25" />
-        <Text style={styles.loadingText}>Loading fulfilled requests...</Text>
+        <CustomText style={styles.loadingText}>Loading fulfilled requests...</CustomText>
       </View>
     );
   }
@@ -169,7 +170,7 @@ const FulfilledTrainerRequestList = () => {
     <SafeAreaView style={styles.container}>
       {requests.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No fulfilled requests found</Text>
+          <CustomText style={styles.emptyText}>No fulfilled requests found</CustomText>
         </View>
       ) : (
         <FlatList
@@ -204,11 +205,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
   emptyText: {
-    ...typography.bodyMedium,
+    ...typography.textMedium,
     color: '#B0B0B0',
   },
   loadingText: {
-    ...typography.bodyBold,
+    ...typography.textBold,
     color: '#fff'
   },
   // Card styles
@@ -237,8 +238,8 @@ const styles = StyleSheet.create({
     paddingVertical: 2
   },
   priorityText: {
-    color: 'white',
-    ...typography.body
+    color: '#fff',
+    ...typography.text
   },
   fieldBadge: {
     flexDirection: 'row',
@@ -251,7 +252,7 @@ const styles = StyleSheet.create({
   },
   fieldText: {
     color: '#262626',
-    ...typography.bodyBold,
+    ...typography.textBold,
   },
   infoSection: {
     gap: 8,
@@ -263,15 +264,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   labelText: {
-    ...typography.bodyMediumRegular,
+    ...typography.text,
     color: '#CCCCCC80',
   },
   trainerNameText: {
-    ...typography.bodyMedium,
+    ...typography.textBold,
     color: '#fff',
   },
   valueText: {
-    ...typography.bodyMedium,
+    ...typography.textMedium,
     color: '#CCCCCCBF',
   },
   descriptionContainer: {
@@ -286,11 +287,11 @@ const styles = StyleSheet.create({
     borderLeftColor: '#EA1D25',
   },
   descriptionLabel: {
-    ...typography.bodyMediumRegular,
+    ...typography.text,
     color: '#CCCCCC80',
   },
   descriptionText: {
-    ...typography.bodyMediumRegular,
+    ...typography.textMedium,
     color: '#fff',
   },
   statusBadge: {
@@ -301,7 +302,7 @@ const styles = StyleSheet.create({
     marginLeft: 5
   },
   statusText: {
-    ...typography.body,
+    ...typography.text,
     color: '#fff'
   },
 });

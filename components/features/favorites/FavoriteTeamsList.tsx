@@ -4,6 +4,7 @@ import { ListItem, Avatar } from '@rneui/themed';
 import { Ionicons } from '@expo/vector-icons';
 import { TeamWithDetails } from '@/hooks/useFavorites';
 import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 interface TeamListItemProps {
   item: TeamWithDetails;
@@ -68,12 +69,12 @@ export const FavoriteTeamsList = React.memo(({
               borderColor: item.division_details?.color 
             }
           ]}>
-            <Text style={[
+            <CustomText style={[
               styles.divisionText, 
               { color: item.division_details?.color }
             ]}>
               {item.division_details?.title || 'Unknown'}
-            </Text>
+            </CustomText>
           </View>
         </View>
         {isLoading ? (

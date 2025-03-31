@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react'
-import { StyleSheet, View, Alert, Text, TouchableOpacity, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, TextInput, Image, Platform, ScrollView } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { StyleSheet, View, Alert, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, TextInput, Platform, ScrollView } from 'react-native'
 import { supabase } from '@/lib/supabase'
 import { Session } from '@supabase/supabase-js'
 import { Database } from '@/database.types'
-import { MaterialIcons, FontAwesome6, Ionicons } from '@expo/vector-icons'
+import { MaterialIcons, FontAwesome6 } from '@expo/vector-icons'
 import { typography } from '@/constants/Typography'
-import { images } from '@/constants'
-import { router } from 'expo-router'
 import PrimaryButton from '@/components/buttons/PrimaryButton'
 import { useAuth } from '@/context/AuthProvider'
+import CustomText from './CustomText'
 
 type ProfileUpdate = Database['public']['Tables']['profiles']['Insert'];
 
@@ -20,7 +18,7 @@ export default function Account({ session }: { session: Session }) {
 
   useEffect(() => {
     if (session) getProfile()
-      console.log(session)
+    console.log(session)
   }, [session])
 
   async function getProfile() {
@@ -94,14 +92,14 @@ export default function Account({ session }: { session: Session }) {
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.form}>
-              <Text style={styles.title}>Update your profile details here.</Text>
-              <Text style={styles.label}>Email</Text>
+              <CustomText style={styles.title}>Update your profile details here.</CustomText>
+              <CustomText style={styles.label}>Email</CustomText>
               <View style={[styles.inputContainer, styles.disabledInput]}>
                 <MaterialIcons name="email" size={20} color="#666" />
-                <Text style={styles.disabledText}>{session?.user?.email}</Text>
+                <CustomText style={styles.disabledText}>{session?.user?.email}</CustomText>
               </View>
-              
-              <Text style={styles.label}>Full Name</Text>
+
+              <CustomText style={styles.label}>Full Name</CustomText>
               <View style={styles.inputContainer}>
                 <FontAwesome6 name="signature" size={20} color="#000" />
                 <TextInput
@@ -109,16 +107,16 @@ export default function Account({ session }: { session: Session }) {
                   onChangeText={(text) => setFullName(text)}
                   style={styles.inputWithIcon}
                   placeholder="Enter your full name"
+                  allowFontScaling={false}
                 />
               </View>
 
-              <View style={styles.buttonContainer}>
-                <PrimaryButton
-                  title={loading ? 'Loading...' : 'Update Profile'}
-                  onPress={() => updateProfile({ full_name: fullName })}
-                  disabled={loading}
-                />
-              </View>
+              <PrimaryButton
+                title={loading ? 'Loading...' : 'Update Profile'}
+                onPress={() => updateProfile({ full_name: fullName })}
+                disabled={loading}
+              />
+
             </View>
           </TouchableWithoutFeedback>
         </ScrollView>
@@ -133,14 +131,14 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    ...typography.h2,
+    ...typography.heading2,
   },
   form: {
     flex: 1,
     gap: 15,
   },
   label: {
-    ...typography.bodyMedium,
+    ...typography.textLargeBold,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -155,7 +153,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
   },
   disabledText: {
-    ...typography.button,
+    ...typography.textSemiBold,
     color: '#666',
     marginLeft: 8,
     flex: 1,
@@ -163,9 +161,6 @@ const styles = StyleSheet.create({
   inputWithIcon: {
     flex: 1,
     marginLeft: 8,
-    ...typography.button,
+    ...typography.textSemiBold,
   },
-  buttonContainer: {
-    gap: 15,
-  }
 });

@@ -37,6 +37,7 @@ export default function PoolPlayScreen() {
         tabBarLabelStyle: { ...typography.bodySmall },
         tabBarIndicatorStyle: { backgroundColor: '#EA1D25' },
         tabBarStyle: { backgroundColor: '#262626' },
+        tabBarAllowFontScaling: false,
         lazy: true,
       }}
     >

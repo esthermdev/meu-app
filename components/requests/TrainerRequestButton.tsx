@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Database } from '@/database.types';
 import {
   StyleSheet,
@@ -21,6 +21,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import ModalButton from '../buttons/ModalButtons';
 import Dropdown from '../Dropdown';
 import ErrorMessage from '../ErrorMessage';
+import CustomText from '../CustomText';
 
 const { height } = Dimensions.get('window');
 const modalHeight = height * 0.8; // 80% of screen height
@@ -161,7 +162,7 @@ const TrainerRequestButton = () => {
       onPress={() => setPriorityLevel(level)}
       activeOpacity={1}
     >
-      <Text style={styles.priorityButtonText} maxFontSizeMultiplier={1.2}>{level}</Text>
+      <CustomText style={styles.priorityButtonText}>{level}</CustomText>
     </TouchableOpacity>
   );
 
@@ -176,7 +177,7 @@ const TrainerRequestButton = () => {
       >
         <MaterialCommunityIcons name="medical-bag" size={28} color="#347764" />
       </TouchableOpacity>
-      <Text style={styles.label}>Trainer</Text>
+      <CustomText style={styles.label} allowFontScaling maxFontSizeMultiplier={1.2}>Trainer</CustomText>
 
       <Modal
         visible={isModalVisible}
@@ -197,19 +198,19 @@ const TrainerRequestButton = () => {
                   </TouchableOpacity>
 
                   <ScrollView showsVerticalScrollIndicator={false}>
-                    <Text style={styles.noteText} maxFontSizeMultiplier={1.2}>
+                    <CustomText style={styles.noteText} allowFontScaling maxFontSizeMultiplier={1.3}>
                       Note: Medical staff will respond as quickly as possible based on priority level and availability.
                       Please ensure the field number is correct so trainers can locate you efficiently.
-                    </Text>
+                    </CustomText>
 
-                    <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>Level of Medical Emergency:</Text>
+                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Level of Medical Emergency:</CustomText>
                     <View style={styles.priorityButtonContainer}>
                       {renderPriorityButton('High', '#FF6347')}
                       {renderPriorityButton('Medium', '#FFA500')}
                       {renderPriorityButton('Low', '#32CD32')}
                     </View>
 
-                    <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>Describe your emergency:</Text>
+                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Describe your emergency:</CustomText>
                     <TextInput
                       style={styles.descriptionInput}
                       placeholder="e.g., Head injury, ACL tear, minor sprain, cramping..."
@@ -218,10 +219,11 @@ const TrainerRequestButton = () => {
                       multiline
                       numberOfLines={3}
                       maxLength={200}
+                      maxFontSizeMultiplier={1.2}
                     />
                     <ErrorMessage message={errors.description} />
 
-                    <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>Select Field Location:</Text>
+                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Select Field Location:</CustomText>
                     <Dropdown
                       label="Select Field"
                       data={[FIELD_PLACEHOLDER, ...fieldLabels]}
@@ -261,7 +263,7 @@ const styles = StyleSheet.create({
   label: {
     textAlign: 'center',
     marginTop: 5,
-    ...typography.bodyBold
+    ...typography.textSmallBold
   },
   modalContainer: {
     flex: 1,
@@ -283,12 +285,12 @@ const styles = StyleSheet.create({
     maxHeight: modalHeight,
   },
   noteText: {
-    ...typography.bodySmall,
+    ...typography.textXSmall,
     color: '#666',
     marginBottom: 10,
   },
   labelHeader: {
-    ...typography.bodyMedium,
+    ...typography.labelBold,
     marginVertical: 5
   },
   priorityButtonContainer: {

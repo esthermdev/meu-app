@@ -1,6 +1,7 @@
-import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { Link } from 'expo-router';
-import { fonts, typography } from '@/constants/Typography';
+import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 const CreditsScreen = () => {
   return (
@@ -9,34 +10,34 @@ const CreditsScreen = () => {
         style={styles.scrollView}
         contentContainerStyle={styles.contentContainer}
       >
-        <Text style={styles.title}>Credits</Text>
-        <Text style={styles.content}>
+        <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.title}>Credits</CustomText>
+        <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.content}>
           This app was developed by{' '}
           <Link href="https://www.linkedin.com/in/esther-devadas-6ab90a20b/" style={styles.linkStyle}>
             Esther Devadas
           </Link>.
-        </Text>
-        <Text style={styles.content}>Design credits go to Deborah Devadas.</Text>
+        </CustomText>
+        <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.content}>Design credits go to her sister, Deborah Devadas.</CustomText>
         
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Technology Stack</Text>
-          <Text style={styles.content}>
+          <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.sectionTitle}>Technology Stack</CustomText>
+          <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.content}>
             • React Native & Expo{'\n'}
             • TypeScript{'\n'}
             • Supabase{'\n'}
             • Expo Router
-          </Text>
+          </CustomText>
         </View>
         
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Special Thanks</Text>
-          <Text style={styles.content}>
+          <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.sectionTitle}>Special Thanks</CustomText>
+          <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.content}>
             To all the volunteers, staff, and participants who make Maine Ultimate
             events possible.
-          </Text>
+          </CustomText>
         </View>
         
-        <Text style={styles.version}>Version 1.0.0</Text>
+        <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.version}>Version 2.0.0</CustomText>
       </ScrollView>
     </SafeAreaView>
   );
@@ -54,13 +55,12 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    ...typography.h3,
+    ...typography.heading3,
     color: '#333',
     marginBottom: 16,
   },
   content: {
-    fontFamily: fonts.regular,
-    fontSize: 16,
+    ...typography.text,
     color: '#333',
     lineHeight: 24,
     marginBottom: 16,
@@ -70,18 +70,17 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   sectionTitle: {
-    ...typography.bodyMedium,
+    ...typography.textBold,
     color: '#333',
     marginBottom: 8,
   },
   linkStyle: {
     textDecorationLine: 'underline',
     color: '#2871FF',
-    fontFamily: fonts.medium,
+    ...typography.textMedium
   },
   version: {
-    fontFamily: fonts.regular,
-    fontSize: 14,
+    ...typography.text,
     color: '#888',
     textAlign: 'center',
     marginTop: 40,

@@ -2,13 +2,13 @@
 import React from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   Modal,
   TextInput,
   TouchableOpacity,
 } from 'react-native';
 import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 interface UpdateScoreModalProps {
   visible: boolean;
@@ -44,11 +44,11 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Update Score</Text>
+          <CustomText style={styles.modalTitle}>Update Score</CustomText>
           
           {/* Team 1 Score */}
           <View style={styles.modalTeamContainer}>
-            <Text style={styles.modalTeamName}>{team1Name || 'Team 1'}</Text>
+            <CustomText style={styles.modalTeamName}>{team1Name || 'Team 1'}</CustomText>
             <View style={styles.modalScoreInputContainer}>
               <TextInput
                 style={styles.modalScoreInput}
@@ -56,13 +56,14 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
                 value={team1Score}
                 onChangeText={setTeam1Score}
                 maxLength={3}
+                allowFontScaling={false}
               />
             </View>
           </View>
           
           {/* Team 2 Score */}
           <View style={styles.modalTeamContainer}>
-            <Text style={styles.modalTeamName}>{team2Name || 'Team 2'}</Text>
+            <CustomText style={styles.modalTeamName}>{team2Name || 'Team 2'}</CustomText>
             <View style={styles.modalScoreInputContainer}>
               <TextInput
                 style={styles.modalScoreInput}
@@ -70,6 +71,7 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
                 value={team2Score}
                 onChangeText={setTeam2Score}
                 maxLength={3}
+                allowFontScaling={false}
               />
             </View>
           </View>
@@ -81,7 +83,7 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
               onPress={onClose}
               disabled={isLoading}
             >
-              <Text style={styles.modalCancelButtonText}>Cancel</Text>
+              <CustomText style={styles.modalCancelButtonText}>Cancel</CustomText>
             </TouchableOpacity>
             
             <TouchableOpacity 
@@ -89,7 +91,7 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
               onPress={() => onSubmit(team1Score, team2Score)}
               disabled={isLoading}
             >
-              <Text style={styles.modalUpdateButtonText}>Update Score</Text>
+              <CustomText style={styles.modalUpdateButtonText}>Update Score</CustomText>
             </TouchableOpacity>
           </View>
         </View>
@@ -117,7 +119,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalTitle: {
-    ...typography.h4,
+    ...typography.heading4,
     marginBottom: 15
   },
   modalTeamContainer: {
@@ -127,7 +129,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   modalTeamName: {
-    ...typography.h5,
+    ...typography.heading5,
     flex: 1,
   },
   modalScoreInputContainer: {
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     textAlign: 'center',
-    ...typography.h5,
+    ...typography.heading3,
   },
   modalButtonContainer: {
     flexDirection: 'row',
@@ -157,7 +159,7 @@ const styles = StyleSheet.create({
   modalCancelButtonText: {
     color: 'white',
     textAlign: 'center',
-    ...typography.bodyMedium
+    ...typography.textMedium
   },
   modalUpdateButton: {
     backgroundColor: '#EA1D25',
@@ -169,7 +171,7 @@ const styles = StyleSheet.create({
   modalUpdateButtonText: {
     color: 'white',
     textAlign: 'center',
-    ...typography.bodyMedium
+    ...typography.textMedium
   },
 });
 

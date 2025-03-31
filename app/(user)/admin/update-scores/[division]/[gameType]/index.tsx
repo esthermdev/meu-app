@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { supabase } from '@/lib/supabase';
-import { fonts } from '@/constants/Typography';
+import { fonts, typography } from '@/constants/Typography';
 import AdminGameComponent from '@/components/features/gameviews/AdminGameComponent';
 import { useScheduleId } from '@/hooks/useGamesFilter';
 import LoadingIndicator from '@/components/LoadingIndicator';
@@ -24,6 +24,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import AdminBottomActionButtons from '@/components/buttons/AdminBottomActionButtons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
+import CustomText from '@/components/CustomText';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -321,7 +322,7 @@ export default function UpdateScoresScreen() {
               activeOpacity={0.7}
               onPress={() => toggleSection(sectionId)}
             >
-              <Text style={styles.sectionHeaderText}>{section.title}</Text>
+              <CustomText style={styles.sectionHeaderText}>{section.title}</CustomText>
               {isCollapsed ? 
                 <MaterialIcons name='keyboard-arrow-down' size={24} color='#fff' /> : 
                 <MaterialIcons name='keyboard-arrow-left' size={24} color='#fff' /> }
@@ -332,7 +333,7 @@ export default function UpdateScoresScreen() {
         stickySectionHeadersEnabled={true}
         ListEmptyComponent={() => (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No games found for this selection</Text>
+            <CustomText style={styles.emptyText}>No games found for this selection</CustomText>
           </View>
         )}
         extraData={[games, collapsedSections]} // Add extraData to ensure re-render when these states change
@@ -377,8 +378,7 @@ const styles = StyleSheet.create({
   },
   sectionHeaderText: {
     color: '#fff',
-    fontSize: 16,
-    fontFamily: fonts.semiBold,
+    ...typography.textLargeSemiBold
   },
   expandIcon: {
     width: 24,
@@ -396,8 +396,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     color: '#888',
-    fontFamily: fonts.medium,
-    fontSize: 16,
+    ...typography.textMedium,
     textAlign: 'center',
   },
   bottomActions: {
@@ -413,28 +412,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 8,
   },
-  resetButtonText: {
-    color: '#000',
-    fontFamily: fonts.semiBold,
-    fontSize: 14,
-  },
-  completeAllButton: {
-    flex: 1,
-    backgroundColor: '#FF9500',
-    paddingVertical: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginLeft: 8,
-  },
-  completeAllButtonText: {
-    color: '#fff',
-    fontFamily: fonts.semiBold,
-    fontSize: 14,
-  },
   errorText: {
     color: '#EA1D25',
-    fontSize: 16,
-    fontFamily: fonts.medium,
+    ...typography.textMedium
   },
   loadingOverlay: {
     position: 'absolute',

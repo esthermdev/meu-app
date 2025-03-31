@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Database } from '@/database.types';
-import { View, StyleSheet, FlatList, Text } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import { Avatar } from '@rneui/base';
 import { supabase } from '@/lib/supabase';
 import { typography } from '@/constants/Typography';
 import LoadingIndicator from '@/components/LoadingIndicator';
+import CustomText from '@/components/CustomText';
 
 type VolunteersRow = Database['public']['Tables']['volunteers']['Row'];
 
@@ -50,8 +51,8 @@ const Volunteers = () => {
 				source={item.avatar_uri ? { uri: item.avatar_uri } : require('../../../assets/icons/placeholder_user.png')}
 				placeholderStyle={{ backgroundColor: 'transparent' }}
 			/>
-			<Text style={styles.badgeText}>{item.badge}</Text>
-			<Text style={styles.roleText}>{item.role}</Text>
+			<CustomText style={styles.badgeText} allowFontScaling maxFontSizeMultiplier={1.1}>{item.badge}</CustomText>
+			<CustomText style={styles.roleText} allowFontScaling maxFontSizeMultiplier={1.1}>{item.role}</CustomText>
 		</View>
 	);
 
@@ -94,10 +95,10 @@ const styles = StyleSheet.create({
 	badgeText: {
 		textAlign: 'center',
 		marginBottom: 2,
-		...typography.bodyBold
+		...typography.textSmallBold
 	},
 	roleText: {
-		...typography.body,
+		...typography.textSmall,
 		textAlign: 'center',
 		color: '#666',
 	},

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, View, Text, FlatList, TouchableOpacity, ActivityIndicator, Switch, RefreshControl } from 'react-native';
+import { StyleSheet, View, FlatList, TouchableOpacity, ActivityIndicator, Switch, RefreshControl } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 type WaterRequests = Database['public']['Tables']['water_requests']['Row'];
 type Volunteer = Database['public']['Tables']['profiles']['Row'];
@@ -27,6 +28,7 @@ const WaterRequestsScreen = () => {
           backgroundColor: '#EA1D25',
           height: 3,
         },
+        tabBarAllowFontScaling: false
       }}
     >
       <Tab.Screen name="Requests" component={WaterRequestsList} />
@@ -102,22 +104,22 @@ const WaterRequestsList = () => {
   const renderItem = ({ item }: { item: WaterRequests }) => (
     <View style={styles.cardContainer}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Water</Text>
-        <Text style={styles.headerDate}>{formatDate(item.created_at)}</Text>
+        <CustomText style={styles.headerTitle}>Water</CustomText>
+        <CustomText style={styles.headerDate}>{formatDate(item.created_at)}</CustomText>
       </View>
 
       <View style={styles.divider} />
 
       <View style={styles.infoRow}>
-        <Text style={styles.infoLabel}>Field:</Text>
-        <Text style={styles.infoValue}>{item.field_number}</Text>
+        <CustomText style={styles.infoLabel}>Field:</CustomText>
+        <CustomText style={styles.infoValue}>{item.field_number}</CustomText>
       </View>
 
       <View style={styles.infoRow}>
-        <Text style={styles.infoLabel}>Status:</Text>
-        <Text style={[styles.infoValue, styles.statusPending]}>
+        <CustomText style={styles.infoLabel}>Status:</CustomText>
+        <CustomText style={[styles.infoValue, styles.statusPending]}>
           {item.status === 'pending' ? 'Pending' : item.status}
-        </Text>
+        </CustomText>
       </View>
 
       {item.status === 'pending' && (
@@ -125,7 +127,7 @@ const WaterRequestsList = () => {
           style={styles.resolveButton}
           onPress={() => handleResolveRequest(item.id)}
         >
-          <Text style={styles.resolveButtonText}>Resolved</Text>
+          <CustomText style={styles.resolveButtonText}>Resolved</CustomText>
           <MaterialIcons name="check" size={14} color="white" />
         </TouchableOpacity>
       )}
@@ -136,7 +138,7 @@ const WaterRequestsList = () => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#EA1D25" />
-        <Text style={styles.loadingText}>Loading requests...</Text>
+        <CustomText style={styles.loadingText}>Loading requests...</CustomText>
       </View>
     );
   }
@@ -145,7 +147,7 @@ const WaterRequestsList = () => {
     <View style={styles.container}>
       {requests.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No water requests</Text>
+          <CustomText style={styles.emptyText}>No water requests</CustomText>
         </View>
       ) : (
         <FlatList
@@ -214,11 +216,11 @@ const VolunteerAvailabilityScreen = () => {
   const renderVolunteerItem = ({ item }: { item: Volunteer }) => (
     <View style={styles.volunteerItem}>
       <View style={styles.volunteerInfo}>
-        <Text style={styles.volunteerName}>{item.full_name || 'Unnamed Volunteer'}</Text>
-        <Text style={[styles.availabilityText,
+        <CustomText style={styles.volunteerName}>{item.full_name || 'Unnamed Volunteer'}</CustomText>
+        <CustomText style={[styles.availabilityText,
         { color: item.is_available ? '#59DE07' : '#EA1D25' }]}>
           {item.is_available ? 'Available' : 'Unavailable'}
-        </Text>
+        </CustomText>
       </View>
       <Switch
         value={!!item.is_available}
@@ -269,11 +271,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
   emptyText: {
-    ...typography.bodyMedium,
+    ...typography.textMedium,
     color: '#B0B0B0',
   },
   loadingText: {
-    ...typography.bodyBold,
+    ...typography.textBold,
     color: '#fff'
   },
   // Card styles
@@ -295,11 +297,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    ...typography.bodyMediumBold,
+    ...typography.textLargeBold,
     color: '#fff',
   },
   headerDate: {
-    ...typography.bodyMediumRegular,
+    ...typography.textLarge,
     color: '#aaa',
   },
   divider: {
@@ -314,16 +316,16 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   infoLabel: {
-    ...typography.bodyMediumRegular,
+    ...typography.textLarge,
     color: '#CCCCCC',
   },
   infoValue: {
-    ...typography.bodyMediumBold,
+    ...typography.textLargeBold,
     color: '#fff',
   },
   statusPending: {
     color: '#EA1D25', // Red color for pending status
-    ...typography.bodyMediumBold
+    ...typography.textLargeSemiBold
   },
   resolveButton: {
     backgroundColor: '#73BF44',
@@ -335,7 +337,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   resolveButtonText: {
-    ...typography.bodyMediumBold,
+    ...typography.textBold,
     color: '#fff',
     marginRight: 5
   },
@@ -361,13 +363,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   volunteerName: {
-    fontSize: 16,
-    fontFamily: 'GeistSemiBold',
+    ...typography.textLargeBold,
     color: '#fff',
   },
   availabilityText: {
-    fontSize: 14,
-    fontFamily: 'GeistRegular',
+    ...typography.text,
     marginTop: 5,
   },
   screenContainer: {

@@ -34,8 +34,9 @@ export default function PoolPlayScreen() {
       screenOptions={{
         tabBarActiveTintColor: '#EA1D25',
         tabBarInactiveTintColor: '#000',
-        tabBarLabelStyle: { ...typography.bodySmall },
+        tabBarLabelStyle: { ...typography.textXSmall },
         tabBarIndicatorStyle: { backgroundColor: '#EA1D25' },
+        tabBarAllowFontScaling: false,
         lazy: true,
       }}
     >

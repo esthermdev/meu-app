@@ -3,7 +3,7 @@ import * as Notifications from 'expo-notifications';
 import { Tabs, router } from 'expo-router';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import Header from '@/components/headers/Header';
-import { fonts } from '@/constants/Typography';
+import { fonts, typography } from '@/constants/Typography';
 
 export default function TabLayout() {
   const notificationResponseListener = useRef<Notifications.Subscription>();
@@ -39,12 +39,12 @@ export default function TabLayout() {
           tabBarActiveTintColor: '#EA1D25',
           header: () => <Header />,
           tabBarLabelStyle: {
-            fontFamily: fonts.regular,
-            fontSize: 12,
+            ...typography.textXSmall,
           },
           tabBarItemStyle: {
             height: '100%',
           },
+          tabBarAllowFontScaling: false
         }}>
         <Tabs.Screen
           name="home"

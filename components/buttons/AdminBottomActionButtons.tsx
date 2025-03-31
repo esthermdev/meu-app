@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { fonts } from '@/constants/Typography';
+import { fonts, typography } from '@/constants/Typography';
 
 interface AdminBottomActionButtons {
   leftButton: () => void;
@@ -25,13 +25,13 @@ const AdminBottomActionButtons: React.FC<AdminBottomActionButtons> = ({
         style={[styles.leftButton, { backgroundColor: leftColor }]} 
         onPress={leftButton}
       >
-        <Text style={styles.buttonText} maxFontSizeMultiplier={1.2}>{leftText}</Text>
+        <Text style={styles.buttonText} allowFontScaling={false}>{leftText}</Text>
       </TouchableOpacity>
       <TouchableOpacity 
         style={[styles.rightButton, { backgroundColor: rightColor }]} 
         onPress={rightButton}
       >
-        <Text style={styles.buttonText} maxFontSizeMultiplier={1.2}>{rightText}</Text>
+        <Text style={styles.buttonText} allowFontScaling={false}>{rightText}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -56,7 +56,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
-    maxHeight: 62
   },
   rightButton: {
     flex: 1,
@@ -69,9 +68,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#242424',
-    fontFamily: fonts.semiBold,
-    fontSize: 14,
-    textAlign: 'center'
+    ...typography.textSemiBold,
+    textAlign: 'center',
   },
 });
 

@@ -1,8 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useGametypes } from '@/hooks/useScheduleConfig';
-import { fonts, typography } from '@/constants/Typography';
+import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 
 export default function GameTypesScreen() {
@@ -71,7 +72,7 @@ export default function GameTypesScreen() {
                 style={styles.icon} 
               />
             )}
-            <Text style={styles.gameTypeText}>{option.title}</Text>
+            <CustomText style={styles.gameTypeText}>{option.title}</CustomText>
           </TouchableOpacity>
         ))}
       </View>
@@ -102,13 +103,12 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   gameTypeText: {
-    ...typography.bodyLarge,
+    ...typography.textLargeBold,
     flex: 1,
     color: '#000',
   },
   errorText: {
     color: '#EA1D25',
-    fontSize: 16,
-    fontFamily: fonts.medium,
+    ...typography.textMedium
   },
 });

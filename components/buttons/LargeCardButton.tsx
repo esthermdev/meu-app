@@ -1,9 +1,10 @@
 // components/buttons/LargeCardButton.tsx
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, ImageBackground } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, ImageBackground } from 'react-native';
 import { router, Href } from 'expo-router';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { fonts, typography } from '@/constants/Typography';
+import CustomText from '../CustomText';
 
 type FontAwesomeNames = keyof typeof FontAwesome.glyphMap;
 
@@ -42,7 +43,7 @@ const LargeCardButton: React.FC<LargeCardButtonProps> = ({
         >
           <View style={styles.watchLiveContainer}>
             <MaterialIcons name="play-circle" size={28} color="#fff" />
-            <Text style={styles.text}>{title}</Text>
+            <CustomText style={styles.text}>{title}</CustomText>
           </View>
         </ImageBackground>
       );
@@ -54,7 +55,7 @@ const LargeCardButton: React.FC<LargeCardButtonProps> = ({
           <View>{icon}</View>
         )}
 
-        <Text style={styles.text}>{title}{'\n'}{subtitle}</Text>
+        <CustomText style={styles.text}>{title}{'\n'}{subtitle}</CustomText>
       </View>
     );
   };
@@ -100,8 +101,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#fff',
-    fontFamily: fonts.semiBold,
-    fontSize: 18,
+    ...typography.heading4
   },
 });
 

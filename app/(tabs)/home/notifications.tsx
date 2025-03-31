@@ -1,10 +1,11 @@
 // app/(tabs)/home/notifications.tsx
 import { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthProvider';
 import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 interface Notification {
   id: number;
@@ -178,41 +179,6 @@ const NotificationScreen = () => {
     }
   };
 
-  const handleMarkAllAsRead = async () => {
-    if (session?.user) {
-      try {
-        // Get all unread notification IDs
-        const unreadNotifications = notifications
-          .filter(n => !n.is_read)
-          .map(n => ({ 
-            notification_id: n.id, 
-            user_id: session.user.id 
-          }));
-          
-        if (unreadNotifications.length > 0) {
-          const { error } = await supabase
-            .from('notification_read_status')
-            .upsert(unreadNotifications, { 
-              onConflict: 'notification_id,user_id',
-              ignoreDuplicates: true 
-            });
-            
-          if (error) {
-            console.error('Error marking all as read:', error);
-            return;
-          }
-          
-          // Update local state
-          setNotifications(prev => 
-            prev.map(n => ({ ...n, is_read: true }))
-          );
-        }
-      } catch (error) {
-        console.error('Unexpected error:', error);
-      }
-    }
-  };
-
   const renderNotification = ({ item }: { item: Notification }) => (
     <TouchableOpacity style={styles.notificationItem} onPress={() => handleNotificationPress(item)}>
       <View style={styles.iconContainer}>
@@ -221,9 +187,9 @@ const NotificationScreen = () => {
         </View>
       </View>
       <View style={styles.contentContainer}>
-        <Text style={styles.notificationTitle}>{item.title}</Text>
-        <Text>{item.message}</Text>
-        <Text style={styles.notificationTime}>{formatDate(item.created_at)}</Text>
+        <CustomText style={styles.notificationTitle} allowFontScaling maxFontSizeMultiplier={1.2}>{item.title}</CustomText>
+        <CustomText allowFontScaling maxFontSizeMultiplier={1.2}>{item.message}</CustomText>
+        <CustomText style={styles.notificationTime} allowFontScaling maxFontSizeMultiplier={1.2}>{formatDate(item.created_at)}</CustomText>
       </View>
       {!item.is_read && (
         <View style={styles.unreadIndicator} />
@@ -249,7 +215,7 @@ const NotificationScreen = () => {
       ) : (
         <View style={styles.emptyContainer}>
           <MaterialIcons name="campaign" size={64} color="#ccc" />
-          <Text style={styles.emptyText}>No announcements yet</Text>
+          <CustomText style={styles.emptyText}>No announcements yet</CustomText>
         </View>
       )}
     </View>
@@ -296,14 +262,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   notificationTitle: {
-    ...typography.bodyMedium,
+    ...typography.textBold,
     color: '#333',
   },
   notificationMessage: {
-    ...typography.bodyMediumRegular
+    ...typography.text
   },
   notificationTime: {
-    ...typography.body,
+    ...typography.textSmall,
     color: '#969696',
     marginTop: 4
   },
@@ -321,32 +287,9 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   emptyText: {
-    fontSize: 16,
     color: '#888',
     marginTop: 16,
-    fontFamily: 'GeistMedium',
-  },
-  // Tab Bar Styles
-  tabBar: {
-    flexDirection: 'row',
-    borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
-    height: 60,
-    backgroundColor: 'white',
-  },
-  tabItem: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  tabText: {
-    fontSize: 12,
-    color: '#888',
-    marginTop: 4,
-    fontFamily: 'GeistRegular',
-  },
-  activeTabText: {
-    color: '#EA1D25',
+    ...typography.textMedium
   },
 });
 

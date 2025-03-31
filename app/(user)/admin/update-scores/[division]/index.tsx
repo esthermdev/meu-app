@@ -5,6 +5,7 @@ import { useGametypes } from '@/hooks/useScheduleConfig';
 import { fonts, typography } from '@/constants/Typography';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
+import CustomText from '@/components/CustomText';
 
 export default function GameTypesScreen() {
   const params = useLocalSearchParams();
@@ -56,7 +57,7 @@ export default function GameTypesScreen() {
   if (error) {
     return (
       <SafeAreaView style={[styles.container, styles.centerContent]}>
-        <Text style={styles.errorText}>Error loading game types: {error}</Text>
+        <CustomText style={styles.errorText}>Error loading game types: {error}</CustomText>
       </SafeAreaView>
     );
   }
@@ -87,7 +88,7 @@ export default function GameTypesScreen() {
                 style={styles.icon} 
               />
             )}
-            <Text style={styles.gameTypeText}>{option.title}</Text>
+            <CustomText style={styles.gameTypeText}>{option.title}</CustomText>
           </TouchableOpacity>
         ))}
       </View>
@@ -132,13 +133,12 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   gameTypeText: {
-    ...typography.bodyLarge,
+    ...typography.textLargeBold,
     flex: 1,
     color: '#fff',
   },
   errorText: {
     color: '#EA1D25',
-    fontSize: 16,
-    fontFamily: fonts.medium,
+    ...typography.textMedium
   },
 });

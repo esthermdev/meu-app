@@ -1,10 +1,11 @@
 // components/NotificationPermission.tsx
 import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Linking, Platform, Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Linking, Platform, Alert } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
 import usePushNotifications from '@/hooks/usePushNotifications';
-import { fonts } from '@/constants/Typography';
+import { typography } from '@/constants/Typography';
+import CustomText from '@/components/CustomText';
 
 interface NotificationPermissionProps {
   compact?: boolean;
@@ -63,7 +64,7 @@ const NotificationPermission: React.FC<NotificationPermissionProps> = ({ compact
     return compact ? null : (
       <View style={styles.container}>
         <FontAwesome5 name="bell" size={20} color="#4CAF50" />
-        <Text style={styles.enabledText}>Notifications are enabled</Text>
+        <CustomText style={styles.enabledText}>Notifications are enabled</CustomText>
       </View>
     );
   }
@@ -73,9 +74,9 @@ const NotificationPermission: React.FC<NotificationPermissionProps> = ({ compact
       {!compact && (
         <>
           <FontAwesome5 name="bell-slash" size={20} color="#757575" />
-          <Text style={styles.disabledText}>
+          <CustomText style={styles.disabledText}>
             Enable notifications to stay updated on game schedules and important tournament information
-          </Text>
+          </CustomText>
         </>
       )}
       <TouchableOpacity 
@@ -83,9 +84,9 @@ const NotificationPermission: React.FC<NotificationPermissionProps> = ({ compact
         onPress={handleEnablePress}
         disabled={isChecking}
       >
-        <Text style={styles.buttonText}>
+        <CustomText style={styles.buttonText}>
           {isChecking ? "Checking..." : (compact ? "Enable Notifications" : "Enable Now")}
-        </Text>
+        </CustomText>
       </TouchableOpacity>
     </View>
   );
@@ -107,16 +108,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   enabledText: {
-    fontFamily: fonts.medium,
+    ...typography.textMedium,
     color: '#4CAF50',
-    fontSize: 16,
   },
   disabledText: {
-    fontFamily: fonts.regular,
     color: '#616161',
     textAlign: 'center',
-    fontSize: 14,
-    lineHeight: 20,
+    ...typography.textMedium,
   },
   button: {
     backgroundColor: '#EA1D25',
@@ -129,9 +127,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   buttonText: {
-    fontFamily: fonts.medium,
-    color: 'white',
-    fontSize: 14,
+    ...typography.textMedium
   },
 });
 
