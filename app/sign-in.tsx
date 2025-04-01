@@ -41,28 +41,28 @@ export default function SignIn() {
   };
 
   // New function for reviewer login
-  const handleReviewerSignIn = async () => {
-    try {
-      setLoading(true);
+  // const handleReviewerSignIn = async () => {
+  //   try {
+  //     setLoading(true);
       
-      // Direct sign-in with the reviewer account using Supabase's auth.signInWithPassword
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: 'reviewer@maineultimateapp.org',  // Use the email you set up for the reviewer
-        password: 'app-review-25'   // Use the password you set up for the reviewer
-      });
+  //     // Direct sign-in with the reviewer account using Supabase's auth.signInWithPassword
+  //     const { data, error } = await supabase.auth.signInWithPassword({
+  //       email: 'reviewer@maineultimateapp.org',  // Use the email you set up for the reviewer
+  //       password: 'app-review-25'   // Use the password you set up for the reviewer
+  //     });
       
-      if (error) throw error;
+  //     if (error) throw error;
       
-      // Navigate to the user section after successful sign-in
-      router.replace('/(user)');
+  //     // Navigate to the user section after successful sign-in
+  //     router.replace('/(user)');
       
-    } catch (error) {
-      console.error('Reviewer sign-in error:', error);
-      Alert.alert('Error', 'Could not sign in with reviewer account. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   } catch (error) {
+  //     console.error('Reviewer sign-in error:', error);
+  //     Alert.alert('Error', 'Could not sign in with reviewer account. Please try again.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -120,13 +120,13 @@ export default function SignIn() {
               />
 
               {/* Add the App Store Reviewer button */}
-              <TouchableOpacity 
+              {/* <TouchableOpacity 
                 style={styles.reviewerButton} 
                 onPress={handleReviewerSignIn}
                 disabled={loading}
               >
                 <CustomText style={styles.reviewerButtonText}>App Store Reviewer Sign In</CustomText>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               <View style={styles.footer}>
                 <CustomText style={styles.text}>Don't have an account? </CustomText>
