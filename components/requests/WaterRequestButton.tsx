@@ -7,6 +7,7 @@ import {
   Modal,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Dimensions,
   FlatList
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -17,9 +18,13 @@ import CustomText from '../CustomText';
 
 type Field = Tables<'fields'>;
 
+const { width } = Dimensions.get('window');
+const numColumns = 5; // Number of columns in the grid
+const blockSize = (width * 0.7 - 60) / numColumns; // Calculate block size based on screen width
+
 const WaterRequestButton = () => {
   const [selectedField, setSelectedField] = useState<number | undefined>(undefined);
-  const [selectedFieldName, setSelectedFieldName] = useState<string>('Select a field');
+  const [selectedFieldName, setSelectedFieldName] = useState<string>('');
   const [fields, setFields] = useState<Field[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -28,15 +33,11 @@ const WaterRequestButton = () => {
   }, []);
 
   const fetchFields = async () => {
-    const { data, error } = await supabase.from('fields').select('*');
+    const { data, error } = await supabase.from('fields').select('*').order('name');
     if (error) {
       console.error('Error fetching fields:', error);
     } else {
       setFields(data || []);
-      if (data && data.length > 0) {
-        setSelectedField(data[0].id);
-        setSelectedFieldName(data[0].name);
-      }
     }
   };
 
@@ -93,6 +94,28 @@ const WaterRequestButton = () => {
     } 
   };
 
+  const renderFieldBlock = ({ item }: { item: Field }) => (
+    <TouchableOpacity 
+      style={[
+        styles.fieldBlock,
+        selectedField === item.id && styles.selectedFieldBlock
+      ]}
+      onPress={() => selectField(item.id, item.name)}
+      activeOpacity={1}
+    >
+      <CustomText 
+        style={[
+          styles.fieldBlockText,
+          selectedField === item.id && styles.selectedFieldText
+        ]}
+        allowFontScaling
+        maxFontSizeMultiplier={1.2}
+      >
+        {item.name}
+      </CustomText>
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -115,30 +138,23 @@ const WaterRequestButton = () => {
               <View style={styles.pickerContainer}>
                 <CustomText style={styles.pickerTitle}>Select Field</CustomText>
                 
-                <FlatList
-                  data={fields}
-                  style={styles.fieldList}
-                  keyExtractor={(item) => item.id.toString()}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity 
-                      style={[
-                        styles.fieldItem,
-                        selectedField === item.id && styles.selectedFieldItem
-                      ]}
-                      onPress={() => selectField(item.id, item.name)}
-                    >
-                      <CustomText style={[
-                          styles.fieldItemText,
-                          selectedField === item.id && styles.selectedFieldText
-                        ]}
-                        allowFontScaling
-                        maxFontSizeMultiplier={1.4}  
-                      >
-                        Field {item.name}
-                      </CustomText>
-                    </TouchableOpacity>
-                  )}
-                />
+                <View style={styles.fieldGridContainer}>
+                  <FlatList
+                    data={fields}
+                    numColumns={numColumns}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={renderFieldBlock}
+                    columnWrapperStyle={styles.row}
+                    contentContainerStyle={styles.gridContent}
+                    showsVerticalScrollIndicator={false}
+                  />
+                </View>
+                
+                <View style={styles.selectionInfo}>
+                  <CustomText style={styles.selectionText}>
+                    Selected: Field {selectedFieldName}
+                  </CustomText>
+                </View>
                 
                 <ModalButton 
                   onCancel={hideModal}
@@ -186,32 +202,55 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 20,
     width: '80%',
-    maxHeight: '60%',
+    maxHeight: '70%',
   },
   pickerTitle: {
     ...typography.heading4,
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 15,
   },
-  fieldList: {
-    maxHeight: 250,
+  fieldGridContainer: {
+    maxHeight: 300,
   },
-  fieldItem: {
-    borderTopWidth: 0.5,
+  gridContent: {
+    paddingVertical: 10,
+  },
+  row: {
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  fieldBlock: {
+    width: blockSize,
+    height: blockSize,
+    margin: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F0F0F0',
+    borderRadius: 8,
+    borderWidth: 1,
     borderColor: '#E0E0E0',
   },
-  selectedFieldItem: {
-    backgroundColor: '#F5F5F5',
-    borderLeftWidth: 3,
-    borderLeftColor: '#E74C3C',
+  selectedFieldBlock: {
+    backgroundColor: '#E74C3C',
+    borderColor: '#C0392B',
   },
-  fieldItemText: {
-    ...typography.body,
+  fieldBlockText: {
+    ...typography.labelBold,
     textAlign: 'center',
-    paddingVertical: 15,
   },
   selectedFieldText: {
-    ...typography.bodyBold,
-    color: '#E74C3C',
+    color: '#fff',
+  },
+  selectionInfo: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#F9F9F9',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  selectionText: {
+    ...typography.text,
+    textAlign: 'center',
   },
 });

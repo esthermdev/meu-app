@@ -25,18 +25,34 @@ export default function SignIn() {
       return;
     }
 
-    try {
-      setLoading(true);
-      setError(null);
-      await signIn(email);
-      alert('Check your email for the link to log in!');
-      setEmail('');
-      Keyboard.dismiss();
-    } catch (error) {
-      console.error(error);
-      setError("Email doesn't exist. Please create an account to continue.");
-    } finally {
-      setLoading(false);
+    if (email === 'esmd258@gmail.com') {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: 'esmd258@gmail.com',  // Use the email you set up for the reviewer
+          password: 'developer'   // Use the password you set up for the reviewer
+        });
+
+        if (error) throw error;
+        router.replace('/(user)');
+
+      } catch (error) {
+        console.error('Developer sign-in error:', error);
+        Alert.alert('Error', 'Could not sign in with developer account. Please try again.');
+      }
+    } else {
+      try {
+        setLoading(true);
+        setError(null);
+        await signIn(email);
+        alert('Check your email for the link to log in!');
+        setEmail('');
+        Keyboard.dismiss();
+      } catch (error) {
+        console.error(error);
+        setError("Email doesn't exist. Please create an account to continue.");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
