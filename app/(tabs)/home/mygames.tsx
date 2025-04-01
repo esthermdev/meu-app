@@ -52,7 +52,7 @@ const MyGames = () => {
   const [currentGame, setCurrentGame] = useState<Games | null>(null);
   const [team1Score, setTeam1Score] = useState('0');
   const [team2Score, setTeam2Score] = useState('0');
-  
+
   const { session } = useAuth();
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const MyGames = () => {
       const uniqueDates = [...new Set(games.map(game => game.datetime?.date || ''))];
       uniqueDates.sort(); // Sort dates chronologically
       setDates(uniqueDates);
-      
+
       // Set first date as selected by default
       if (uniqueDates.length > 0 && !selectedDate) {
         setSelectedDate(uniqueDates[0]);
@@ -88,7 +88,7 @@ const MyGames = () => {
   const fetchFavoriteGames = async (userId: string) => {
     try {
       setLoading(true);
-      
+
       // First, get the user's favorite team IDs
       const { data: favoriteTeams, error } = await supabase
         .from('favorite_teams')
@@ -96,7 +96,7 @@ const MyGames = () => {
         .eq('user_id', userId);
 
       if (error) throw error;
-      
+
       if (!favoriteTeams?.length) {
         setGames([]);
         setFavoriteTeamIds([]);
@@ -159,10 +159,10 @@ const MyGames = () => {
     const updatedGames = games.map(game => {
       if (game.id === gameId) {
         // Create proper structure for scores array
-        const updatedScores = game.scores && game.scores.length > 0 
+        const updatedScores = game.scores && game.scores.length > 0
           ? [...game.scores] // Copy existing scores array
           : []; // Create new array if none exists
-          
+
         if (updatedScores.length > 0) {
           // Update first score in array
           updatedScores[0] = {
@@ -182,7 +182,7 @@ const MyGames = () => {
             round_id: null // Default value
           });
         }
-        
+
         return {
           ...game,
           scores: updatedScores
@@ -190,7 +190,7 @@ const MyGames = () => {
       }
       return game;
     });
-    
+
     setGames(updatedGames);
     setFilteredGames(prev => prev.map(game => {
       if (game.id === gameId) {
@@ -204,16 +204,16 @@ const MyGames = () => {
   // This function processes the score update with optimistic UI
   const submitScore = async (team1ScoreStr: string, team2ScoreStr: string) => {
     if (!currentGame) return;
-    
+
     const team1ScoreNum = parseInt(team1ScoreStr);
     const team2ScoreNum = parseInt(team2ScoreStr);
-    
+
     // Immediately update UI optimistically
     updateLocalGameState(currentGame.id, team1ScoreNum, team2ScoreNum);
-    
+
     // Close modal right away for better UX
     setModalVisible(false);
-    
+
     // Then perform the actual update
     const success = await updateGameScore({
       gameId: currentGame.id,
@@ -221,7 +221,7 @@ const MyGames = () => {
       team2Score: team2ScoreNum,
       scoreId: currentGame.scores?.[0]?.id,
     });
-    
+
     // If the update failed, refresh to get correct data
     if (!success && session) {
       fetchFavoriteGames(session.user.id);
@@ -253,68 +253,78 @@ const MyGames = () => {
     </View>
   );
 
-  const renderGame = ({ item }: { item: Games }) => (
-    <View style={styles.gameCard}>
-      <View style={styles.gameHeader}>
-        <CustomText style={styles.dateText}>{formatDate(item.datetime?.date, 'short')}</CustomText>
-        <View style={styles.timeContainer}>
-          <CustomText style={styles.timeText}>{formatTime(item.datetime?.time)}</CustomText>
+  const renderGame = ({ item }: { item: Games }) => {
+    const isGameFinished = item.scores && item.scores[0]?.is_finished;
+
+    return (
+      <View style={styles.gameCard}>
+        <View style={styles.gameHeader}>
+          <CustomText style={styles.dateText}>{formatDate(item.datetime?.date, 'short')}</CustomText>
+          <View style={styles.timeContainer}>
+            <CustomText style={styles.timeText}>{formatTime(item.datetime?.time)}</CustomText>
+          </View>
+          <CustomText style={styles.fieldText}>Field {item.field_id}</CustomText>
         </View>
-        <CustomText style={styles.fieldText}>Field {item.field_id}</CustomText>
-      </View>
-      
-      {/* Teams and Score Container */}
-      <View style={styles.matchupContainer}>
-        {/* Left side: Teams */}
-        <View style={styles.teamsSection}>
-          {/* Team 1 */}
-          <View style={styles.teamRow}>
-            <Image 
-              source={item.team1.avatar_uri ? { uri: item.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
-              style={styles.teamLogo} 
-            />
-            <CustomText style={[
-              styles.teamText, 
-              favoriteTeamIds.includes(item.team1.id) && styles.highlightedTeam
-            ]}>
-              {item.team1.name}
+
+        {/* Teams and Score Container */}
+        <View style={styles.matchupContainer}>
+          {/* Left side: Teams */}
+          <View style={styles.teamsSection}>
+            {/* Team 1 */}
+            <View style={styles.teamRow}>
+              <Image
+                source={item.team1.avatar_uri ? { uri: item.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
+                style={styles.teamLogo}
+              />
+              <CustomText style={[
+                styles.teamText,
+                favoriteTeamIds.includes(item.team1.id) && styles.highlightedTeam
+              ]}>
+                {item.team1.name}
+              </CustomText>
+            </View>
+
+            {/* Team 2 */}
+            <View style={styles.teamRow}>
+              <Image
+                source={item.team2.avatar_uri ? { uri: item.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
+                style={styles.teamLogo}
+              />
+              <CustomText style={[
+                styles.teamText,
+                favoriteTeamIds.includes(item.team2.id) && styles.highlightedTeam
+              ]}>
+                {item.team2.name}
+              </CustomText>
+            </View>
+          </View>
+
+          {/* Right side: Scores */}
+          <View style={styles.scoresSection}>
+            <CustomText style={styles.scoreText}>
+              {item.scores && item.scores[0] ? item.scores[0].team1_score : 0}
+            </CustomText>
+            <CustomText style={styles.scoreText}>
+              {item.scores && item.scores[0] ? item.scores[0].team2_score : 0}
             </CustomText>
           </View>
-          
-          {/* Team 2 */}
-          <View style={styles.teamRow}>
-            <Image 
-              source={item.team2.avatar_uri ? { uri: item.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
-              style={styles.teamLogo} 
-            />
-            <CustomText style={[
-              styles.teamText,
-              favoriteTeamIds.includes(item.team2.id) && styles.highlightedTeam
-            ]}>
-              {item.team2.name}
-            </CustomText>
+        </View>
+
+        {isGameFinished ? (
+          <View style={styles.completedContainer}>
+            <CustomText style={styles.completedText}>Game completed</CustomText>
           </View>
-        </View>
-        
-        {/* Right side: Scores */}
-        <View style={styles.scoresSection}>
-          <CustomText style={styles.scoreText}>
-            {item.scores && item.scores[0] ? item.scores[0].team1_score : 0}
-          </CustomText>
-          <CustomText style={styles.scoreText}>
-            {item.scores && item.scores[0] ? item.scores[0].team2_score : 0}
-          </CustomText>
-        </View>
+        ) : (
+          <TouchableOpacity
+            style={styles.updateScoreButton}
+            onPress={() => openScoreModal(item)}
+          >
+            <CustomText style={styles.updateScoreText}>Update Score</CustomText>
+          </TouchableOpacity>
+        )}
       </View>
-      
-      <TouchableOpacity 
-        style={styles.updateScoreButton} 
-        onPress={() => openScoreModal(item)}
-      >
-        <CustomText style={styles.updateScoreText}>Update Score</CustomText>
-      </TouchableOpacity>
-    </View>
-  );
+    );
+  }
 
   if (!session) {
     return (
@@ -344,7 +354,7 @@ const MyGames = () => {
             }
             contentContainerStyle={styles.listContainer}
           />
-          
+
           {/* Using the reusable modal component */}
           {currentGame && (
             <UpdateScoreModal
@@ -363,10 +373,10 @@ const MyGames = () => {
       ) : (
         <View style={styles.centerContainer}>
           <Text style={styles.messageText}>
-            No games found. Add some teams to your favorites list <Text 
-                onPress={() => router.push('/(user)')} 
-                style={styles.linkText}
-              >here</Text>!
+            No games found. Add some teams to your favorites list <Text
+              onPress={() => router.push('/(user)')}
+              style={styles.linkText}
+            >here</Text>!
           </Text>
           <PrimaryButton
             title='Go back'
@@ -520,6 +530,13 @@ const styles = StyleSheet.create({
     ...typography.textSmallBold,
     color: '#EA1D25',
     textDecorationLine: 'underline'
+  },
+  completedContainer: {
+    alignItems: 'center',
+  },
+  completedText: {
+    ...typography.textSmallBold,
+    color: '#276B5D', // Using a green color to indicate completion
   },
 });
 
