@@ -116,6 +116,40 @@ const CartRequestsList = () => {
       minute: '2-digit'
     });
   };
+  
+  // Function to calculate time elapsed since request was created
+  const getTimeSince = (dateString: string | null) => {
+    if (!dateString) return 'Unknown';
+    
+    const now = new Date();
+    const createdAt = new Date(dateString);
+    const diffMs = now.getTime() - createdAt.getTime();
+    
+    // Convert to minutes
+    const diffMins = Math.floor(diffMs / 60000);
+    
+    if (diffMins < 60) {
+      return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
+    } else {
+      const diffHours = Math.floor(diffMins / 60);
+      const remainingMins = diffMins % 60;
+      return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ${remainingMins > 0 ? `${remainingMins} min${remainingMins !== 1 ? 's' : ''}` : ''} ago`;
+    }
+  };
+  
+  // Function to determine color for time indicator based on elapsed time
+  const getTimeColor = (dateString: string | null) => {
+    if (!dateString) return '#EA1D25'; // Default to red if unknown
+    
+    const now = new Date();
+    const createdAt = new Date(dateString);
+    const diffMs = now.getTime() - createdAt.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    
+    if (diffMins < 5) return '#59DE07'; // Green for recent (< 5 mins)
+    if (diffMins < 15) return '#FFD600'; // Yellow for moderate (5-15 mins)
+    return '#EA1D25'; // Red for long wait (> 15 mins)
+  };
 
   const getLocationLabel = (locationType: LocationType) => {
     switch (locationType) {
@@ -134,65 +168,75 @@ const CartRequestsList = () => {
     }
   };
 
-  // Modified renderItem function for CartRequestsList with horizontal route line
-  const renderItem = ({ item }: { item: CartRequest }) => (
-    <Card style={styles.cardContainer}>
-      <View style={styles.cardHeader}>
-        <CustomText style={styles.transportTitle}>Transport</CustomText>
-        <CustomText style={styles.requestTime}>
-          {formatDate(item.created_at)}
-        </CustomText>
-      </View>
-
-      <View style={styles.locationsContainer}>
-        {/* Vertical route line with points on the left */}
-        <View style={styles.routeVisualization}>
-          <View style={styles.routePoint} />
-          <View style={styles.routeLine} />
-          <View style={styles.routePoint} />
-        </View>
-
-        {/* Locations information on the right */}
-        <View style={styles.routeInfo}>
-          {/* From section */}
-          <View style={styles.locationInfo}>
-            <CustomText style={styles.routeLabel}>From: </CustomText><CustomText style={styles.locationText}>
-              {item.from_location === 'Field' ? 'Field ' : ''}
-              {item.from_location === 'Field' ? item.from_field_number : getLocationLabel(item.from_location)}
-            </CustomText>
-          </View>
-
-          {/* To section */}
-          <View style={styles.locationInfo}>
-            <CustomText style={styles.routeLabel}>To: </CustomText>
-            <CustomText style={styles.locationText}>
-              {item.to_location === 'Field' ? 'Field ' : ''}
-              {item.to_location === 'Field' ? item.to_field_number : getLocationLabel(item.to_location)}
-            </CustomText>
+  // Modified renderItem function for CartRequestsList with time indicator
+  const renderItem = ({ item }: { item: CartRequest }) => {
+    const timeColor = getTimeColor(item.created_at);
+    
+    return (
+      <Card style={styles.cardContainer}>
+        <View style={styles.cardHeader}>
+          <CustomText style={styles.transportTitle}>Transport</CustomText>
+          <View style={styles.timeContainer}>
+            <View style={[styles.timeIndicator, { backgroundColor: timeColor }]} />
+            <CustomText style={styles.waitingTime}>{getTimeSince(item.created_at)}</CustomText>
           </View>
         </View>
-      </View>
 
-      <View style={styles.passengerRow}>
-        <CustomText style={styles.passengerLabel}>Passengers:</CustomText>
-        <CustomText style={styles.passengerCount}>{item.passenger_count || 0}</CustomText>
-      </View>
+        <View style={styles.locationsContainer}>
+          {/* Vertical route line with points on the left */}
+          <View style={styles.routeVisualization}>
+            <View style={styles.routePoint} />
+            <View style={styles.routeLine} />
+            <View style={styles.routePoint} />
+          </View>
 
-      {item.special_request && (
-        <View style={styles.specialRequestContainer}>
-          <CustomText style={styles.specialRequestLabel}>Special Request:</CustomText>
-          <CustomText style={styles.specialRequestText}>{item.special_request}</CustomText>
+          {/* Locations information on the right */}
+          <View style={styles.routeInfo}>
+            {/* From section */}
+            <View style={styles.locationInfo}>
+              <CustomText style={styles.routeLabel}>From: </CustomText><CustomText style={styles.locationText}>
+                {item.from_location === 'Field' ? 'Field ' : ''}
+                {item.from_location === 'Field' ? item.from_field_number : getLocationLabel(item.from_location)}
+              </CustomText>
+            </View>
+
+            {/* To section */}
+            <View style={styles.locationInfo}>
+              <CustomText style={styles.routeLabel}>To: </CustomText>
+              <CustomText style={styles.locationText}>
+                {item.to_location === 'Field' ? 'Field ' : ''}
+                {item.to_location === 'Field' ? item.to_field_number : getLocationLabel(item.to_location)}
+              </CustomText>
+            </View>
+          </View>
         </View>
-      )}
 
-      <TouchableOpacity
-        style={styles.acceptButton}
-        onPress={() => acceptRequest(item.id)}
-      >
-        <CustomText style={styles.acceptButtonText}>Accept Request</CustomText>
-      </TouchableOpacity>
-    </Card>
-  );
+        <View style={styles.passengerRow}>
+          <CustomText style={styles.passengerLabel}>Passengers:</CustomText>
+          <CustomText style={styles.passengerCount}>{item.passenger_count || 0}</CustomText>
+        </View>
+
+        <View style={styles.infoRow}>
+          <CustomText style={styles.infoLabel}>Created:</CustomText>
+          <CustomText style={styles.infoValue}>{formatDate(item.created_at)}</CustomText>
+        </View>
+
+        {item.special_request && (
+          <View style={styles.specialRequestContainer}>
+            <CustomText style={styles.specialRequestLabel}>Special Request:</CustomText>
+            <CustomText style={styles.specialRequestText}>{item.special_request}</CustomText>
+          </View>
+        )}
+
+        <TouchableOpacity
+          style={styles.acceptButton}
+          onPress={() => acceptRequest(item.id)}
+        >
+          <CustomText style={styles.acceptButtonText}>Accept Request</CustomText>
+        </TouchableOpacity>
+      </Card>
+    );
+  };
 
   if (loading) {
     return (
@@ -407,19 +451,46 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 5,
-    paddingBottom: 8,
-    marginBottom: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC66',
+    paddingVertical: 8
   },
   passengerLabel: {
-    ...typography.textLarge,
+    ...typography.text,
     color: '#CCCCCCB2',
   },
   passengerCount: {
-    ...typography.textLargeBold,
+    ...typography.textSemiBold,
     color: '#fff',
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCCCCC66',
+    paddingBottom: 8,
+    marginBottom: 8
+  },
+  infoLabel: {
+    ...typography.text,
+    color: '#CCCCCCB2',
+  },
+  infoValue: {
+    ...typography.textSemiBold,
+    color: '#CCCCCCBF',
+  },
+  timeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  timeIndicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 5,
+  },
+  waitingTime: {
+    ...typography.textMedium,
+    color: '#CCCCCC',
   },
   specialRequestContainer: {
     borderWidth: 1,

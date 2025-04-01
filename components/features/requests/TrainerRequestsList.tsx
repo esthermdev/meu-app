@@ -43,7 +43,7 @@ const TrainerRequestsList = () => {
         .select('*, trainer:profiles(full_name)')
         .eq('status', 'pending') // Only show pending requests
         .order('created_at', { ascending: false });
-  
+
       if (error) throw error;
       setRequests(data as MedicalRequest[]);
     } catch (error) {
@@ -93,9 +93,43 @@ const TrainerRequestsList = () => {
     });
   };
 
+  // Function to calculate time elapsed since request was created
+  const getTimeSince = (dateString: string | null) => {
+    if (!dateString) return 'Unknown';
+
+    const now = new Date();
+    const createdAt = new Date(dateString);
+    const diffMs = now.getTime() - createdAt.getTime();
+
+    // Convert to minutes
+    const diffMins = Math.floor(diffMs / 60000);
+
+    if (diffMins < 60) {
+      return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
+    } else {
+      const diffHours = Math.floor(diffMins / 60);
+      const remainingMins = diffMins % 60;
+      return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ${remainingMins > 0 ? `${remainingMins} min${remainingMins !== 1 ? 's' : ''}` : ''} ago`;
+    }
+  };
+
+  // Function to determine color for time indicator based on elapsed time
+  const getTimeColor = (dateString: string | null) => {
+    if (!dateString) return '#EA1D25'; // Default to red if unknown
+
+    const now = new Date();
+    const createdAt = new Date(dateString);
+    const diffMs = now.getTime() - createdAt.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+
+    if (diffMins < 5) return '#59DE07'; // Green for recent (< 5 mins)
+    if (diffMins < 15) return '#FFD600'; // Yellow for moderate (5-15 mins)
+    return '#EA1D25'; // Red for long wait (> 15 mins)
+  };
+
   const getPriorityColor = (priority: string | null) => {
     if (!priority) return { backgroundColor: '#ED8C22' }; // Default orange for medium
-    
+
     switch (priority.toLowerCase()) {
       case 'high':
         return {
@@ -104,13 +138,13 @@ const TrainerRequestsList = () => {
           borderWidth: 1
         }; // Red for high priority
       case 'medium':
-        return { 
+        return {
           backgroundColor: '#ED8C223D',
           borderColor: '#ED8C22',
-          borderWidth: 1 
+          borderWidth: 1
         }; // Orange for medium priority
       case 'low':
-        return { 
+        return {
           backgroundColor: '#0080003D',
           borderColor: '#008000',
           borderWidth: 1
@@ -120,53 +154,64 @@ const TrainerRequestsList = () => {
     }
   };
 
-  const renderItem = ({ item }: { item: MedicalRequest }) => (
-    <Card style={styles.cardContainer}>
-      <View style={styles.cardHeader}>
-        <View style={[styles.priorityBadge, getPriorityColor(item.priority_level)]}>
-          <CustomText style={styles.priorityText}>{item.priority_level || 'Medium'}</CustomText>
-        </View>
-        <View style={styles.fieldBadge}>
-          <MaterialIcons name="location-on" size={14} color="#262626" />
-          <CustomText style={styles.fieldText}>Field {item.field_number}</CustomText>
-        </View>
-      </View>
-      
-      <View style={styles.infoSection}>
-        <View style={styles.infoRow}>
-          <CustomText style={styles.labelText}>Request ID: </CustomText>
-          <CustomText style={styles.valueText}>{item.id}</CustomText>
-        </View>
-        <View style={styles.infoRow}>
-          <CustomText style={styles.labelText}>Trainer:</CustomText>
-          <CustomText style={styles.trainerNameText}>{item.trainer ? item.trainer.full_name : 'Unassigned'}</CustomText>
-        </View>
-        <View style={styles.infoRow}>
-          <CustomText style={styles.labelText}>Created:</CustomText>
-          <CustomText style={styles.valueText}>{formatDate(item.created_at)}</CustomText>
-        </View>
-      </View>
+  const renderItem = ({ item }: { item: MedicalRequest }) => {
+    const timeColor = getTimeColor(item.created_at);
 
-      {item.description_of_emergency && (
-        <View style={styles.descriptionContainer}>
-          <CustomText style={styles.descriptionLabel}>Emergency Description:</CustomText>
-          <CustomText style={styles.descriptionText}>
-            {item.description_of_emergency}
-          </CustomText>
+    return (
+      <Card style={styles.cardContainer}>
+        <View style={styles.cardHeader}>
+          <View style={[styles.priorityBadge, getPriorityColor(item.priority_level)]}>
+            <CustomText style={styles.priorityText}>{item.priority_level || 'Medium'}</CustomText>
+          </View>
+          <View style={styles.fieldBadge}>
+            <MaterialIcons name="location-on" size={14} color="#262626" />
+            <CustomText style={styles.fieldText}>Field {item.field_number}</CustomText>
+          </View>
         </View>
-      )}
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.resolveButton}
-          onPress={() => resolveRequest(item.id)}
-        >
-          <CustomText style={styles.buttonText}>Resolved</CustomText>
-          <MaterialIcons name="check" size={14} color="white" />
-        </TouchableOpacity>
-      </View>
-    </Card>
-  );
+        <View style={styles.infoSection}>
+          <View style={styles.infoRow}>
+            <CustomText style={styles.labelText}>Request ID: </CustomText>
+            <CustomText style={styles.valueText}>{item.id}</CustomText>
+          </View>
+          <View style={styles.infoRow}>
+            <CustomText style={styles.labelText}>Waiting:</CustomText>
+            <View style={styles.timeContainer}>
+              <View style={[styles.timeIndicator, { backgroundColor: timeColor }]} />
+              <CustomText style={styles.timeText}>{getTimeSince(item.created_at)}</CustomText>
+            </View>
+          </View>
+          <View style={styles.infoRow}>
+            <CustomText style={styles.labelText}>Trainer:</CustomText>
+            <CustomText style={styles.trainerNameText}>{item.trainer ? item.trainer.full_name : 'Unassigned'}</CustomText>
+          </View>
+          <View style={styles.infoRow}>
+            <CustomText style={styles.labelText}>Created:</CustomText>
+            <CustomText style={styles.valueText}>{formatDate(item.created_at)}</CustomText>
+          </View>
+        </View>
+
+        {item.description_of_emergency && (
+          <View style={styles.descriptionContainer}>
+            <CustomText style={styles.descriptionLabel}>Emergency Description:</CustomText>
+            <CustomText style={styles.descriptionText}>
+              {item.description_of_emergency}
+            </CustomText>
+          </View>
+        )}
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.resolveButton}
+            onPress={() => resolveRequest(item.id)}
+          >
+            <CustomText style={styles.buttonText}>Resolved</CustomText>
+            <MaterialIcons name="check" size={14} color="white" />
+          </TouchableOpacity>
+        </View>
+      </Card>
+    )
+  };
 
   if (loading) {
     return (
@@ -286,6 +331,20 @@ const styles = StyleSheet.create({
   valueText: {
     ...typography.textMedium,
     color: '#CCCCCCBF',
+  },
+  timeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  timeIndicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 5,
+  },
+  timeText: {
+    ...typography.textSemiBold,
+    color: '#fff',
   },
   descriptionContainer: {
     paddingVertical: 7,

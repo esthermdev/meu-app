@@ -6,6 +6,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
+import FulfilledWaterRequestsList from '@/components/features/requests/FulfilledWaterRequestList';
+import { useAuth } from '@/context/AuthProvider';
 
 type WaterRequests = Database['public']['Tables']['water_requests']['Row'];
 type Volunteer = Database['public']['Tables']['profiles']['Row'];
@@ -32,6 +34,7 @@ const WaterRequestsScreen = () => {
       }}
     >
       <Tab.Screen name="Requests" component={WaterRequestsList} />
+      <Tab.Screen name="Fulfilled" component={FulfilledWaterRequestsList} />
       <Tab.Screen name="Volunteers" component={VolunteerAvailabilityScreen} />
     </Tab.Navigator>
   );
@@ -40,6 +43,7 @@ const WaterRequestsScreen = () => {
 const WaterRequestsList = () => {
   const [requests, setRequests] = useState<WaterRequests[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const { profile } = useAuth() as { profile: Volunteer };
 
   const fetchRequests = useCallback(async () => {
     try {
@@ -47,6 +51,7 @@ const WaterRequestsList = () => {
       const { data, error } = await supabase
         .from('water_requests')
         .select('*')
+        .eq('status', 'pending') // Only fetch pending requests
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -86,14 +91,18 @@ const WaterRequestsList = () => {
 
   const handleResolveRequest = async (requestId: number) => {
     try {
-      // Instead of updating the status, delete the request
+      // Update the request status to 'resolved' instead of deleting it
       const { error } = await supabase
         .from('water_requests')
-        .delete()
+        .update({
+          status: 'resolved' as Database['public']['Enums']['request_status'],
+          volunteer: profile?.full_name || null,
+          updated_at: new Date().toISOString()
+        })
         .eq('id', requestId);
-
+  
       if (error) throw error;
-
+  
       // Filter out the resolved request from the local state
       setRequests(current => current.filter(request => request.id !== requestId));
     } catch (error) {
@@ -316,16 +325,16 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   infoLabel: {
-    ...typography.textLarge,
+    ...typography.text,
     color: '#CCCCCC',
   },
   infoValue: {
-    ...typography.textLargeBold,
+    ...typography.textSemiBold,
     color: '#fff',
   },
   statusPending: {
-    color: '#EA1D25', // Red color for pending status
-    ...typography.textLargeSemiBold
+    color: '#FFD600', 
+    ...typography.textSemiBold
   },
   resolveButton: {
     backgroundColor: '#73BF44',

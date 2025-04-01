@@ -68,7 +68,7 @@ const FulfilledCartRequestsList = () => {
       case 'Entrance':
         return 'Main Entrance';
       case 'Tourney Central':
-        return 'Tournament HQ';
+        return 'Tourney Central';
       case 'Lot 1':
         return 'Parking Lot 1';
       case 'Lot 2':
