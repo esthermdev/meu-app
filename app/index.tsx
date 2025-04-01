@@ -1,5 +1,5 @@
 import PrimaryButton from "@/components/buttons/PrimaryButton";
-import { icons } from "@/constants";
+import { icons, images } from "@/constants";
 import { typography } from "@/constants/Typography";
 import { router } from "expo-router";
 import { Text, View, StyleSheet, Image, SafeAreaView, Dimensions } from "react-native";
@@ -16,9 +16,13 @@ export default function Index() {
         style={styles.image}
       />
       <View style={styles.contentContainer}>
-        <Text style={styles.welcomeText}>Welcome to</Text>
-        <View style={styles.tournamentLogo}>
-          <Text>TOURNAMENT LOGO HERE</Text>
+        <Text style={styles.welcomeText} maxFontSizeMultiplier={1.5}>Welcome to</Text>
+        <View style={styles.tournamentLogoContainer}>
+          <Image 
+            source={images.regionals}
+            resizeMode="contain"
+            style={styles.tournamentLogo}
+          />
         </View>
         <PrimaryButton title="Continue" onPress={() => router.push('/(tabs)/home')} />
       </View>
@@ -39,20 +43,24 @@ const styles = StyleSheet.create({
     width: centerContainerWidth,
   },
   image: {
-    marginTop: 80,
+    marginTop: 50,
     width: '60%',
     maxHeight: 170,
+  },
+  tournamentLogo: {
+    width: '85%'
   },
   welcomeText: {
     ...typography.h2,
     color: "#EA1D25",
     textAlign: 'center'
   },
-  tournamentLogo: {
-    height: 200,
-    backgroundColor: '#F7F7F7',
+  tournamentLogoContainer: {
+    maxHeight: 300,
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 32
+    marginTop: 10,
+    marginBottom: 32
   }
 })

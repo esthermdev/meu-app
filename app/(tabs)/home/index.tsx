@@ -39,7 +39,7 @@ export default function HomeScreen() {
               title="Watch Live"
               subtitle=""
               route="https://www.youtube.com/@maineultimate/streams"
-              backgroundImage={require('@/assets/images/background-image.png')}
+              backgroundImage={require('@/assets/images/watch-live.jpg')}
             />
           </View>
         </View>
