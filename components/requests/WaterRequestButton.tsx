@@ -20,7 +20,7 @@ type Field = Tables<'fields'>;
 
 const { width } = Dimensions.get('window');
 const numColumns = 5; // Number of columns in the grid
-const blockSize = (width * 0.7 - 60) / numColumns; // Calculate block size based on screen width
+const blockSize = (width * 0.8 - 60) / numColumns; // Calculate block size based on screen width
 
 const WaterRequestButton = () => {
   const [selectedField, setSelectedField] = useState<number | undefined>(undefined);
@@ -144,7 +144,6 @@ const WaterRequestButton = () => {
                     numColumns={numColumns}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={renderFieldBlock}
-                    columnWrapperStyle={styles.row}
                     contentContainerStyle={styles.gridContent}
                     showsVerticalScrollIndicator={false}
                   />
@@ -213,20 +212,15 @@ const styles = StyleSheet.create({
     maxHeight: 300,
   },
   gridContent: {
-    paddingVertical: 10,
-  },
-  row: {
-    justifyContent: 'space-between',
-    marginBottom: 10,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   fieldBlock: {
     width: blockSize,
     height: blockSize,
-    margin: 5,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F0F0F0',
-    borderRadius: 8,
     borderWidth: 1,
     borderColor: '#E0E0E0',
   },
