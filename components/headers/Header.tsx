@@ -30,10 +30,12 @@ const Header = () => {
               color="#EA1D25"
             />
           </TouchableOpacity>
-					<Image 
-						source={images.logoW}
-						style={{ width: 40, height: 40 }}
-					/>
+					<TouchableOpacity onPress={() => router.navigate('/(tabs)/home')}>
+						<Image 
+							source={images.logoW}
+							style={{ width: 40, height: 40 }}
+						/>
+					</TouchableOpacity>
 					<TouchableOpacity onPress={() => router.navigate('/(tabs)/home/notifications' as Href<'/(tabs)/home/notifications'>)} style={{margin: 6}}>
 						<MaterialCommunityIcons
 							name='bell'
@@ -50,7 +52,7 @@ const Header = () => {
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: '#fff',
-		height: 40,
+		height: 50,
 		width: '100%',
 		paddingHorizontal: 20,
 	},
