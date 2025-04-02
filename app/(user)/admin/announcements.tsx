@@ -10,7 +10,6 @@ import {
   Platform,
   ScrollView
 } from 'react-native';
-import { useRouter } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import { typography } from '@/constants/Typography';
@@ -127,14 +126,15 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     backgroundColor: '#fff',
     borderRadius: 12,
-    paddingVertical: 20,
-    paddingHorizontal: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     marginBottom: 20,
-    ...typography.textMedium
+    ...typography.text
   },
   messageInput: {
     height: 120,
     textAlignVertical: 'top',
+
   },
 });
 

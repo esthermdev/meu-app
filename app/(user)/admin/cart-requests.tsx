@@ -23,7 +23,7 @@ const CartManagementScreen = () => {
         tabBarActiveTintColor: '#EA1D25',
         tabBarInactiveTintColor: '#fff',
         tabBarLabelStyle: {
-          ...typography.textSmall
+          ...typography.textXSmall
         },
         tabBarStyle: {
           backgroundColor: '#262626',
@@ -232,7 +232,7 @@ const CartRequestsList = () => {
           style={styles.acceptButton}
           onPress={() => acceptRequest(item.id)}
         >
-          <CustomText style={styles.acceptButtonText}>Accept Request</CustomText>
+          <CustomText style={styles.acceptButtonText}>Accept</CustomText>
         </TouchableOpacity>
       </Card>
     );

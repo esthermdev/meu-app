@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import { Card } from '@/components/Card';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthProvider';
@@ -18,6 +19,13 @@ const FulfilledWaterRequestsList = () => {
   const [requests, setRequests] = useState<WaterRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { profile } = useAuth() as { profile: Profile };
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      fetchFulfilledRequests();
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     fetchFulfilledRequests();

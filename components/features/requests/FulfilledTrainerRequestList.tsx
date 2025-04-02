@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
+import { useState, useEffect, useCallback } from 'react';
+import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert, RefreshControl } from 'react-native';
 import { Card } from '@/components/Card';
 import { MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthProvider';
+import { useRequests } from '@/context/RequestsContext';
+import { useIsFocused } from '@react-navigation/native';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
@@ -21,7 +23,16 @@ const FulfilledTrainerRequestList = () => {
   const [requests, setRequests] = useState<MedicalRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { profile } = useAuth() as { profile: Profile };
+  const isFocused = useIsFocused();
 
+  // Effect that runs when the tab comes into focus
+  useEffect(() => {
+    if (isFocused) {
+      fetchFulfilledRequests();
+    }
+  }, [isFocused]);
+
+  // Regular effect for initial load and subscription
   useEffect(() => {
     fetchFulfilledRequests();
     const subscription = supabase
@@ -49,6 +60,25 @@ const FulfilledTrainerRequestList = () => {
       console.error('Error fetching fulfilled requests:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const deleteRequest = async (requestId: number) => {
+    try {
+      // We'll just update the status to 'expired' to keep the record but hide it from the list
+      const { error } = await supabase
+        .from('medical_requests')
+        .update({ status: 'expired' as Database['public']['Enums']['request_status'] })
+        .eq('id', requestId);
+
+      if (error) throw error;
+      
+      // Update the local state by removing the archived request
+      setRequests(requests.filter(req => req.id !== requestId));
+      
+    } catch (error) {
+      console.error('Error removing request:', error);
+      Alert.alert('Error', 'Failed to remove the request. Please try again.');
     }
   };
 
@@ -153,6 +183,13 @@ const FulfilledTrainerRequestList = () => {
             </CustomText>
           </View>
         )}
+        
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => deleteRequest(item.id)}
+        >
+          <CustomText style={styles.deleteButtonText}>Remove</CustomText>
+        </TouchableOpacity>
       </Card>
     );
   };
@@ -256,7 +293,10 @@ const styles = StyleSheet.create({
   },
   infoSection: {
     gap: 8,
-    marginVertical: 8
+    marginVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCCCCC66',
+    paddingBottom: 8
   },
   infoRow: {
     flexDirection: 'row',
@@ -304,6 +344,18 @@ const styles = StyleSheet.create({
   statusText: {
     ...typography.text,
     color: '#fff'
+  },
+  deleteButton: {
+    backgroundColor: '#EA1D25',
+    paddingVertical: 8,
+    borderRadius: 5,
+    paddingHorizontal: 15,
+    alignItems: 'center',
+    marginTop: 5
+  },
+  deleteButtonText: {
+    ...typography.textBold,
+    color: '#fff',
   },
 });
 

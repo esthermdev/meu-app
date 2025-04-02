@@ -8,6 +8,7 @@ import CustomText from '@/components/CustomText';
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
+import { RequestsProvider } from '@/context/RequestsContext';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -15,6 +16,7 @@ type Profile = Database['public']['Tables']['profiles']['Row'];
 
 const TrainerManagementScreen = () => {
   return (
+    <RequestsProvider>
       <Tab.Navigator
         screenOptions={{
           tabBarActiveTintColor: '#EA1D25',
@@ -36,6 +38,7 @@ const TrainerManagementScreen = () => {
         <Tab.Screen name="Fulfilled" component={FulfilledTrainerRequestList} />
         <Tab.Screen name="Trainers" component={TrainerAvailabilityScreen} />
       </Tab.Navigator>
+    </RequestsProvider>
   );
 };
 
