@@ -1,5 +1,4 @@
-// fieldmap.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { images } from '@/constants';
