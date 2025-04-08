@@ -18,10 +18,10 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { typography } from '@/constants/Typography';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import ModalButton from '../buttons/ModalButtons';
-import Dropdown from '../Dropdown';
-import ErrorMessage from '../ErrorMessage';
-import CustomText from '../CustomText';
+import ModalButton from '../../buttons/ModalButtons';
+import Dropdown from '../../Dropdown';
+import ErrorMessage from '../../ErrorMessage';
+import CustomText from '../../CustomText';
 
 const { height } = Dimensions.get('window');
 const modalHeight = height * 0.8; // 80% of screen height

@@ -13,8 +13,8 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tables } from '@/database.types';
 import { typography } from '@/constants/Typography';
-import ModalButton from '../buttons/ModalButtons';
-import CustomText from '../CustomText';
+import ModalButton from '../../buttons/ModalButtons';
+import CustomText from '../../CustomText';
 
 type Field = Tables<'fields'>;
 

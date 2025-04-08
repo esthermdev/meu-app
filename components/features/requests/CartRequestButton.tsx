@@ -17,13 +17,13 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { supabase } from '@/lib/supabase';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import Dropdown from '../Dropdown';
+import Dropdown from '../../Dropdown';
 import usePushNotifications from '@/hooks/usePushNotifications';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { typography } from '@/constants/Typography';
-import ModalButton from '../buttons/ModalButtons';
-import ErrorMessage from '../ErrorMessage';
-import CustomText from '../CustomText';
+import ModalButton from '../../buttons/ModalButtons';
+import ErrorMessage from '../../ErrorMessage';
+import CustomText from '../../CustomText';
 
 const { height } = Dimensions.get('window');
 const modalHeight = height * 0.7; // 80% of screen height
