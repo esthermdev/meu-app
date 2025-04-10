@@ -29,7 +29,7 @@ const getAppName = () => {
 
 const getAndroidPackage = () => {
   if (IS_DEV) {
-    return 'com.esmdev.TourneyAppMEU.dev';
+    return 'com.esmdev.TourneyAppMEU';
   }
 
   if (IS_PREVIEW) {

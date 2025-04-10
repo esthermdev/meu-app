@@ -177,7 +177,7 @@ const TrainerRequestButton = () => {
       >
         <MaterialCommunityIcons name="medical-bag" size={28} color="#347764" />
       </TouchableOpacity>
-      <CustomText style={styles.label} allowFontScaling maxFontSizeMultiplier={1.2}>Trainer</CustomText>
+      <CustomText style={styles.label}>Trainer</CustomText>
 
       <Modal
         visible={isModalVisible}

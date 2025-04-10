@@ -29,7 +29,7 @@ const CircleIconButton: React.FC<CircleIconButtonProps> = ({
       >
         <MaterialCommunityIcons name={icon} size={28} color="#347764" />
       </TouchableOpacity>
-      <CustomText style={styles.label} allowFontScaling maxFontSizeMultiplier={1.2}>{label}</CustomText>
+      <CustomText style={styles.label}>{label}</CustomText>
     </View>
   );
 };

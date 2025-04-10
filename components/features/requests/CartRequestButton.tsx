@@ -175,7 +175,7 @@ const CartRequestButton = () => {
       >
         <MaterialCommunityIcons name="car" size={28} color="#347764" />
       </TouchableOpacity>
-      <CustomText style={styles.label} allowFontScaling maxFontSizeMultiplier={1.2}>Cart</CustomText>
+      <CustomText style={styles.label} allowFontScaling>Cart</CustomText>
 
       <Modal
         visible={isModalVisible}

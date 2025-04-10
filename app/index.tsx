@@ -11,7 +11,7 @@ const centerContainerWidth = width - 40;
 export default function Index() {
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="dark-content" backgroundColor='#fff' />
       <Image 
         source={icons.frisbeePlayer}
         resizeMode="contain"
@@ -50,7 +50,8 @@ const styles = StyleSheet.create({
     maxHeight: 170,
   },
   tournamentLogo: {
-    width: '85%'
+    width: '80%',
+    maxHeight: 300,
   },
   welcomeText: {
     ...typography.h2,
@@ -63,6 +64,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 10,
-    marginBottom: 32
   }
 })

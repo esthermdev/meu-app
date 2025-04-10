@@ -124,7 +124,7 @@ const WaterRequestButton = () => {
       >
         <MaterialCommunityIcons name="water" size={28} color="#347764" />
       </TouchableOpacity>
-      <CustomText style={styles.label} allowFontScaling maxFontSizeMultiplier={1.2}>Water</CustomText>
+      <CustomText style={styles.label}>Water</CustomText>
 
       <Modal
         visible={isModalVisible}
