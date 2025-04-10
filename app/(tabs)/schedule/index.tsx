@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, RefreshControl, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 import LoadingIndicator from '@/components/LoadingIndicator';
@@ -6,7 +6,7 @@ import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
 
 export default function ScheduleIndex() {
-  const { divisions, loading, error } = useDivisions();
+  const { divisions, loading, error, refreshing, refreshDivisions } = useDivisions();
 
   const handleSelectDivision = (divisionId: number, divisionName: string) => {
     router.push({
@@ -15,22 +15,31 @@ export default function ScheduleIndex() {
     });
   };
 
-  if (loading) {
+  if (loading && !refreshing) {
+    return <LoadingIndicator message='Loading Schedule...' />;
+  }
+
+  if (error) {
     return (
-      <LoadingIndicator message='Loading Divisions...' />
+      <View style={[styles.container, styles.centerContent]}>
+        <Text style={styles.errorText}>Error loading divisions: {error}</Text>
+      </View>
     );
   }
 
-    if (error) {
-      return (
-        <View style={[styles.container, styles.centerContent]}>
-          <Text style={styles.errorText}>Error loading divisions: {error}</Text>
-        </View>
-      );
-    }
-
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ flexGrow: 1 }}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={refreshDivisions}
+          colors={['#EA1D25']} // Android
+          tintColor="#EA1D25" // iOS
+        />
+      }
+    >
       <View style={styles.content}>
         {divisions.map((division) => (
           <TouchableOpacity
@@ -43,7 +52,7 @@ export default function ScheduleIndex() {
           </TouchableOpacity>
         ))}
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

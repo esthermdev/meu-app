@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, RefreshControl, ScrollView } from 'react-native';
 import { Link } from 'expo-router';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 import LoadingIndicator from '@/components/LoadingIndicator';
@@ -6,13 +6,12 @@ import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
 
 export default function StandingsIndex() {
-  const { divisions, loading, error } = useDivisions();
+  const { divisions, loading, error, refreshing, refreshDivisions } = useDivisions();
 
-  if (loading) {
-    return (
-      <LoadingIndicator message='Loading standings...' />
-    );
+  if (loading && !refreshing) {
+    return <LoadingIndicator message='Loading Standings...' />;
   }
+
 
   if (error) {
     return (
@@ -23,7 +22,18 @@ export default function StandingsIndex() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ flexGrow: 1 }}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={refreshDivisions}
+          colors={['#EA1D25']} // Android
+          tintColor="#EA1D25" // iOS
+        />
+      }
+    >
       <View style={styles.content}>
         {divisions.map((division) => (
           <Link
@@ -42,7 +52,7 @@ export default function StandingsIndex() {
           </Link>
         ))}
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

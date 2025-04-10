@@ -10,7 +10,7 @@ export default function GameTypesScreen() {
   const params = useLocalSearchParams();
   const divisionId = Number(params.division);
   const divisionName = params.divisionName as string;
-  
+
   const { gametypes, loading, error } = useGametypes(divisionId);
 
   const handleSelectGameType = (gameTypeId: number, gameTypeTitle: string, route: string) => {
@@ -58,23 +58,27 @@ export default function GameTypesScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        {gametypes.map((option) => (
+        {gametypes ? gametypes.map((option) => (
           <TouchableOpacity
             key={option.id}
             style={styles.gameTypeItem}
             onPress={() => handleSelectGameType(option.id, option.title, option.route)}
           >
             {option.icon && (
-              <MaterialCommunityIcons 
-                name={option.icon as any} 
-                size={24} 
-                color='#EA1D25' 
-                style={styles.icon} 
+              <MaterialCommunityIcons
+                name={option.icon as any}
+                size={24}
+                color='#EA1D25'
+                style={styles.icon}
               />
             )}
             <CustomText style={styles.gameTypeText}>{option.title}</CustomText>
           </TouchableOpacity>
-        ))}
+        )) : (
+          <View>
+            <Text style={styles.errorText}>No games available</Text>
+          </View>)
+        }
       </View>
     </View>
   );

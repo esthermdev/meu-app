@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
 import { useLocalSearchParams } from 'expo-router';
@@ -9,33 +9,42 @@ type GameTypes = Database['public']['Tables']['gametypes']['Row'];
 export function useDivisions() {
   const [divisions, setDivisions] = useState<Division[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const params = useLocalSearchParams();
   const divisionId = Number(params.division);
   const divisionName = params.divisionName as string;
 
-  useEffect(() => {
-    async function fetchDivisions() {
-      try {
-        const { data, error } = await supabase
-          .from('divisions')
-          .select('*')
-          .order('display_order');
-
-        if (error) throw error;
-        setDivisions(data);
-      } catch (e) {
-        setError(e instanceof Error ? e.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
+  const fetchDivisions = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('divisions')
+        .select('*')
+        .order('display_order');
+  
+      if (error) throw error;
+      setDivisions(data);
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'An error occurred');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
     }
-
-    fetchDivisions();
   }, []);
+  
+  // Replace your useEffect with this:
+  useEffect(() => {
+    fetchDivisions();
+  }, [fetchDivisions]);
 
-  return { divisionId, divisionName, divisions, loading, error };
+  const refreshDivisions = useCallback(async () => {
+    setRefreshing(true);
+    await fetchDivisions();
+  }, [fetchDivisions]);
+
+  return { divisionId, divisionName, divisions, loading, refreshing, error, refreshDivisions };
 }
 
 export function useGametypes(divisionId: number) {

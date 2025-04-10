@@ -1,8 +1,9 @@
 import PrimaryButton from "@/components/buttons/PrimaryButton";
+import CustomText from "@/components/CustomText";
 import { icons, images } from "@/constants";
 import { typography } from "@/constants/Typography";
 import { router } from "expo-router";
-import { Text, View, StyleSheet, Image, SafeAreaView, Dimensions } from "react-native";
+import { Text, View, StyleSheet, Image, SafeAreaView, Dimensions, StatusBar } from "react-native";
 
 const { width } = Dimensions.get('window');
 const centerContainerWidth = width - 40;
@@ -10,13 +11,14 @@ const centerContainerWidth = width - 40;
 export default function Index() {
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <Image 
         source={icons.frisbeePlayer}
         resizeMode="contain"
         style={styles.image}
       />
       <View style={styles.contentContainer}>
-        <Text style={styles.welcomeText} maxFontSizeMultiplier={1.5}>Welcome to</Text>
+        <CustomText style={styles.welcomeText}>Welcome to</CustomText>
         <View style={styles.tournamentLogoContainer}>
           <Image 
             source={images.regionals}
