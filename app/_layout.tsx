@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as SplashScreen from 'expo-splash-screen';
 import { AuthProvider } from '@/context/AuthProvider';
@@ -7,14 +7,12 @@ import { Stack } from 'expo-router';
 import 'expo-dev-client';
 import 'react-native-gesture-handler';
 
-
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync().catch(error => {
   console.warn('Error preventing splash screen from auto-hiding:', error);
 });
 
 export default function RootLayout() {
-
   const [fontsLoaded] = useFonts({
     GeistThin: require('../assets/fonts/Geist-Thin.ttf'),
     GeistExtraLight: require('../assets/fonts/Geist-ExtraLight.ttf'),
@@ -27,7 +25,7 @@ export default function RootLayout() {
     GeistBlack: require('../assets/fonts/Geist-Black.ttf'),
   });
 
-  // Use an effect to hide the splash screen when fonts are loaded
+  // Use an effect to hide the splash screen when fonts are loaded and version check is complete
   useEffect(() => {
     const hideSplash = async () => {
       if (fontsLoaded) {
@@ -42,6 +40,7 @@ export default function RootLayout() {
     hideSplash();
   }, [fontsLoaded]);
 
+  // Don't render anything until fonts are loaded and version check is complete
   if (!fontsLoaded) {
     return null;
   }
