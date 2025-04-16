@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   name: {
-    ...typography.label,
+    ...typography.textSemiBold,
   },
   divisionContainer: {
     borderRadius: 100,
