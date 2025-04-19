@@ -12,7 +12,7 @@ export default function GameTypeLayout() {
         name="poolplay"
         options={{
           header: () =>
-            <CustomHeader title="Pool Play" />
+            <CustomHeader title="Pool Play" refreshInfo />
         }}
       />
     </Stack>

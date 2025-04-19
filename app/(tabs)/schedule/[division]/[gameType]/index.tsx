@@ -12,7 +12,7 @@ import {
   UIManager
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { fonts, typography } from '@/constants/Typography';
+import { typography } from '@/constants/Typography';
 import { useScheduleId } from '@/hooks/useGamesFilter';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -31,9 +31,8 @@ export default function ScheduleScreen() {
   const divisionId = Number(params.division);
   const scheduleId = Number(params.gameType);
   const gameTypeTitle = params.gameTypeTitle as string;
-  const [refreshKey, setRefreshKey] = useState(0);
   
-  const { games, loading, error } = useScheduleId(divisionId, scheduleId, refreshKey);
+  const { games, loading, error, refreshData } = useScheduleId(divisionId, scheduleId);
 
   const [collapsedSections, setCollapsedSections] = useState<{[key: string]: boolean}>({});
 
@@ -102,7 +101,7 @@ export default function ScheduleScreen() {
 
   return (
     <View style={styles.container}>
-      <CustomHeader title={gameTypeTitle} />
+      <CustomHeader title={gameTypeTitle} refreshInfo />
       {/* Games List with Sections */}
       <SectionList
         sections={sections}
@@ -140,6 +139,8 @@ export default function ScheduleScreen() {
             <Text style={styles.emptyText}>No games found for this selection</Text>
           </View>
         )}
+        onRefresh={refreshData}
+        refreshing={loading}
       />
       
     </View>

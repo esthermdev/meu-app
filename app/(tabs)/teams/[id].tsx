@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+// app/(tabs)/teams/[id].tsx
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { 
   StyleSheet, 
   Text, 
   View, 
   ScrollView, 
-  Image
+  Image,
+  RefreshControl
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { supabase } from '@/lib/supabase';
@@ -38,53 +40,103 @@ interface GameWithDetails extends GameRow {
 const TeamDetails = () => {
   const { id } = useLocalSearchParams();
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [team, setTeam] = useState<TeamDetails | null>(null);
   const [games, setGames] = useState<GameWithDetails[]>([]);
+  const subscriptionRef = useRef<any>(null);
 
-  useEffect(() => {
-    const fetchTeamDetails = async () => {
-      if (!id) return;
-      
-      setLoading(true);
-      try {
-        // First fetch the team with division details
-        const { data: teamData, error: teamError } = await supabase
-          .from('teams')
-          .select(`
-            *,
-            division_details:division_id(*)
-          `)
-          .eq('id', id)
-          .single();
-          
-        if (teamError) throw teamError;
-        setTeam(teamData as unknown as TeamDetails);
+  const fetchTeamDetails = useCallback(async () => {
+    if (!id) return;
+    
+    try {
+      // First fetch the team with division details
+      const { data: teamData, error: teamError } = await supabase
+        .from('teams')
+        .select(`
+          *,
+          division_details:division_id(*)
+        `)
+        .eq('id', id)
+        .single();
         
-        // Then fetch games where this team is playing
-        const { data: gamesData, error: gamesError } = await supabase
-          .from('games')
-          .select(`
-            *,
-            team1:team1_id(*),
-            team2:team2_id(*),
-            datetime:datetime_id(*),
-            field:field_id(*),
-            scores(*)
-          `)
-          .or(`team1_id.eq.${id},team2_id.eq.${id}`)
-          .order('datetime_id', { ascending: true });
-          
-        if (gamesError) throw gamesError;
-        setGames(gamesData as unknown as GameWithDetails[]);
-      } catch (error) {
-        console.error('Error fetching team details:', error);
-      } finally {
-        setLoading(false);
+      if (teamError) throw teamError;
+      setTeam(teamData as unknown as TeamDetails);
+      
+      // Then fetch games where this team is playing
+      const { data: gamesData, error: gamesError } = await supabase
+        .from('games')
+        .select(`
+          *,
+          team1:team1_id(*),
+          team2:team2_id(*),
+          datetime:datetime_id(*),
+          field:field_id(*),
+          scores(*)
+        `)
+        .or(`team1_id.eq.${id},team2_id.eq.${id}`)
+        .order('datetime_id', { ascending: true });
+        
+      if (gamesError) throw gamesError;
+      setGames(gamesData as unknown as GameWithDetails[]);
+    } catch (error) {
+      console.error('Error fetching team details:', error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [id]);
+
+  // Set up real-time subscription for score updates
+  useEffect(() => {
+    if (!id) return;
+    
+    fetchTeamDetails();
+
+    // Get list of game IDs for this team
+    const setupSubscription = async () => {
+      // Clean up any existing subscription first
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe();
+      }
+      
+      // Create a new subscription for score changes
+      const gameIds = games.map(game => game.id);
+      
+      if (gameIds.length > 0) {
+        subscriptionRef.current = supabase
+          .channel('team-games-score-changes')
+          .on('postgres_changes', 
+            { 
+              event: '*', 
+              schema: 'public', 
+              table: 'scores',
+              filter: gameIds.length > 0 ? `game_id=in.(${gameIds.join(',')})` : undefined
+            }, 
+            (payload) => {
+              console.log('Real-time score update for team game:', payload);
+              // Fetch updated data when scores change
+              fetchTeamDetails();
+            }
+          )
+          .subscribe();
       }
     };
     
+    setupSubscription();
+    
+    // Cleanup subscription on unmount
+    return () => {
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe();
+        subscriptionRef.current = null;
+      }
+    };
+  }, [id, fetchTeamDetails, games.length]); // Include games.length to reset subscription when games are fetched
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
     fetchTeamDetails();
-  }, [id]);
+  }, [fetchTeamDetails]);
 
   const renderGameCard = (game: GameWithDetails) => (
     <View key={game.id} style={styles.gameCard}>
@@ -139,16 +191,26 @@ const TeamDetails = () => {
           </CustomText>
         </View>
       </View>
-      </View>
+    </View>
   );
 
   return (
     <View style={styles.container}>  
-      <CustomHeader title={team?.name ? team.name : ""} />    
-      {loading ? (
+      <CustomHeader title={team?.name ? team.name : ""} refreshInfo={true} />    
+      {loading && !refreshing ? (
         <LoadingIndicator message='Loading games for selected team...' />
       ) : team ? (
-        <ScrollView style={styles.content}>
+        <ScrollView 
+          style={styles.content}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#EA1D25']}
+              tintColor="#EA1D25"
+            />
+          }
+        >
           {/* Team Info */}
           <View style={styles.teamInfoContainer}>
             <Image 
@@ -174,7 +236,9 @@ const TeamDetails = () => {
           
           {/* Games Section */}
           <View style={styles.gamesSection}>
-            <CustomText style={styles.sectionTitle}>Games</CustomText>
+            <View style={styles.sectionHeader}>
+              <CustomText style={styles.sectionTitle}>Games</CustomText>
+            </View>
             
             {games.length > 0 ? (
               <View style={styles.gamesList}>
@@ -225,6 +289,12 @@ const styles = StyleSheet.create({
   },
   gamesSection: {
     padding: 20,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
   },
   sectionTitle: {
     ...typography.textLargeBold,

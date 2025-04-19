@@ -27,7 +27,7 @@ type Props = {
 }
 
 const PoolGameComponent: React.FC<Props> = ({ poolId, divisionId }) => {
-  const { games } = useRoundIds(divisionId, 1);
+  const { games, loading, error, refreshData } = useRoundIds(divisionId, 1);
   
   const poolGames = games.filter(game => game.pool_id === poolId);
 
@@ -81,10 +81,12 @@ const PoolGameComponent: React.FC<Props> = ({ poolId, divisionId }) => {
     <View style={styles.container}>
       <FlashList
         data={poolGames}
-        estimatedItemSize={100}
+        estimatedItemSize={50}
         renderItem={renderGame}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.gameList}
+        onRefresh={refreshData}
+        refreshing={loading}
       />
     </View>
   );
@@ -93,6 +95,10 @@ const PoolGameComponent: React.FC<Props> = ({ poolId, divisionId }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  infoText: {
+    ...typography.text,
+    justifyContent: 'center',
   },
     gameList: {
       paddingHorizontal: 20,

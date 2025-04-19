@@ -1,3 +1,4 @@
+// app/(user)/admin/update-scores/[division]/[gameType]/poolplay.tsx
 import { View, ActivityIndicator, Text } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { usePoolIds } from '@/hooks/useGamesFilter';

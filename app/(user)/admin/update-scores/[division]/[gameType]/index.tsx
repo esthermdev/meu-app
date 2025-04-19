@@ -1,25 +1,24 @@
 // app/(user)/admin/update-scores/[division]/[gameType]/index.tsx
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  StatusBar, 
-  SafeAreaView, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  StatusBar,
+  SafeAreaView,
   SectionList,
   Alert,
-  LayoutAnimation, 
-  Platform, 
+  LayoutAnimation,
+  Platform,
   UIManager,
-  ActivityIndicator
+  ActivityIndicator,
+  RefreshControl
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { supabase } from '@/lib/supabase';
-import { fonts, typography } from '@/constants/Typography';
+import { typography } from '@/constants/Typography';
 import AdminGameComponent from '@/components/features/gameviews/AdminGameComponent';
-import { useScheduleId } from '@/hooks/useGamesFilter';
-import LoadingIndicator from '@/components/LoadingIndicator';
 import { MaterialIcons } from '@expo/vector-icons';
 import AdminBottomActionButtons from '@/components/buttons/AdminBottomActionButtons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -38,14 +37,14 @@ export default function UpdateScoresScreen() {
   const scheduleId = Number(params.gameType);
   const gameTypeTitle = params.gameTypeTitle as string;
   const [refreshKey, setRefreshKey] = useState(0);
-  
+
   // Maintain our own games state locally
   const [games, setGames] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState(false); // New - separate loading state for actions
-  
-  const [collapsedSections, setCollapsedSections] = useState<{[key: string]: boolean}>({});
+
+  const [collapsedSections, setCollapsedSections] = useState<{ [key: string]: boolean }>({});
 
   const insets = useSafeAreaInsets();
 
@@ -55,7 +54,7 @@ export default function UpdateScoresScreen() {
   const fetchGames = useCallback(async () => {
     if (!actionLoading) setLoading(true); // Only show loading if not in middle of an action
     try {
-              const { data, error: fetchError } = await supabase
+      const { data, error: fetchError } = await supabase
         .from('games')
         .select(`
           *,
@@ -68,7 +67,7 @@ export default function UpdateScoresScreen() {
         .eq('division_id', divisionId)
         .eq('gametype_id', scheduleId)
         .order('id');
-      
+
       if (fetchError) throw fetchError;
       setGames(data || []);
       setError(null);
@@ -99,9 +98,9 @@ export default function UpdateScoresScreen() {
         type: LayoutAnimation.Types.easeInEaseOut,
       },
     };
-    
+
     LayoutAnimation.configureNext(animationConfig);
-    
+
     setCollapsedSections(prev => ({
       ...prev,
       [sectionId]: !prev[sectionId]
@@ -115,7 +114,7 @@ export default function UpdateScoresScreen() {
   // Group games by round_id
   const sections = useMemo(() => {
     if (!games || games.length === 0) return [];
-    
+
     // Create a map of round_id to games
     const roundsMap = games.reduce((acc, game) => {
       const roundId = game.round_id;
@@ -128,7 +127,7 @@ export default function UpdateScoresScreen() {
       acc[roundId].data.push(game);
       return acc;
     }, {});
-    
+
     // Convert map to array sorted by round id
     return Object.keys(roundsMap)
       .map(roundId => roundsMap[roundId])
@@ -147,8 +146,8 @@ export default function UpdateScoresScreen() {
       'Are you sure you want to mark all games as completed?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Yes', 
+        {
+          text: 'Yes',
           onPress: async () => {
             setActionLoading(true);
             try {
@@ -160,13 +159,13 @@ export default function UpdateScoresScreen() {
                     .from('scores')
                     .update({ is_finished: true })
                     .eq('id', game.scores[0].id);
-                  
+
                   if (updateError) throw updateError;
                 }
               });
-              
+
               await Promise.all(updatePromises);
-              
+
               // Update local state to reflect changes before re-fetching
               const updatedGames = games.map(game => {
                 if (game.scores && game.scores.length > 0) {
@@ -180,7 +179,7 @@ export default function UpdateScoresScreen() {
                 }
                 return game;
               });
-              
+
               setGames(updatedGames);
               Alert.alert('Success', 'All games marked as completed');
             } catch (err) {
@@ -202,8 +201,8 @@ export default function UpdateScoresScreen() {
       'Are you sure you want to reset all games? This will clear all scores and mark games as not completed.',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Yes', 
+        {
+          text: 'Yes',
           onPress: async () => {
             setActionLoading(true);
             try {
@@ -211,20 +210,20 @@ export default function UpdateScoresScreen() {
               const scoreIds = games
                 .filter(game => game.scores && game.scores.length > 0)
                 .map(game => game.scores[0].id);
-              
+
               if (scoreIds.length > 0) {
                 // Update score records to reset them
                 const { error: updateError } = await supabase
                   .from('scores')
-                  .update({ 
+                  .update({
                     is_finished: false,
                     team1_score: 0,
                     team2_score: 0
                   })
                   .in('id', scoreIds);
-                  
+
                 if (updateError) throw updateError;
-                
+
                 // Update local state to reflect changes before re-fetching
                 const updatedGames = games.map(game => {
                   if (game.scores && game.scores.length > 0) {
@@ -240,10 +239,10 @@ export default function UpdateScoresScreen() {
                   }
                   return game;
                 });
-                
+
                 setGames(updatedGames);
               }
-              
+
               Alert.alert('Success', 'All games have been reset');
             } catch (err) {
               console.error('Error resetting games:', err);
@@ -281,10 +280,10 @@ export default function UpdateScoresScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#EA1D25" />
-      
-      <View style={{ 
+
+      <View style={{
         paddingTop: Platform.OS === 'android' ? statusBarHeight : insets.top,
-        backgroundColor: '#EA1D25' 
+        backgroundColor: '#EA1D25'
       }}>
         <CustomAdminHeader title={gameTypeTitle} />
       </View>
@@ -306,8 +305,8 @@ export default function UpdateScoresScreen() {
             return null; // Don't render items in collapsed sections
           }
           return (
-            <AdminGameComponent 
-              game={item} 
+            <AdminGameComponent
+              game={item}
               onGameStatusChange={handleGameStatusChange}
             />
           );
@@ -315,17 +314,17 @@ export default function UpdateScoresScreen() {
         renderSectionHeader={({ section }) => {
           const sectionId = section.data[0].round_id.toString();
           const isCollapsed = collapsedSections[sectionId];
-          
+
           return (
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.sectionHeader}
               activeOpacity={0.7}
               onPress={() => toggleSection(sectionId)}
             >
               <CustomText style={styles.sectionHeaderText}>{section.title}</CustomText>
-              {isCollapsed ? 
-                <MaterialIcons name='keyboard-arrow-down' size={24} color='#fff' /> : 
-                <MaterialIcons name='keyboard-arrow-left' size={24} color='#fff' /> }
+              {isCollapsed ?
+                <MaterialIcons name='keyboard-arrow-down' size={24} color='#fff' /> :
+                <MaterialIcons name='keyboard-arrow-left' size={24} color='#fff' />}
             </TouchableOpacity>
           );
         }}
@@ -336,11 +335,19 @@ export default function UpdateScoresScreen() {
             <CustomText style={styles.emptyText}>No games found for this selection</CustomText>
           </View>
         )}
-        extraData={[games, collapsedSections]} // Add extraData to ensure re-render when these states change
+        extraData={[games, collapsedSections]}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={refreshGames}
+            colors={["#EA1D25"]}
+            tintColor="#EA1D25"
+          />
+        }
       />
 
       {/* Bottom Action Buttons */}
-      <AdminBottomActionButtons 
+      <AdminBottomActionButtons
         leftButton={handleMarkAllCompleted}
         rightButton={handleResetAllGames} // Updated to use handleResetAllGames
         rightText='Reset All Games'
