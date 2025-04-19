@@ -15,9 +15,31 @@ import CustomText from '@/components/CustomText';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { signIn } = useAuth();
+
+  // Check if the email belongs to a volunteer
+  const checkIfVolunteer = async (email: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('volunteers')
+        .select('email')
+        .eq('email', email.toLowerCase())
+        .single();
+      
+      if (error) {
+        // Record not found or other error
+        return false;
+      }
+      
+      return true; // Email exists in volunteers table
+    } catch (error) {
+      console.error('Error checking volunteer status:', error);
+      return false;
+    }
+  };
 
   const handleSignIn = async () => {
     if (!email || !email.includes('@')) {
@@ -25,18 +47,25 @@ export default function SignIn() {
       return;
     }
 
-    if (email === 'esmd258@gmail.com') {
+    const isVolunteer = await checkIfVolunteer(email);
+
+    if (email === 'esmd258@gmail.com' || isVolunteer) {
       try {
         const { data, error } = await supabase.auth.signInWithPassword({
-          email: 'esmd258@gmail.com',  // Use the email you set up for the reviewer
-          password: 'developer'   // Use the password you set up for the reviewer
+          email,
+          password: email === 'esmd258@gmail.com' ? 'developer' : 'regionals2025'
         });
 
-        if (error) throw error;
+        if (error) {
+          console.error('Sign in error:', error);
+          setError('Authentication failed. Please contact an administrator.');
+          return;
+        }
+
         router.replace('/(user)');
 
       } catch (error) {
-        console.error('Developer sign-in error:', error);
+        console.error('Volunteer sign-in error:', error);
         Alert.alert('Error', 'Could not sign in with developer account. Please try again.');
       }
     } else {
@@ -131,7 +160,7 @@ export default function SignIn() {
 
               <PrimaryButton
                 onPress={handleSignIn}
-                title={loading ? 'Sending link...' : 'Send Link'}
+                title={loading ? 'Sending link...' : 'Sign In'}
                 disabled={loading}
               />
 

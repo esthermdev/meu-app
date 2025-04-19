@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity } from 'react-native';
+import { StatusBar, Text, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Redirect, router, Stack } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
@@ -30,95 +30,102 @@ export default function UserLayout() {
 
   // This layout can be deferred because it's not the root layout.
   return (
-    <Stack>
-      <Stack.Screen
-        name="index"
-        options={{
-          title: 'User',
-          headerTitleAlign: 'center',
-          headerStyle: {
-            backgroundColor: '#EA1D25',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          headerLeft: () => (
-            <TouchableOpacity 
-              onPress={() => router.navigate('/(tabs)/home')}
-            >
-              <MaterialIcons name="arrow-back" size={24} color="#fff" />
-            </TouchableOpacity>
-          ),
-          headerRight: () => (
-            <TouchableOpacity 
-              onPress={handleSignOut}
-            >
-              <MaterialIcons name="logout" size={24} color="#fff" />
-            </TouchableOpacity>
-          ),
-        }}
+    <>
+      <StatusBar
+        barStyle="default"
+        backgroundColor="#EA1D25"
+        translucent
       />
-      <Stack.Screen 
-        name='account'
-        options={{
-          title: 'My Profile',
-          headerTitleAlign: 'center',
-          headerStyle: {
-            backgroundColor: '#EA1D25',
-          },
-          headerTintColor: '#fff',
-          headerLeft: () => (
-            <TouchableOpacity 
-              onPress={() => router.back()}
-            >
-              <MaterialIcons name="arrow-back" size={24} color="#fff" />
-            </TouchableOpacity>
-          ),
-        }}
-      />
-      <Stack.Screen 
-        name='favorites'
-        options={{
-          title: 'Favorites',
-          headerTitleAlign: 'center',
-          headerStyle: {
-            backgroundColor: '#EA1D25',
-          },
-          headerTintColor: '#fff',
-          headerLeft: () => (
-            <TouchableOpacity 
-              onPress={() => router.back()}
-            >
-              <MaterialIcons name="arrow-back" size={24} color="#fff" />
-            </TouchableOpacity>
-          ),
-        }}
-      />
-      <Stack.Screen 
-        name='feedback'
-        options={{
-          title: 'Feedback',
-          headerTitleAlign: 'center',
-          headerStyle: {
-            backgroundColor: '#EA1D25',
-          },
-          headerTintColor: '#fff',
-          headerLeft: () => (
-            <TouchableOpacity 
-              onPress={() => router.back()}
-            >
-              <MaterialIcons name="arrow-back" size={24} color="#fff" />
-            </TouchableOpacity>
-          ),
-        }}
-      />
-      <Stack.Screen 
-        name='admin'
-        options={{
-          headerShown: false
-        }}
-      />
-    </Stack>
+      <Stack>
+        <Stack.Screen
+          name="index"
+          options={{
+            title: 'User',
+            headerTitleAlign: 'center',
+            headerStyle: {
+              backgroundColor: '#EA1D25',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => router.navigate('/(tabs)/home')}
+              >
+                <MaterialIcons name="arrow-back" size={24} color="#fff" />
+              </TouchableOpacity>
+            ),
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={handleSignOut}
+              >
+                <MaterialIcons name="logout" size={24} color="#fff" />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name='account'
+          options={{
+            title: 'My Profile',
+            headerTitleAlign: 'center',
+            headerStyle: {
+              backgroundColor: '#EA1D25',
+            },
+            headerTintColor: '#fff',
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => router.back()}
+              >
+                <MaterialIcons name="arrow-back" size={24} color="#fff" />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name='favorites'
+          options={{
+            title: 'Favorites',
+            headerTitleAlign: 'center',
+            headerStyle: {
+              backgroundColor: '#EA1D25',
+            },
+            headerTintColor: '#fff',
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => router.back()}
+              >
+                <MaterialIcons name="arrow-back" size={24} color="#fff" />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name='feedback'
+          options={{
+            title: 'Feedback',
+            headerTitleAlign: 'center',
+            headerStyle: {
+              backgroundColor: '#EA1D25',
+            },
+            headerTintColor: '#fff',
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => router.back()}
+              >
+                <MaterialIcons name="arrow-back" size={24} color="#fff" />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name='admin'
+          options={{
+            headerShown: false
+          }}
+        />
+      </Stack>
+    </>
   );
 }

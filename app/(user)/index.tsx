@@ -1,4 +1,4 @@
-import { StyleSheet, View, ScrollView, StatusBar } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import { Href, router } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
 import { Card } from '@/components/Card';
@@ -19,9 +19,7 @@ export default function UserDashboard() {
   
 
   return (
-    <ScrollView style={styles.container}>
-      <StatusBar barStyle={'light-content'} />
-      
+    <ScrollView style={styles.container}>      
       <View style={styles.header}>
         <CustomText style={styles.welcomeText}>
           Welcome, <CustomText style={styles.username}>{profile?.full_name}!</CustomText>
