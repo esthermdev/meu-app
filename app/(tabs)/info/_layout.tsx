@@ -13,7 +13,8 @@ export default function StandingLayout() {
 			/>
 			<Stack.Screen name="tournament-info" options={{ header: () => <CustomHeader title='Tournament Info' /> }} />
 			<Stack.Screen name="rules" options={{ header: () => <CustomHeader title='Rules' /> }} />
-			<Stack.Screen name="emergency" options={{ header: () => <CustomHeader title='In Case of Emergency' /> }} />
+			{/* <Stack.Screen name="emergency" options={{ header: () => <CustomHeader title='In Case of Emergency' /> }} /> */}
+			<Stack.Screen name="wainwright" options={{ header: () => <CustomHeader title='Wainwright Facility' /> }} />
 			<Stack.Screen name="refund-policy" options={{ header: () => <CustomHeader title='Refund Policy' /> }} />
 			<Stack.Screen name="restaurants-hotels" options={{ header: () => <CustomHeader title='Restaurants & Hotels' /> }} />
 			<Stack.Screen name="vendors" options={{ header: () => <CustomHeader title='Vendors' /> }} />

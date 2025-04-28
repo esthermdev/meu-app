@@ -12,7 +12,10 @@ import CustomText from '@/components/CustomText';
 const Tab = createMaterialTopTabNavigator();
 
 // Define types based on your Supabase schema
-type CartRequest = Database['public']['Tables']['cart_requests']['Row'];
+type CartRequest = Database['public']['Tables']['cart_requests']['Row'] & {
+  from_field_name?: string | null;
+  to_field_name?: string | null;
+};
 type Profile = Database['public']['Tables']['profiles']['Row'];
 type LocationType = Database['public']['Enums']['location_type'];
 
@@ -62,14 +65,39 @@ const CartRequestsList = () => {
   const fetchRequests = async () => {
     try {
       setLoading(true);
+      
+      // First, fetch all fields to get their names
+      const { data: fieldsData, error: fieldsError } = await supabase
+        .from('fields')
+        .select('id, name');
+        
+      if (fieldsError) throw fieldsError;
+      
+      // Create a mapping of field IDs to names
+      const fieldMap: Record<number, string> = {};
+      if (fieldsData) {
+        fieldsData.forEach(field => {
+          fieldMap[field.id] = field.name;
+        });
+      }
+      
+      // Then fetch cart requests
       const { data, error } = await supabase
         .from('cart_requests')
         .select('*')
         .eq('status', 'pending')
         .order('created_at', { ascending: false });
-
+  
       if (error) throw error;
-      setRequests(data || []);
+      
+      // Enhance the cart requests with field names
+      const enhancedRequests = data?.map(request => ({
+        ...request,
+        from_field_name: request.from_field_number ? fieldMap[request.from_field_number] : null,
+        to_field_name: request.to_field_number ? fieldMap[request.to_field_number] : null
+      })) || [];
+      
+      setRequests(enhancedRequests);
     } catch (error) {
       console.error('Error fetching cart requests:', error);
     } finally {
@@ -194,10 +222,13 @@ const CartRequestsList = () => {
           <View style={styles.routeInfo}>
             {/* From section */}
             <View style={styles.locationInfo}>
-              <CustomText style={styles.routeLabel}>From: </CustomText><CustomText style={styles.locationText}>
-                {item.from_location === 'Field' ? 'Field ' : ''}
-                {item.from_location === 'Field' ? item.from_field_number : getLocationLabel(item.from_location)}
-              </CustomText>
+            <CustomText style={styles.routeLabel}>From: </CustomText>
+            <CustomText style={styles.locationText}>
+              {item.from_location === 'Field' ? 'Field ' : ''}
+              {item.from_location === 'Field' 
+                ? (item.from_field_name || item.from_field_number) 
+                : getLocationLabel(item.from_location)}
+            </CustomText>
             </View>
 
             {/* To section */}
@@ -205,7 +236,9 @@ const CartRequestsList = () => {
               <CustomText style={styles.routeLabel}>To: </CustomText>
               <CustomText style={styles.locationText}>
                 {item.to_location === 'Field' ? 'Field ' : ''}
-                {item.to_location === 'Field' ? item.to_field_number : getLocationLabel(item.to_location)}
+                {item.to_location === 'Field' 
+                  ? (item.to_field_name || item.to_field_number) 
+                  : getLocationLabel(item.to_location)}
               </CustomText>
             </View>
           </View>

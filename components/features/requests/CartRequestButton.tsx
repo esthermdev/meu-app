@@ -35,13 +35,21 @@ type RequestStatus = Database['public']['Enums']['request_status'];
 // Define locations as a const array of valid LocationType values
 const LOCATIONS: LocationType[] = ['Field', 'Tourney Central', 'Lot 1', 'Lot 2', 'Entrance'];
 
+type Field = {
+  id: number;
+  name: string;
+};
+
 const CartRequestButton = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fromLocation, setFromLocation] = useState<LocationType>('Field');
   const [toLocation, setToLocation] = useState<LocationType>('Field');
   const [fromFieldNumber, setFromFieldNumber] = useState<string>('');
   const [toFieldNumber, setToFieldNumber] = useState<string>('');
-  const [fields, setFields] = useState<string[]>([]);
+  const [fields, setFields] = useState<Field[]>([]);
+  const [fieldOptions, setFieldOptions] = useState<string[]>([]);
+  const [fieldNameToIdMap, setFieldNameToIdMap] = useState<Record<string, number>>({});
+  const [fieldIdToNameMap, setFieldIdToNameMap] = useState<Record<number, string>>({});
   const [passengerCount, setPassengerCount] = useState(1);
   const [specialRequest, setSpecialRequest] = useState('');
   // Error states
@@ -62,11 +70,27 @@ const CartRequestButton = () => {
   const fetchFields = async () => {
     const { data, error } = await supabase
       .from('fields')
-      .select('id');
+      .select('id, name')
+      .order('name');
+    
     if (error) {
       console.error('Error fetching fields:', error);
-    } else {
-      setFields(data.map(field => field.id.toString()));
+    } else if (data) {
+      setFields(data);
+      
+      // Create the name-to-id and id-to-name mapping
+      const nameToId: Record<string, number> = {};
+      const idToName: Record<number, string> = {};
+      data.forEach(field => {
+        nameToId[field.name] = field.id;
+        idToName[field.id] = field.name;
+      });
+      
+      setFieldNameToIdMap(nameToId);
+      setFieldIdToNameMap(idToName);
+      
+      // Set field names for the dropdown
+      setFieldOptions(data.map(field => field.name));
     }
   };
 
@@ -238,14 +262,15 @@ const CartRequestButton = () => {
 
                   {fromLocation === 'Field' && (
                     <Dropdown
-                      label="From Field Number"
-                      data={fields}
-                      onSelect={(item: string) => {
-                        setFromFieldNumber(item);
+                      label="From Field"
+                      data={fieldOptions}
+                      onSelect={(fieldName: string) => {
+                        const fieldId = fieldNameToIdMap[fieldName]?.toString() || '';
+                        setFromFieldNumber(fieldId)
                         // Clear error when user makes a selection
                         setErrors(prev => ({...prev, fromFieldNumber: undefined}));
                       }}
-                      selectedValue={fromFieldNumber}
+                      selectedValue={fromFieldNumber ? fieldIdToNameMap[parseInt(fromFieldNumber)] : ''}
                       error={!!errors.fromFieldNumber}
                     />
                   )}
@@ -267,14 +292,15 @@ const CartRequestButton = () => {
 
                   {toLocation === 'Field' && (
                     <Dropdown
-                      label="To Field Number"
-                      data={fields}
-                      onSelect={(item: string) => {
-                        setToFieldNumber(item);
+                      label="To Field"
+                      data={fieldOptions}
+                      onSelect={(fieldName: string) => {
+                        const fieldId = fieldNameToIdMap[fieldName]?.toString() || '';
+                        setToFieldNumber(fieldId);
                         // Clear error when user makes a selection
                         setErrors(prev => ({...prev, toFieldNumber: undefined}));
                       }}
-                      selectedValue={toFieldNumber}
+                      selectedValue={toFieldNumber ? fieldIdToNameMap[parseInt(toFieldNumber)] : ''}
                       error={!!errors.toFieldNumber}
                     />
                   )}

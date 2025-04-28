@@ -2,27 +2,20 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
 
-const RulesAndSOTG = () => {
+const Wainwright = () => {
 	return (
 		<View style={styles.container}>
 			<ScrollView
 				style={styles.scrollview}
 				contentContainerStyle={styles.contentContainer}
 			>
-				<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentHeader}>Game Rules</CustomText>
+				<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentHeader}>Wainwright Facility</CustomText>
 				<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>
-					<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentSubHeader}>DI{'\n'}</CustomText>
-					• D1 games are XXXX minutes{'\n'}
-					• All games are soft capped (highest score plus 1) at XXX and hard capped at XXXX minutes{'\n'}
-					• A point begins as soon as a goal is scored.{'\n'}
-					• The caps do NOT affect timeouts.{'\n'}
-				</CustomText>
-				<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>
-					<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentSubHeader}>DIII{'\n'}</CustomText>
-					• D3 games are XXXX minutes{'\n'}
-					• All games are soft capped (highest score plus 1) at XXX and hard capped at XXXX minutes{'\n'}
-					• A point begins as soon as a goal is scored.{'\n'}
-					• The caps do NOT affect timeouts.{'\n'}
+					• Respect for equipment, the facility, and all playing surfaces are expected at all times.{'\n'}
+					• An adult shall supervise groups and organizations at all times.{'\n'}
+					• All groups and individuals are expected to leave fields free of trash and equipment.{'\n'}
+					• Please report any vandalism to the Parks and Recreation, or Police Department as soon as it is discovered.{'\n'}
+					• All participants, officials and spectators are expected to display proper sportsmanship and respect to all others on the facility.
 				</CustomText>
 			</ScrollView>
 		</View>
@@ -69,4 +62,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default RulesAndSOTG;
+export default Wainwright;

@@ -9,7 +9,10 @@ import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
 
 // Define types based on your Supabase schema
-type CartRequest = Database['public']['Tables']['cart_requests']['Row'];
+type CartRequest = Database['public']['Tables']['cart_requests']['Row'] & {
+  from_field_name?: string | null;
+  to_field_name?: string | null;
+};
 type Profile = Database['public']['Tables']['profiles']['Row'];
 type LocationType = Database['public']['Enums']['location_type'];
 
@@ -42,14 +45,39 @@ const FulfilledCartRequestsList = () => {
   const fetchFulfilledRequests = async () => {
     try {
       setLoading(true);
+      
+      // Get field information for displaying names
+      const { data: fieldsData, error: fieldsError } = await supabase
+        .from('fields')
+        .select('id, name');
+        
+      if (fieldsError) throw fieldsError;
+      
+      // Create a mapping of field IDs to names
+      const fieldMap: Record<number, string> = {};
+      if (fieldsData) {
+        fieldsData.forEach(field => {
+          fieldMap[field.id] = field.name;
+        });
+      }
+      
+      // Get the cart requests
       const { data, error } = await supabase
         .from('cart_requests')
         .select('*, driver')
-        .in('status', ['confirmed']) // Get requests that are confirmed or completed // Only show requests for the current driver
+        .in('status', ['confirmed']) // Get requests that are confirmed 
         .order('updated_at', { ascending: false });
 
       if (error) throw error;
-      setRequests(data as unknown as CartRequest[]);
+      
+      // Enhance the requests with field names
+      const enhancedRequests = data.map(request => ({
+        ...request,
+        from_field_name: request.from_field_number ? fieldMap[request.from_field_number] : null,
+        to_field_name: request.to_field_number ? fieldMap[request.to_field_number] : null
+      }));
+      
+      setRequests(enhancedRequests);
     } catch (error) {
       console.error('Error fetching fulfilled requests:', error);
     } finally {
@@ -95,7 +123,7 @@ const FulfilledCartRequestsList = () => {
     } else {
       return {
         text: 'Confirmed',
-        color: '#6EDF28' // Cyan for confirmed
+        color: '#6EDF28' // Green for confirmed
       };
     }
   };
@@ -145,8 +173,9 @@ const FulfilledCartRequestsList = () => {
             <View style={styles.locationInfo}>
               <CustomText style={styles.routeLabel}>From: </CustomText>
               <CustomText style={styles.locationText}>
-                {item.from_location === 'Field' ? 'Field ' : ''}
-                {item.from_location === 'Field' ? item.from_field_number : getLocationLabel(item.from_location)}
+                {item.from_location === 'Field' 
+                  ? `Field ${item.from_field_name || item.from_field_number}` 
+                  : getLocationLabel(item.from_location)}
               </CustomText>
             </View>
             
@@ -154,8 +183,9 @@ const FulfilledCartRequestsList = () => {
             <View style={styles.locationInfo}>
               <CustomText style={styles.routeLabel}>To: </CustomText>
               <CustomText style={styles.locationText}>
-                {item.to_location === 'Field' ? 'Field ' : ''}
-                {item.to_location === 'Field' ? item.to_field_number : getLocationLabel(item.to_location)}
+                {item.to_location === 'Field' 
+                  ? `Field ${item.to_field_name || item.to_field_number}`
+                  : getLocationLabel(item.to_location)}
               </CustomText>
             </View>
           </View>

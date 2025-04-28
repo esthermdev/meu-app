@@ -8,8 +8,9 @@ import CustomText from "@/components/CustomText";
 const menuItems = [
   { title: "Tournament Info", route: "/(tabs)/info/tournament-info" as const },
   { title: "Rules & SOTG", route: "/(tabs)/info/rules" as const },
-  { title: "In Case of Emergency", route: "/(tabs)/info/emergency" as const },
-  { title: "Refund Policy", route: "/(tabs)/info/refund-policy" as const },
+  // { title: "In Case of Emergency", route: "/(tabs)/info/emergency" as const },
+  { title: "Wainwright Facility", route: "/(tabs)/info/wainwright" as const },
+  // { title: "Refund Policy", route: "/(tabs)/info/refund-policy" as const },
   { title: "Restaurants & Hotels", route: "/(tabs)/info/restaurants-hotels" as const },
   { title: "Vendors", route: "/(tabs)/info/vendors" as const },
   { title: "FAQ", route: "/(tabs)/info/faq" as const },

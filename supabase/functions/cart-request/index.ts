@@ -55,6 +55,12 @@ Deno.serve(async (req) => {
 // Function to handle new cart requests - notify available drivers
 async function handleNewCartRequest(cartRequest: CartRequest) {
   try {
+    // Fetch field names for any field numbers in the request
+    const fieldNames = await getFieldNames([
+      cartRequest.from_field_number, 
+      cartRequest.to_field_number
+    ].filter(Boolean) as number[]);
+
     const { data: drivers, error } = await supabase
       .from("profiles")
       .select("id, expo_push_token")
@@ -81,15 +87,25 @@ async function handleNewCartRequest(cartRequest: CartRequest) {
     console.log(`Found ${validDrivers.length} drivers with valid push tokens`);
 
     if (validDrivers.length > 0) {
+      // Format from location with field name if applicable
+      let fromDisplay = cartRequest.from_location;
+      if (cartRequest.from_location === 'Field' && cartRequest.from_field_number) {
+        const fieldName = fieldNames[cartRequest.from_field_number];
+        fromDisplay += fieldName ? ` ${fieldName}` : ` ${cartRequest.from_field_number}`;
+      }
+
+      // Format to location with field name if applicable
+      let toDisplay = cartRequest.to_location;
+      if (cartRequest.to_location === 'Field' && cartRequest.to_field_number) {
+        const fieldName = fieldNames[cartRequest.to_field_number];
+        toDisplay += fieldName ? ` ${fieldName}` : ` ${cartRequest.to_field_number}`;
+      }
+
       // Format notification
       const notification = {
         sound: "default",
         title: "Cart Requested",
-        body: `From: ${cartRequest.from_location}${
-          cartRequest.from_field_number ? ` ${cartRequest.from_field_number}` : ""
-        } -> To: ${cartRequest.to_location}${
-          cartRequest.to_field_number ? ` ${cartRequest.to_field_number}` : ""
-        }\nPassengers: ${cartRequest.passenger_count}\n${cartRequest.special_request ? cartRequest.special_request : ""}`,
+        body: `From: ${fromDisplay} -> To: ${toDisplay}\nPassengers: ${cartRequest.passenger_count}\n${cartRequest.special_request ? cartRequest.special_request : ""}`,
         data: {
           requestId: cartRequest.id,
           type: "new_cart_request",
@@ -148,6 +164,12 @@ async function handleRequestAccepted(cartRequest: CartRequest) {
   try {
     console.log("Handling request accepted for ID:", cartRequest.id);
     
+    // Fetch field names for any field numbers in the request
+    const fieldNames = await getFieldNames([
+      cartRequest.from_field_number, 
+      cartRequest.to_field_number
+    ].filter(Boolean) as number[]);
+    
     // Get the push token to notify - either from request directly or anonymous_tokens table
     let pushToken = null;
     
@@ -188,11 +210,25 @@ async function handleRequestAccepted(cartRequest: CartRequest) {
         }
       }
       
+      // Format from location with field name if applicable
+      let fromDisplay = cartRequest.from_location;
+      if (cartRequest.from_location === 'Field' && cartRequest.from_field_number) {
+        const fieldName = fieldNames[cartRequest.from_field_number];
+        fromDisplay += fieldName ? ` ${fieldName}` : ` ${cartRequest.from_field_number}`;
+      }
+
+      // Format to location with field name if applicable
+      let toDisplay = cartRequest.to_location;
+      if (cartRequest.to_location === 'Field' && cartRequest.to_field_number) {
+        const fieldName = fieldNames[cartRequest.to_field_number];
+        toDisplay += fieldName ? ` ${fieldName}` : ` ${cartRequest.to_field_number}`;
+      }
+      
       const message = {
         to: pushToken,
         sound: "default",
         title: "Driver on the way!",
-        body: `${driverName} is on the way to pick you up.`,
+        body: `${driverName} is on the way to pick you up from ${fromDisplay} to ${toDisplay}.`,
         data: {
           requestId: cartRequest.id,
           type: "cart_request_accepted",
@@ -235,5 +271,36 @@ async function handleRequestAccepted(cartRequest: CartRequest) {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
+  }
+}
+
+// Helper function to get field names from field IDs
+async function getFieldNames(fieldIds: number[]): Promise<Record<number, string>> {
+  // If no field IDs, return empty object
+  if (!fieldIds.length) return {};
+  
+  try {
+    const { data, error } = await supabase
+      .from("fields")
+      .select("id, name")
+      .in("id", fieldIds);
+      
+    if (error) {
+      console.error("Error fetching field names:", error);
+      return {};
+    }
+    
+    // Create a mapping of field IDs to names
+    const fieldMap: Record<number, string> = {};
+    if (data) {
+      data.forEach(field => {
+        fieldMap[field.id] = field.name;
+      });
+    }
+    
+    return fieldMap;
+  } catch (err) {
+    console.error("Error in getFieldNames:", err);
+    return {};
   }
 }
