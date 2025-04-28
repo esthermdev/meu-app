@@ -404,6 +404,7 @@ export type Database = {
           id: number
           priority_level: string | null
           status: Database["public"]["Enums"]["request_status"] | null
+          team_name: string | null
           trainer: string | null
           updated_at: string | null
         }
@@ -415,6 +416,7 @@ export type Database = {
           id?: number
           priority_level?: string | null
           status?: Database["public"]["Enums"]["request_status"] | null
+          team_name?: string | null
           trainer?: string | null
           updated_at?: string | null
         }
@@ -426,6 +428,7 @@ export type Database = {
           id?: number
           priority_level?: string | null
           status?: Database["public"]["Enums"]["request_status"] | null
+          team_name?: string | null
           trainer?: string | null
           updated_at?: string | null
         }

@@ -6,6 +6,7 @@ interface MedicalRequest {
   field_number: number;
   description_of_emergency: string;
   status: "pending" | "confirmed";
+  team_name?: string; // Add this to support team name
 }
 
 interface WebhookPayload {
@@ -35,12 +36,26 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // First, get the field information to include the field name
+    const { data: fieldData, error: fieldError } = await supabase
+      .from("fields")
+      .select("name")
+      .eq("id", payload.record.field_number)
+      .single();
+
+    if (fieldError) {
+      console.error("Error fetching field name:", fieldError);
+    }
+
+    const fieldName = fieldData?.name || `Field ${payload.record.field_number}`;
+    
+    // Get medical staff who should receive notifications
     const { data: medicalStaff, error } = await supabase
       .from("profiles")
       .select("id, expo_push_token")
       .eq("is_medical_staff", true)
       .eq("is_available", true)
-      .eq("is_logged_in", true)
+      .eq("is_logged_in", true);
 
     if (error) {
       console.error("Error fetching medical staff:", error);
@@ -61,15 +76,20 @@ Deno.serve(async (req) => {
     console.log(`Found ${validStaff.length} medical staff with valid push tokens`);
 
     if (validStaff.length > 0) {
-      // Format notification
+      // Format notification - now includes field name instead of just ID
+      // Also include team name if available
+      const teamInfo = payload.record.team_name ? `\nTeam: ${payload.record.team_name}` : '';
+      
       const notification = {
         sound: "default",
         title: "Medical Assistance Required",
-        body: `Location: Field ${payload.record.field_number}\n${payload.record.description_of_emergency}`,
+        body: `Location: ${fieldName}\n${payload.record.description_of_emergency}${teamInfo}`,
         data: {
           requestId: payload.record.id,
           type: "new_medic_request",
           field: payload.record.field_number,
+          fieldName: fieldName,
+          teamName: payload.record.team_name
         },
         priority: "high",
       };

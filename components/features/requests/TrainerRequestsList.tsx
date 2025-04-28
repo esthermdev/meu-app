@@ -14,6 +14,9 @@ type MedicalRequest = Database['public']['Tables']['medical_requests']['Row'] & 
   trainer: {
     full_name: string | null;
   } | null;
+  fields: {
+    name: string;
+  } | null;
 };
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -40,10 +43,11 @@ const TrainerRequestsList = () => {
       setLoading(true);
       const { data, error } = await supabase
         .from('medical_requests')
-        .select('*, trainer:profiles(full_name)')
-        .eq('status', 'pending') // Only show pending requests
+        .select('*, trainer:profiles(full_name), fields:fields(name)')
+        .eq('status', 'pending') // For TrainerRequestsList.tsx
+        // or .in('status', ['confirmed', 'resolved']) // For FulfilledTrainerRequestList.tsx
         .order('created_at', { ascending: false });
-
+  
       if (error) throw error;
       setRequests(data as MedicalRequest[]);
     } catch (error) {
@@ -165,7 +169,9 @@ const TrainerRequestsList = () => {
           </View>
           <View style={styles.fieldBadge}>
             <MaterialIcons name="location-on" size={14} color="#262626" />
-            <CustomText style={styles.fieldText}>Field {item.field_number}</CustomText>
+            <CustomText style={styles.fieldText}>
+              Field {item.fields?.name || `Field ${item.field_number}`}
+            </CustomText>
           </View>
         </View>
 
@@ -174,6 +180,12 @@ const TrainerRequestsList = () => {
             <CustomText style={styles.labelText}>Request ID: </CustomText>
             <CustomText style={styles.valueText}>{item.id}</CustomText>
           </View>
+          {item.team_name && (
+            <View style={styles.infoRow}>
+              <CustomText style={styles.labelText}>Team:</CustomText>
+              <CustomText style={styles.valueText}>{item.team_name}</CustomText>
+            </View>
+          )}
           <View style={styles.infoRow}>
             <CustomText style={styles.labelText}>Waiting:</CustomText>
             <View style={styles.timeContainer}>
@@ -349,13 +361,13 @@ const styles = StyleSheet.create({
   descriptionContainer: {
     paddingVertical: 7,
     paddingHorizontal: 10,
-    marginBottom: 15,
-    backgroundColor: '#262626',
+    marginBottom: 8,
     borderRadius: 5,
     borderLeftWidth: 4,
     borderWidth: 0.5,
     borderColor: '#EA1D25',
     borderLeftColor: '#EA1D25',
+    backgroundColor: '#262626',
   },
   descriptionLabel: {
     ...typography.text,

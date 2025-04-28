@@ -41,11 +41,13 @@ const TrainerRequestButton = () => {
   const [fields, setFields] = useState<{ id: number; name: string }[]>([]);
   const [selectedField, setSelectedField] = useState<number | undefined>(undefined);
   const [selectedFieldLabel, setSelectedFieldLabel] = useState<string>(FIELD_PLACEHOLDER);
+  const [teamName, setTeamName] = useState<string>('');
   // Error states
   const [errors, setErrors] = useState<{
     field?: string;
     description?: string;
     general?: string;
+    teamName?: string;
   }>({});
 
   useEffect(() => {
@@ -56,29 +58,29 @@ const TrainerRequestButton = () => {
     const { data, error } = await supabase
       .from('fields')
       .select('id, name');
-
+  
     if (error) {
       console.error('Error fetching fields:', error);
     } else if (data) {
       setFields(data);
-      if (data.length > 0) {
-        setSelectedField(data[0].id);
-        setSelectedFieldLabel(FIELD_PLACEHOLDER);
-      }
+      // The placeholder stays the same
+      setSelectedFieldLabel(FIELD_PLACEHOLDER);
     }
   };
 
   const handleFieldSelect = (fieldLabel: string) => {
     if (fieldLabel === FIELD_PLACEHOLDER) return;
-
-    // Extract the field ID from the label (e.g., "Field 1" -> 1)
-    const fieldId = parseInt(fieldLabel.replace('Field ', ''), 10);
-    setSelectedField(fieldId);
-    setSelectedFieldLabel(fieldLabel);
-
-    // Clear the field error when a valid selection is made
-    if (errors.field) {
-      setErrors(prev => ({ ...prev, field: undefined }));
+  
+    // Find the field where the name matches the selected label
+    const field = fields.find(f => fieldLabel === f.name);
+    if (field) {
+      setSelectedField(field.id);
+      setSelectedFieldLabel(fieldLabel); // Set the display label to field name
+  
+      // Clear the field error when a valid selection is made
+      if (errors.field) {
+        setErrors(prev => ({ ...prev, field: undefined }));
+      }
     }
   };
 
@@ -99,6 +101,7 @@ const TrainerRequestButton = () => {
         status: 'pending' as RequestStatus,
         priority_level: priorityLevel,
         description_of_emergency: description,
+        team_name: teamName, // Add team name to the request
         created_at: new Date().toISOString()
       };
 
@@ -137,12 +140,16 @@ const TrainerRequestButton = () => {
 
   const validateForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
-
-    // More specific validation for field selection
-    if (selectedField === undefined || selectedFieldLabel === 'Select Field' || selectedFieldLabel === '') {
-      newErrors.field = "Please select a field number";
+  
+    if (selectedField === undefined || selectedFieldLabel === FIELD_PLACEHOLDER) {
+      newErrors.field = "Please select a field";
     }
-
+    
+    // Optional: Add validation for team name
+    // if (!teamName.trim()) {
+    //   newErrors.teamName = "Please enter the team name";
+    // }
+  
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -150,7 +157,8 @@ const TrainerRequestButton = () => {
   const handleCloseModal = () => {
     setIsModalVisible(false);
     setDescription('');
-    setPriorityLevel('Medium')
+    setPriorityLevel('Medium');
+    setTeamName('');
     setSelectedField(undefined);
     setSelectedFieldLabel(FIELD_PLACEHOLDER);
     setErrors({});
@@ -167,7 +175,7 @@ const TrainerRequestButton = () => {
   );
 
   // Prepare field labels for dropdown
-  const fieldLabels = fields.map(field => `Field ${field.id}`);
+  const fieldLabels = fields.map(field => field.name);
 
   return (
     <View>
@@ -202,6 +210,16 @@ const TrainerRequestButton = () => {
                       Note: Medical staff will respond as quickly as possible based on priority level and availability.
                       Please ensure the field number is correct so trainers can locate you efficiently.
                     </CustomText>
+
+                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Team Name:</CustomText>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Enter team name"
+                      value={teamName}
+                      onChangeText={setTeamName}
+                      maxFontSizeMultiplier={1.2}
+                    />
+                    {errors.teamName && <ErrorMessage message={errors.teamName} />}
 
                     <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Level of Medical Emergency:</CustomText>
                     <View style={styles.priorityButtonContainer}>
@@ -334,6 +352,14 @@ const styles = StyleSheet.create({
   inputError: {
     borderColor: '#DD3333',
     borderWidth: 1,
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    ...typography.body,
+    marginBottom: 10,
   },
 });
 

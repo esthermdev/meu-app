@@ -15,6 +15,9 @@ type MedicalRequest = Database['public']['Tables']['medical_requests']['Row'] & 
   trainer: {
     full_name: string | null;
   } | null;
+  fields: {
+    name: string;
+  } | null;
 };
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -50,7 +53,7 @@ const FulfilledTrainerRequestList = () => {
       setLoading(true);
       const { data, error } = await supabase
         .from('medical_requests')
-        .select('*, trainer:profiles(full_name)')
+        .select('*, trainer:profiles(full_name), fields:fields(name)')
         .in('status', ['confirmed', 'resolved']) // Get requests that are confirmed or resolved
         .order('updated_at', { ascending: false });
 
@@ -152,7 +155,9 @@ const FulfilledTrainerRequestList = () => {
           </View>
           <View style={styles.fieldBadge}>
             <MaterialIcons name="location-on" size={14} color="#262626" />
-            <CustomText style={styles.fieldText}>Field {item.field_number}</CustomText>
+            <CustomText style={styles.fieldText}>
+            Field {item.fields?.name || `Field ${item.field_number}`}
+            </CustomText>
           </View>
         </View>
         
@@ -161,6 +166,12 @@ const FulfilledTrainerRequestList = () => {
             <CustomText style={styles.labelText}>Request ID: </CustomText>
             <CustomText style={styles.valueText}>{item.id}</CustomText>
           </View>
+          {item.team_name && (
+            <View style={styles.infoRow}>
+              <CustomText style={styles.labelText}>Team:</CustomText>
+              <CustomText style={styles.valueText}>{item.team_name}</CustomText>
+            </View>
+          )}
           <View style={styles.infoRow}>
             <CustomText style={styles.labelText}>Trainer:</CustomText>
             <CustomText style={styles.trainerNameText}>{item.trainer ? item.trainer.full_name : 'Unassigned'}</CustomText>
@@ -319,12 +330,12 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     paddingHorizontal: 10,
     marginBottom: 8,
-    backgroundColor: '#262626',
     borderRadius: 5,
     borderLeftWidth: 4,
     borderWidth: 0.5,
     borderColor: '#EA1D25',
     borderLeftColor: '#EA1D25',
+    backgroundColor: '#262626',
   },
   descriptionLabel: {
     ...typography.text,
@@ -348,10 +359,11 @@ const styles = StyleSheet.create({
   deleteButton: {
     backgroundColor: '#EA1D25',
     paddingVertical: 8,
-    borderRadius: 5,
     paddingHorizontal: 15,
+    borderRadius: 8,
     alignItems: 'center',
-    marginTop: 5
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   deleteButtonText: {
     ...typography.textBold,
