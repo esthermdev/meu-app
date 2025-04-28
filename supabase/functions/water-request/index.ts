@@ -34,6 +34,19 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // First, get the field information to include the field name
+    const { data: fieldData, error: fieldError } = await supabase
+      .from("fields")
+      .select("name")
+      .eq("id", payload.record.field_number)
+      .single();
+
+    if (fieldError) {
+      console.error("Error fetching field name:", fieldError);
+    }
+
+    const fieldName = fieldData?.name || `Field ${payload.record.field_number}`;
+
     const { data: volunteers, error } = await supabase
       .from("profiles")
       .select("id, expo_push_token")
@@ -60,15 +73,16 @@ Deno.serve(async (req) => {
     console.log(`Found ${validVolunteers.length} volunteers with valid push tokens`);
 
     if (validVolunteers.length > 0) {
-      // Format notification
+      // Format notification - now using field name instead of just number
       const notification = {
         sound: "default",
         title: "Water Requested",
-        body: `Please refill water jugs at Field ${payload.record.field_number}`,
+        body: `Please refill water jugs at ${fieldName}`,
         data: {
           requestId: payload.record.id,
           type: "new_water_request",
           field: payload.record.field_number,
+          fieldName: fieldName  // Include field name in data payload
         },
         priority: "high",
       };

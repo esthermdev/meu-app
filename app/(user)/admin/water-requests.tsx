@@ -9,7 +9,12 @@ import CustomText from '@/components/CustomText';
 import FulfilledWaterRequestsList from '@/components/features/requests/FulfilledWaterRequestList';
 import { useAuth } from '@/context/AuthProvider';
 
-type WaterRequests = Database['public']['Tables']['water_requests']['Row'];
+type WaterRequests = Database['public']['Tables']['water_requests']['Row'] & {
+  fields?: {
+    name: string;
+    location?: string;
+  }
+};
 type Volunteer = Database['public']['Tables']['profiles']['Row'];
 
 const Tab = createMaterialTopTabNavigator();
@@ -50,12 +55,11 @@ const WaterRequestsList = () => {
       setLoading(true);
       const { data, error } = await supabase
         .from('water_requests')
-        .select('*')
+        .select('*, fields(name)') // Include fields table join
         .eq('status', 'pending') // Only fetch pending requests
         .order('created_at', { ascending: false });
-
       if (error) throw error;
-      setRequests(data || []);
+      setRequests(data as WaterRequests[]); // Type assertion to match expected type
     } catch (error) {
       console.error('Error fetching requests:', error);
     } finally {
@@ -121,7 +125,9 @@ const WaterRequestsList = () => {
 
       <View style={styles.infoRow}>
         <CustomText style={styles.infoLabel}>Field:</CustomText>
-        <CustomText style={styles.infoValue}>{item.field_number}</CustomText>
+        <CustomText style={styles.infoValue}>
+          {item.fields?.name || `Field ${item.field_number}`}
+        </CustomText>
       </View>
 
       <View style={styles.infoRow}>
