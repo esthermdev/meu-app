@@ -13,6 +13,7 @@ const menuItems = [
   // { title: "Refund Policy", route: "/(tabs)/info/refund-policy" as const },
   { title: "Restaurants & Hotels", route: "/(tabs)/info/restaurants-hotels" as const },
   { title: "Vendors", route: "/(tabs)/info/vendors" as const },
+  { title: "Feedback", route: "/(tabs)/info/feedback" as const },
   { title: "FAQ", route: "/(tabs)/info/faq" as const },
   { title: "Credits", route: "/(tabs)/info/credits" as const },
 ];

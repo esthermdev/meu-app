@@ -19,6 +19,7 @@ export default function StandingLayout() {
 			<Stack.Screen name="restaurants-hotels" options={{ header: () => <CustomHeader title='Restaurants & Hotels' /> }} />
 			<Stack.Screen name="vendors" options={{ header: () => <CustomHeader title='Vendors' /> }} />
 			<Stack.Screen name="faq" options={{ header: () => <CustomHeader title='FAQ' /> }} />
+			<Stack.Screen name="feedback" options={{ header: () => <CustomHeader title='Feedback' /> }} />
 			<Stack.Screen name="credits" options={{ header: () => <CustomHeader title='Credits' /> }} />
 		</Stack>
 	);
