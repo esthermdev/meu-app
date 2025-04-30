@@ -117,7 +117,7 @@ const WaterRequestButton = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <View>
       <TouchableOpacity
         style={styles.circleButton}
         onPress={showModal}
@@ -134,34 +134,31 @@ const WaterRequestButton = () => {
       >
         <TouchableWithoutFeedback onPress={hideModal}>
           <View style={styles.modalContainer}>
-            <TouchableWithoutFeedback>
-              <View style={styles.pickerContainer}>
-                <CustomText style={styles.pickerTitle}>Select Field</CustomText>
-                
-                <View style={styles.fieldGridContainer}>
-                  <FlatList
-                    data={fields}
-                    numColumns={numColumns}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={renderFieldBlock}
-                    contentContainerStyle={styles.gridContent}
-                    showsVerticalScrollIndicator={false}
-                  />
-                </View>
-                
-                <View style={styles.selectionInfo}>
-                  <CustomText style={styles.selectionText}>
-                    Selected: Field {selectedFieldName}
-                  </CustomText>
-                </View>
-                
-                <ModalButton 
-                  onCancel={hideModal}
-                  onConfirm={requestWater}
-                  confirmText="Confirm"
+            <View style={styles.pickerContainer}>
+              <CustomText style={styles.pickerTitle}>Select Field</CustomText>
+              <View style={styles.fieldGridContainer}>
+                <FlatList
+                  data={fields}
+                  numColumns={numColumns}
+                  keyExtractor={(item) => item.id.toString()}
+                  renderItem={renderFieldBlock}
+                  contentContainerStyle={styles.gridContent}
+                  showsVerticalScrollIndicator={false}
                 />
               </View>
-            </TouchableWithoutFeedback>
+              
+              <View style={styles.selectionInfo}>
+                <CustomText style={styles.selectionText}>
+                  Selected: Field {selectedFieldName}
+                </CustomText>
+              </View>
+              
+              <ModalButton 
+                onCancel={hideModal}
+                onConfirm={requestWater}
+                confirmText="Confirm"
+              />
+            </View>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
@@ -172,9 +169,6 @@ const WaterRequestButton = () => {
 export default WaterRequestButton;
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-  },
   circleButton: {
     width: 70,
     height: 70,
@@ -192,7 +186,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
+    paddingTop: 100,
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
@@ -201,7 +195,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 20,
     width: '80%',
-    maxHeight: '70%',
   },
   pickerTitle: {
     ...typography.heading4,
