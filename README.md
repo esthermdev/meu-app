@@ -1,50 +1,43 @@
-# Welcome to your Expo app 👋
+# Maine Ultimate - Mobile App
+The Maine Ultimate Tournament App is a comprehensive mobile platform built with modern technologies (React Native, Expo, and Supabase) that revolutionizes the tournament experience for ultimate frisbee players, volunteers, and spectators. The app provides real-time tournament information, live game schedule updates, instant scoring capabilities, and on-field services—all designed to strengthen the ultimate frisbee community and elevate each individual's tournament experience.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+🏆 **Key Features:**
+- Live game scoring system with schedule updates, tournament news/announcements feed with push notifications
+- Personal player game schedule view and team-specific games view
+- Quick access to tournament information, rules, schedule, and policies
+- On-field volunteer service features such as cart requests, water refill requests, and medical assistance
 
-## Get started
+📷 **Screenshots**
 
-1. Install dependencies
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/909099f9-05ec-4b0c-8062-f970cba52452" width="150"/></td>
+    <td><img src="https://github.com/user-attachments/assets/a757f2eb-a701-4db2-bff9-1da71dad0f6a" width="150"/></td>
+    <td><img src="https://github.com/user-attachments/assets/3e7d6f04-4801-4965-8653-a1a0cb74c12f" width="150"/></td>
+    <td><img src="https://github.com/user-attachments/assets/c360f758-02d0-4d51-9b11-6944f9fdeb22" width="150"/></td>
+    <td><img src="https://github.com/user-attachments/assets/b322864e-66a1-4e72-93d5-12a6d89a00ca" width="150" /></td>
+    <td><img src="https://github.com/user-attachments/assets/a4ce264a-a4ac-430c-9143-538c87704850" width="150" /></td>
+  </tr>
+  <tr>
+    <td align="center">Welcome Screen</td>
+    <td align="center">Home Screen</td>
+    <td align="center">Schedule Screen</td>
+    <td align="center">Schedule Games</td>
+    <td align="center">Schedule View</td>
+    <td align="center">Info Screen</td>
+  </tr>
+</table>
 
-   ```bash
-   npm install
-   ```
+## 🍎 [[Link to App](https://apps.apple.com/my/app/maine-ultimate/id6695720383)]
+## 🤖 [[Link to App](https://play.google.com/store/apps/details?id=com.esmdev.TourneyAppMEU&pli=1)]
 
-2. Start the app
+## License
 
-   ```bash
-    npx expo start
-   ```
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-In the output, you'll find options to open the app in a
+Maine Ultimate - Mobile App is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Copyright (C) 2024 Esther Devadas
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License. See the LICENSE file for more details.

@@ -34,9 +34,9 @@ const TrainerManagementScreen = () => {
           tabBarAllowFontScaling: false
         }}
       >
-        <Tab.Screen name="Requests" component={TrainerRequestsList} />
-        <Tab.Screen name="Fulfilled" component={FulfilledTrainerRequestList} />
-        <Tab.Screen name="Trainers" component={TrainerAvailabilityScreen} />
+        <Tab.Screen name="REQUESTS" component={TrainerRequestsList} />
+        <Tab.Screen name="FULFILLED" component={FulfilledTrainerRequestList} />
+        <Tab.Screen name="TRAINERS" component={TrainerAvailabilityScreen} />
       </Tab.Navigator>
     </RequestsProvider>
   );

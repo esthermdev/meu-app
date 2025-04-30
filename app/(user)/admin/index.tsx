@@ -98,7 +98,7 @@ const AdminScreen = () => {
             title={option.title}
             iconName={option.iconName}
             route={option.route}
-            onPress={option.onPress || (option.route !== undefined ? () => router.push(option.route as Href<string | object>) : undefined)}
+            onPress={option.onPress || (option.route !== undefined ? () => router.push(option.route as Href) : undefined)}
           />
         ))}
       </ScrollView>

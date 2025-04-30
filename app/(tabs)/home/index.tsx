@@ -1,5 +1,5 @@
 // app/(tabs)/home/index.tsx
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Button } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import LargeCardButton from '@/components/buttons/LargeCardButton';
 import FullWidthButton from '@/components/buttons/FullWidthButton';
@@ -12,6 +12,20 @@ import NotificationPrompt from '@/components/features/notifications/Notification
 
 
 export default function HomeScreen() {
+  
+  // const signUpUser = async () => {
+  //   const { error } = await supabase.auth.signUp({
+  //     email: 'nicole@maineultimate.org',
+  //     password: 'regionals2025',
+  //     options: {
+  //       data: {
+  //         full_name: 'Nicole Welch'
+  //       }
+  //     }
+  //   })
+  //   console.log('success')
+  // }
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -55,6 +69,7 @@ export default function HomeScreen() {
           <CartRequestButton />
           <TrainerRequestButton />
         </View>
+        {/* <Button title='Sign up User' onPress={signUpUser} /> */}
         
         {/* Spacer to push content down */}
         <View style={styles.spacer} />

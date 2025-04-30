@@ -43,7 +43,7 @@ export default function PoolPlayScreen() {
       {pools.map((pool) => (
         <Tab.Screen
           key={pool.id}
-          name={`Pool ${pool.name}`}
+          name={`POOL ${pool.name}`}
           children={() => (
             <PoolGameComponent poolId={pool.id} divisionId={divisionId} />
           )}

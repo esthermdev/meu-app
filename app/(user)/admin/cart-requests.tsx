@@ -38,9 +38,9 @@ const CartManagementScreen = () => {
         tabBarAllowFontScaling: false
       }}
     >
-      <Tab.Screen name="Requests" component={CartRequestsList} />
-      <Tab.Screen name="Fulfilled" component={FulfilledCartRequestsList} />
-      <Tab.Screen name="Drivers" component={DriversAvailabilityScreen} />
+      <Tab.Screen name="REQUESTS" component={CartRequestsList} />
+      <Tab.Screen name="FULFILLED" component={FulfilledCartRequestsList} />
+      <Tab.Screen name="DRIVERS" component={DriversAvailabilityScreen} />
     </Tab.Navigator>
   );
 };

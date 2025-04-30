@@ -38,9 +38,9 @@ const WaterRequestsScreen = () => {
         tabBarAllowFontScaling: false
       }}
     >
-      <Tab.Screen name="Requests" component={WaterRequestsList} />
-      <Tab.Screen name="Fulfilled" component={FulfilledWaterRequestsList} />
-      <Tab.Screen name="Volunteers" component={VolunteerAvailabilityScreen} />
+      <Tab.Screen name="REQUESTS" component={WaterRequestsList} />
+      <Tab.Screen name="FULFILLED" component={FulfilledWaterRequestsList} />
+      <Tab.Screen name="VOLUNTEERS" component={VolunteerAvailabilityScreen} />
     </Tab.Navigator>
   );
 };
