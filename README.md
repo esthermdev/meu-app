@@ -27,7 +27,7 @@ The Maine Ultimate Tournament App is a comprehensive mobile platform built with 
 </table>
 
 ### 🍎 Apple App Store [[Link to App](https://apps.apple.com/my/app/maine-ultimate/id6695720383)]
-### 🤖 Goggle play Store [[Link to App](https://play.google.com/store/apps/details?id=com.esmdev.TourneyAppMEU&pli=1)]
+### 🤖 Google play Store [[Link to App](https://play.google.com/store/apps/details?id=com.esmdev.TourneyAppMEU&pli=1)]
 
 ## License
 
