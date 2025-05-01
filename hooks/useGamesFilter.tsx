@@ -99,11 +99,13 @@ export function useRoundIds(divisionId: number, roundId: number) {
           datetime: datetime_id (*),
           team1: team1_id (*),
           team2: team2_id (*),
-          scores(*)
+          scores(*),
+          field: field_id(*)
         `)
         .eq('division_id', divisionId)
         .eq('round_id', roundId)
-        .order('pool_id');
+        .order('id')
+        .order('datetime_id');
 
       if (error) throw error;
       setGames(data as unknown as Games[]);

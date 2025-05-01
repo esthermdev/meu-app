@@ -28,12 +28,14 @@ type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
 type TeamRow = Database['public']['Tables']['teams']['Row'];
 type ScoresRow = Database['public']['Tables']['scores']['Row'];
+type FieldsRow = Database['public']['Tables']['fields']['Row'];
 
 interface Games extends GamesRow {
   datetime: DatetimeRow | null;
   team1: TeamRow;
   team2: TeamRow;
   scores?: ScoresRow[];
+  field: FieldsRow | null;
 }
 
 const MyGames = () => {
@@ -115,7 +117,8 @@ const MyGames = () => {
           datetime: datetime_id (*),
           team1:team1_id (*),
           team2:team2_id (*),
-          scores(*)
+          scores(*),
+          field: field_id (*)
         `)
         .or(`team1_id.in.(${teamIds.join(',')}),team2_id.in.(${teamIds.join(',')})`)
         .order('datetime_id', { ascending: true });
@@ -263,7 +266,7 @@ const MyGames = () => {
           <View style={styles.timeContainer}>
             <CustomText style={styles.timeText}>{formatTime(item.datetime?.time)}</CustomText>
           </View>
-          <CustomText style={styles.fieldText}>Field {item.field_id}</CustomText>
+          <CustomText style={styles.fieldText}>Field {item.field?.name}</CustomText>
         </View>
 
         {/* Teams and Score Container */}

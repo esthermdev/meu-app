@@ -12,6 +12,7 @@ type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
 type TeamRow = Database['public']['Tables']['teams']['Row'];
 type ScoresRow = Database['public']['Tables']['scores']['Row'];
+type FieldsRow = Database['public']['Tables']['fields']['Row'];
 
 // Define the interface that matches what useRoundIds returns
 interface FetchedGame extends GamesRow {
@@ -19,6 +20,7 @@ interface FetchedGame extends GamesRow {
   team2: TeamRow | null;
   datetime: DatetimeRow | null;
   scores: ScoresRow[] | null;
+  field: FieldsRow | null;
 }
 
 type Props = {
@@ -29,7 +31,7 @@ type Props = {
 const PoolGameComponent: React.FC<Props> = ({ poolId, divisionId }) => {
   const { games, loading, error, refreshData } = useRoundIds(divisionId, 1);
   
-  const poolGames = games.filter(game => game.pool_id === poolId);
+  const poolGames = games.filter(game => game.pool_id === poolId) as FetchedGame[];
 
     const renderGame = ({ item }: { item: FetchedGame }) => (
       <View style={styles.gameCard}>
@@ -38,7 +40,7 @@ const PoolGameComponent: React.FC<Props> = ({ poolId, divisionId }) => {
           <View style={styles.timeContainer}>
             <CustomText style={styles.timeText}>{formatTime(item.datetime?.time)}</CustomText>
           </View>
-          <CustomText style={styles.fieldText}>Field {item.field_id}</CustomText>
+          <CustomText style={styles.fieldText}>Field {item.field?.name}</CustomText>
         </View>
   
         {/* Teams and Score Container - New Layout */}
@@ -51,7 +53,7 @@ const PoolGameComponent: React.FC<Props> = ({ poolId, divisionId }) => {
                 source={item.team1?.avatar_uri ? { uri: item.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
                 style={styles.teamLogo}
               />
-              <CustomText style={styles.teamText}>{item.team1?.name}</CustomText>
+              <CustomText style={styles.teamText}>{item.team1 ? item.team1?.name : 'TBD'}</CustomText>
             </View>
   
             {/* Team 2 */}
@@ -60,7 +62,7 @@ const PoolGameComponent: React.FC<Props> = ({ poolId, divisionId }) => {
                 source={item.team2?.avatar_uri ? { uri: item.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
                 style={styles.teamLogo}
               />
-              <CustomText style={styles.teamText}>{item.team2?.name}</CustomText>
+              <CustomText style={styles.teamText}>{item.team2 ? item.team2?.name : 'TBD'}</CustomText>
             </View>
           </View>
   
