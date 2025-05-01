@@ -38,7 +38,8 @@ const PoolAdminView: React.FC<PoolAdminViewProps> = ({ poolId, divisionId }) => 
           datetime: datetime_id (*),
           team1: team1_id (*),
           team2: team2_id (*),
-          scores(*)
+          scores(*),
+          field: field_id (*)
         `)
         .eq('division_id', divisionId)
         .eq('pool_id', poolId)

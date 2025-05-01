@@ -22,13 +22,14 @@ type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
 type TeamRow = Database['public']['Tables']['teams']['Row'];
 type ScoresRow = Database['public']['Tables']['scores']['Row'];
-
+type FieldsRow = Database['public']['Tables']['fields']['Row'];
 // Define the interface that matches what useRoundIds returns
 interface FetchedGame extends GamesRow {
   team1: TeamRow | null;
   team2: TeamRow | null;
   datetime: DatetimeRow | null;
   scores: ScoresRow[] | null;
+  field: FieldsRow | null;
 }
 
 interface AdminGameComponentProps {
@@ -141,7 +142,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
         <View style={styles.timeContainer}>
           <CustomText style={styles.timeText}>{formatTime(game.datetime?.time)}</CustomText>
         </View>
-        <CustomText style={styles.fieldText}>Field {game.field_id}</CustomText>
+        <CustomText style={styles.fieldText}>Field {game.field?.name}</CustomText>
       </View>
 
       {/* Teams and Score Container */}

@@ -28,7 +28,7 @@
       },
       "package": "com.esmdev.TourneyAppMEU",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 37
+      "versionCode": 39
     },
     "web": {
       "bundler": "metro",

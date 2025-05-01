@@ -145,7 +145,7 @@ const TeamDetails = () => {
         <View style={styles.timeContainer}>
           <CustomText style={styles.timeText}>{formatTime(game.datetime?.time)}</CustomText>
         </View>
-        <CustomText style={styles.fieldText}>Field {game.field?.id}</CustomText>
+        <CustomText style={styles.fieldText}>Field {game.field?.name}</CustomText>
       </View>
       
       {/* Teams and Score Container */}
