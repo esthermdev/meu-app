@@ -26,6 +26,7 @@ export default function DivisionStandings() {
   const { pools, loading, error } = usePoolIds(Number(division));
   const [standingsData, setStandingsData] = useState<StandingsSection[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasGamesStarted, setHasGamesStarted] = useState(false);
 
   useEffect(() => {
     if (pools.length > 0) {
@@ -37,23 +38,55 @@ export default function DivisionStandings() {
     setIsLoading(true);
     const poolIds = pools.map(pool => pool.id);
 
+    // Get all the rankings data
     const { data, error } = await supabase
       .from('rankings')
       .select(`
         *,
         teams!inner (id, pool_id, seed, name, avatar_uri)
       `)
-      .in('teams.pool_id', poolIds)
-      .order('pool_rank', { ascending: true });
+      .in('teams.pool_id', poolIds);
 
     if (error) {
       console.error('Error fetching standings:', error);
     } else if (data) {
+      // Check if games have started by seeing if there are any wins or losses
+      const gamesStarted = data.some(item => (item.wins || 0) > 0 || (item.losses || 0) > 0);
+      setHasGamesStarted(gamesStarted);
+      
+      // Sort data based on whether games have started
+      const sortedData = data.sort((a, b) => {
+        // Always group by pool
+        if ((a.teams?.pool_id || 0) !== (b.teams?.pool_id || 0)) {
+          return (a.teams?.pool_id || 0) - (b.teams?.pool_id || 0);
+        }
+        
+        if (gamesStarted) {
+          // If games have started, first sort by pool_rank
+          const rankA = a.pool_rank || 0;
+          const rankB = b.pool_rank || 0;
+          
+          if (rankA !== rankB) {
+            return rankA - rankB; // Sort by pool_rank ascending
+          }
+          
+          // If pool_rank is the same, fall back to original seeding
+          const seedA = a.teams?.seed || 0;
+          const seedB = b.teams?.seed || 0;
+          return seedA - seedB;
+        } else {
+          // If games haven't started yet, just sort by seed
+          const seedA = a.teams?.seed || 0;
+          const seedB = b.teams?.seed || 0;
+          return seedA - seedB;
+        }
+      });
+      
       // Format data into sections
       const sectionData: StandingsSection[] = pools.map(pool => ({
         title: pool.name,
         poolId: pool.id,
-        data: data.filter(standing => 
+        data: sortedData.filter(standing => 
           standing.teams?.pool_id === pool.id
         ) as Standings[]
       }));
@@ -79,16 +112,18 @@ export default function DivisionStandings() {
 
   const renderItem = ({ item, index }: { item: Standings, index: number }) => (
     <View style={styles.itemContainer}>
-      <CustomText style={styles.rankNumber}>{item.teams?.seed}</CustomText>
+      <CustomText style={styles.rankNumber}>
+        {hasGamesStarted ? item.pool_rank : item.teams?.seed}
+      </CustomText>
       <Image 
         source={item.teams?.avatar_uri ? { uri: item.teams.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
         style={styles.teamLogo} 
       />
       <CustomText style={styles.teamName}>{item.teams?.name}</CustomText>
       <View style={styles.recordContainer}>
-        <CustomText style={styles.recordText}>{item.wins}</CustomText>
+        <CustomText style={styles.recordText}>{item.wins || 0}</CustomText>
         <CustomText style={[styles.recordDivider, { color: '#000', ...typography.body }]}>—</CustomText>
-        <CustomText style={styles.recordText}>{item.losses}</CustomText>
+        <CustomText style={styles.recordText}>{item.losses || 0}</CustomText>
       </View>
     </View>
   );
@@ -118,6 +153,9 @@ export default function DivisionStandings() {
         renderItem={renderItem}
         renderSectionHeader={renderSectionHeader}
         contentContainerStyle={styles.listContent}
+        // Add a pull-to-refresh functionality
+        refreshing={isLoading}
+        onRefresh={fetchStandings}
       />
     </View>
   );

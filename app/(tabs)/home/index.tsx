@@ -43,9 +43,10 @@ export default function HomeScreen() {
             <LargeCardButton
               title="Report"
               subtitle="Spirit Scores"
-              icon={<MaterialCommunityIcons name="handshake-outline" size={28} color="#fff" />}
-              backgroundColor="#d89647"
+              icon={<MaterialCommunityIcons name="file-cancel" size={28} color="#fff" />}
+              backgroundColor="#c3aa8d"
               route="https://docs.google.com/forms/d/15NrrAtvd2mt_RGdpkTYDTYHGXHP0RTiIJEI0GXFwfp4/viewform?edit_requested=true"
+              disabled={true}
             />
             
             {/* Watch Live button with background image and play button */}

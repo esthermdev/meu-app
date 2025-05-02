@@ -6,6 +6,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import 'expo-dev-client';
 import 'react-native-gesture-handler';
+import { useCheckUpdates } from '@/hooks/useCheckUpdates';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync().catch(error => {
@@ -24,6 +25,8 @@ export default function RootLayout() {
     GeistExtraBold: require('../assets/fonts/Geist-ExtraBold.ttf'),
     GeistBlack: require('../assets/fonts/Geist-Black.ttf'),
   });
+
+  const { checkForUpdates } = useCheckUpdates();
 
   // Use an effect to hide the splash screen when fonts are loaded and version check is complete
   useEffect(() => {

@@ -55,7 +55,14 @@ const LargeCardButton: React.FC<LargeCardButtonProps> = ({
           <View>{icon}</View>
         )}
 
-        <CustomText style={styles.text}>{title}{'\n'}{subtitle}</CustomText>
+        <CustomText 
+            style={[
+              styles.text, 
+              { color: disabled ? '#e5d9c8' : '#ffffff' }
+            ]}
+        >
+          {title}{'\n'}{subtitle}
+        </CustomText>
       </View>
     );
   };

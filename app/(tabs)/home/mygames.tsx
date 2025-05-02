@@ -65,23 +65,116 @@ const MyGames = () => {
 
   useEffect(() => {
     if (games.length > 0) {
-      // Extract unique dates from games
-      const uniqueDates = [...new Set(games.map(game => game.datetime?.date || ''))];
-      uniqueDates.sort(); // Sort dates chronologically
+      console.log("All games:", games.length);
+      
+      // Log actual date values to debug
+      const allDates = games.map(game => {
+        const date = game.datetime?.date || '';
+        console.log(`Game ${game.id} date value: "${date}"`);
+        return date;
+      }).filter(date => date !== '');
+      
+      console.log("All dates before deduplication:", allDates);
+      
+      // Create a map to standardize dates and ensure uniqueness
+      const dateMap = new Map<string, string>();
+      
+      games.forEach(game => {
+        if (game.datetime?.date) {
+          // Create a standardized key for comparison by parsing and reformatting
+          try {
+            const dateObj = new Date(game.datetime.date);
+            // Use ISO format date part for deduplication key
+            const standardKey = dateObj.toISOString().split('T')[0];
+            console.log(`Game date: ${game.datetime.date} -> Standard key: ${standardKey}`);
+            dateMap.set(standardKey, game.datetime.date);
+          } catch (e) {
+            // If date parsing fails, fall back to string normalization
+            const standardKey = game.datetime.date.trim();
+            console.log(`Date parsing failed for: ${game.datetime.date}, using trimmed value`);
+            dateMap.set(standardKey, game.datetime.date);
+          }
+        }
+      });
+      
+      // Convert the map values (original date strings) to an array
+      const uniqueDates = Array.from(dateMap.values());
+      console.log("Unique dates after deduplication:", uniqueDates);
+      
+      // Sort dates chronologically
+      uniqueDates.sort((a, b) => {
+        return new Date(a).getTime() - new Date(b).getTime();
+      });
+      
       setDates(uniqueDates);
-
+      
       // Set first date as selected by default
       if (uniqueDates.length > 0 && !selectedDate) {
         setSelectedDate(uniqueDates[0]);
+        console.log("Setting initial selected date:", uniqueDates[0]);
       }
     }
   }, [games]);
 
   useEffect(() => {
-    // Filter games by selected date
     if (selectedDate) {
-      const filtered = games.filter(game => game.datetime?.date === selectedDate);
-      setFilteredGames(filtered);
+      console.log("Filtering for selected date:", selectedDate);
+      
+      try {
+        // Parse the selected date for comparison
+        const selectedDateObj = new Date(selectedDate);
+        const selectedDateStr = selectedDateObj.toISOString().split('T')[0];
+        
+        const filtered = games.filter(game => {
+          try {
+            // Check if the game has a datetime
+            if (!game.datetime?.date) {
+              console.log(`Game ${game.id} has no date`);
+              return false;
+            }
+            
+            // Parse the game date for standardized comparison
+            const gameDateObj = new Date(game.datetime.date);
+            const gameDateStr = gameDateObj.toISOString().split('T')[0];
+            
+            const isMatch = gameDateStr === selectedDateStr;
+            console.log(`Game ${game.id} date="${game.datetime.date}" (${gameDateStr}) matches=${isMatch}`);
+            
+            return isMatch;
+          } catch (e) {
+            // If date parsing fails, fall back to string comparison
+            console.log(`Date parsing failed for game ${game.id}, falling back to string comparison`);
+            const normalizedGameDate = game.datetime?.date?.trim() ?? '';
+            const normalizedSelectedDate = selectedDate.trim();
+            
+            return normalizedGameDate === normalizedSelectedDate;
+          }
+        });
+        
+        console.log(`Found ${filtered.length} games for date ${selectedDate}`);
+        
+        // Sort filtered games by time
+        filtered.sort((a, b) => {
+          const timeA = a.datetime?.time || '';
+          const timeB = b.datetime?.time || '';
+          return timeA.localeCompare(timeB);
+        });
+        
+        setFilteredGames(filtered);
+      } catch (e) {
+        // If date parsing completely fails, fall back to basic string comparison
+        console.log("Date parsing error for filtering, falling back to basic comparison");
+        
+        const normalizedSelectedDate = selectedDate.trim();
+        const filtered = games.filter(game => {
+          const gameDate = game.datetime?.date || '';
+          const normalizedGameDate = gameDate.trim();
+          
+          return normalizedGameDate === normalizedSelectedDate;
+        });
+        
+        setFilteredGames(filtered);
+      }
     } else {
       setFilteredGames(games);
     }
