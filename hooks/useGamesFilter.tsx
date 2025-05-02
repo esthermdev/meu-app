@@ -153,7 +153,8 @@ export function useScheduleId(divisionId: number, scheduleId: number, refreshKey
           team1: team1_id (*),
           team2: team2_id (*),
           scores(*),
-          rounds: round_id (*)
+          rounds: round_id (*),
+          field: field_id (*)
         `)
         .eq('division_id', divisionId)
         .eq('gametype_id', scheduleId)
@@ -161,6 +162,11 @@ export function useScheduleId(divisionId: number, scheduleId: number, refreshKey
 
       if (error) throw error;
       setGames(data || []);
+
+      // Inside your fetch function (either fetchGames or fetchGamesBySchedule)
+      console.log(`Fetching games with division_id=${divisionId} and scheduleId/roundId=${scheduleId}`);
+      // After the query
+      console.log('Query result:', { data, error });
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An error occurred');
     } finally {
