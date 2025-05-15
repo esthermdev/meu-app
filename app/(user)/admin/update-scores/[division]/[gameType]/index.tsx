@@ -62,7 +62,8 @@ export default function UpdateScoresScreen() {
           team1: team1_id (*),
           team2: team2_id (*),
           scores(*),
-          rounds: round_id (*)
+          rounds: round_id (*),
+          field: field_id (*)
         `)
         .eq('division_id', divisionId)
         .eq('gametype_id', scheduleId)
