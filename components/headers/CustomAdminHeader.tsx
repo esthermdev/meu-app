@@ -3,7 +3,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { fonts, typography } from '@/constants/Typography';
+import { fonts } from '@/constants/Typography';
 import { MaterialIcons } from '@expo/vector-icons';
 
 interface CustomAdminHeader {
