@@ -1,6 +1,5 @@
 // Components/ErrorMessage.tsx
 import { typography } from '@/constants/Typography';
-import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 
 const ErrorMessage = ({ message }: { message?: string }) => {
