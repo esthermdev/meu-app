@@ -216,7 +216,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
           style={[styles.actionButton, styles.updateScoreButton]}
           onPress={openScoreModal}
         >
-          <CustomText style={styles.buttonText}>Update Score</CustomText>
+          <CustomText style={styles.buttonText}>Update Game</CustomText>
         </TouchableOpacity>
       </View>
 
