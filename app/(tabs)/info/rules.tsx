@@ -12,14 +12,7 @@ const RulesAndSOTG = () => {
 				<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentHeader}>Game Rules</CustomText>
 				<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>
 					<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentSubHeader}>DI{'\n'}</CustomText>
-					• D1 games are XXXX minutes{'\n'}
-					• All games are soft capped (highest score plus 1) at XXX and hard capped at XXXX minutes{'\n'}
-					• A point begins as soon as a goal is scored.{'\n'}
-					• The caps do NOT affect timeouts.{'\n'}
-				</CustomText>
-				<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>
-					<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentSubHeader}>DIII{'\n'}</CustomText>
-					• D3 games are XXXX minutes{'\n'}
+					• Games are XXXX minutes{'\n'}
 					• All games are soft capped (highest score plus 1) at XXX and hard capped at XXXX minutes{'\n'}
 					• A point begins as soon as a goal is scored.{'\n'}
 					• The caps do NOT affect timeouts.{'\n'}

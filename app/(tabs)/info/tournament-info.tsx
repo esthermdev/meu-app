@@ -10,7 +10,7 @@ const TournamentInfo = () => {
 				contentContainerStyle={styles.contentContainer}
 			>
 				<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>
-					On behalf of <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={{ ...typography.textSemiBold, color: '#EA1D25'}}>USA Ultimate, Maine Ultimate </CustomText>and the <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={{ ...typography.textSemiBold, color: '#EA1D25'}}>City of South Portland</CustomText>, I welcome you to the 2025 Regionals.
+					On behalf of <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={{ ...typography.textSemiBold, color: '#EA1D25'}}>USA Ultimate, Maine Ultimate </CustomText>and the <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={{ ...typography.textSemiBold, color: '#EA1D25'}}>City of South Portland</CustomText>, I welcome you to the Vacationland 2025.
 					{'\n\n'}
 					The tournament takes place at the Wainwright Complex, which is located at 125 Gary Maietta Way in South Portland Maine.  The Wainwright Complex has over 66 acres of developed athletic fields. Ultimate tournaments are hosted here every year by Maine Ultimate, the local organization, from hat leagues to regional Club events. Wainwright also plays host to the Greenbelt Walkway that connects a 6 mile bike/walking trail to Bug Light Park. In the winter months Wainwright turns into a winter wonderland filled with opportunities to skate on the ice rink, ski cross country on the groomed trails and snowshoe around the complex.
 					{'\n\n'}
