@@ -18,8 +18,6 @@ const TournamentInfo = () => {
 					{'\n\n'}
 					There are many lodging opportunities from a weekly VRBO/AirBnB to a one night stay at a national chain hotel.
 					{'\n\n'}
-					The cost for the tournament will be $650 per team.  You'll get lined fields, access to trainers, golf carts to drive you around, merchandise and we will be livestreaming 1 game per round!  E-Mail rich@maineultimate for an invoice.
-					{'\n\n'}
 					We look forward to hosting you and please do not hesitate to reach out if you have any questions.
 					{'\n\n'}
 					Rich and the entire Maine Ultimate crew
