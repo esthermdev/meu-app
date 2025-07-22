@@ -1,5 +1,5 @@
 // components/modals/ScoreUpdateModal.tsx
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   StyleSheet,
@@ -9,17 +9,26 @@ import {
 } from 'react-native';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
+import { Dropdown } from '@/components/Dropdown';
+import { useDatetimeOptions } from '@/hooks/useDatetimeOptions';
+import { useFieldOptions } from '@/hooks/useFieldOptions';
+import { useAuth } from '@/context/AuthProvider';
 
 interface UpdateScoreModalProps {
   visible: boolean;
   onClose: () => void;
-  onSubmit: (team1Score: string, team2Score: string) => void;
+  onSubmit: (team1Score: string, team2Score: string, datetimeId: number | null, fieldId: number | null) => void | Promise<void>;
   team1Name: string;
   team2Name: string;
   team1Score: string;
   team2Score: string;
   setTeam1Score: (score: string) => void;
   setTeam2Score: (score: string) => void;
+  datetimeId: number | null;
+  fieldId: number | null;
+  setDatetimeId: (id: number | null) => void;
+  setFieldId: (id: number | null) => void;
+  readOnlyDateTimeField?: boolean;
   isLoading?: boolean;
 }
 
@@ -33,8 +42,48 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
   team2Score,
   setTeam1Score,
   setTeam2Score,
+  datetimeId,
+  fieldId,
+  setDatetimeId,
+  setFieldId,
+  readOnlyDateTimeField = false,
   isLoading = false,
 }) => {
+  const { datetimeOptions } = useDatetimeOptions();
+  const { fieldOptions } = useFieldOptions();
+  const { profile } = useAuth()
+  
+  // Find selected datetime option for display
+  const selectedDatetime = useMemo(() => {
+    return datetimeOptions.find(option => option.id === datetimeId);
+  }, [datetimeOptions, datetimeId]);
+  
+  const datetimeLabels = useMemo(() => {
+    return datetimeOptions.map(option => option.label);
+  }, [datetimeOptions]);
+  
+  const handleDatetimeSelect = (selectedLabel: string) => {
+    const selectedOption = datetimeOptions.find(option => option.label === selectedLabel);
+    if (selectedOption) {
+      setDatetimeId(selectedOption.id);
+    }
+  };
+  
+  // Find selected field option for display
+  const selectedField = useMemo(() => {
+    return fieldOptions.find(option => option.id === fieldId);
+  }, [fieldOptions, fieldId]);
+  
+  const fieldLabels = useMemo(() => {
+    return fieldOptions.map(option => option.label);
+  }, [fieldOptions]);
+  
+  const handleFieldSelect = (selectedLabel: string) => {
+    const selectedOption = fieldOptions.find(option => option.label === selectedLabel);
+    if (selectedOption) {
+      setFieldId(selectedOption.id);
+    }
+  };
   return (
     <Modal
       animationType="fade"
@@ -44,7 +93,7 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          <CustomText style={styles.modalTitle}>Update Score</CustomText>
+          <CustomText style={styles.modalTitle}>Update Game</CustomText>
           
           {/* Team 1 Score */}
           <View style={styles.modalTeamContainer}>
@@ -76,6 +125,48 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
             </View>
           </View>
           
+          {profile?.is_admin && (
+            <>
+              <View style={styles.modalFieldContainer}>
+                <CustomText style={styles.modalFieldLabel}>Date & Time</CustomText>
+                {readOnlyDateTimeField ? (
+                  <TextInput
+                    style={[styles.modalFieldInput, styles.readOnlyInput]}
+                    value={selectedDatetime?.label || ''}
+                    editable={false}
+                    allowFontScaling={false}
+                  />
+                ) : (
+                  <Dropdown
+                    label="Select date and time"
+                    data={datetimeLabels}
+                    selectedValue={selectedDatetime?.label}
+                    onSelect={handleDatetimeSelect}
+                  />
+                )}
+              </View>
+              
+              <View style={styles.modalFieldContainer}>
+                <CustomText style={styles.modalFieldLabel}>Field</CustomText>
+                {readOnlyDateTimeField ? (
+                  <TextInput
+                    style={[styles.modalFieldInput, styles.readOnlyInput]}
+                    value={selectedField?.label || ''}
+                    editable={false}
+                    allowFontScaling={false}
+                  />
+                ) : (
+                  <Dropdown
+                    label="Select field"
+                    data={fieldLabels}
+                    selectedValue={selectedField?.label}
+                    onSelect={handleFieldSelect}
+                  />
+                )}
+              </View>
+            </>
+          )}
+          
           {/* Action Buttons */}
           <View style={styles.modalButtonContainer}>
             <TouchableOpacity 
@@ -88,10 +179,10 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
             
             <TouchableOpacity 
               style={styles.modalUpdateButton}
-              onPress={() => onSubmit(team1Score, team2Score)}
+              onPress={() => onSubmit(team1Score, team2Score, datetimeId, fieldId)}
               disabled={isLoading}
             >
-              <CustomText style={styles.modalUpdateButtonText}>Update Score</CustomText>
+              <CustomText style={styles.modalUpdateButtonText}>Update Game</CustomText>
             </TouchableOpacity>
           </View>
         </View>
@@ -172,6 +263,24 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     ...typography.textMedium
+  },
+  modalFieldContainer: {
+    marginBottom: 15,
+  },
+  modalFieldLabel: {
+    ...typography.textMedium,
+    marginBottom: 5,
+  },
+  modalFieldInput: {
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    padding: 12,
+    ...typography.textMedium,
+  },
+  readOnlyInput: {
+    backgroundColor: '#F5F5F5',
+    color: '#666',
   },
 });
 

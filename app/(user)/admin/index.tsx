@@ -56,7 +56,7 @@ const AdminScreen = () => {
 
   const adminOptions: AdminOptionType[] = [
     {
-      title: 'Update Scores',
+      title: 'Update Games',
       iconName: 'scoreboard',
       route: '/admin/update-scores',
     },

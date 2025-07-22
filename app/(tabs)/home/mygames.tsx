@@ -298,7 +298,7 @@ const MyGames = () => {
   };
 
   // This function processes the score update with optimistic UI
-  const submitScore = async (team1ScoreStr: string, team2ScoreStr: string) => {
+  const submitScore = async (team1ScoreStr: string, team2ScoreStr: string, _datetimeId: number | null, _fieldId: number | null) => {
     if (!currentGame) return;
 
     const team1ScoreNum = parseInt(team1ScoreStr);
@@ -310,7 +310,7 @@ const MyGames = () => {
     // Close modal right away for better UX
     setModalVisible(false);
 
-    // Then perform the actual update
+    // Then perform the actual update (only scores for regular users)
     const success = await updateGameScore({
       gameId: currentGame.id,
       team1Score: team1ScoreNum,
@@ -463,6 +463,11 @@ const MyGames = () => {
               team2Score={team2Score}
               setTeam1Score={setTeam1Score}
               setTeam2Score={setTeam2Score}
+              datetimeId={currentGame.datetime?.id || null}
+              fieldId={currentGame.field?.id || null}
+              setDatetimeId={() => {}} // Read-only for users
+              setFieldId={() => {}} // Read-only for users
+              readOnlyDateTimeField={true}
             />
           )}
         </>

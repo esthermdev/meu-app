@@ -13,7 +13,6 @@ import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
 import { typography } from '@/constants/Typography';
 import { supabase } from '@/lib/supabase';
-import { fonts } from '@/constants/Typography';
 import UpdateScoreModal from '../modals/UpdateScoreModal';
 import { updateGameScore } from '@/utils/updateGameScore';
 import CustomText from '@/components/CustomText';
@@ -43,6 +42,8 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [datetimeId, setDatetimeId] = useState<number | null>(null);
+  const [fieldId, setFieldId] = useState<number | null>(null);
 
   // Update the local state when the game prop changes
   useEffect(() => {
@@ -55,18 +56,24 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
       setTeam2Score('0');
       setIsCompleted(false);
     }
+    
+    // Update datetime and field state
+    setDatetimeId(game.datetime?.id || null);
+    setFieldId(game.field?.id || null);
   }, [game]);
 
   const openScoreModal = () => {
     setModalVisible(true);
   };
 
-  const submitScore = async (team1ScoreStr: string, team2ScoreStr: string) => {
+  const submitScore = async (team1ScoreStr: string, team2ScoreStr: string, selectedDatetimeId: number | null, selectedFieldId: number | null) => {
     setIsLoading(true);
 
     // Update local state immediately for UI feedback
     setTeam1Score(team1ScoreStr);
     setTeam2Score(team2ScoreStr);
+    setDatetimeId(selectedDatetimeId);
+    setFieldId(selectedFieldId);
 
     const success = await updateGameScore({
       gameId: game.id,
@@ -74,14 +81,14 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
       team2Score: team2ScoreStr,
       scoreId: game.scores && game.scores.length > 0 ? game.scores[0].id : null,
       roundId: game.round_id,
+      datetimeId: selectedDatetimeId,
+      fieldId: selectedFieldId,
       onSuccess: () => {
         setModalVisible(false);
         onGameStatusChange();
       }
     });
 
-    // If failed, we don't need to do anything special here as the UI is already showing
-    // the updated scores that the user entered
     setIsLoading(false);
 
     // Close modal on failure too (UI already has user's input values)
@@ -224,6 +231,10 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
         team2Score={team2Score}
         setTeam1Score={setTeam1Score}
         setTeam2Score={setTeam2Score}
+        datetimeId={datetimeId}
+        fieldId={fieldId}
+        setDatetimeId={setDatetimeId}
+        setFieldId={setFieldId}
         isLoading={isLoading}
       />
     </View>

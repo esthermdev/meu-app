@@ -8,6 +8,8 @@ interface UpdateScoreParams {
   team2Score: string | number;
   scoreId?: number | null;  // Optional, used if we're updating an existing score
   roundId?: number | null;  // Optional, for creating new scores
+  datetimeId?: number | null; // Optional, datetime ID to assign to the game
+  fieldId?: number | null;  // Optional, field ID to assign to the game
   onSuccess?: () => void;   // Callback for successful operations
 }
 
@@ -17,12 +19,53 @@ export const updateGameScore = async ({
   team2Score,
   scoreId,
   roundId,
+  datetimeId,
+  fieldId,
   onSuccess
 }: UpdateScoreParams): Promise<boolean> => {
   try {
+    console.log('updateGameScore called with:', {
+      gameId,
+      team1Score,
+      team2Score,
+      scoreId,
+      roundId,
+      datetimeId,
+      fieldId
+    });
+    
     // Convert scores to numbers if they're strings
     const team1ScoreNum = typeof team1Score === 'string' ? parseInt(team1Score) : team1Score;
     const team2ScoreNum = typeof team2Score === 'string' ? parseInt(team2Score) : team2Score;
+    
+    // Field ID is now provided directly, no need to look up by name
+    
+    // Update games table if datetime or field needs to be updated
+    const gameUpdateData: any = {};
+    if (datetimeId !== undefined && datetimeId !== null) {
+      gameUpdateData.datetime_id = datetimeId;
+    }
+    if (fieldId !== undefined && fieldId !== null) {
+      gameUpdateData.field_id = fieldId;
+    }
+    
+    console.log('Game update data:', gameUpdateData);
+    
+    if (Object.keys(gameUpdateData).length > 0) {
+      console.log('Updating game', gameId, 'with data:', gameUpdateData);
+      const { error: gameError } = await supabase
+        .from('games')
+        .update(gameUpdateData)
+        .eq('id', gameId);
+      
+      if (gameError) {
+        console.error('Game update error:', gameError);
+        throw gameError;
+      }
+      console.log('Game updated successfully');
+    } else {
+      console.log('No game updates needed');
+    }
     
     // First, check if we already know if the score exists (via scoreId)
     if (scoreId) {
@@ -79,8 +122,8 @@ export const updateGameScore = async ({
     
     return true;
   } catch (error) {
-    console.error('Error updating game score:', error);
-    Alert.alert('Error', 'Failed to update score');
+    console.error('Error updating game:', error);
+    Alert.alert('Error', 'Failed to update game');
     return false;
   }
 };
