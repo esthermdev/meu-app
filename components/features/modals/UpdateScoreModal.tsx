@@ -10,6 +10,7 @@ import {
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
 import { Dropdown } from '@/components/Dropdown';
+import { DateTimeFilteredDropdown } from '@/components/DateTimeFilteredDropdown';
 import { useDatetimeOptions } from '@/hooks/useDatetimeOptions';
 import { useFieldOptions } from '@/hooks/useFieldOptions';
 import { useAuth } from '@/context/AuthProvider';
@@ -58,9 +59,6 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
     return datetimeOptions.find(option => option.id === datetimeId);
   }, [datetimeOptions, datetimeId]);
   
-  const datetimeLabels = useMemo(() => {
-    return datetimeOptions.map(option => option.label);
-  }, [datetimeOptions]);
   
   const handleDatetimeSelect = (selectedLabel: string) => {
     const selectedOption = datetimeOptions.find(option => option.label === selectedLabel);
@@ -137,9 +135,9 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
                     allowFontScaling={false}
                   />
                 ) : (
-                  <Dropdown
+                  <DateTimeFilteredDropdown
                     label="Select date and time"
-                    data={datetimeLabels}
+                    datetimeOptions={datetimeOptions}
                     selectedValue={selectedDatetime?.label}
                     onSelect={handleDatetimeSelect}
                   />

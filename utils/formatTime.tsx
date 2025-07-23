@@ -1,6 +1,6 @@
 export const formatTime = (timeString: string | null | undefined) => {
   if (!timeString) {
-    return 'Time not available'; // Or whatever default value you prefer
+    return 'TBD'; // Or whatever default value you prefer
   }
 
   try {
