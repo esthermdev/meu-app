@@ -7,7 +7,7 @@ export function useCheckUpdates() {
 
   // Function to check for updates
   const checkForUpdates = async () => {
-    if (isChecking) return;
+    if (isChecking || __DEV__) return;
     
     try {
       setIsChecking(true);
