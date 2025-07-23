@@ -37,7 +37,7 @@ const CreditsScreen = () => {
           </CustomText>
         </View>
         
-        <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.version}>Version 2.0.0</CustomText>
+        <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.version}>Version 2.0.5</CustomText>
       </ScrollView>
     </SafeAreaView>
   );

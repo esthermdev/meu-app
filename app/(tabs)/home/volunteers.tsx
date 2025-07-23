@@ -26,7 +26,8 @@ const Volunteers = () => {
 					id,
 					badge,
 					role,
-					avatar_uri
+					avatar_uri,
+					email
 				`)
 				.order('badge');
 
@@ -89,7 +90,6 @@ const styles = StyleSheet.create({
 		margin: 10
 	},
 	avatar: {
-		backgroundColor: 'orange',
 		marginBottom: 5,
 	},
 	badgeText: {

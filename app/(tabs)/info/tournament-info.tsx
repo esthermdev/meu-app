@@ -20,7 +20,7 @@ const TournamentInfo = () => {
 					{'\n\n'}
 					We look forward to hosting you and please do not hesitate to reach out if you have any questions.
 					{'\n\n'}
-					Rich and the entire Maine Ultimate crew
+					Rich and the entire Maine Ultimate crew.
 					{'\n\n'}
 				</CustomText>
 				<CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>Richard Young</CustomText>
