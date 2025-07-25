@@ -57,7 +57,8 @@ const TrainerRequestButton = () => {
   const fetchFields = async () => {
     const { data, error } = await supabase
       .from('fields')
-      .select('id, name');
+      .select('id, name')
+      .order('id', { ascending: true });
   
     if (error) {
       console.error('Error fetching fields:', error);
