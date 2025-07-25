@@ -11,6 +11,7 @@ export function useCheckUpdates() {
     
     try {
       setIsChecking(true);
+      
       const update = await Updates.checkForUpdateAsync();
       
       if (update.isAvailable) {
