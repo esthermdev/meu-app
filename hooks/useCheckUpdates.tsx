@@ -20,12 +20,8 @@ export function useCheckUpdates() {
         // Alert the user and let them know an update is ready
         Alert.alert(
           "Update Available",
-          "A new version of the app is ready. Restart now to apply the changes?",
+          "A new version of the app is ready. Restart now to apply the changes.",
           [
-            { 
-              text: "Later", 
-              style: "cancel" 
-            },
             { 
               text: "Restart", 
               onPress: async () => {

@@ -19,7 +19,7 @@
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       },
-      "buildNumber": "1"
+      "buildNumber": "2"
     },
     "android": {
       "adaptiveIcon": {
@@ -28,9 +28,11 @@
       },
       "package": "com.esmdev.TourneyAppMEU",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 41,
+      "versionCode": 42,
       "compileSdkVersion": 35,
-      "targetSdkVersion": 35
+      "targetSdkVersion": 35,
+      "minSdkVersion": 24,
+      "buildToolsVersion": "35.0.0"
     },
     "web": {
       "bundler": "metro",
