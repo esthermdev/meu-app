@@ -1,17 +1,14 @@
 import { useState } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TextInput,
-  TouchableOpacity,
   Alert,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  ActivityIndicator
 } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { fonts, typography } from '@/constants/Typography';
