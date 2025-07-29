@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 8,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#fff',
   },
   vendorImagePlaceholder: {
     width: 60,

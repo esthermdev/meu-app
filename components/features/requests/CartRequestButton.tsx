@@ -197,7 +197,7 @@ const CartRequestButton = () => {
         style={styles.circleButton}
         onPress={() => setIsModalVisible(true)}
       >
-        <MaterialCommunityIcons name="car" size={28} color="#347764" />
+        <MaterialCommunityIcons name="car" size={28} color="#777777ff" />
       </TouchableOpacity>
       <CustomText style={styles.label} allowFontScaling>Cart</CustomText>
 

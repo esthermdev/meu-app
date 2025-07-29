@@ -122,7 +122,7 @@ const WaterRequestButton = () => {
         style={styles.circleButton}
         onPress={showModal}
       >
-        <MaterialCommunityIcons name="water" size={28} color="#347764" />
+        <MaterialCommunityIcons name="water" size={28} color="#008bcbff" />
       </TouchableOpacity>
       <CustomText style={styles.label}>Water</CustomText>
 
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 35,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#e0f4feff',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
