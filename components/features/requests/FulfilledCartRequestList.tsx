@@ -10,6 +10,9 @@ import CustomText from '@/components/CustomText';
 
 // Define types based on your Supabase schema
 type CartRequest = Database['public']['Tables']['cart_requests']['Row'] & {
+  driver: {
+    full_name: string | null;
+  } | null;
   from_field_name?: string | null;
   to_field_name?: string | null;
 };
@@ -64,7 +67,7 @@ const FulfilledCartRequestsList = () => {
       // Get the cart requests
       const { data, error } = await supabase
         .from('cart_requests')
-        .select('*, driver')
+        .select('*, driver:profiles(full_name)')
         .in('status', ['confirmed']) // Get requests that are confirmed 
         .order('updated_at', { ascending: false });
 
@@ -198,7 +201,7 @@ const FulfilledCartRequestsList = () => {
           </View>
           <View style={styles.infoRow}>
             <CustomText style={styles.labelText}>Driver:</CustomText>
-            <CustomText style={styles.driverText}>{driverName}</CustomText>
+            <CustomText style={styles.driverText}>{item.driver ? item.driver.full_name : driverName}</CustomText>
           </View>
           <View style={styles.infoRow}>
             <CustomText style={styles.labelText}>Request ID:</CustomText>
