@@ -187,9 +187,9 @@ const CartRequestsList = () => {
         return 'Main Entrance';
       case 'Tourney Central':
         return 'Tournament HQ';
-      case 'Lot 1':
+      case 'Lot 1 (Grass)':
         return 'Parking Lot 1';
-      case 'Lot 2':
+      case 'Lot 2 (Pavement)':
         return 'Parking Lot 2';
       default:
         return locationType;

@@ -33,7 +33,7 @@ type LocationType = Database['public']['Enums']['location_type'];
 type RequestStatus = Database['public']['Enums']['request_status'];
 
 // Define locations as a const array of valid LocationType values
-const LOCATIONS: LocationType[] = ['Field', 'Tourney Central', 'Lot 1', 'Lot 2', 'Entrance'];
+const LOCATIONS: LocationType[] = ['Field', 'Tourney Central', 'Lot 1 (Grass)', 'Lot 2 (Pavement)', 'Entrance'];
 
 type Field = {
   id: number;

@@ -984,8 +984,8 @@ export type Database = {
         | "Field"
         | "Entrance"
         | "Tourney Central"
-        | "Lot 1"
-        | "Lot 2"
+        | "Lot 1 (Grass)"
+        | "Lot 2 (Pavement)"
       request_status: "pending" | "confirmed" | "resolved" | "expired"
       request_type: "medical" | "water" | "transport"
     }
@@ -1150,7 +1150,13 @@ export const Constants = {
         "15F",
         "9RR",
       ],
-      location_type: ["Field", "Entrance", "Tourney Central", "Lot 1", "Lot 2"],
+      location_type: [
+        "Field",
+        "Entrance",
+        "Tourney Central",
+        "Lot 1 (Grass)",
+        "Lot 2 (Pavement)",
+      ],
       request_status: ["pending", "confirmed", "resolved", "expired"],
       request_type: ["medical", "water", "transport"],
     },
