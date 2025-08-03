@@ -16,6 +16,7 @@ import { supabase } from '@/lib/supabase';
 import UpdateScoreModal from '../modals/UpdateScoreModal';
 import { updateGameScore } from '@/utils/updateGameScore';
 import CustomText from '@/components/CustomText';
+import { useAuth } from '@/context/AuthProvider';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
@@ -37,6 +38,7 @@ interface AdminGameComponentProps {
 }
 
 const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameStatusChange }) => {
+  const { profile } = useAuth();
   const [team1Score, setTeam1Score] = useState<string>('0');
   const [team2Score, setTeam2Score] = useState<string>('0');
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
@@ -44,6 +46,8 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [datetimeId, setDatetimeId] = useState<number | null>(null);
   const [fieldId, setFieldId] = useState<number | null>(null);
+  const [team1Id, setTeam1Id] = useState<number | null>(null);
+  const [team2Id, setTeam2Id] = useState<number | null>(null);
 
   // Update the local state when the game prop changes
   useEffect(() => {
@@ -57,16 +61,18 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
       setIsCompleted(false);
     }
     
-    // Update datetime and field state
+    // Update datetime, field, and team state
     setDatetimeId(game.datetime?.id || null);
     setFieldId(game.field?.id || null);
+    setTeam1Id(game.team1?.id || -1);  // -1 represents TBD
+    setTeam2Id(game.team2?.id || -1);  // -1 represents TBD
   }, [game]);
 
   const openScoreModal = () => {
     setModalVisible(true);
   };
 
-  const submitScore = async (team1ScoreStr: string, team2ScoreStr: string, selectedDatetimeId: number | null, selectedFieldId: number | null) => {
+  const submitScore = async (team1ScoreStr: string, team2ScoreStr: string, selectedDatetimeId: number | null, selectedFieldId: number | null, selectedTeam1Id?: number | null, selectedTeam2Id?: number | null) => {
     setIsLoading(true);
 
     // Update local state immediately for UI feedback
@@ -74,6 +80,8 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
     setTeam2Score(team2ScoreStr);
     setDatetimeId(selectedDatetimeId);
     setFieldId(selectedFieldId);
+    if (selectedTeam1Id !== undefined) setTeam1Id(selectedTeam1Id);
+    if (selectedTeam2Id !== undefined) setTeam2Id(selectedTeam2Id);
 
     const success = await updateGameScore({
       gameId: game.id,
@@ -83,6 +91,8 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
       roundId: game.round_id,
       datetimeId: selectedDatetimeId,
       fieldId: selectedFieldId,
+      team1Id: selectedTeam1Id,
+      team2Id: selectedTeam2Id,
       onSuccess: () => {
         setModalVisible(false);
         onGameStatusChange();
@@ -162,7 +172,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
               source={game.team1?.avatar_uri ? { uri: game.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
               style={styles.teamLogo}
             />
-            <CustomText style={styles.teamText}>{game.team1?.name}</CustomText>
+            <CustomText style={styles.teamText}>{game.team1?.name || 'TBD'}</CustomText>
             <View style={styles.scoresSection}>
               <TextInput
                 style={styles.scoreInput}
@@ -181,7 +191,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
               source={game.team2?.avatar_uri ? { uri: game.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
               style={styles.teamLogo}
             />
-            <CustomText style={styles.teamText}>{game.team2?.name}</CustomText>
+            <CustomText style={styles.teamText}>{game.team2?.name || 'TBD'}</CustomText>
             <View style={styles.scoresSection}>
               <TextInput
                 style={styles.scoreInput}
@@ -225,8 +235,8 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onSubmit={submitScore}
-        team1Name={game.team1?.name || 'Team 1'}
-        team2Name={game.team2?.name || 'Team 2'}
+        team1Name={game.team1?.name || 'TBD'}
+        team2Name={game.team2?.name || 'TBD'}
         team1Score={team1Score}
         team2Score={team2Score}
         setTeam1Score={setTeam1Score}
@@ -235,6 +245,12 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
         fieldId={fieldId}
         setDatetimeId={setDatetimeId}
         setFieldId={setFieldId}
+        team1Id={team1Id}
+        team2Id={team2Id}
+        setTeam1Id={setTeam1Id}
+        setTeam2Id={setTeam2Id}
+        showAdminFields={profile?.is_admin || false}
+        divisionId={game.division_id}
         isLoading={isLoading}
       />
     </View>

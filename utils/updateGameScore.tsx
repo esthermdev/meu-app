@@ -10,6 +10,8 @@ interface UpdateScoreParams {
   roundId?: number | null;  // Optional, for creating new scores
   datetimeId?: number | null; // Optional, datetime ID to assign to the game
   fieldId?: number | null;  // Optional, field ID to assign to the game
+  team1Id?: number | null;  // Optional, team1 ID to assign to the game
+  team2Id?: number | null;  // Optional, team2 ID to assign to the game
   onSuccess?: () => void;   // Callback for successful operations
 }
 
@@ -21,6 +23,8 @@ export const updateGameScore = async ({
   roundId,
   datetimeId,
   fieldId,
+  team1Id,
+  team2Id,
   onSuccess
 }: UpdateScoreParams): Promise<boolean> => {
   try {
@@ -31,7 +35,9 @@ export const updateGameScore = async ({
       scoreId,
       roundId,
       datetimeId,
-      fieldId
+      fieldId,
+      team1Id,
+      team2Id
     });
     
     // Convert scores to numbers if they're strings
@@ -40,13 +46,19 @@ export const updateGameScore = async ({
     
     // Field ID is now provided directly, no need to look up by name
     
-    // Update games table if datetime or field needs to be updated
+    // Update games table if datetime, field, or teams need to be updated
     const gameUpdateData: any = {};
     if (datetimeId !== undefined && datetimeId !== null) {
       gameUpdateData.datetime_id = datetimeId;
     }
     if (fieldId !== undefined && fieldId !== null) {
       gameUpdateData.field_id = fieldId;
+    }
+    if (team1Id !== undefined && team1Id !== null) {
+      gameUpdateData.team1_id = team1Id === -1 ? null : team1Id;
+    }
+    if (team2Id !== undefined && team2Id !== null) {
+      gameUpdateData.team2_id = team2Id === -1 ? null : team2Id;
     }
     
     console.log('Game update data:', gameUpdateData);

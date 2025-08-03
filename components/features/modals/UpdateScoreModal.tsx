@@ -13,12 +13,12 @@ import { Dropdown } from '@/components/Dropdown';
 import { DateTimeFilteredDropdown } from '@/components/DateTimeFilteredDropdown';
 import { useDatetimeOptions } from '@/hooks/useDatetimeOptions';
 import { useFieldOptions } from '@/hooks/useFieldOptions';
-import { useAuth } from '@/context/AuthProvider';
+import { useTeamOptions } from '@/hooks/useTeamOptions';
 
 interface UpdateScoreModalProps {
   visible: boolean;
   onClose: () => void;
-  onSubmit: (team1Score: string, team2Score: string, datetimeId: number | null, fieldId: number | null) => void | Promise<void>;
+  onSubmit: (team1Score: string, team2Score: string, datetimeId: number | null, fieldId: number | null, team1Id?: number | null, team2Id?: number | null) => void | Promise<void>;
   team1Name: string;
   team2Name: string;
   team1Score: string;
@@ -29,7 +29,13 @@ interface UpdateScoreModalProps {
   fieldId: number | null;
   setDatetimeId: (id: number | null) => void;
   setFieldId: (id: number | null) => void;
+  team1Id?: number | null;
+  team2Id?: number | null;
+  setTeam1Id?: (id: number | null) => void;
+  setTeam2Id?: (id: number | null) => void;
   readOnlyDateTimeField?: boolean;
+  showAdminFields?: boolean;
+  divisionId?: number | null;
   isLoading?: boolean;
 }
 
@@ -47,12 +53,18 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
   fieldId,
   setDatetimeId,
   setFieldId,
+  team1Id,
+  team2Id,
+  setTeam1Id,
+  setTeam2Id,
   readOnlyDateTimeField = false,
+  showAdminFields = false,
+  divisionId,
   isLoading = false,
 }) => {
   const { datetimeOptions } = useDatetimeOptions();
   const { fieldOptions } = useFieldOptions();
-  const { profile } = useAuth()
+  const { teamOptions } = useTeamOptions(divisionId);
   
   // Find selected datetime option for display
   const selectedDatetime = useMemo(() => {
@@ -80,6 +92,33 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
     const selectedOption = fieldOptions.find(option => option.label === selectedLabel);
     if (selectedOption) {
       setFieldId(selectedOption.id);
+    }
+  };
+
+  // Find selected team options for display
+  const selectedTeam1 = useMemo(() => {
+    return teamOptions.find(option => option.id === team1Id);
+  }, [teamOptions, team1Id]);
+
+  const selectedTeam2 = useMemo(() => {
+    return teamOptions.find(option => option.id === team2Id);
+  }, [teamOptions, team2Id]);
+
+  const teamLabels = useMemo(() => {
+    return teamOptions.map(option => option.label);
+  }, [teamOptions]);
+
+  const handleTeam1Select = (selectedLabel: string) => {
+    const selectedOption = teamOptions.find(option => option.label === selectedLabel);
+    if (selectedOption && setTeam1Id) {
+      setTeam1Id(selectedOption.id);
+    }
+  };
+
+  const handleTeam2Select = (selectedLabel: string) => {
+    const selectedOption = teamOptions.find(option => option.label === selectedLabel);
+    if (selectedOption && setTeam2Id) {
+      setTeam2Id(selectedOption.id);
     }
   };
   return (
@@ -123,8 +162,30 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
             </View>
           </View>
           
-          {profile?.is_admin && (
+          {showAdminFields && (
             <>
+              {/* Team Selection */}
+              <View style={styles.modalFieldContainer}>
+                <CustomText style={styles.modalFieldLabel}>Team 1</CustomText>
+                <Dropdown
+                  label="Select team 1"
+                  data={teamLabels}
+                  selectedValue={selectedTeam1?.label}
+                  onSelect={handleTeam1Select}
+                />
+              </View>
+              
+              <View style={styles.modalFieldContainer}>
+                <CustomText style={styles.modalFieldLabel}>Team 2</CustomText>
+                <Dropdown
+                  label="Select team 2"
+                  data={teamLabels}
+                  selectedValue={selectedTeam2?.label}
+                  onSelect={handleTeam2Select}
+                />
+              </View>
+              
+              {/* Date & Time and Field */}
               <View style={styles.modalFieldContainer}>
                 <CustomText style={styles.modalFieldLabel}>Date & Time</CustomText>
                 {readOnlyDateTimeField ? (
@@ -177,7 +238,7 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
             
             <TouchableOpacity 
               style={styles.modalUpdateButton}
-              onPress={() => onSubmit(team1Score, team2Score, datetimeId, fieldId)}
+              onPress={() => onSubmit(team1Score, team2Score, datetimeId, fieldId, team1Id, team2Id)}
               disabled={isLoading}
             >
               <CustomText style={styles.modalUpdateButtonText}>Update Game</CustomText>
