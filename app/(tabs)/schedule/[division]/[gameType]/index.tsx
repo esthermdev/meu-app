@@ -142,7 +142,7 @@ export default function ScheduleScreen() {
           />
         )}
         onRefresh={refreshData}
-        refreshing={loading}
+        refreshing={false}
       />
       
     </View>

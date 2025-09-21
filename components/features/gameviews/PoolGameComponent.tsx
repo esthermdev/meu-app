@@ -29,7 +29,7 @@ type Props = {
 }
 
 const PoolGameComponent: React.FC<Props> = ({ poolId, divisionId }) => {
-  const { games, loading, error, refreshData } = useRoundIds(divisionId, 1);
+  const { games, error, refreshData } = useRoundIds(divisionId, 1);
   
   const poolGames = games.filter(game => game.pool_id === poolId) as FetchedGame[];
 
@@ -88,7 +88,8 @@ const PoolGameComponent: React.FC<Props> = ({ poolId, divisionId }) => {
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.gameList}
         onRefresh={refreshData}
-        refreshing={loading}
+        refreshing={false}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );

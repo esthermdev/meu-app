@@ -204,7 +204,7 @@ const TeamDetails = () => {
           style={styles.content}
           refreshControl={
             <RefreshControl
-              refreshing={refreshing}
+              refreshing={false}
               onRefresh={onRefresh}
               colors={['#EA1D25']}
               tintColor="#EA1D25"
