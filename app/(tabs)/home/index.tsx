@@ -3,11 +3,11 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import LargeCardButton from '@/components/buttons/LargeCardButton';
 import FullWidthButton from '@/components/buttons/FullWidthButton';
-import WaterRequestButton from '@/components/features/requests/WaterRequestButton';
+import WaterRequestModal from '@/components/features/requests/WaterRequestModal';
 import MyGamesButtonBackground from '@/components/MyGamesButtonBackground';
-import CartRequestButton from '@/components/features/requests/CartRequestButton';
+import CartRequestModal from '@/components/features/requests/CartRequestModal';
 import CircleIconButton from '@/components/buttons/CircleIconButton';
-import TrainerRequestButton from '@/components/features/requests/TrainerRequestButton';
+import TrainerRequestModal from '@/components/features/requests/TrainerRequestModal';
 import NotificationPrompt from '@/components/features/notifications/NotificationPrompt';
 
 export default function HomeScreen() {
@@ -52,9 +52,9 @@ export default function HomeScreen() {
             label='Field Map'
             route="/(tabs)/home/fieldmap"
           />
-          <WaterRequestButton />
-          <CartRequestButton />
-          <TrainerRequestButton />
+          <WaterRequestModal />
+          <CartRequestModal />
+          <TrainerRequestModal />
         </View>
 
         {/* Spacer to push content down */}
