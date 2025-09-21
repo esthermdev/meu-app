@@ -343,6 +343,7 @@ const CartRequestButton = () => {
                   <TextInput
                     style={styles.specialRequestInput}
                     placeholder="e.g., Wheelchair needed, carrying large items..."
+                    placeholderTextColor={'#0000004D'}
                     value={specialRequest}
                     onChangeText={setSpecialRequest}
                     multiline

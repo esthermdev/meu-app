@@ -216,6 +216,7 @@ const TrainerRequestButton = () => {
                     <TextInput
                       style={styles.textInput}
                       placeholder="Enter team name"
+                      placeholderTextColor={'#0000004D'}
                       value={teamName}
                       onChangeText={setTeamName}
                       maxFontSizeMultiplier={1.2}
@@ -233,6 +234,7 @@ const TrainerRequestButton = () => {
                     <TextInput
                       style={styles.descriptionInput}
                       placeholder="e.g., Head injury, ACL tear, minor sprain, cramping..."
+                      placeholderTextColor={'#0000004D'}
                       value={description}
                       onChangeText={(text) => setDescription(text)}
                       multiline
