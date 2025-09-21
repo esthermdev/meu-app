@@ -38,8 +38,8 @@ const CartManagementScreen = () => {
         tabBarAllowFontScaling: false
       }}
     >
-      <Tab.Screen name="REQUESTS" component={CartRequestsList} />
-      <Tab.Screen name="FULFILLED" component={FulfilledCartRequestsList} />
+      <Tab.Screen name="MY REQUESTS" component={CartRequestsList} />
+      <Tab.Screen name="ALL RIDES" component={FulfilledCartRequestsList} />
       <Tab.Screen name="DRIVERS" component={DriversAvailabilityScreen} />
     </Tab.Navigator>
   );
@@ -47,24 +47,42 @@ const CartManagementScreen = () => {
 
 const CartRequestsList = () => {
   const [requests, setRequests] = useState<CartRequest[]>([]);
+  const [currentRides, setCurrentRides] = useState<CartRequest[]>([]);
+  const [pendingRides, setPendingRides] = useState<CartRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { profile } = useAuth() as { profile: Profile };
 
   useEffect(() => {
     fetchRequests();
+    
+    // Set up real-time subscription
     const subscription = supabase
-      .channel('cart_requests')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'cart_requests' }, fetchRequests)
-      .subscribe();
+      .channel('cart_requests_channel')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'cart_requests'
+        },
+        (payload) => {
+          console.log('Real-time update received:', payload);
+          fetchRequests();
+        }
+      )
+      .subscribe((status) => {
+        console.log('Subscription status:', status);
+      });
 
     return () => {
+      console.log('Unsubscribing from cart_requests_channel');
       subscription.unsubscribe();
     };
-  }, []);
+  }, [profile.id]); // Add profile.id as dependency
 
   const fetchRequests = async () => {
     try {
-      setLoading(true);
+      console.log('Fetching cart requests...');
       
       // First, fetch all fields to get their names
       const { data: fieldsData, error: fieldsError } = await supabase
@@ -81,11 +99,11 @@ const CartRequestsList = () => {
         });
       }
       
-      // Then fetch cart requests
+      // Fetch all cart requests (pending and confirmed for current driver)
       const { data, error } = await supabase
         .from('cart_requests')
         .select('*')
-        .eq('status', 'pending')
+        .in('status', ['pending', 'confirmed'])
         .order('created_at', { ascending: false });
   
       if (error) throw error;
@@ -97,7 +115,19 @@ const CartRequestsList = () => {
         to_field_name: request.to_field_number ? fieldMap[request.to_field_number] : null
       })) || [];
       
+      // Separate into current rides (confirmed by this driver) and pending rides
+      const current = enhancedRequests.filter(request => 
+        request.status === 'confirmed' && request.driver === profile.id
+      );
+      const pending = enhancedRequests.filter(request => 
+        request.status === 'pending'
+      );
+      
+      setCurrentRides(current);
+      setPendingRides(pending);
       setRequests(enhancedRequests);
+      
+      console.log(`Loaded ${current.length} current rides, ${pending.length} pending rides`);
     } catch (error) {
       console.error('Error fetching cart requests:', error);
     } finally {
@@ -107,6 +137,13 @@ const CartRequestsList = () => {
 
   const acceptRequest = async (requestId: number) => {
     try {
+      // Optimistic update - move request from pending to current
+      const requestToMove = pendingRides.find(request => request.id === requestId);
+      if (requestToMove) {
+        setPendingRides(prev => prev.filter(request => request.id !== requestId));
+        setCurrentRides(prev => [...prev, { ...requestToMove, status: 'confirmed', driver: profile.id }]);
+      }
+
       const { data, error } = await supabase
         .from('cart_requests')
         .update({
@@ -115,21 +152,73 @@ const CartRequestsList = () => {
           updated_at: new Date().toISOString()
         })
         .eq('id', requestId)
+        .eq('status', 'pending') // Only accept if still pending
         .select();
 
       if (error) {
         console.error('Supabase error details:', error);
+        // Revert optimistic update on error
+        fetchRequests();
         throw error;
       }
 
-      if (data) {
+      if (!data || data.length === 0) {
+        // Revert optimistic update if request was already taken
         fetchRequests();
-      } else {
         Alert.alert('Request Unavailable', 'This request has already been accepted by another driver.');
       }
     } catch (error) {
       console.error('Error accepting request:', error);
       Alert.alert('Error', 'Failed to accept the request. Please try again.');
+    }
+  };
+
+  const removeRequest = async (requestId: number) => {
+    try {
+      // Optimistic update - remove from local state immediately
+      setPendingRides(prev => prev.filter(request => request.id !== requestId));
+      setCurrentRides(prev => prev.filter(request => request.id !== requestId));
+      
+      const { error } = await supabase
+        .from('cart_requests')
+        .update({
+          status: 'expired' as Database['public']['Enums']['request_status'],
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', requestId);
+
+      if (error) {
+        // Revert optimistic update on error
+        fetchRequests();
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error removing request:', error);
+      Alert.alert('Error', 'Failed to remove the request. Please try again.');
+    }
+  };
+
+  const completeRide = async (requestId: number) => {
+    try {
+      // Optimistic update - remove from current rides
+      setCurrentRides(prev => prev.filter(request => request.id !== requestId));
+      
+      const { error } = await supabase
+        .from('cart_requests')
+        .update({
+          status: 'resolved' as Database['public']['Enums']['request_status'],
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', requestId);
+
+      if (error) {
+        // Revert optimistic update on error
+        fetchRequests();
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error completing ride:', error);
+      Alert.alert('Error', 'Failed to complete the ride. Please try again.');
     }
   };
 
@@ -196,42 +285,35 @@ const CartRequestsList = () => {
     }
   };
 
-  // Modified renderItem function for CartRequestsList with time indicator
-  const renderItem = ({ item }: { item: CartRequest }) => {
-    const timeColor = getTimeColor(item.created_at);
-    
+  // Render function for current rides (confirmed)
+  const renderCurrentRide = ({ item }: { item: CartRequest }) => {
     return (
-      <Card style={styles.cardContainer}>
+      <Card style={[styles.cardContainer, styles.currentRideCard]}>
         <View style={styles.cardHeader}>
-          <CustomText style={styles.transportTitle}>Transport</CustomText>
-          <View style={styles.timeContainer}>
-            <View style={[styles.timeIndicator, { backgroundColor: timeColor }]} />
-            <CustomText style={styles.waitingTime}>{getTimeSince(item.created_at)}</CustomText>
+          <View style={styles.requestIdBadge}>
+            <CustomText style={styles.requestIdText}>#{item.id}</CustomText>
+          </View>
+          <View style={[styles.statusBadge, { backgroundColor: '#73BF44' }]}>
+            <CustomText style={styles.statusText}>Confirmed</CustomText>
           </View>
         </View>
 
         <View style={styles.locationsContainer}>
-          {/* Vertical route line with points on the left */}
           <View style={styles.routeVisualization}>
             <View style={styles.routePoint} />
             <View style={styles.routeLine} />
             <View style={styles.routePoint} />
           </View>
-
-          {/* Locations information on the right */}
           <View style={styles.routeInfo}>
-            {/* From section */}
             <View style={styles.locationInfo}>
-            <CustomText style={styles.routeLabel}>From: </CustomText>
-            <CustomText style={styles.locationText}>
-              {item.from_location === 'Field' ? 'Field ' : ''}
-              {item.from_location === 'Field' 
-                ? (item.from_field_name || item.from_field_number) 
-                : getLocationLabel(item.from_location)}
-            </CustomText>
+              <CustomText style={styles.routeLabel}>From: </CustomText>
+              <CustomText style={styles.locationText}>
+                {item.from_location === 'Field' ? 'Field ' : ''}
+                {item.from_location === 'Field' 
+                  ? (item.from_field_name || item.from_field_number) 
+                  : getLocationLabel(item.from_location)}
+              </CustomText>
             </View>
-
-            {/* To section */}
             <View style={styles.locationInfo}>
               <CustomText style={styles.routeLabel}>To: </CustomText>
               <CustomText style={styles.locationText}>
@@ -250,6 +332,11 @@ const CartRequestsList = () => {
         </View>
 
         <View style={styles.infoRow}>
+          <CustomText style={styles.infoLabel}>Name:</CustomText>
+          <CustomText style={styles.infoValue}>{item.requester || 'Anonymous'}</CustomText>
+        </View>
+
+        <View style={styles.infoRow}>
           <CustomText style={styles.infoLabel}>Created:</CustomText>
           <CustomText style={styles.infoValue}>{formatDate(item.created_at)}</CustomText>
         </View>
@@ -262,11 +349,95 @@ const CartRequestsList = () => {
         )}
 
         <TouchableOpacity
-          style={styles.acceptButton}
-          onPress={() => acceptRequest(item.id)}
+          style={styles.completeButton}
+          onPress={() => completeRide(item.id)}
         >
-          <CustomText style={styles.acceptButtonText}>Accept</CustomText>
+          <CustomText style={styles.completeButtonText}>Complete Ride</CustomText>
         </TouchableOpacity>
+      </Card>
+    );
+  };
+
+  // Render function for pending rides
+  const renderPendingRide = ({ item }: { item: CartRequest }) => {
+    const timeColor = getTimeColor(item.created_at);
+    
+    return (
+      <Card style={styles.cardContainer}>
+        <View style={styles.cardHeader}>
+          <View style={styles.requestIdBadge}>
+            <CustomText style={styles.requestIdText}>#{item.id}</CustomText>
+          </View>
+          <View style={styles.timeContainer}>
+            <View style={[styles.timeIndicator, { backgroundColor: timeColor }]} />
+            <CustomText style={styles.waitingTime}>{getTimeSince(item.created_at)}</CustomText>
+          </View>
+        </View>
+
+        <View style={styles.locationsContainer}>
+          <View style={styles.routeVisualization}>
+            <View style={styles.routePoint} />
+            <View style={styles.routeLine} />
+            <View style={styles.routePoint} />
+          </View>
+          <View style={styles.routeInfo}>
+            <View style={styles.locationInfo}>
+              <CustomText style={styles.routeLabel}>From: </CustomText>
+              <CustomText style={styles.locationText}>
+                {item.from_location === 'Field' ? 'Field ' : ''}
+                {item.from_location === 'Field' 
+                  ? (item.from_field_name || item.from_field_number) 
+                  : getLocationLabel(item.from_location)}
+              </CustomText>
+            </View>
+            <View style={styles.locationInfo}>
+              <CustomText style={styles.routeLabel}>To: </CustomText>
+              <CustomText style={styles.locationText}>
+                {item.to_location === 'Field' ? 'Field ' : ''}
+                {item.to_location === 'Field' 
+                  ? (item.to_field_name || item.to_field_number) 
+                  : getLocationLabel(item.to_location)}
+              </CustomText>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.passengerRow}>
+          <CustomText style={styles.passengerLabel}>Passengers:</CustomText>
+          <CustomText style={styles.passengerCount}>{item.passenger_count || 0}</CustomText>
+        </View>
+
+        <View style={styles.infoRow}>
+          <CustomText style={styles.infoLabel}>Name:</CustomText>
+          <CustomText style={styles.infoValue}>{item.requester || 'Anonymous'}</CustomText>
+        </View>
+
+        <View style={styles.infoRow}>
+          <CustomText style={styles.infoLabel}>Created:</CustomText>
+          <CustomText style={styles.infoValue}>{formatDate(item.created_at)}</CustomText>
+        </View>
+
+        {item.special_request && (
+          <View style={styles.specialRequestContainer}>
+            <CustomText style={styles.specialRequestLabel}>Special Request:</CustomText>
+            <CustomText style={styles.specialRequestText}>{item.special_request}</CustomText>
+          </View>
+        )}
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.acceptButton}
+            onPress={() => acceptRequest(item.id)}
+          >
+            <CustomText style={styles.acceptButtonText}>Accept</CustomText>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.removeButton}
+            onPress={() => removeRequest(item.id)}
+          >
+            <CustomText style={styles.removeButtonText}>Remove</CustomText>
+          </TouchableOpacity>
+        </View>
       </Card>
     );
   };
@@ -281,15 +452,41 @@ const CartRequestsList = () => {
 
   return (
     <View style={styles.container}>
-      {requests.length === 0 ? (
+      {currentRides.length === 0 && pendingRides.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <CustomText style={styles.emptyText}>No active cart requests</CustomText>
+          <CustomText style={styles.emptyText}>No cart requests available</CustomText>
         </View>
       ) : (
         <FlatList
-          data={requests}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
+          data={[]}
+          renderItem={() => null}
+          ListHeaderComponent={() => (
+            <View>
+              {/* Current Rides Section */}
+              {currentRides.length > 0 && (
+                <View style={styles.sectionContainer}>
+                  <CustomText style={styles.sectionTitle}>Current Rides</CustomText>
+                  {currentRides.map((item) => (
+                    <View key={item.id}>
+                      {renderCurrentRide({ item })}
+                    </View>
+                  ))}
+                </View>
+              )}
+              
+              {/* Pending Rides Section */}
+              {pendingRides.length > 0 && (
+                <View style={styles.sectionContainer}>
+                  <CustomText style={styles.sectionTitle}>Pending Rides</CustomText>
+                  {pendingRides.map((item) => (
+                    <View key={item.id}>
+                      {renderPendingRide({ item })}
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+          )}
           contentContainerStyle={styles.listContainer}
           refreshing={loading}
           onRefresh={fetchRequests}
@@ -421,9 +618,9 @@ const styles = StyleSheet.create({
   cardContainer: {
     borderRadius: 12,
     padding: 10,
-    marginTop: 12,
     backgroundColor: '#262626',
-    borderWidth: 0
+    borderWidth: 0,
+    marginTop: 15,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -433,9 +630,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#CCCCCC66'
   },
-  transportTitle: {
-    ...typography.textLargeBold,
+  requestIdBadge: {
+    backgroundColor: '#EA1D25',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  requestIdText: {
+    ...typography.textSmall,
     color: '#fff',
+    fontWeight: 'bold',
   },
   requestTime: {
     ...typography.textLarge,
@@ -541,16 +745,69 @@ const styles = StyleSheet.create({
     ...typography.textMedium,
     color: '#fff',
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
   acceptButton: {
     backgroundColor: '#73BF44',
     paddingVertical: 8,
     borderRadius: 5,
     paddingHorizontal: 15,
     alignItems: 'center',
+    flex: 1,
+    marginRight: 4,
   },
   acceptButtonText: {
     ...typography.textBold,
     color: '#fff',
+  },
+  removeButton: {
+    backgroundColor: '#EA1D25',
+    paddingVertical: 8,
+    borderRadius: 5,
+    paddingHorizontal: 15,
+    alignItems: 'center',
+    flex: 1,
+    marginLeft: 4,
+  },
+  removeButtonText: {
+    ...typography.textBold,
+    color: '#fff',
+  },
+  completeButton: {
+    backgroundColor: '#2E7D32',
+    paddingVertical: 8,
+    borderRadius: 5,
+    paddingHorizontal: 15,
+    alignItems: 'center',
+  },
+  completeButtonText: {
+    ...typography.textBold,
+    color: '#fff',
+  },
+  currentRideCard: {
+    borderColor: '#73BF44',
+    borderWidth: 2,
+  },
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  statusText: {
+    ...typography.textSmall,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  sectionContainer: {
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    ...typography.textLargeBold,
+    color: '#fff',
+    marginTop: 15,
   },
   // Driver availability screen styles
   screenContainer: {

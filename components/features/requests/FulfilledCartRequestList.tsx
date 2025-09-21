@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useIsFocused } from '@react-navigation/native';
 import { Card } from '@/components/Card';
 import { supabase } from '@/lib/supabase';
@@ -21,33 +22,81 @@ type LocationType = Database['public']['Enums']['location_type'];
 
 const FulfilledCartRequestsList = () => {
   const [requests, setRequests] = useState<CartRequest[]>([]);
+  const [pendingRides, setPendingRides] = useState<CartRequest[]>([]);
+  const [confirmedRides, setConfirmedRides] = useState<CartRequest[]>([]);
+  const [completedRides, setCompletedRides] = useState<CartRequest[]>([]);
+  const [expiredRides, setExpiredRides] = useState<CartRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { profile } = useAuth() as { profile: Profile };
   const isFocused = useIsFocused();
   
+  // Collapsible section states
+  const [pendingCollapsed, setPendingCollapsed] = useState<boolean>(false);
+  const [confirmedCollapsed, setConfirmedCollapsed] = useState<boolean>(false);
+  const [completedCollapsed, setCompletedCollapsed] = useState<boolean>(false);
+  const [expiredCollapsed, setExpiredCollapsed] = useState<boolean>(true); // Default collapsed
+  
   const driverName = profile.full_name;
+
+  // Collapsible section header component
+  const CollapsibleSectionHeader = ({ 
+    title, 
+    count, 
+    isCollapsed, 
+    onToggle 
+  }: { 
+    title: string; 
+    count: number; 
+    isCollapsed: boolean; 
+    onToggle: () => void; 
+  }) => (
+    <TouchableOpacity style={styles.sectionHeader} onPress={onToggle}>
+      <CustomText style={styles.sectionTitle}>{title} ({count})</CustomText>
+      <Ionicons 
+        name={isCollapsed ? "chevron-down" : "chevron-up"} 
+        size={20} 
+        color="#fff" 
+      />
+    </TouchableOpacity>
+  );
 
   useEffect(() => {
     if (isFocused) {
-      fetchFulfilledRequests();
+      fetchAllRequests();
     }
   }, [isFocused]);
 
   useEffect(() => {
-    fetchFulfilledRequests();
+    fetchAllRequests();
+    
+    // Set up real-time subscription
     const subscription = supabase
-      .channel('cart_requests')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'cart_requests' }, fetchFulfilledRequests)
-      .subscribe();
+      .channel('fulfilled_requests_channel')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'cart_requests'
+        },
+        (payload) => {
+          console.log('Fulfilled requests real-time update:', payload);
+          fetchAllRequests();
+        }
+      )
+      .subscribe((status) => {
+        console.log('Fulfilled requests subscription status:', status);
+      });
 
     return () => {
+      console.log('Unsubscribing from fulfilled_requests_channel');
       subscription.unsubscribe();
     };
-  }, []);
+  }, [profile?.id]); // Add profile dependency to avoid stale closures
 
-  const fetchFulfilledRequests = async () => {
+  const fetchAllRequests = async () => {
     try {
-      setLoading(true);
+      console.log('Fetching all cart requests...');
       
       // Get field information for displaying names
       const { data: fieldsData, error: fieldsError } = await supabase
@@ -64,12 +113,12 @@ const FulfilledCartRequestsList = () => {
         });
       }
       
-      // Get the cart requests
+      // Get all cart requests regardless of status
       const { data, error } = await supabase
         .from('cart_requests')
-        .select('*, driver:profiles(full_name)')
-        .in('status', ['confirmed']) // Get requests that are confirmed 
-        .order('updated_at', { ascending: false });
+        .select('*, driver:profiles!cart_requests_driver_fkey(full_name)')
+        .in('status', ['pending', 'confirmed', 'resolved', 'expired'])
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       
@@ -80,7 +129,19 @@ const FulfilledCartRequestsList = () => {
         to_field_name: request.to_field_number ? fieldMap[request.to_field_number] : null
       }));
       
+      // Categorize requests by status
+      const pending = enhancedRequests.filter(request => request.status === 'pending');
+      const confirmed = enhancedRequests.filter(request => request.status === 'confirmed');
+      const completed = enhancedRequests.filter(request => request.status === 'resolved');
+      const expired = enhancedRequests.filter(request => request.status === 'expired');
+      
+      setPendingRides(pending);
+      setConfirmedRides(confirmed);
+      setCompletedRides(completed);
+      setExpiredRides(expired);
       setRequests(enhancedRequests);
+      
+      console.log(`All Rides - Pending: ${pending.length}, Confirmed: ${confirmed.length}, Completed: ${completed.length}, Expired: ${expired.length}`);
     } catch (error) {
       console.error('Error fetching fulfilled requests:', error);
     } finally {
@@ -108,26 +169,42 @@ const FulfilledCartRequestsList = () => {
         return 'Main Entrance';
       case 'Tourney Central':
         return 'Tourney Central';
-      case 'Lot 1':
-        return 'Parking Lot 1';
-      case 'Lot 2':
-        return 'Parking Lot 2';
+      case 'Lot 1 (Grass)':
+        return 'Lot 1 (Grass)';
+      case 'Lot 2 (Pavement)':
+        return 'Lot 2 (Pavement)';
       default:
         return locationType;
     }
   };
 
   const getStatusBadge = (status: string | null) => {
-    if (status === 'completed') {
-      return {
-        text: 'Completed',
-        color: '#6EDF28' // Green for completed
-      };
-    } else {
-      return {
-        text: 'Confirmed',
-        color: '#6EDF28' // Green for confirmed
-      };
+    switch (status) {
+      case 'pending':
+        return {
+          text: 'Pending',
+          color: '#FFD600' // Yellow for pending
+        };
+      case 'confirmed':
+        return {
+          text: 'Confirmed',
+          color: '#2196F3' // Blue for confirmed
+        };
+      case 'resolved':
+        return {
+          text: 'Completed',
+          color: '#6EDF28' // Green for completed
+        };
+      case 'expired':
+        return {
+          text: 'Expired',
+          color: '#EA1D25' // Red for expired
+        };
+      default:
+        return {
+          text: 'Unknown',
+          color: '#666666' // Gray for unknown
+        };
     }
   };
 
@@ -156,7 +233,9 @@ const FulfilledCartRequestsList = () => {
     return (
       <Card style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <CustomText style={styles.transportTitle}>Transport</CustomText>
+          <View style={styles.requestIdBadge}>
+            <CustomText style={styles.requestIdText}>#{item.id}</CustomText>
+          </View>
           <View style={[styles.statusBadge, { borderColor: statusBadge.color, borderWidth: 1, backgroundColor: `${statusBadge.color}3D` }]}>
             <CustomText style={styles.statusText}>{statusBadge.text}</CustomText>
           </View>
@@ -200,20 +279,22 @@ const FulfilledCartRequestsList = () => {
             <CustomText style={styles.valueText}>{item.passenger_count || 0}</CustomText>
           </View>
           <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>Driver:</CustomText>
-            <CustomText style={styles.driverText}>{item.driver ? item.driver.full_name : driverName}</CustomText>
+            <CustomText style={styles.labelText}>Name:</CustomText>
+            <CustomText style={styles.valueText}>{item.requester || 'Anonymous'}</CustomText>
           </View>
+          {item.status !== 'pending' && (
+            <View style={styles.infoRow}>
+              <CustomText style={styles.labelText}>Driver:</CustomText>
+              <CustomText style={styles.driverText}>{item.driver ? item.driver.full_name : driverName}</CustomText>
+            </View>
+          )}
           <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>Request ID:</CustomText>
-            <CustomText style={styles.valueText}>{item.id}</CustomText>
-          </View>
-          <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>Created:</CustomText>
-            <CustomText style={styles.valueText}>{formatDate(item.created_at)}</CustomText>
-          </View>
-          <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>Completed:</CustomText>
-            <CustomText style={styles.valueText}>{formatDate(item.updated_at)}</CustomText>
+            <CustomText style={styles.labelText}>
+              {item.status === 'pending' ? 'Created:' : 'Completed:'}
+            </CustomText>
+            <CustomText style={styles.valueText}>
+              {item.status === 'pending' ? formatDate(item.created_at) : formatDate(item.updated_at)}
+            </CustomText>
           </View>
         </View>
 
@@ -247,16 +328,86 @@ const FulfilledCartRequestsList = () => {
     <SafeAreaView style={styles.container}>
       {requests.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <CustomText style={styles.emptyText}>No fulfilled transport requests found</CustomText>
+          <CustomText style={styles.emptyText}>No transport requests found</CustomText>
         </View>
       ) : (
         <FlatList
-          data={requests}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
+          data={[]}
+          renderItem={() => null}
+          ListHeaderComponent={() => (
+            <View>
+              {/* Pending Rides Section */}
+              {pendingRides.length > 0 && (
+                <View style={styles.sectionContainer}>
+                  <CollapsibleSectionHeader
+                    title="Pending Rides"
+                    count={pendingRides.length}
+                    isCollapsed={pendingCollapsed}
+                    onToggle={() => setPendingCollapsed(!pendingCollapsed)}
+                  />
+                  {!pendingCollapsed && pendingRides.map((item) => (
+                    <View key={item.id}>
+                      {renderItem({ item })}
+                    </View>
+                  ))}
+                </View>
+              )}
+              
+              {/* Confirmed Rides Section */}
+              {confirmedRides.length > 0 && (
+                <View style={styles.sectionContainer}>
+                  <CollapsibleSectionHeader
+                    title="Ongoing Rides"
+                    count={confirmedRides.length}
+                    isCollapsed={confirmedCollapsed}
+                    onToggle={() => setConfirmedCollapsed(!confirmedCollapsed)}
+                  />
+                  {!confirmedCollapsed && confirmedRides.map((item) => (
+                    <View key={item.id}>
+                      {renderItem({ item })}
+                    </View>
+                  ))}
+                </View>
+              )}
+              
+              {/* Completed Rides Section */}
+              {completedRides.length > 0 && (
+                <View style={styles.sectionContainer}>
+                  <CollapsibleSectionHeader
+                    title="Completed Rides"
+                    count={completedRides.length}
+                    isCollapsed={completedCollapsed}
+                    onToggle={() => setCompletedCollapsed(!completedCollapsed)}
+                  />
+                  {!completedCollapsed && completedRides.map((item) => (
+                    <View key={item.id}>
+                      {renderItem({ item })}
+                    </View>
+                  ))}
+                </View>
+              )}
+              
+              {/* Expired Rides Section */}
+              {expiredRides.length > 0 && (
+                <View style={styles.sectionContainer}>
+                  <CollapsibleSectionHeader
+                    title="Archived"
+                    count={expiredRides.length}
+                    isCollapsed={expiredCollapsed}
+                    onToggle={() => setExpiredCollapsed(!expiredCollapsed)}
+                  />
+                  {!expiredCollapsed && expiredRides.map((item) => (
+                    <View key={item.id}>
+                      {renderItem({ item })}
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+          )}
           contentContainerStyle={styles.listContainer}
           refreshing={loading}
-          onRefresh={fetchFulfilledRequests}
+          onRefresh={fetchAllRequests}
         />
       )}
     </SafeAreaView>
@@ -298,7 +449,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     borderRadius: 12,
     padding: 10,
-    marginVertical: 12,
+    marginTop: 15,
     backgroundColor: '#262626',
     borderWidth: 0
   },
@@ -307,12 +458,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 8,
     borderBottomWidth: 1,
-    borderColor: '#CCCCCC66'
+    borderColor: '#CCCCCC66',
+    justifyContent: 'space-between'
   },
-  transportTitle: {
-    ...typography.textLargeBold,
+  requestIdBadge: {
+    backgroundColor: '#EA1D25',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  requestIdText: {
+    ...typography.textSmall,
     color: '#fff',
-    marginRight: 'auto'
+    fontWeight: 'bold',
   },
   statusBadge: {
     paddingHorizontal: 7,
@@ -412,6 +570,20 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: {
     ...typography.textBold,
+    color: '#fff',
+  },
+  sectionContainer: {
+    marginBottom: 10,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 15,
+    borderRadius: 8,
+  },
+  sectionTitle: {
+    ...typography.textLargeBold,
     color: '#fff',
   },
 });

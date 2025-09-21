@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.0 (ec89f6b)"
@@ -47,6 +47,8 @@ export type Database = {
           from_location: Database["public"]["Enums"]["location_type"]
           id: number
           passenger_count: number | null
+          requester: string | null
+          requester_id: string | null
           requester_token: string | null
           special_request: string | null
           status: Database["public"]["Enums"]["request_status"]
@@ -62,6 +64,8 @@ export type Database = {
           from_location: Database["public"]["Enums"]["location_type"]
           id?: number
           passenger_count?: number | null
+          requester?: string | null
+          requester_id?: string | null
           requester_token?: string | null
           special_request?: string | null
           status?: Database["public"]["Enums"]["request_status"]
@@ -77,6 +81,8 @@ export type Database = {
           from_location?: Database["public"]["Enums"]["location_type"]
           id?: number
           passenger_count?: number | null
+          requester?: string | null
+          requester_id?: string | null
           requester_token?: string | null
           special_request?: string | null
           status?: Database["public"]["Enums"]["request_status"]
@@ -104,6 +110,13 @@ export type Database = {
             columns: ["from_field_number"]
             isOneToOne: false
             referencedRelation: "fields"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cart_requests_requester_id_fkey"
+            columns: ["requester_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {

@@ -19,6 +19,7 @@ import { supabase } from '@/lib/supabase';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Dropdown from '../../Dropdown';
 import usePushNotifications from '@/hooks/usePushNotifications';
+import { useAuth } from '@/context/AuthProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { typography } from '@/constants/Typography';
 import ModalButton from '../../buttons/ModalButtons';
@@ -51,6 +52,7 @@ const CartRequestButton = () => {
   const [fieldNameToIdMap, setFieldNameToIdMap] = useState<Record<string, number>>({});
   const [fieldIdToNameMap, setFieldIdToNameMap] = useState<Record<number, string>>({});
   const [passengerCount, setPassengerCount] = useState(1);
+  const [requesterName, setRequesterName] = useState('');
   const [specialRequest, setSpecialRequest] = useState('');
   // Error states
   const [errors, setErrors] = useState<{
@@ -58,14 +60,23 @@ const CartRequestButton = () => {
     toLocation?: string;
     fromFieldNumber?: string;
     toFieldNumber?: string;
+    requesterName?: string;
     general?: string;
   }>({});
 
   const { expoPushToken } = usePushNotifications();
+  const { profile } = useAuth();
 
   useEffect(() => {
     fetchFields();
   }, []);
+
+  useEffect(() => {
+    // Auto-populate name from user profile when modal opens
+    if (isModalVisible && profile?.full_name && !requesterName) {
+      setRequesterName(profile.full_name);
+    }
+  }, [isModalVisible, profile?.full_name, requesterName]);
 
   const fetchFields = async () => {
     const { data, error } = await supabase
@@ -107,6 +118,7 @@ const CartRequestButton = () => {
         from_field_number: fromLocation === 'Field' ? parseInt(fromFieldNumber) : null,
         to_field_number: toLocation === 'Field' ? parseInt(toFieldNumber) : null,
         passenger_count: passengerCount,
+        requester: requesterName || null,
         special_request: specialRequest,
         status: 'pending' as RequestStatus,
         requester_token: expoPushToken || null,
@@ -150,6 +162,11 @@ const CartRequestButton = () => {
   const validateForm = (): boolean => {
     const newErrors: {[key: string]: string} = {};
     
+    // Validate requester name
+    if (!requesterName.trim()) {
+      newErrors.requesterName = "Please enter your name";
+    }
+    
     // Validate locations
     if (fromLocation === toLocation) {
       if (fromLocation === 'Field') {
@@ -182,6 +199,7 @@ const CartRequestButton = () => {
     setFromFieldNumber('');
     setToFieldNumber('');
     setPassengerCount(1);
+    setRequesterName('');
     setSpecialRequest('');
   };
 
@@ -239,6 +257,21 @@ const CartRequestButton = () => {
                     {'\n\n'}
                     Thank you for your patience and understanding as we work to accommodate everyone's transportation needs.
                   </CustomText>
+
+                  <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Your Name:</CustomText>
+                  <TextInput
+                    style={[styles.nameInput, errors.requesterName && styles.inputError]}
+                    placeholder="Enter your name"
+                    value={requesterName}
+                    onChangeText={(text) => {
+                      setRequesterName(text);
+                      // Clear error when user starts typing
+                      setErrors(prev => ({...prev, requesterName: undefined}));
+                    }}
+                    maxLength={50}
+                    maxFontSizeMultiplier={1.2}
+                  />
+                  <ErrorMessage message={errors.requesterName} />
 
                   <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Number of Passengers:</CustomText>
                   <PassengerCountInput
@@ -429,6 +462,17 @@ const styles = StyleSheet.create({
   generalErrorText: {
     color: '#DD3333',
     ...typography.text
+  },
+  nameInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 12,
+    ...typography.body,
+    marginBottom: 8,
+  },
+  inputError: {
+    borderColor: '#DD3333',
   },
 });
 
