@@ -28,28 +28,44 @@ const TrainerRequestsList = () => {
 
   useEffect(() => {
     fetchRequests();
+    
+    // Set up real-time subscription
     const subscription = supabase
-      .channel('medical_requests')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'medical_requests' }, fetchRequests)
-      .subscribe();
+      .channel('trainer_requests_channel')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'medical_requests'
+        },
+        (payload) => {
+          console.log('Trainer requests real-time update:', payload);
+          fetchRequests();
+        }
+      )
+      .subscribe((status) => {
+        console.log('Trainer requests subscription status:', status);
+      });
 
     return () => {
+      console.log('Unsubscribing from trainer_requests_channel');
       subscription.unsubscribe();
     };
-  }, []);
+  }, [profile?.id]); // Add profile dependency to avoid stale closures
 
   const fetchRequests = async () => {
     try {
-      setLoading(true);
+      console.log('Fetching trainer requests...');
       const { data, error } = await supabase
         .from('medical_requests')
         .select('*, trainer:profiles(full_name), fields:fields(name)')
         .eq('status', 'pending') // For TrainerRequestsList.tsx
-        // or .in('status', ['confirmed', 'resolved']) // For FulfilledTrainerRequestList.tsx
         .order('created_at', { ascending: false });
   
       if (error) throw error;
       setRequests(data as MedicalRequest[]);
+      console.log(`Loaded ${data?.length || 0} pending trainer requests`);
     } catch (error) {
       console.error('Error fetching requests:', error);
     } finally {
@@ -59,6 +75,9 @@ const TrainerRequestsList = () => {
 
   const resolveRequest = async (requestId: number) => {
     try {
+      // Optimistic update - remove from local state immediately
+      setRequests(prev => prev.filter(request => request.id !== requestId));
+      
       const { data, error } = await supabase
         .from('medical_requests')
         .update({
@@ -72,11 +91,16 @@ const TrainerRequestsList = () => {
         .select()
         .single();
 
-      if (error) throw error;
-
-      if (data) {
+      if (error) {
+        console.error('Supabase error details:', error);
+        // Revert optimistic update on error
         fetchRequests();
-      } else {
+        throw error;
+      }
+
+      if (!data) {
+        // Revert optimistic update if request was already taken
+        fetchRequests();
         Alert.alert('Request Unavailable', 'This request has already been handled by another trainer.');
       }
     } catch (error) {
@@ -246,8 +270,6 @@ const TrainerRequestsList = () => {
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.listContainer}
-          refreshing={loading}
-          onRefresh={fetchRequests}
         />
       )}
     </SafeAreaView>

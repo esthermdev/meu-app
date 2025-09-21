@@ -406,8 +406,6 @@ const FulfilledCartRequestsList = () => {
             </View>
           )}
           contentContainerStyle={styles.listContainer}
-          refreshing={loading}
-          onRefresh={fetchAllRequests}
         />
       )}
     </SafeAreaView>

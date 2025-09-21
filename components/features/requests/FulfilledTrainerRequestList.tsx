@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert, RefreshControl } from 'react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
 import { Card } from '@/components/Card';
 import { MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
@@ -38,19 +38,35 @@ const FulfilledTrainerRequestList = () => {
   // Regular effect for initial load and subscription
   useEffect(() => {
     fetchFulfilledRequests();
+    
+    // Set up real-time subscription
     const subscription = supabase
-      .channel('medical_requests')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'medical_requests' }, fetchFulfilledRequests)
-      .subscribe();
+      .channel('fulfilled_trainer_requests_channel')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'medical_requests'
+        },
+        (payload) => {
+          console.log('Fulfilled trainer requests real-time update:', payload);
+          fetchFulfilledRequests();
+        }
+      )
+      .subscribe((status) => {
+        console.log('Fulfilled trainer requests subscription status:', status);
+      });
 
     return () => {
+      console.log('Unsubscribing from fulfilled_trainer_requests_channel');
       subscription.unsubscribe();
     };
-  }, []);
+  }, [profile?.id]); // Add profile dependency to avoid stale closures
 
   const fetchFulfilledRequests = async () => {
     try {
-      setLoading(true);
+      console.log('Fetching fulfilled trainer requests...');
       const { data, error } = await supabase
         .from('medical_requests')
         .select('*, trainer:profiles(full_name), fields:fields(name)')
@@ -59,6 +75,7 @@ const FulfilledTrainerRequestList = () => {
 
       if (error) throw error;
       setRequests(data as MedicalRequest[]);
+      console.log(`Loaded ${data?.length || 0} fulfilled trainer requests`);
     } catch (error) {
       console.error('Error fetching fulfilled requests:', error);
     } finally {
@@ -68,17 +85,19 @@ const FulfilledTrainerRequestList = () => {
 
   const deleteRequest = async (requestId: number) => {
     try {
-      // We'll just update the status to 'expired' to keep the record but hide it from the list
+      // Optimistic update - remove from local state immediately
+      setRequests(prev => prev.filter(req => req.id !== requestId));
+      
       const { error } = await supabase
         .from('medical_requests')
         .update({ status: 'expired' as Database['public']['Enums']['request_status'] })
         .eq('id', requestId);
 
-      if (error) throw error;
-      
-      // Update the local state by removing the archived request
-      setRequests(requests.filter(req => req.id !== requestId));
-      
+      if (error) {
+        // Revert optimistic update on error
+        fetchFulfilledRequests();
+        throw error;
+      }
     } catch (error) {
       console.error('Error removing request:', error);
       Alert.alert('Error', 'Failed to remove the request. Please try again.');
@@ -226,8 +245,6 @@ const FulfilledTrainerRequestList = () => {
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.listContainer}
-          refreshing={loading}
-          onRefresh={fetchFulfilledRequests}
         />
       )}
     </SafeAreaView>
