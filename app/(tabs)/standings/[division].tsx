@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, ActivityIndicator, Text, SectionList, StyleSheet, Image } from 'react-native';
+import { View, ActivityIndicator, SectionList, StyleSheet, Image } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { usePoolIds } from '@/hooks/useGamesFilter';
 import { supabase } from '@/lib/supabase';
@@ -7,6 +7,7 @@ import { Database } from '@/database.types';
 import CustomHeader from '@/components/headers/CustomHeader';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
+import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
 
 type StandingsRow = Database['public']['Tables']['rankings']['Row']
 type TeamsRow = Database['public']['Tables']['teams']['Row'];
@@ -29,10 +30,14 @@ export default function DivisionStandings() {
   const [hasGamesStarted, setHasGamesStarted] = useState(false);
 
   useEffect(() => {
-    if (pools.length > 0) {
-      fetchStandings();
+    if (!loading) {
+      if (pools.length > 0) {
+        fetchStandings();
+      } else {
+        setIsLoading(false);
+      }
     }
-  }, [pools]);
+  }, [pools, loading]);
 
   const fetchStandings = async () => {
     setIsLoading(true);
@@ -136,10 +141,26 @@ export default function DivisionStandings() {
     );
   }
 
-  if (error || !pools.length) {
+  if (error || (!loading && !pools.length)) {
     return (
-      <View style={styles.centerContainer}>
-        <Text>No pools found</Text>
+      <View style={styles.container}>
+        <CustomHeader title={divisionName} />
+        <ComingSoonPlaceholder 
+          message="Standings coming soon!"
+          iconName="leaderboard"
+        />
+      </View>
+    );
+  }
+
+  if (!loading && pools.length > 0 && standingsData.length === 0 && !isLoading) {
+    return (
+      <View style={styles.container}>
+        <CustomHeader title={divisionName} />
+        <ComingSoonPlaceholder 
+          message="Pools coming soon!"
+          iconName="leaderboard"
+        />
       </View>
     );
   }

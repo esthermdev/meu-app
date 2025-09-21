@@ -1,9 +1,10 @@
-import { View, ActivityIndicator, Text } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { usePoolIds } from '@/hooks/useGamesFilter';
 import { useLocalSearchParams } from 'expo-router';
 import { typography } from '@/constants/Typography';
 import PoolGameComponent from '@/components/features/gameviews/PoolGameComponent';
+import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -23,9 +24,10 @@ export default function PoolPlayScreen() {
 
   if (error || !pools.length) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>No pools found</Text>
-      </View>
+      <ComingSoonPlaceholder 
+        message="No pools available for this division"
+        iconName="pool"
+      />
     );
   }
 

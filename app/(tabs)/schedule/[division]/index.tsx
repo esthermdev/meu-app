@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useGametypes } from '@/hooks/useScheduleConfig';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
+import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
 
 
 export default function GameTypesScreen() {
@@ -57,29 +58,32 @@ export default function GameTypesScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
-        {gametypes ? gametypes.map((option) => (
-          <TouchableOpacity
-            key={option.id}
-            style={styles.gameTypeItem}
-            onPress={() => handleSelectGameType(option.id, option.title, option.route)}
-          >
-            {option.icon && (
-              <MaterialCommunityIcons
-                name={option.icon as any}
-                size={24}
-                color='#EA1D25'
-                style={styles.icon}
-              />
-            )}
-            <CustomText style={styles.gameTypeText}>{option.title}</CustomText>
-          </TouchableOpacity>
-        )) : (
-          <View>
-            <Text style={styles.errorText}>No games available</Text>
-          </View>)
-        }
-      </View>
+      {gametypes && gametypes.length > 0 ? (
+        <View style={styles.content}>
+          {gametypes.map((option) => (
+            <TouchableOpacity
+              key={option.id}
+              style={styles.gameTypeItem}
+              onPress={() => handleSelectGameType(option.id, option.title, option.route)}
+            >
+              {option.icon && (
+                <MaterialCommunityIcons
+                  name={option.icon as any}
+                  size={24}
+                  color='#EA1D25'
+                  style={styles.icon}
+                />
+              )}
+              <CustomText style={styles.gameTypeText}>{option.title}</CustomText>
+            </TouchableOpacity>
+          ))}
+        </View>
+      ) : (
+        <ComingSoonPlaceholder 
+          message="Pools and brackets coming soon!"
+          iconName="account-tree"
+        />
+      )}
     </View>
   );
 }

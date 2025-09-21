@@ -4,6 +4,7 @@ import { useDivisions } from '@/hooks/useScheduleConfig';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
+import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
 
 export default function ScheduleIndex() {
   const { divisions, loading, error, refreshing, refreshDivisions } = useDivisions();
@@ -41,7 +42,7 @@ export default function ScheduleIndex() {
       }
     >
       <View style={styles.content}>
-        {divisions.map((division) => (
+        {divisions.length > 0 ? divisions.map((division) => (
           <TouchableOpacity
             key={division.id}
             onPress={() => handleSelectDivision(division.id, division.title)}
@@ -50,7 +51,12 @@ export default function ScheduleIndex() {
               <CustomText style={[styles.title, { color: division.color, textDecorationColor: division.color }]}>{division.title}</CustomText>
             </View>
           </TouchableOpacity>
-        ))}
+        )) : (
+          <ComingSoonPlaceholder 
+            message="Divisions coming soon!"
+            iconName="sports"
+          />
+        )}
       </View>
     </ScrollView>
   );

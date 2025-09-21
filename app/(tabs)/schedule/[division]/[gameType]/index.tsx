@@ -19,6 +19,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import GameComponent from '@/components/features/gameviews/GameComponent';
 import CustomHeader from '@/components/headers/CustomHeader';
 import CustomText from '@/components/CustomText';
+import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -135,9 +136,10 @@ export default function ScheduleScreen() {
         contentContainerStyle={styles.gamesList}
         stickySectionHeadersEnabled={true}
         ListEmptyComponent={() => (
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No games found for this selection</Text>
-          </View>
+          <ComingSoonPlaceholder 
+            message="No games scheduled for this game type"
+            iconName="event-note"
+          />
         )}
         onRefresh={refreshData}
         refreshing={loading}

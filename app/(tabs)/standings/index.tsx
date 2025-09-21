@@ -4,6 +4,7 @@ import { useDivisions } from '@/hooks/useScheduleConfig';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
+import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
 
 export default function StandingsIndex() {
   const { divisions, loading, error, refreshing, refreshDivisions } = useDivisions();
@@ -35,7 +36,7 @@ export default function StandingsIndex() {
       }
     >
       <View style={styles.content}>
-        {divisions.map((division) => (
+        {divisions.length > 0 ? divisions.map((division) => (
           <Link
             key={division.id}
             href={{
@@ -50,7 +51,12 @@ export default function StandingsIndex() {
               </View>
             </TouchableOpacity>
           </Link>
-        ))}
+        )) : (
+          <ComingSoonPlaceholder 
+            message="Divisions coming soon!"
+            iconName="leaderboard"
+          />
+        )}
       </View>
     </ScrollView>
   );
