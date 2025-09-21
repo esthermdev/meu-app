@@ -8,7 +8,7 @@ export default function StandingLayout() {
 			<Stack.Screen
 				name='index'
 				options={{
-					header: () => <ScreenTitle title='Information' route={'/(tabs)'} showBackButton={false} />
+					header: () => <ScreenTitle title='Information' route={'/'} showBackButton={false} />
 				}}
 			/>
 			<Stack.Screen name="tournament-info" options={{ header: () => <CustomHeader title='Tournament Info' /> }} />

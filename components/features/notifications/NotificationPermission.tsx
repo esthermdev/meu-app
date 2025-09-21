@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 20,
     gap: 12,
+    marginBottom: 40,
   },
   compactContainer: {
     backgroundColor: 'transparent',
