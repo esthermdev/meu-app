@@ -304,6 +304,62 @@ export function useScheduleId(divisionId: number, scheduleId: number, refreshKey
   };
 }
 
+export function useFavoriteGamesSubscription(gameIds: number[], onUpdate: () => void) {
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const gameIdsRef = useRef<number[]>([]);
+  
+  // Update the ref when gameIds change
+  useEffect(() => {
+    gameIdsRef.current = gameIds;
+  }, [gameIds]);
+
+  const debouncedUpdate = useCallback(() => {
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+    }
+
+    debounceTimeoutRef.current = setTimeout(() => {
+      onUpdate();
+      debounceTimeoutRef.current = null;
+    }, 300); // 300ms debounce
+  }, [onUpdate]);
+
+  useEffect(() => {
+    if (!gameIds || gameIds.length === 0) return;
+
+    console.log('Setting up real-time subscription for favorite games:', gameIds);
+
+    // Subscribe to score changes for favorite games
+    const subscription = supabase
+      .channel('favorite-games-scores')
+      .on('postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'scores'
+        },
+        (payload: RealtimePostgresChangesPayload<ScoresRow>) => {
+          const updatedScore = payload.new as ScoresRow;
+          const currentGameIds = gameIdsRef.current;
+          
+          // Check if this score update is relevant to favorite games
+          if (updatedScore && updatedScore.game_id && currentGameIds.includes(updatedScore.game_id)) {
+            console.log('Score updated for favorite game:', updatedScore.game_id);
+            debouncedUpdate();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      subscription.unsubscribe();
+    };
+  }, [gameIds.length, debouncedUpdate]); // Only depend on gameIds.length to avoid frequent reconnects
+}
+
 export function usePoolIds(divisionId: number) {
   const [pools, setPools] = useState<PoolsRow[]>([]);
   const [loading, setLoading] = useState(true);

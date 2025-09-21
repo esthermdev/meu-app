@@ -23,6 +23,7 @@ import PrimaryButton from '@/components/buttons/PrimaryButton';
 import UpdateScoreModal from '@/components/features/modals/UpdateScoreModal';
 import { updateGameScore } from '@/utils/updateGameScore';
 import CustomText from '@/components/CustomText';
+import { useFavoriteGamesSubscription } from '@/hooks/useGamesFilter';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
@@ -63,19 +64,16 @@ const MyGames = () => {
     }
   }, []);
 
+  // Set up real-time subscription for favorite games
+  const gameIds = games.map(game => game.id);
+  useFavoriteGamesSubscription(gameIds, () => {
+    if (session) {
+      fetchFavoriteGames(session.user.id);
+    }
+  });
+
   useEffect(() => {
     if (games.length > 0) {
-      console.log("All games:", games.length);
-      
-      // Log actual date values to debug
-      const allDates = games.map(game => {
-        const date = game.datetime?.date || '';
-        console.log(`Game ${game.id} date value: "${date}"`);
-        return date;
-      }).filter(date => date !== '');
-      
-      console.log("All dates before deduplication:", allDates);
-      
       // Create a map to standardize dates and ensure uniqueness
       const dateMap = new Map<string, string>();
       
@@ -86,12 +84,10 @@ const MyGames = () => {
             const dateObj = new Date(game.datetime.date);
             // Use ISO format date part for deduplication key
             const standardKey = dateObj.toISOString().split('T')[0];
-            console.log(`Game date: ${game.datetime.date} -> Standard key: ${standardKey}`);
             dateMap.set(standardKey, game.datetime.date);
           } catch (e) {
             // If date parsing fails, fall back to string normalization
             const standardKey = game.datetime.date.trim();
-            console.log(`Date parsing failed for: ${game.datetime.date}, using trimmed value`);
             dateMap.set(standardKey, game.datetime.date);
           }
         }
@@ -99,7 +95,6 @@ const MyGames = () => {
       
       // Convert the map values (original date strings) to an array
       const uniqueDates = Array.from(dateMap.values());
-      console.log("Unique dates after deduplication:", uniqueDates);
       
       // Sort dates chronologically
       uniqueDates.sort((a, b) => {
@@ -111,15 +106,12 @@ const MyGames = () => {
       // Set first date as selected by default
       if (uniqueDates.length > 0 && !selectedDate) {
         setSelectedDate(uniqueDates[0]);
-        console.log("Setting initial selected date:", uniqueDates[0]);
       }
     }
   }, [games]);
 
   useEffect(() => {
     if (selectedDate) {
-      console.log("Filtering for selected date:", selectedDate);
-      
       try {
         // Parse the selected date for comparison
         const selectedDateObj = new Date(selectedDate);
@@ -129,7 +121,6 @@ const MyGames = () => {
           try {
             // Check if the game has a datetime
             if (!game.datetime?.date) {
-              console.log(`Game ${game.id} has no date`);
               return false;
             }
             
@@ -137,21 +128,15 @@ const MyGames = () => {
             const gameDateObj = new Date(game.datetime.date);
             const gameDateStr = gameDateObj.toISOString().split('T')[0];
             
-            const isMatch = gameDateStr === selectedDateStr;
-            console.log(`Game ${game.id} date="${game.datetime.date}" (${gameDateStr}) matches=${isMatch}`);
-            
-            return isMatch;
+            return gameDateStr === selectedDateStr;
           } catch (e) {
             // If date parsing fails, fall back to string comparison
-            console.log(`Date parsing failed for game ${game.id}, falling back to string comparison`);
             const normalizedGameDate = game.datetime?.date?.trim() ?? '';
             const normalizedSelectedDate = selectedDate.trim();
             
             return normalizedGameDate === normalizedSelectedDate;
           }
         });
-        
-        console.log(`Found ${filtered.length} games for date ${selectedDate}`);
         
         // Sort filtered games by time
         filtered.sort((a, b) => {
@@ -163,8 +148,6 @@ const MyGames = () => {
         setFilteredGames(filtered);
       } catch (e) {
         // If date parsing completely fails, fall back to basic string comparison
-        console.log("Date parsing error for filtering, falling back to basic comparison");
-        
         const normalizedSelectedDate = selectedDate.trim();
         const filtered = games.filter(game => {
           const gameDate = game.datetime?.date || '';
@@ -430,12 +413,6 @@ const MyGames = () => {
     );
   }
 
-  if (loading) {
-    return (
-      <LoadingIndicator message='Loading your games...' />
-    );
-  }
-
   return (
     <View style={styles.container}>
       {games.length > 0 ? (
@@ -446,7 +423,7 @@ const MyGames = () => {
             renderItem={renderGame}
             keyExtractor={(item) => item.id.toString()}
             refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              <RefreshControl refreshing={false} onRefresh={onRefresh} />
             }
             contentContainerStyle={styles.listContainer}
           />
