@@ -3,7 +3,7 @@ import * as Notifications from 'expo-notifications';
 import { Tabs, router } from 'expo-router';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import Header from '@/components/headers/Header';
-import { fonts, typography } from '@/constants/Typography';
+import { typography } from '@/constants/Typography';
 
 export default function TabLayout() {
   const notificationResponseListener = useRef<Notifications.Subscription>();

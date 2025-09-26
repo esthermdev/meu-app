@@ -16,7 +16,6 @@ export default function UserDashboard() {
     // Use your new Render URL here
     router.push('https://maine-ultimate-account-deletion.onrender.com');
   };
-  
 
   return (
     <ScrollView style={styles.container}>      

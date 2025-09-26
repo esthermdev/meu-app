@@ -4,7 +4,7 @@ import { Redirect, router, Stack } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
 
 export default function UserLayout() {
-  const { session, loading, signOut } = useAuth();
+  const { session, loading } = useAuth();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (loading) {
@@ -19,15 +19,6 @@ export default function UserLayout() {
     return <Redirect href="/sign-in" />;
   }
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      console.error('Error signing out:', error);
-      alert('Error signing out');
-    }
-  };
-
   // This layout can be deferred because it's not the root layout.
   return (
     <>
@@ -40,29 +31,7 @@ export default function UserLayout() {
         <Stack.Screen
           name="index"
           options={{
-            title: 'User',
-            headerTitleAlign: 'center',
-            headerStyle: {
-              backgroundColor: '#EA1D25',
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
-            headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => router.navigate('/(tabs)/home')}
-              >
-                <MaterialIcons name="arrow-back" size={24} color="#fff" />
-              </TouchableOpacity>
-            ),
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={handleSignOut}
-              >
-                <MaterialIcons name="logout" size={24} color="#fff" />
-              </TouchableOpacity>
-            ),
+            headerShown: false,
           }}
         />
         <Stack.Screen

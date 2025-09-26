@@ -52,9 +52,9 @@ export default function RootLayout() {
     <AuthProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'fade' }} />
           <Stack.Screen name="(user)" options={{ headerShown: false, gestureEnabled: false }} />
-          <Stack.Screen name="sign-in" options={{ headerShown: false, gestureEnabled: false }} />
+          <Stack.Screen name="sign-in" options={{ headerShown: false, gestureEnabled: false, animation: 'none' }} />
           <Stack.Screen name="sign-up" options={{ headerShown: false, gestureEnabled: false }} />
           <Stack.Screen name="+not-found" />
           <Stack.Screen name="index" options={{ headerShown: false }} />

@@ -84,6 +84,7 @@ export default function SignUp() {
                   allowFontScaling={false}
                   autoCapitalize="words"
                   style={styles.inputWithIcon}
+                  placeholderTextColor={'lightgrey'}
                 />
               </View>
               
@@ -106,6 +107,7 @@ export default function SignUp() {
                   autoCapitalize="none"
                   keyboardType="email-address"
                   style={styles.inputWithIcon}
+                  placeholderTextColor={'lightgrey'}
                 />
               </View>
               

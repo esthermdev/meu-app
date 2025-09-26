@@ -62,7 +62,7 @@ export default function SignIn() {
           return;
         }
 
-        router.replace('/(user)');
+        router.replace('/(tabs)/profile');
 
       } catch (error) {
         console.error('Volunteer sign-in error:', error);
@@ -111,7 +111,7 @@ export default function SignIn() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={() => router.dismiss()}>
+      <TouchableOpacity onPress={() => router.replace('/(tabs)/home')}>
         <MaterialCommunityIcons name="home-outline" size={30} color="#000" />
       </TouchableOpacity>
       <KeyboardAvoidingView
@@ -135,6 +135,7 @@ export default function SignIn() {
                 <MaterialIcons name="email" size={20} color="#000" />
                 <TextInput
                   placeholder="Email"
+                  placeholderTextColor={'lightgrey'}
                   value={email}
                   onChangeText={(text) => {
                     setEmail(text);
@@ -227,7 +228,7 @@ const styles = StyleSheet.create({
   inputWithIcon: {
     flex: 1,
     marginLeft: 8,
-    ...typography.textSemiBold
+    ...typography.textSemiBold,
   },
   errorContainer: {
     backgroundColor: '#FEE2E2',
