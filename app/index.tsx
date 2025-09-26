@@ -21,7 +21,7 @@ export default function Index() {
         <CustomText style={styles.welcomeText}>Welcome to</CustomText>
         <View style={styles.tournamentLogoContainer}>
           <Image 
-            source={images.regionals}
+            source={images.tournamentLogo}
             resizeMode="contain"
             style={styles.tournamentLogo}
           />
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   tournamentLogo: {
     width: '80%',
-    maxHeight: 300,
+    maxHeight: 250,
   },
   welcomeText: {
     ...typography.h2,
@@ -59,10 +59,8 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   tournamentLogoContainer: {
-    maxHeight: 300,
-    backgroundColor: '#fff',
+    maxHeight: 250,
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 20,
   }
 })
