@@ -147,7 +147,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               
               // Navigate to the user page after a slight delay
               setTimeout(() => {
-                router.replace('/(user)');
+                router.replace('/(tabs)/profile');
               }, 500);
             }
           }
@@ -329,7 +329,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email,
       options: {
         shouldCreateUser: true,
-        emailRedirectTo: 'meu.app://(user)',
+        emailRedirectTo: 'meu.app://(tabs)/profile',
         data: {
           full_name: full_name
         }

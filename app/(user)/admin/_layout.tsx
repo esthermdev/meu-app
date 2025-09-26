@@ -26,7 +26,8 @@ export default function AdminLayout() {
               }}>
                 <CustomAdminHeader title='Admin' rightIcon={false} />
               </View>
-            )
+            ),
+            animation: 'fade'
           }}
         />
         <Stack.Screen name='trainers-list'

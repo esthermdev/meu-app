@@ -71,12 +71,6 @@ const CartRequestButton = () => {
     fetchFields();
   }, []);
 
-  useEffect(() => {
-    // Auto-populate name from user profile when modal opens
-    if (isModalVisible && profile?.full_name && !requesterName) {
-      setRequesterName(profile.full_name);
-    }
-  }, [isModalVisible, profile?.full_name, requesterName]);
 
   const fetchFields = async () => {
     const { data, error } = await supabase
@@ -205,8 +199,8 @@ const CartRequestButton = () => {
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
-    resetInputs();
     setErrors({});
+    resetInputs();
   };
 
   return (
@@ -262,10 +256,10 @@ const CartRequestButton = () => {
                   <TextInput
                     style={[styles.nameInput, errors.requesterName && styles.inputError]}
                     placeholder="Enter your name"
+                    placeholderTextColor={'lightgrey'}
                     value={requesterName}
                     onChangeText={(text) => {
                       setRequesterName(text);
-                      // Clear error when user starts typing
                       setErrors(prev => ({...prev, requesterName: undefined}));
                     }}
                     maxLength={50}

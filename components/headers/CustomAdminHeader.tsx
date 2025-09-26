@@ -22,7 +22,7 @@ export const CustomAdminHeader: React.FC<CustomAdminHeader> = ({ title, rightIco
       </View>
       <View style={{ width: 25 }}>
       {rightIcon ? 
-        <TouchableOpacity onPress={() => router.navigate('/(user)')}>
+        <TouchableOpacity onPress={() => router.navigate('/(tabs)/profile')}>
           <MaterialIcons name="person-outline" size={25} color="#fff" />
         </TouchableOpacity> : <></>}
       </View>
