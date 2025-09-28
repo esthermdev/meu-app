@@ -11,6 +11,7 @@ import FulfilledCartRequestsList from '@/components/features/requests/FulfilledC
 import CustomText from '@/components/CustomText';
 import { getTimeSince } from '@/utils/getTimeSince';
 import { getTimeColor } from '@/utils/getTimeColor';
+import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -53,6 +54,7 @@ const CartRequestsList = () => {
   const [currentRides, setCurrentRides] = useState<CartRequest[]>([]);
   const [pendingRides, setPendingRides] = useState<CartRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isPendingCollapsed, setIsPendingCollapsed] = useState<boolean>(false);
   const { profile } = useAuth() as { profile: Profile };
 
   useEffect(() => {
@@ -478,8 +480,18 @@ const CartRequestsList = () => {
               {/* Pending Rides Section */}
               {pendingRides.length > 0 && (
                 <View style={styles.sectionContainer}>
-                  <CustomText style={styles.sectionTitle}>Pending Rides</CustomText>
-                  {pendingRides.map((item) => (
+                  <TouchableOpacity 
+                    style={styles.sectionHeader}
+                    onPress={() => setIsPendingCollapsed(!isPendingCollapsed)}
+                  >
+                    <CustomText style={styles.sectionTitle}>Pending Rides ({pendingRides.length})</CustomText>
+                  <Ionicons 
+                    name={isPendingCollapsed ? "chevron-down" : "chevron-up"} 
+                    size={20} 
+                    color="#fff" 
+                  />
+                  </TouchableOpacity>
+                  {!isPendingCollapsed && pendingRides.map((item) => (
                     <View key={item.id}>
                       {renderPendingRide({ item })}
                     </View>
@@ -588,6 +600,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
+    paddingTop: 10,
   },
   // Loading and empty 
   loadingContainer: {
@@ -809,10 +822,20 @@ const styles = StyleSheet.create({
   sectionContainer: {
     marginBottom: 10,
   },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 15,
+  },
   sectionTitle: {
     ...typography.textLargeBold,
     color: '#fff',
-    marginTop: 15,
+  },
+  collapseIcon: {
+    ...typography.textLarge,
+    color: '#EA1D25',
+    fontWeight: 'bold',
   },
   // Driver availability screen styles
   screenContainer: {
