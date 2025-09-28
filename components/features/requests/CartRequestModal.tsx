@@ -65,7 +65,6 @@ const CartRequestButton = () => {
   }>({});
 
   const { expoPushToken } = usePushNotifications();
-  const { profile } = useAuth();
 
   useEffect(() => {
     fetchFields();

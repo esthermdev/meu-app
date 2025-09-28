@@ -9,6 +9,8 @@ import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import FulfilledCartRequestsList from '@/components/features/requests/FulfilledCartRequestList';
 import CustomText from '@/components/CustomText';
+import { getTimeSince } from '@/utils/getTimeSince';
+import { getTimeColor } from '@/utils/getTimeColor';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -234,40 +236,6 @@ const CartRequestsList = () => {
       minute: '2-digit'
     });
   };
-  
-  // Function to calculate time elapsed since request was created
-  const getTimeSince = (dateString: string | null) => {
-    if (!dateString) return 'Unknown';
-    
-    const now = new Date();
-    const createdAt = new Date(dateString);
-    const diffMs = now.getTime() - createdAt.getTime();
-    
-    // Convert to minutes
-    const diffMins = Math.floor(diffMs / 60000);
-    
-    if (diffMins < 60) {
-      return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
-    } else {
-      const diffHours = Math.floor(diffMins / 60);
-      const remainingMins = diffMins % 60;
-      return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ${remainingMins > 0 ? `${remainingMins} min${remainingMins !== 1 ? 's' : ''}` : ''} ago`;
-    }
-  };
-  
-  // Function to determine color for time indicator based on elapsed time
-  const getTimeColor = (dateString: string | null) => {
-    if (!dateString) return '#EA1D25'; // Default to red if unknown
-    
-    const now = new Date();
-    const createdAt = new Date(dateString);
-    const diffMs = now.getTime() - createdAt.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    
-    if (diffMins < 5) return '#59DE07'; // Green for recent (< 5 mins)
-    if (diffMins < 15) return '#FFD600'; // Yellow for moderate (5-15 mins)
-    return '#EA1D25'; // Red for long wait (> 15 mins)
-  };
 
   const getLocationLabel = (locationType: LocationType) => {
     switch (locationType) {
@@ -379,7 +347,7 @@ const CartRequestsList = () => {
 
   // Render function for pending rides
   const renderPendingRide = ({ item }: { item: CartRequest }) => {
-    const timeColor = getTimeColor(item.created_at);
+    const timeColor = getTimeColor(item.created_at, { recent: 5, moderate: 15 });
     
     return (
       <Card style={styles.cardContainer}>

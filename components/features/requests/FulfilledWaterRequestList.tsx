@@ -9,16 +9,15 @@ import { useAuth } from '@/context/AuthProvider';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
-import { MaterialIcons } from '@expo/vector-icons';
+import { getTimeSince } from '@/utils/getTimeSince';
+import { getTimeColor } from '@/utils/getTimeColor';
 
 // Define types based on your Supabase schema
 type WaterRequest = Database['public']['Tables']['water_requests']['Row'];
-type Profile = Database['public']['Tables']['profiles']['Row'];
 
 const FulfilledWaterRequestsList = () => {
   const [requests, setRequests] = useState<WaterRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const { profile } = useAuth() as { profile: Profile };
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -69,25 +68,6 @@ const FulfilledWaterRequestsList = () => {
     });
   };
   
-  // Calculate time since the water request was fulfilled
-  const getTimeSince = (dateString: string | null) => {
-    if (!dateString) return 'Unknown';
-    
-    const now = new Date();
-    const updatedAt = new Date(dateString);
-    const diffMs = now.getTime() - updatedAt.getTime();
-    
-    // Convert to minutes
-    const diffMins = Math.floor(diffMs / 60000);
-    
-    if (diffMins < 60) {
-      return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
-    } else {
-      const diffHours = Math.floor(diffMins / 60);
-      const remainingMins = diffMins % 60;
-      return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ${remainingMins > 0 ? `${remainingMins} min${remainingMins !== 1 ? 's' : ''}` : ''} ago`;
-    }
-  };
 
   const deleteRequest = async (requestId: number) => {
     try {
@@ -109,20 +89,6 @@ const FulfilledWaterRequestsList = () => {
   };
 
   const renderItem = ({ item }: { item: WaterRequest }) => {
-    // Determine the color for the time indicator based on how long ago the request was fulfilled
-    // Green for recently fulfilled (< 30 mins), yellow for moderate time (30-60 mins), red for long time (> 60 mins)
-    const getTimeColor = (dateString: string | null) => {
-      if (!dateString) return '#EA1D25'; // Default to red if unknown
-      
-      const now = new Date();
-      const updatedAt = new Date(dateString);
-      const diffMs = now.getTime() - updatedAt.getTime();
-      const diffMins = Math.floor(diffMs / 60000);
-      
-      if (diffMins < 30) return '#59DE07'; // Green
-      if (diffMins < 60) return '#FFD600'; // Yellow
-      return '#EA1D25'; // Red
-    };
     
     const timeColor = getTimeColor(item.updated_at);
     
