@@ -52,9 +52,6 @@ export default function SignUp() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={() => router.navigate('/(tabs)/home')}>
-        <MaterialCommunityIcons name="home-outline" size={30} color="#000" />
-      </TouchableOpacity>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -65,6 +62,9 @@ export default function SignUp() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
+          <TouchableOpacity onPress={() => router.navigate('/(tabs)/home')} style={{ marginTop: 10 }}>
+            <MaterialCommunityIcons name="home-outline" size={30} color="#000" />
+          </TouchableOpacity>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.form}>
               <Image source={images.logoW} style={styles.image} />
@@ -142,7 +142,7 @@ export default function SignUp() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 25,
+    paddingHorizontal: 25,
   },
   form: {
     flex: 1,
@@ -194,6 +194,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 16,
+    marginBottom: 20,
   },
   text: {
     ...typography.text,
