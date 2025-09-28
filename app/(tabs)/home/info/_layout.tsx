@@ -1,16 +1,10 @@
 import { Stack } from "expo-router";
-import ScreenTitle from "@/components/headers/ScreenTitle";
 import CustomHeader from "@/components/headers/CustomHeader";
 
-export default function StandingLayout() {
+export default function InfoLayout() {
 	return (
 		<Stack>
-			<Stack.Screen
-				name='index'
-				options={{
-					header: () => <ScreenTitle title='Information' route={'/'} showBackButton={false} />
-				}}
-			/>
+			<Stack.Screen name='index' options={{ header: () => <CustomHeader title='Information' /> }} />
 			<Stack.Screen name="tournament-info" options={{ header: () => <CustomHeader title='Tournament Info' /> }} />
 			<Stack.Screen name="rules" options={{ header: () => <CustomHeader title='Rules' /> }} />
 			{/* <Stack.Screen name="emergency" options={{ header: () => <CustomHeader title='In Case of Emergency' /> }} /> */}
@@ -19,7 +13,7 @@ export default function StandingLayout() {
 			<Stack.Screen name="restaurants-hotels" options={{ header: () => <CustomHeader title='Restaurants & Hotels' /> }} />
 			<Stack.Screen name="vendors" options={{ header: () => <CustomHeader title='Vendors' /> }} />
 			<Stack.Screen name="faq" options={{ header: () => <CustomHeader title='FAQ' /> }} />
-			<Stack.Screen name="feedback" options={{ header: () => <CustomHeader title='Feedback' /> }} />
+			<Stack.Screen name="feedback" options={{ header: () => <CustomHeader title='Report / Feedback' /> }} />
 			<Stack.Screen name="credits" options={{ header: () => <CustomHeader title='Credits' /> }} />
 		</Stack>
 	);

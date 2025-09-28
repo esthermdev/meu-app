@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { Href, router } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
@@ -10,11 +11,25 @@ import CustomText from '@/components/CustomText';
 
 
 export default function UserDashboard() {
-  const { profile } = useAuth();
+  const { profile, signOut } = useAuth();
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   const handleOpenExternalDeleteAccount = () => {
     // Use your new Render URL here
     router.push('https://maine-ultimate-account-deletion.onrender.com');
+  };
+
+  const handleSignOut = async () => {
+    try {
+      setIsSigningOut(true);
+      await signOut();
+      router.replace('/(tabs)/profile');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      alert('Error signing out');
+    } finally {
+      setIsSigningOut(false);
+    }
   };
 
   return (
@@ -35,7 +50,7 @@ export default function UserDashboard() {
           </Card>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => router.push('/favorites')}>
+        <TouchableOpacity onPress={() => router.push('/(user)/favorites')}>
           <Card style={styles.card}>
             <Ionicons name="heart" size={24} color="#FE0000" style={styles.cardIcon} />
             <CustomText style={styles.cardLabel}>Favorites</CustomText>
@@ -44,7 +59,7 @@ export default function UserDashboard() {
         </TouchableOpacity>
 
         {profile?.is_admin ? 
-          <TouchableOpacity onPress={() => router.push('/admin' as Href)}>
+          <TouchableOpacity onPress={() => router.push('/(user)/admin' as Href)}>
             <Card style={styles.card}>
               <Ionicons name="settings" size={24} color="#FE0000" style={styles.cardIcon} />
               <CustomText style={styles.cardLabel}>Admin</CustomText>
@@ -57,13 +72,13 @@ export default function UserDashboard() {
 
       {/* Quick Actions */}
       <CustomText style={styles.sectionTitle}>Quick Actions</CustomText>
-      <TouchableOpacity onPress={() => router.navigate('/(tabs)/home')} style={styles.actionButton}>
-        <Ionicons name="arrow-back-circle" size={24} color="##000" style={styles.cardIcon} />
-        <CustomText style={styles.quickActionLabels}>Back to App</CustomText>
-      </TouchableOpacity>
       <TouchableOpacity onPress={() => router.navigate('/(user)/feedback')} style={styles.actionButton}>
         <MaterialIcons name="feedback" size={24} color="##000" style={styles.cardIcon} />
         <CustomText style={styles.quickActionLabels}>Feedback</CustomText>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => handleSignOut()} style={[styles.actionButton, isSigningOut && styles.disabledButton]} disabled={isSigningOut}>
+        <Ionicons name="arrow-back-circle" size={24} color="##000" style={styles.cardIcon} />
+        <CustomText style={styles.quickActionLabels}>{isSigningOut ? 'Signing out...' : 'Sign Out'}</CustomText>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleOpenExternalDeleteAccount} style={styles.actionButton}>
         <MaterialIcons name="delete-sweep" size={24} color="##000" style={styles.cardIcon} />
@@ -123,5 +138,8 @@ const styles = StyleSheet.create({
   quickActionLabels: {
     ...typography.textLargeMedium,
     color: '#000',
+  },
+  disabledButton: {
+    opacity: 0.6,
   },
 });

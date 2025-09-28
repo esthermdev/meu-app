@@ -83,6 +83,18 @@ export default function AdminLayout() {
             )
           }}
         />
+        <Stack.Screen name='misc'
+          options={{
+            header: () => (
+              <View style={{ 
+                paddingTop: Platform.OS === 'android' ? statusBarHeight : insets.top,
+                backgroundColor: '#EA1D25' 
+              }}>
+                <CustomAdminHeader title='Reports / Feedback' />
+              </View>
+            )
+          }}
+        />
       </Stack>
     </>
   );

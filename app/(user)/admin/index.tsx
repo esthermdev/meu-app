@@ -85,6 +85,11 @@ const AdminScreen = () => {
       iconName: 'bullhorn',
       route: '/admin/announcements',
     },
+    {
+      title: 'Reports / Feedback',
+      iconName: 'information',
+      route: '/admin/misc',
+    },
   ];
 
 

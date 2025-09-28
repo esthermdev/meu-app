@@ -19,9 +19,9 @@ export const ScreenTitle: React.FC<ScreenTitleProps> = ({
       {showBackButton && (
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => route ? router.push(route) : router.back()}
+          onPress={() => router.back()}
         >
-          <Ionicons name="caret-back" size={24} color="#000" />
+          <Ionicons name="caret-back" size={20} color="#000" />
         </TouchableOpacity>
       )}
       <Text maxFontSizeMultiplier={1.1} style={styles.title}>{title}</Text>
