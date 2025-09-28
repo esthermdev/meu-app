@@ -119,7 +119,7 @@ export default function SignIn() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <TouchableOpacity onPress={() => router.replace('/(tabs)/home')} style={{ marginTop: 10 }}>
+          <TouchableOpacity onPress={() => router.replace('/(tabs)/home')} style={{ marginTop: 20 }}>
             <MaterialCommunityIcons name="home-outline" size={30} color="#000" />
           </TouchableOpacity>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

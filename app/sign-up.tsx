@@ -62,7 +62,7 @@ export default function SignUp() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <TouchableOpacity onPress={() => router.navigate('/(tabs)/home')} style={{ marginTop: 10 }}>
+          <TouchableOpacity onPress={() => router.navigate('/(tabs)/home')} style={{ marginTop: 20 }}>
             <MaterialCommunityIcons name="home-outline" size={30} color="#000" />
           </TouchableOpacity>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
