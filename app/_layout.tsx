@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as SplashScreen from 'expo-splash-screen';
 import { AuthProvider } from '@/context/AuthProvider';
@@ -26,7 +26,7 @@ export default function RootLayout() {
     GeistBlack: require('../assets/fonts/Geist-Black.ttf'),
   });
 
-  const { checkForUpdates } = useCheckUpdates();
+  useCheckUpdates();
 
   // Use an effect to hide the splash screen when fonts are loaded and version check is complete
   useEffect(() => {
