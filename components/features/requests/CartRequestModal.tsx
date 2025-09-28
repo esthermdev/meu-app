@@ -21,7 +21,7 @@ import Dropdown from '../../Dropdown';
 import usePushNotifications from '@/hooks/usePushNotifications';
 import { useAuth } from '@/context/AuthProvider';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { typography } from '@/constants/Typography';
+import { fonts, typography } from '@/constants/Typography';
 import ModalButton from '../../buttons/ModalButtons';
 import ErrorMessage from '../../ErrorMessage';
 import CustomText from '../../CustomText';
@@ -394,8 +394,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   },
   labelHeader: {
-    ...typography.labelBold,
-    marginVertical: 8
+    ...typography.bodyMediumBold,
+    marginVertical: 5
   },
   noteText: {
     ...typography.textXSmall,
@@ -415,8 +415,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   passengerCountText: {
-    ...typography.textMedium,
-    marginHorizontal: 20,
+    ...typography.textBold,
+    paddingHorizontal: 20,
   },
   specialRequestInput: {
     borderWidth: 1,
@@ -446,7 +446,7 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     alignSelf: 'flex-end',
-    zIndex: 1,
+    marginBottom: 5,
   },
   generalErrorContainer: {
     backgroundColor: '#FFEEEE',
@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 12,
     ...typography.body,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   inputError: {
     borderColor: '#DD3333',
