@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { Href, router } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
@@ -11,6 +12,7 @@ import CustomText from '@/components/CustomText';
 
 export default function UserDashboard() {
   const { profile, signOut } = useAuth();
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   const handleOpenExternalDeleteAccount = () => {
     // Use your new Render URL here
@@ -19,11 +21,14 @@ export default function UserDashboard() {
 
   const handleSignOut = async () => {
     try {
+      setIsSigningOut(true);
       await signOut();
       router.replace('/(tabs)/profile');
     } catch (error) {
       console.error('Error signing out:', error);
       alert('Error signing out');
+    } finally {
+      setIsSigningOut(false);
     }
   };
 
@@ -71,9 +76,9 @@ export default function UserDashboard() {
         <MaterialIcons name="feedback" size={24} color="##000" style={styles.cardIcon} />
         <CustomText style={styles.quickActionLabels}>Feedback</CustomText>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => handleSignOut()} style={styles.actionButton}>
+      <TouchableOpacity onPress={() => handleSignOut()} style={[styles.actionButton, isSigningOut && styles.disabledButton]} disabled={isSigningOut}>
         <Ionicons name="arrow-back-circle" size={24} color="##000" style={styles.cardIcon} />
-        <CustomText style={styles.quickActionLabels}>Sign Out</CustomText>
+        <CustomText style={styles.quickActionLabels}>{isSigningOut ? 'Signing out...' : 'Sign Out'}</CustomText>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleOpenExternalDeleteAccount} style={styles.actionButton}>
         <MaterialIcons name="delete-sweep" size={24} color="##000" style={styles.cardIcon} />
@@ -133,5 +138,8 @@ const styles = StyleSheet.create({
   quickActionLabels: {
     ...typography.textLargeMedium,
     color: '#000',
+  },
+  disabledButton: {
+    opacity: 0.6,
   },
 });

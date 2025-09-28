@@ -46,10 +46,13 @@ export default function SignIn() {
       return;
     }
 
-    const isVolunteer = await checkIfVolunteer(email);
+    setLoading(true);
+    setError(null);
 
-    if (email === 'esmd258@gmail.com' || isVolunteer) {
-      try {
+    try {
+      const isVolunteer = await checkIfVolunteer(email);
+
+      if (email === 'esmd258@gmail.com' || isVolunteer) {
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password: email === 'esmd258@gmail.com' ? 'developer' : 'regionals2025'
@@ -62,25 +65,21 @@ export default function SignIn() {
         }
 
         router.replace('/(tabs)/profile');
-
-      } catch (error) {
-        console.error('Volunteer sign-in error:', error);
-        Alert.alert('Error', 'Could not sign in with developer account. Please try again.');
-      }
-    } else {
-      try {
-        setLoading(true);
-        setError(null);
+      } else {
         await signIn(email);
         alert('Check your email for the link to log in!');
         setEmail('');
         Keyboard.dismiss();
-      } catch (error) {
-        console.error(error);
-        setError("Email doesn't exist. Please create an account to continue.");
-      } finally {
-        setLoading(false);
       }
+    } catch (error) {
+      console.error(error);
+      if (email === 'esmd258@gmail.com' || await checkIfVolunteer(email)) {
+        Alert.alert('Error', 'Could not sign in with developer account. Please try again.');
+      } else {
+        setError("Email doesn't exist. Please create an account to continue.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -160,7 +159,7 @@ export default function SignIn() {
 
               <PrimaryButton
                 onPress={handleSignIn}
-                title={loading ? 'Sending link...' : 'Sign In'}
+                title={loading ? 'Signing in...' : 'Sign In'}
                 disabled={loading}
               />
 
