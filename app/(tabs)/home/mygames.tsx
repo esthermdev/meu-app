@@ -413,6 +413,10 @@ const MyGames = () => {
     );
   }
 
+  if (loading && !refreshing) {
+    return <LoadingIndicator message='Loading your games...' />;
+  }
+
   return (
     <View style={styles.container}>
       {games.length > 0 ? (

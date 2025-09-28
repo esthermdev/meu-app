@@ -247,7 +247,6 @@ export function useRoundIds(divisionId: number, roundId: number) {
   return { games, loading, error, refreshData: () => setRefreshTrigger(prev => prev + 1) };
 }
 
-// hooks/useGamesFilter.tsx
 export function useScheduleId(divisionId: number, scheduleId: number, refreshKey = 0) {
   const [games, setGames] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
