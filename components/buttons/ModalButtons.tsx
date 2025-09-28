@@ -17,7 +17,7 @@ const ModalButton: React.FC<ModalButtonContainerProps> = ({
   onConfirm,
   confirmText = 'Confirm',
   cancelText = 'Cancel',
-  confirmColor = '#E74C3C',
+  confirmColor = '#EA1D25',
   cancelColor = '#000000',
 }) => {
   return (

@@ -35,6 +35,7 @@ const FulfilledCartRequestsList = () => {
   const [confirmedCollapsed, setConfirmedCollapsed] = useState<boolean>(false);
   const [completedCollapsed, setCompletedCollapsed] = useState<boolean>(false);
   const [expiredCollapsed, setExpiredCollapsed] = useState<boolean>(true); // Default collapsed
+  const [loadingRequests, setLoadingRequests] = useState<Set<number>>(new Set());
   
   const driverName = profile.full_name;
 
@@ -98,50 +99,68 @@ const FulfilledCartRequestsList = () => {
     try {
       console.log('Fetching all cart requests...');
       
-      // Get field information for displaying names
-      const { data: fieldsData, error: fieldsError } = await supabase
-        .from('fields')
-        .select('id, name');
-        
-      if (fieldsError) throw fieldsError;
+      // Fetch both cart requests and fields data in parallel
+      const [requestsResult, fieldsResult] = await Promise.all([
+        supabase
+          .from('cart_requests')
+          .select('*, driver:profiles!cart_requests_driver_fkey(full_name)')
+          .in('status', ['pending', 'confirmed', 'resolved', 'expired'])
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('fields')
+          .select('id, name')
+      ]);
+      
+      if (requestsResult.error) throw requestsResult.error;
+      if (fieldsResult.error) throw fieldsResult.error;
       
       // Create a mapping of field IDs to names
       const fieldMap: Record<number, string> = {};
-      if (fieldsData) {
-        fieldsData.forEach(field => {
+      if (fieldsResult.data) {
+        fieldsResult.data.forEach(field => {
           fieldMap[field.id] = field.name;
         });
       }
       
-      // Get all cart requests regardless of status
-      const { data, error } = await supabase
-        .from('cart_requests')
-        .select('*, driver:profiles!cart_requests_driver_fkey(full_name)')
-        .in('status', ['pending', 'confirmed', 'resolved', 'expired'])
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
+      // Process and categorize requests in a single pass
+      const categorizedRequests = {
+        pending: [] as CartRequest[],
+        confirmed: [] as CartRequest[],
+        completed: [] as CartRequest[],
+        expired: [] as CartRequest[],
+        all: [] as CartRequest[]
+      };
       
-      // Enhance the requests with field names
-      const enhancedRequests = data.map(request => ({
-        ...request,
-        from_field_name: request.from_field_number ? fieldMap[request.from_field_number] : null,
-        to_field_name: request.to_field_number ? fieldMap[request.to_field_number] : null
-      }));
+      requestsResult.data.forEach(request => {
+        const enhancedRequest = {
+          ...request,
+          from_field_name: request.from_field_number ? fieldMap[request.from_field_number] : null,
+          to_field_name: request.to_field_number ? fieldMap[request.to_field_number] : null
+        };
+        
+        categorizedRequests.all.push(enhancedRequest);
+        
+        switch (request.status) {
+          case 'pending':
+            categorizedRequests.pending.push(enhancedRequest);
+            break;
+          case 'confirmed':
+            categorizedRequests.confirmed.push(enhancedRequest);
+            break;
+          case 'resolved':
+            categorizedRequests.completed.push(enhancedRequest);
+            break;
+          case 'expired':
+            categorizedRequests.expired.push(enhancedRequest);
+            break;
+        }
+      });
       
-      // Categorize requests by status
-      const pending = enhancedRequests.filter(request => request.status === 'pending');
-      const confirmed = enhancedRequests.filter(request => request.status === 'confirmed');
-      const completed = enhancedRequests.filter(request => request.status === 'resolved');
-      const expired = enhancedRequests.filter(request => request.status === 'expired');
-      
-      setPendingRides(pending);
-      setConfirmedRides(confirmed);
-      setCompletedRides(completed);
-      setExpiredRides(expired);
-      setRequests(enhancedRequests);
-      
-      console.log(`All Rides - Pending: ${pending.length}, Confirmed: ${confirmed.length}, Completed: ${completed.length}, Expired: ${expired.length}`);
+      setPendingRides(categorizedRequests.pending);
+      setConfirmedRides(categorizedRequests.confirmed);
+      setCompletedRides(categorizedRequests.completed);
+      setExpiredRides(categorizedRequests.expired);
+      setRequests(categorizedRequests.all);
     } catch (error) {
       console.error('Error fetching fulfilled requests:', error);
     } finally {
@@ -210,6 +229,8 @@ const FulfilledCartRequestsList = () => {
 
   const deleteRequest = async (requestId: number) => {
     try {
+      setLoadingRequests(prev => new Set(prev).add(requestId));
+      
       // We'll just update the status to 'archived' to keep the record but hide it from the list
       const { error } = await supabase
         .from('cart_requests')
@@ -218,17 +239,86 @@ const FulfilledCartRequestsList = () => {
 
       if (error) throw error;
       
-      // Update the local state by removing the archived request
-      setRequests(requests.filter(req => req.id !== requestId));
+      // Find which category the request is in and update local state immediately
+      const requestToMove = requests.find(req => req.id === requestId);
+      if (requestToMove) {
+        const updatedRequest = { ...requestToMove, status: 'expired' as const };
+        
+        // Remove from current category based on original status
+        switch (requestToMove.status) {
+          case 'pending':
+            setPendingRides(prev => prev.filter(req => req.id !== requestId));
+            break;
+          case 'confirmed':
+            setConfirmedRides(prev => prev.filter(req => req.id !== requestId));
+            break;
+          case 'resolved':
+            setCompletedRides(prev => prev.filter(req => req.id !== requestId));
+            break;
+        }
+        
+        // Add to expired rides
+        setExpiredRides(prev => [updatedRequest, ...prev]);
+        
+        // Update the main requests array
+        setRequests(prev => prev.map(req => 
+          req.id === requestId ? updatedRequest : req
+        ));
+      }
       
     } catch (error) {
       console.error('Error removing request:', error);
       Alert.alert('Error', 'Failed to remove the request. Please try again.');
+    } finally {
+      setLoadingRequests(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(requestId);
+        return newSet;
+      });
+    }
+  };
+
+  const unarchiveRequest = async (requestId: number) => {
+    try {
+      setLoadingRequests(prev => new Set(prev).add(requestId));
+      
+      const { error } = await supabase
+        .from('cart_requests')
+        .update({ status: 'pending' as Database['public']['Enums']['request_status'] })
+        .eq('id', requestId);
+
+      if (error) throw error;
+      
+      // Update local state immediately without refetching
+      const requestToMove = expiredRides.find(req => req.id === requestId);
+      if (requestToMove) {
+        const updatedRequest = { ...requestToMove, status: 'pending' as const };
+        
+        // Remove from expired and add to pending
+        setExpiredRides(prev => prev.filter(req => req.id !== requestId));
+        setPendingRides(prev => [updatedRequest, ...prev]);
+        
+        // Update the main requests array
+        setRequests(prev => prev.map(req => 
+          req.id === requestId ? updatedRequest : req
+        ));
+      }
+      
+    } catch (error) {
+      console.error('Error unarchiving request:', error);
+      Alert.alert('Error', 'Failed to unarchive the request. Please try again.');
+    } finally {
+      setLoadingRequests(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(requestId);
+        return newSet;
+      });
     }
   };
 
   const renderItem = ({ item }: { item: CartRequest }) => {
     const statusBadge = getStatusBadge(item.status);
+    const isLoading = loadingRequests.has(item.id);
     
     return (
       <Card style={styles.cardContainer}>
@@ -306,10 +396,24 @@ const FulfilledCartRequestsList = () => {
         )}
         
         <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={() => deleteRequest(item.id)}
+          style={[
+            item.status === 'expired' ? styles.unarchiveButton : styles.deleteButton,
+            isLoading && styles.buttonDisabled
+          ]}
+          onPress={() => {
+            if (!isLoading) {
+              item.status === 'expired' ? unarchiveRequest(item.id) : deleteRequest(item.id);
+            }
+          }}
+          disabled={isLoading}
         >
-          <CustomText style={styles.deleteButtonText}>Remove</CustomText>
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <CustomText style={styles.deleteButtonText}>
+              {item.status === 'expired' ? 'Unarchive' : 'Remove'}
+            </CustomText>
+          )}
         </TouchableOpacity>
       </Card>
     );
@@ -569,6 +673,17 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     ...typography.textBold,
     color: '#fff',
+  },
+  unarchiveButton: {
+    backgroundColor: '#2196F3',
+    paddingVertical: 8,
+    borderRadius: 5,
+    paddingHorizontal: 15,
+    alignItems: 'center',
+    marginTop: 5
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   sectionContainer: {
     marginBottom: 10,

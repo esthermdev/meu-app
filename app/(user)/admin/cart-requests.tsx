@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { StyleSheet, View, FlatList, Switch, RefreshControl, TouchableOpacity, Alert } from 'react-native';
+import { router } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { Card } from '@/components/Card';
 import { useAuth } from '@/context/AuthProvider';
@@ -277,12 +278,16 @@ const CartRequestsList = () => {
       case 'Tourney Central':
         return 'Tournament HQ';
       case 'Lot 1 (Grass)':
-        return 'Parking Lot 1';
+        return 'Parking Lot 1 (Grass)';
       case 'Lot 2 (Pavement)':
-        return 'Parking Lot 2';
+        return 'Parking Lot 2 (Pavement)';
       default:
         return locationType;
     }
+  };
+
+  const navigateToFieldMap = () => {
+    router.push('/(tabs)/home/fieldmap');
   };
 
   // Render function for current rides (confirmed)
@@ -307,21 +312,35 @@ const CartRequestsList = () => {
           <View style={styles.routeInfo}>
             <View style={styles.locationInfo}>
               <CustomText style={styles.routeLabel}>From: </CustomText>
-              <CustomText style={styles.locationText}>
-                {item.from_location === 'Field' ? 'Field ' : ''}
-                {item.from_location === 'Field' 
-                  ? (item.from_field_name || item.from_field_number) 
-                  : getLocationLabel(item.from_location)}
-              </CustomText>
+              {item.from_location === 'Field' ? (
+                <TouchableOpacity onPress={navigateToFieldMap}>
+                  <CustomText style={[styles.locationText, styles.linkText]}>
+                    Field {item.from_field_name || item.from_field_number}
+                  </CustomText>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={navigateToFieldMap}>
+                  <CustomText style={[styles.locationText, styles.linkText]}>
+                    {getLocationLabel(item.from_location)}
+                  </CustomText>
+                </TouchableOpacity>
+              )}
             </View>
             <View style={styles.locationInfo}>
               <CustomText style={styles.routeLabel}>To: </CustomText>
-              <CustomText style={styles.locationText}>
-                {item.to_location === 'Field' ? 'Field ' : ''}
-                {item.to_location === 'Field' 
-                  ? (item.to_field_name || item.to_field_number) 
-                  : getLocationLabel(item.to_location)}
-              </CustomText>
+              {item.to_location === 'Field' ? (
+                <TouchableOpacity onPress={navigateToFieldMap}>
+                  <CustomText style={[styles.locationText, styles.linkText]}>
+                    Field {item.to_field_name || item.to_field_number}
+                  </CustomText>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={navigateToFieldMap}>
+                  <CustomText style={[styles.locationText, styles.linkText]}>
+                    {getLocationLabel(item.to_location)}
+                  </CustomText>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </View>
@@ -383,21 +402,35 @@ const CartRequestsList = () => {
           <View style={styles.routeInfo}>
             <View style={styles.locationInfo}>
               <CustomText style={styles.routeLabel}>From: </CustomText>
-              <CustomText style={styles.locationText}>
-                {item.from_location === 'Field' ? 'Field ' : ''}
-                {item.from_location === 'Field' 
-                  ? (item.from_field_name || item.from_field_number) 
-                  : getLocationLabel(item.from_location)}
-              </CustomText>
+              {item.from_location === 'Field' ? (
+                <TouchableOpacity onPress={navigateToFieldMap}>
+                  <CustomText style={[styles.locationText, styles.linkText]}>
+                    Field {item.from_field_name || item.from_field_number}
+                  </CustomText>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={navigateToFieldMap}>
+                  <CustomText style={[styles.locationText, styles.linkText]}>
+                    {getLocationLabel(item.from_location)}
+                  </CustomText>
+                </TouchableOpacity>
+              )}
             </View>
             <View style={styles.locationInfo}>
               <CustomText style={styles.routeLabel}>To: </CustomText>
-              <CustomText style={styles.locationText}>
-                {item.to_location === 'Field' ? 'Field ' : ''}
-                {item.to_location === 'Field' 
-                  ? (item.to_field_name || item.to_field_number) 
-                  : getLocationLabel(item.to_location)}
-              </CustomText>
+              {item.to_location === 'Field' ? (
+                <TouchableOpacity onPress={navigateToFieldMap}>
+                  <CustomText style={[styles.locationText, styles.linkText]}>
+                    Field {item.to_field_name || item.to_field_number}
+                  </CustomText>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={navigateToFieldMap}>
+                  <CustomText style={[styles.locationText, styles.linkText]}>
+                    {getLocationLabel(item.to_location)}
+                  </CustomText>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </View>
@@ -672,6 +705,10 @@ const styles = StyleSheet.create({
   locationText: {
     ...typography.textLargeBold,
     color: '#fff',
+  },
+  linkText: {
+    textDecorationLine: 'underline',
+    color: '#81afe4ff',
   },
   routePoint: {
     width: 10,

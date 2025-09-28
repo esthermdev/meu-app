@@ -225,9 +225,9 @@ const TrainerRequestButton = () => {
 
                     <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Level of Medical Emergency:</CustomText>
                     <View style={styles.priorityButtonContainer}>
-                      {renderPriorityButton('High', '#FF6347')}
-                      {renderPriorityButton('Medium', '#FFA500')}
-                      {renderPriorityButton('Low', '#32CD32')}
+                      {renderPriorityButton('High', '#FE310D')}
+                      {renderPriorityButton('Medium', '#ED8C22')}
+                      {renderPriorityButton('Low', '#276B5D')}
                     </View>
 
                     <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Describe your emergency:</CustomText>
@@ -308,17 +308,17 @@ const styles = StyleSheet.create({
   noteText: {
     ...typography.textXSmall,
     color: '#666',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   labelHeader: {
     ...typography.labelBold,
-    marginVertical: 5
+    marginVertical: 4
   },
   priorityButtonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   priorityButton: {
     padding: 10,
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
     padding: 10,
     ...typography.body,
     textAlignVertical: 'top',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   closeButton: {
     alignSelf: 'flex-end',
@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     ...typography.body,
-    marginBottom: 10,
+    marginBottom: 5,
   },
 });
 

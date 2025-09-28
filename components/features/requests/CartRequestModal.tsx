@@ -267,11 +267,13 @@ const CartRequestButton = () => {
                   />
                   <ErrorMessage message={errors.requesterName} />
 
-                  <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Number of Passengers:</CustomText>
-                  <PassengerCountInput
-                    value={passengerCount}
-                    onValueChange={setPassengerCount}
-                  />
+                  <View style={{marginBottom: 5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row'}}>
+                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Number of Passengers:</CustomText>
+                    <PassengerCountInput
+                      value={passengerCount}
+                      onValueChange={setPassengerCount}
+                    />
+                  </View>
 
                   <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>From:</Text>
                   <Dropdown
