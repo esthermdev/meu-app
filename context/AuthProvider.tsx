@@ -311,7 +311,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email,
       options: {
         shouldCreateUser: false,
-        emailRedirectTo: 'meu.app://(user)'
+        emailRedirectTo: 'meu.app://(tabs)/profile'
       },
     });
     if (error) {
