@@ -22,23 +22,76 @@ const { width } = Dimensions.get('window');
 const numColumns = 5; // Number of columns in the grid
 const blockSize = (width * 0.8 - 60) / numColumns; // Calculate block size based on screen width
 
+type FieldWithCooldown = Field & {
+  isDisabled: boolean;
+  lastRequestTime?: string;
+};
+
 const WaterRequestButton = () => {
   const [selectedField, setSelectedField] = useState<number | undefined>(undefined);
   const [selectedFieldName, setSelectedFieldName] = useState<string>('');
-  const [fields, setFields] = useState<Field[]>([]);
+  const [fields, setFields] = useState<FieldWithCooldown[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     fetchFields();
+
+    // Refresh fields every 10 seconds to update cooldown status
+    const interval = setInterval(fetchFields, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchFields = async () => {
-    const { data, error } = await supabase.from('fields').select('*').order('name');
-    if (error) {
-      console.error('Error fetching fields:', error);
-    } else {
-      setFields(data || []);
+    // Fetch all fields
+    const { data: fieldsData, error: fieldsError } = await supabase
+      .from('fields')
+      .select('*')
+      .order('name');
+
+    if (fieldsError) {
+      console.error('Error fetching fields:', fieldsError);
+      return;
     }
+
+    // Fetch the most recent pending water request for each field
+    const { data: requestsData, error: requestsError } = await supabase
+      .from('water_requests')
+      .select('field_number, created_at')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false });
+
+    if (requestsError) {
+      console.error('Error fetching water requests:', requestsError);
+    }
+
+    // Create a map of field_number to most recent request time
+    const fieldRequestMap = new Map<number, string>();
+    requestsData?.forEach((request) => {
+      if (request.field_number && !fieldRequestMap.has(request.field_number)) {
+        fieldRequestMap.set(request.field_number, request.created_at!);
+      }
+    });
+
+    // Add cooldown status to each field
+    const now = new Date();
+    const fieldsWithCooldown: FieldWithCooldown[] = (fieldsData || []).map((field) => {
+      const lastRequestTime = fieldRequestMap.get(field.id);
+      let isDisabled = false;
+
+      if (lastRequestTime) {
+        const requestTime = new Date(lastRequestTime);
+        const timeDiffMinutes = (now.getTime() - requestTime.getTime()) / (1000 * 60);
+        isDisabled = timeDiffMinutes < 2; // Disable if less than 2 minutes have passed
+      }
+
+      return {
+        ...field,
+        isDisabled,
+        lastRequestTime,
+      };
+    });
+
+    setFields(fieldsWithCooldown);
   };
 
   const showModal = () => {
@@ -57,6 +110,13 @@ const WaterRequestButton = () => {
   const requestWater = async () => {
     if (selectedField === undefined) {
       Alert.alert('Error', 'Please select a field');
+      return;
+    }
+
+    // Check if the selected field is disabled
+    const selectedFieldData = fields.find((f) => f.id === selectedField);
+    if (selectedFieldData?.isDisabled) {
+      Alert.alert('Error', 'This field has a pending water request. Please wait 2 minutes before requesting again.');
       return;
     }
 
@@ -94,19 +154,22 @@ const WaterRequestButton = () => {
     } 
   };
 
-  const renderFieldBlock = ({ item }: { item: Field }) => (
-    <TouchableOpacity 
+  const renderFieldBlock = ({ item }: { item: FieldWithCooldown }) => (
+    <TouchableOpacity
       style={[
         styles.fieldBlock,
-        selectedField === item.id && styles.selectedFieldBlock
+        selectedField === item.id && styles.selectedFieldBlock,
+        item.isDisabled && styles.disabledFieldBlock
       ]}
-      onPress={() => selectField(item.id, item.name)}
-      activeOpacity={1}
+      onPress={() => !item.isDisabled && selectField(item.id, item.name)}
+      activeOpacity={item.isDisabled ? 1 : 0.7}
+      disabled={item.isDisabled}
     >
-      <CustomText 
+      <CustomText
         style={[
           styles.fieldBlockText,
-          selectedField === item.id && styles.selectedFieldText
+          selectedField === item.id && styles.selectedFieldText,
+          item.isDisabled && styles.disabledFieldText
         ]}
         allowFontScaling
         maxFontSizeMultiplier={1.2}
@@ -136,6 +199,13 @@ const WaterRequestButton = () => {
           <View style={styles.modalContainer}>
             <View style={styles.pickerContainer}>
               <CustomText style={styles.pickerTitle}>Select Field</CustomText>
+              {selectedField && fields.find(f => f.id === selectedField)?.isDisabled && (
+                <View style={styles.disabledNoteContainer}>
+                  <CustomText style={styles.disabledNote}>
+                    Water has already been requested for this field. Try again in 2 minutes.
+                  </CustomText>
+                </View>
+              )}
               <View style={styles.fieldGridContainer}>
                 <FlatList
                   data={fields}
@@ -221,12 +291,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#E74C3C',
     borderColor: '#C0392B',
   },
+  disabledFieldBlock: {
+    backgroundColor: '#D0D0D0',
+    borderColor: '#B0B0B0',
+    opacity: 0.5,
+  },
   fieldBlockText: {
     ...typography.labelBold,
     textAlign: 'center',
   },
   selectedFieldText: {
     color: '#fff',
+  },
+  disabledFieldText: {
+    color: '#999',
   },
   selectionInfo: {
     marginTop: 10,
@@ -239,5 +317,18 @@ const styles = StyleSheet.create({
   selectionText: {
     ...typography.text,
     textAlign: 'center',
+  },
+  disabledNoteContainer: {
+    marginVertical: 10,
+    padding: 10,
+    backgroundColor: '#FFEBEE',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#FFCDD2',
+  },
+  disabledNote: {
+    ...typography.label,
+    textAlign: 'center',
+    color: '#E74C3C',
   },
 });
