@@ -456,7 +456,7 @@ const MyGames = () => {
         <View style={styles.centerContainer}>
           <Text style={styles.messageText}>
             No games found. Add some teams to your favorites list <Text
-              onPress={() => router.push('/(user)')}
+              onPress={() => router.push('/(tabs)/profile')}
               style={styles.linkText}
             >here</Text>!
           </Text>
