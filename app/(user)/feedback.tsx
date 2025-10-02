@@ -65,6 +65,7 @@ const FeedbackScreen = () => {
               value={subject}
               onChangeText={setSubject}
               placeholder="Enter subject"
+              placeholderTextColor={'#999'}
               allowFontScaling={false}
             />
             <CustomText style={styles.label}>Message:</CustomText>
@@ -73,6 +74,7 @@ const FeedbackScreen = () => {
               value={message}
               onChangeText={setMessage}
               placeholder="Enter your feedback or report a bug"
+              placeholderTextColor={'#999'}
               multiline
               allowFontScaling={false}
             />

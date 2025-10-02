@@ -62,6 +62,7 @@ const FeedbackScreen = () => {
               value={subject}
               onChangeText={setSubject}
               placeholder="Enter subject"
+              placeholderTextColor={'#999'}
               allowFontScaling={false}
             />
             <CustomText style={styles.label}>Message:</CustomText>
@@ -72,7 +73,7 @@ const FeedbackScreen = () => {
               placeholder="Your feedback, request info or bug report"
               multiline
               allowFontScaling={false}
-              placeholderTextColor={'lightgray'}
+              placeholderTextColor={'#999'}
             />
             <PrimaryButton 
               title='Submit Feedback'
