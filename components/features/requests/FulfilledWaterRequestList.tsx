@@ -56,19 +56,6 @@ const FulfilledWaterRequestsList = () => {
     }
   };
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-  
-
   const deleteRequest = async (requestId: number) => {
     try {
       // Simply delete the record since it's already fulfilled
@@ -78,24 +65,63 @@ const FulfilledWaterRequestsList = () => {
         .eq('id', requestId);
 
       if (error) throw error;
-      
+
       // Update the local state by removing the deleted request
       setRequests(requests.filter(req => req.id !== requestId));
-      
+
     } catch (error) {
       console.error('Error removing water request:', error);
       Alert.alert('Error', 'Failed to remove the request. Please try again.');
     }
   };
 
+  const clearAllRequests = async () => {
+    Alert.alert(
+      'Clear All Requests',
+      'Are you sure you want to remove all fulfilled water requests?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
+          text: 'Clear All',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              // Get all request IDs
+              const requestIds = requests.map(req => req.id);
+
+              // Delete all fulfilled requests
+              const { error } = await supabase
+                .from('water_requests')
+                .delete()
+                .eq('status', 'resolved');
+
+              if (error) throw error;
+
+              // Clear the local state
+              setRequests([]);
+
+            } catch (error) {
+              console.error('Error clearing all water requests:', error);
+              Alert.alert('Error', 'Failed to clear all requests. Please try again.');
+            }
+          }
+        }
+      ]
+    );
+  };
+
   const renderItem = ({ item }: { item: WaterRequest }) => {
-    
-    const timeColor = getTimeColor(item.updated_at);
     
     return (
       <Card style={styles.cardContainer}>
         <View style={styles.cardHeader}>
           <CustomText style={styles.waterTitle}>Water</CustomText>
+          <View style={styles.requestIdBadge}>
+            <CustomText style={styles.requestIdText}>#{item.id}</CustomText>
+          </View>
           <View style={[styles.statusBadge, { backgroundColor: '#6EDF283D', borderColor: '#6EDF28', borderWidth: 1 }]}>
             <CustomText style={styles.statusText}>Resolved</CustomText>
           </View>
@@ -105,19 +131,6 @@ const FulfilledWaterRequestsList = () => {
           <View style={styles.infoRow}>
             <CustomText style={styles.labelText}>Field:</CustomText>
             <CustomText style={styles.valueText}>Field {item.field_number}</CustomText>
-          </View>
-          
-          <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>Fulfilled:</CustomText>
-            <View style={styles.timeContainer}>
-              <View style={[styles.timeIndicator, { backgroundColor: timeColor }]} />
-              <CustomText style={styles.timeText}>{getTimeSince(item.updated_at)}</CustomText>
-            </View>
-          </View>
-          
-          <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>Request ID:</CustomText>
-            <CustomText style={styles.valueText}>{item.id}</CustomText>
           </View>
           
           {item.volunteer && (
@@ -148,22 +161,32 @@ const FulfilledWaterRequestsList = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {requests.length === 0 ? (
         <View style={styles.emptyContainer}>
           <CustomText style={styles.emptyText}>No fulfilled water requests found</CustomText>
         </View>
       ) : (
-        <FlatList
-          data={requests}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.listContainer}
-          refreshing={loading}
-          onRefresh={fetchFulfilledRequests}
-        />
+        <>
+          <FlatList
+            data={requests}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            contentContainerStyle={styles.listContainer}
+            refreshing={loading}
+            onRefresh={fetchFulfilledRequests}
+          />
+          <View style={styles.clearAllContainer}>
+            <TouchableOpacity
+              style={styles.clearAllButton}
+              onPress={clearAllRequests}
+            >
+              <CustomText style={styles.clearAllButtonText}>Clear All</CustomText>
+            </TouchableOpacity>
+          </View>
+        </>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -217,6 +240,18 @@ const styles = StyleSheet.create({
     ...typography.textLargeBold,
     color: '#fff',
     marginRight: 'auto'
+  },
+  requestIdBadge: {
+    marginRight: 5,
+    backgroundColor: '#EA1D25',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  requestIdText: {
+    ...typography.textSmall,
+    color: '#fff',
+    fontWeight: 'bold',
   },
   statusBadge: {
     paddingHorizontal: 7,
@@ -272,6 +307,26 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     ...typography.textBold,
     color: '#fff',
+  },
+  clearAllContainer: {
+    paddingHorizontal: 15,
+    paddingBottom: 35,
+    paddingVertical: 20,
+    marginBottom: 0,
+    backgroundColor: '#242424',
+    alignItems: 'center'
+  },
+  clearAllButton: {
+    backgroundColor: '#ea8e1dff',
+    paddingVertical: 12,
+    borderRadius: 8,
+    width: 200,
+    alignItems: 'center',
+  },
+  clearAllButtonText: {
+    ...typography.textBold,
+    color: '#fff',
+    fontSize: 16,
   },
 });
 

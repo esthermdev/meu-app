@@ -188,8 +188,13 @@ const TrainerRequestsList = () => {
     return (
       <Card style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <View style={[styles.priorityBadge, getPriorityColor(item.priority_level)]}>
-            <CustomText style={styles.priorityText}>{item.priority_level || 'Medium'}</CustomText>
+          <View style={{ flexDirection: 'row', gap: 5 }}>
+            <View style={[styles.priorityBadge, getPriorityColor(item.priority_level)]}>
+              <CustomText style={styles.priorityText}>{item.priority_level || 'Medium'}</CustomText>
+            </View>
+            <View style={styles.requestIdBadge}>
+              <CustomText style={styles.requestIdText}>#{item.id}</CustomText>
+            </View>
           </View>
           <View style={styles.fieldBadge}>
             <MaterialIcons name="location-on" size={14} color="#262626" />
@@ -200,10 +205,6 @@ const TrainerRequestsList = () => {
         </View>
 
         <View style={styles.infoSection}>
-          <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>Request ID: </CustomText>
-            <CustomText style={styles.valueText}>{item.id}</CustomText>
-          </View>
           {item.team_name && (
             <View style={styles.infoRow}>
               <CustomText style={styles.labelText}>Team:</CustomText>
@@ -331,6 +332,17 @@ const styles = StyleSheet.create({
   priorityText: {
     color: '#fff',
     ...typography.text
+  },
+  requestIdBadge: {
+    backgroundColor: '#EA1D25',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  requestIdText: {
+    ...typography.textSmall,
+    color: '#fff',
+    fontWeight: 'bold',
   },
   fieldBadge: {
     flexDirection: 'row',

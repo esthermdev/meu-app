@@ -8,6 +8,8 @@ import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
 import FulfilledWaterRequestsList from '@/components/features/requests/FulfilledWaterRequestList';
 import { useAuth } from '@/context/AuthProvider';
+import { getTimeSince } from '@/utils/getTimeSince';
+import { Link } from 'expo-router';
 
 type WaterRequests = Database['public']['Tables']['water_requests']['Row'] & {
   fields?: {
@@ -81,18 +83,6 @@ const WaterRequestsList = () => {
     };
   }, [fetchRequests]);
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      weekday: 'short',
-      day: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
   const handleResolveRequest = async (requestId: number) => {
     try {
       // Update the request status to 'resolved' instead of deleting it
@@ -118,16 +108,20 @@ const WaterRequestsList = () => {
     <View style={styles.cardContainer}>
       <View style={styles.headerContainer}>
         <CustomText style={styles.headerTitle}>Water</CustomText>
-        <CustomText style={styles.headerDate}>{formatDate(item.created_at)}</CustomText>
+        <CustomText style={styles.headerDate}>{getTimeSince(item.created_at)}</CustomText>
       </View>
 
       <View style={styles.divider} />
 
       <View style={styles.infoRow}>
         <CustomText style={styles.infoLabel}>Field:</CustomText>
-        <CustomText style={styles.infoValue}>
-          {item.fields?.name || `Field ${item.field_number}`}
-        </CustomText>
+        <Link href="/(tabs)/home/fieldmap" asChild>
+          <TouchableOpacity>
+            <CustomText style={[styles.infoValue, styles.fieldLink]}>
+              {item.fields?.name || `Field ${item.field_number}`}
+            </CustomText>
+          </TouchableOpacity>
+        </Link>
       </View>
 
       <View style={styles.infoRow}>
@@ -338,8 +332,12 @@ const styles = StyleSheet.create({
     ...typography.textSemiBold,
     color: '#fff',
   },
+  fieldLink: {
+    color: '#4A9EFF',
+    textDecorationLine: 'underline',
+  },
   statusPending: {
-    color: '#FFD600', 
+    color: '#FFD600',
     ...typography.textSemiBold
   },
   resolveButton: {

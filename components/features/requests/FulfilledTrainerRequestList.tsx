@@ -87,7 +87,7 @@ const FulfilledTrainerRequestList = () => {
     try {
       // Optimistic update - remove from local state immediately
       setRequests(prev => prev.filter(req => req.id !== requestId));
-      
+
       const { error } = await supabase
         .from('medical_requests')
         .update({ status: 'expired' as Database['public']['Enums']['request_status'] })
@@ -102,6 +102,41 @@ const FulfilledTrainerRequestList = () => {
       console.error('Error removing request:', error);
       Alert.alert('Error', 'Failed to remove the request. Please try again.');
     }
+  };
+
+  const clearAllRequests = async () => {
+    Alert.alert(
+      'Clear All Requests',
+      'Are you sure you want to remove all fulfilled trainer requests?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
+          text: 'Clear All',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              // Update all confirmed and resolved requests to expired
+              const { error } = await supabase
+                .from('medical_requests')
+                .update({ status: 'expired' as Database['public']['Enums']['request_status'] })
+                .in('status', ['confirmed', 'resolved']);
+
+              if (error) throw error;
+
+              // Clear the local state
+              setRequests([]);
+
+            } catch (error) {
+              console.error('Error clearing all trainer requests:', error);
+              Alert.alert('Error', 'Failed to clear all requests. Please try again.');
+            }
+          }
+        }
+      ]
+    );
   };
 
   const formatDate = (dateString: string | null) => {
@@ -234,20 +269,30 @@ const FulfilledTrainerRequestList = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {requests.length === 0 ? (
         <View style={styles.emptyContainer}>
           <CustomText style={styles.emptyText}>No fulfilled requests found</CustomText>
         </View>
       ) : (
-        <FlatList
-          data={requests}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.listContainer}
-        />
+        <>
+          <FlatList
+            data={requests}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            contentContainerStyle={styles.listContainer}
+          />
+          <View style={styles.clearAllContainer}>
+            <TouchableOpacity
+              style={styles.clearAllButton}
+              onPress={clearAllRequests}
+            >
+              <CustomText style={styles.clearAllButtonText}>Clear All</CustomText>
+            </TouchableOpacity>
+          </View>
+        </>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -385,6 +430,26 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     ...typography.textBold,
     color: '#fff',
+  },
+  clearAllContainer: {
+    paddingHorizontal: 15,
+    paddingBottom: 35,
+    paddingVertical: 20,
+    marginBottom: 0,
+    backgroundColor: '#242424',
+    alignItems: 'center'
+  },
+  clearAllButton: {
+    backgroundColor: '#ea8e1dff',
+    paddingVertical: 12,
+    borderRadius: 8,
+    width: 200,
+    alignItems: 'center',
+  },
+  clearAllButtonText: {
+    ...typography.textBold,
+    color: '#fff',
+    fontSize: 16,
   },
 });
 
