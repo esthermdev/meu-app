@@ -19,7 +19,7 @@ export default function HomeScreen() {
         {/* My Games Button with Custom Background */}
         <View style={{ gap: 10 }}>
           <LargeCardButton
-            title="My Gamesss"
+            title="My Games"
             subtitle=""
             route="/(tabs)/home/mygames"
             renderCustomBackground={() => <MyGamesButtonBackground title="My Games" />}
