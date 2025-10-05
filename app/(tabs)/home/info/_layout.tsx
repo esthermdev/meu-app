@@ -11,6 +11,7 @@ export default function InfoLayout() {
 			<Stack.Screen name="wainwright" options={{ header: () => <CustomHeader title='Wainwright Facility' /> }} />
 			<Stack.Screen name="refund-policy" options={{ header: () => <CustomHeader title='Refund Policy' /> }} />
 			<Stack.Screen name="restaurants-hotels" options={{ header: () => <CustomHeader title='Restaurants & Hotels' /> }} />
+			<Stack.Screen name="sponsors" options={{ header: () => <CustomHeader title='Sponsors' /> }} />
 			<Stack.Screen name="vendors" options={{ header: () => <CustomHeader title='Vendors' /> }} />
 			<Stack.Screen name="faq" options={{ header: () => <CustomHeader title='FAQ' /> }} />
 			<Stack.Screen name="feedback" options={{ header: () => <CustomHeader title='Report / Feedback' /> }} />

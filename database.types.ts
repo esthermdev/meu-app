@@ -250,6 +250,7 @@ export type Database = {
       feedback: {
         Row: {
           created_at: string
+          display: boolean | null
           id: number
           message: string | null
           screenshots: string[] | null
@@ -257,6 +258,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          display?: boolean | null
           id?: number
           message?: string | null
           screenshots?: string[] | null
@@ -264,6 +266,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          display?: boolean | null
           id?: number
           message?: string | null
           screenshots?: string[] | null
@@ -770,18 +773,21 @@ export type Database = {
           avatar_url: string | null
           id: number
           name: string | null
+          type: Database["public"]["Enums"]["vendor_type"] | null
           website: string | null
         }
         Insert: {
           avatar_url?: string | null
           id?: number
           name?: string | null
+          type?: Database["public"]["Enums"]["vendor_type"] | null
           website?: string | null
         }
         Update: {
           avatar_url?: string | null
           id?: number
           name?: string | null
+          type?: Database["public"]["Enums"]["vendor_type"] | null
           website?: string | null
         }
         Relationships: []
@@ -1001,6 +1007,7 @@ export type Database = {
         | "Lot 2 (Pavement)"
       request_status: "pending" | "confirmed" | "resolved" | "expired"
       request_type: "medical" | "water" | "transport"
+      vendor_type: "sponsor" | "vendor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1172,6 +1179,7 @@ export const Constants = {
       ],
       request_status: ["pending", "confirmed", "resolved", "expired"],
       request_type: ["medical", "water", "transport"],
+      vendor_type: ["sponsor", "vendor"],
     },
   },
 } as const

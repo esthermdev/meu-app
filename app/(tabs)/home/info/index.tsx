@@ -11,6 +11,7 @@ const menuItems = [
   { title: "Wainwright Facility", route: "/(tabs)/home/info/wainwright" as const },
   // { title: "Refund Policy", route: "/(tabs)/home/info/refund-policy" as const },
   { title: "Restaurants & Hotels", route: "/(tabs)/home/info/restaurants-hotels" as const },
+  { title: "Sponsors", route: "/(tabs)/home/info/sponsors" as const },
   { title: "Vendors", route: "/(tabs)/home/info/vendors" as const },
   { title: "Report / Feedback", route: "/(tabs)/home/info/feedback" as const, subtitle: "Lost items, facility issues, report a bug, or miscellaneous..." },
   { title: "FAQ", route: "/(tabs)/home/info/faq" as const },

@@ -8,22 +8,22 @@ import CustomText from '@/components/CustomText';
 
 type Vendor = Tables<'vendors'>;
 
-const VendorsScreen = () => {
+const SponsorScreen = () => {
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchVendors();
+    fetchSponsors();
   }, []);
 
-  const fetchVendors = async () => {
+  const fetchSponsors = async () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
         .from('vendors')
         .select('*')
-        .eq('type', 'vendor')
+        .eq('type', 'sponsor')
         .order('name');
 
       if (error) throw error;
@@ -88,7 +88,7 @@ const VendorsScreen = () => {
         <CustomText style={styles.errorText}>{error}</CustomText>
         <TouchableOpacity 
           style={styles.retryButton}
-          onPress={fetchVendors}
+          onPress={fetchSponsors}
         >
           <CustomText style={styles.retryButtonText}>Retry</CustomText>
         </TouchableOpacity>
@@ -207,4 +207,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VendorsScreen;
+export default SponsorScreen;
