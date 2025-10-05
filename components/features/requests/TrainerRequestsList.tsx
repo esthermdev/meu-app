@@ -8,6 +8,7 @@ import { useAuth } from '@/context/AuthProvider';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
+import { getTimeSince } from '@/utils/getTimeSince';
 
 // Define types based on your Supabase schema
 type MedicalRequest = Database['public']['Tables']['medical_requests']['Row'] & {
@@ -121,26 +122,6 @@ const TrainerRequestsList = () => {
     });
   };
 
-  // Function to calculate time elapsed since request was created
-  const getTimeSince = (dateString: string | null) => {
-    if (!dateString) return 'Unknown';
-
-    const now = new Date();
-    const createdAt = new Date(dateString);
-    const diffMs = now.getTime() - createdAt.getTime();
-
-    // Convert to minutes
-    const diffMins = Math.floor(diffMs / 60000);
-
-    if (diffMins < 60) {
-      return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
-    } else {
-      const diffHours = Math.floor(diffMins / 60);
-      const remainingMins = diffMins % 60;
-      return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ${remainingMins > 0 ? `${remainingMins} min${remainingMins !== 1 ? 's' : ''}` : ''} ago`;
-    }
-  };
-
   // Function to determine color for time indicator based on elapsed time
   const getTimeColor = (dateString: string | null) => {
     if (!dateString) return '#EA1D25'; // Default to red if unknown
@@ -230,7 +211,7 @@ const TrainerRequestsList = () => {
 
         {item.description_of_emergency && (
           <View style={styles.descriptionContainer}>
-            <CustomText style={styles.descriptionLabel}>Emergency Description:</CustomText>
+            <CustomText style={styles.descriptionLabel}>Description of Emergency:</CustomText>
             <CustomText style={styles.descriptionText}>
               {item.description_of_emergency}
             </CustomText>
