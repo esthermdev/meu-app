@@ -1,6 +1,6 @@
 import * as Updates from 'expo-updates';
 import { useEffect, useState } from 'react';
-import { Alert, AppState, AppStateStatus } from 'react-native';
+import { AppState, AppStateStatus } from 'react-native';
 
 export function useCheckUpdates() {
   const [isChecking, setIsChecking] = useState(false);
@@ -16,20 +16,9 @@ export function useCheckUpdates() {
       
       if (update.isAvailable) {
         await Updates.fetchUpdateAsync();
-        
-        // Alert the user and let them know an update is ready
-        Alert.alert(
-          "Update Available",
-          "A new version of the app is ready. Restart now to apply the changes.",
-          [
-            { 
-              text: "Restart", 
-              onPress: async () => {
-                await Updates.reloadAsync();
-              } 
-            }
-          ]
-        );
+
+        // Automatically restart the app to apply the update
+        await Updates.reloadAsync();
       }
     } catch (error) {
       console.error('Error checking for updates:', error);
