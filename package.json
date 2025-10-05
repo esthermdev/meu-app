@@ -32,6 +32,7 @@
     "expo-dev-client": "~5.0.20",
     "expo-device": "~7.0.3",
     "expo-font": "~13.0.4",
+    "expo-image": "~2.0.7",
     "expo-linking": "~7.0.5",
     "expo-notifications": "~0.29.14",
     "expo-router": "~4.0.21",
@@ -53,9 +54,8 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.10",
-    "rneui": "^1.0.0-stable.0",
-    "expo-image": "~2.0.7",
-    "react-native-webview": "13.12.5"
+    "react-native-webview": "13.12.5",
+    "rneui": "^1.0.0-stable.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
