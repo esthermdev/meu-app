@@ -10,7 +10,7 @@ import {
   Dimensions,
   FlatList
 } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Tables } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import ModalButton from '../../buttons/ModalButtons';
@@ -185,7 +185,7 @@ const WaterRequestButton = () => {
         style={styles.circleButton}
         onPress={showModal}
       >
-        <MaterialCommunityIcons name="water" size={28} color="#008bcbff" />
+        <MaterialIcons name="water-drop" size={28} color="#52B0BA" />
       </TouchableOpacity>
       <CustomText style={styles.label}>Water</CustomText>
 
@@ -243,11 +243,9 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 35,
-    backgroundColor: '#e0f4feff',
+    backgroundColor: '#edebebff',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
   },
   label: {
     textAlign: 'center',

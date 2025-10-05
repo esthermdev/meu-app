@@ -61,7 +61,7 @@ const LargeCardButton: React.FC<LargeCardButtonProps> = ({
               { color: disabled ? '#e5d9c8' : '#ffffff' }
             ]}
         >
-          {title}{'\n'}{subtitle}
+          {title}
         </CustomText>
       </View>
     );
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 12,
     overflow: 'hidden',
-    height: 140,
+    height: 120,
   },
   halfWidth: {
     flex: 1,
@@ -97,8 +97,9 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    padding: 15,
+    padding: 14,
     justifyContent: 'space-between',
+    alignContent: 'space-between'
   },
   watchLiveContainer: {
     padding: 15,
@@ -108,7 +109,8 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#fff',
-    ...typography.heading4
+    ...typography.textLargeBold
+
   },
 });
 

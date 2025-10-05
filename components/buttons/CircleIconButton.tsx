@@ -27,7 +27,7 @@ const CircleIconButton: React.FC<CircleIconButtonProps> = ({
         onPress={() => route ? router.push(route) : null}
         disabled={disabled}
       >
-        <MaterialCommunityIcons name={icon} size={28} color="#347764" />
+        <MaterialCommunityIcons name={icon} size={28} color="#67BF30" />
       </TouchableOpacity>
       <CustomText style={styles.label}>{label}</CustomText>
     </View>
@@ -42,11 +42,9 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 35,
-    backgroundColor: '#daffdfff',
+    backgroundColor: '#edebebff',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
   },
   label: {
     textAlign: 'center',

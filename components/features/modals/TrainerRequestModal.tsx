@@ -184,7 +184,7 @@ const TrainerRequestButton = () => {
         style={styles.circleButton}
         onPress={() => setIsModalVisible(true)}
       >
-        <MaterialCommunityIcons name="medical-bag" size={28} color="#cd3a3aff" />
+        <MaterialCommunityIcons name="medical-bag" size={28} color="#DF4646" />
       </TouchableOpacity>
       <CustomText style={styles.label}>Trainer</CustomText>
 
@@ -275,11 +275,9 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 35,
-    backgroundColor: '#fde3e3ff',
+    backgroundColor: '#edebebff',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
   },
   label: {
     textAlign: 'center',

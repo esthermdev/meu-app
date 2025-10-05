@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#e63e2f',
     overflow: 'hidden',
-    padding: 20,
+    padding: 14,
     justifyContent: 'space-between',
   },
   circleContainer: {
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#fff',
-    ...typography.heading4
+    ...typography.textLargeBold
   },
 });
 

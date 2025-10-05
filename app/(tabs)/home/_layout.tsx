@@ -6,6 +6,7 @@ export default function HomeLayout() {
 		<Stack>
 			<Stack.Screen name='index' options={{ headerShown: false }} />
 			<Stack.Screen name='mygames' options={{ header: () => <CustomHeader title='My Games' />}} />
+			<Stack.Screen name='spirit' options={{ headerShown: false }} />
 			<Stack.Screen name='fieldmap' options={{ header: () => <CustomHeader title='Field Map' />}} />
 			<Stack.Screen name='volunteers' options={{ header: () => <CustomHeader title='Volunteers' />}} />
 			<Stack.Screen name='notifications' options={{ header: () => <CustomHeader title='Notifications' />}} />

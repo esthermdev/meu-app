@@ -17,7 +17,7 @@ export default function HomeScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Large card buttons at the top */}
         {/* My Games Button with Custom Background */}
-        <View style={{ gap: 15 }}>
+        <View style={{ gap: 10 }}>
           <LargeCardButton
             title="My Games"
             subtitle=""
@@ -27,12 +27,11 @@ export default function HomeScreen() {
         
           <View style={styles.row}>
             <LargeCardButton
-              title="Report"
-              subtitle="Spirit Scores"
-              icon={<MaterialCommunityIcons name="file-cancel" size={28} color="#fff" />}
-              backgroundColor="#c3aa8d"
-              route="https://docs.google.com/forms/d/15NrrAtvd2mt_RGdpkTYDTYHGXHP0RTiIJEI0GXFwfp4/viewform?edit_requested=true"
-              disabled={true}
+              title='Spirit'
+              subtitle=''
+              icon={<MaterialCommunityIcons name="handshake-outline" size={28} color="#fff" />}
+              backgroundColor="#E0AE43"
+              route='/(tabs)/home/spirit'
             />
             
             {/* Watch Live button with background image and play button */}
@@ -52,9 +51,9 @@ export default function HomeScreen() {
             label='Field Map'
             route="/(tabs)/home/fieldmap"
           />
-          <WaterRequestModal />
-          <CartRequestModal />
           <TrainerRequestModal />
+          <CartRequestModal />
+          <WaterRequestModal />
         </View>
 
         {/* Spacer to push content down */}
@@ -62,21 +61,30 @@ export default function HomeScreen() {
         {/* Bottom full-width buttons */}
         <View style={styles.bottomButtons}>
           <FullWidthButton
-            title="Meet Our Volunteers"
-            icon="account-group"
-            backgroundColor="#e1f0ec"
-            iconColor='#276B5D'
+            title="Volunteers"
+            icon="crowd"
+            backgroundColor="#"
+            iconColor='#4357AD'
             route="/(tabs)/home/volunteers"
+            style={{ flex: 1 }}
           />
-          
+
           <FullWidthButton
             title="Donation"
             icon="heart"
-            backgroundColor="#ffe9e9"
+            backgroundColor="#fff"
             iconColor='#FE0000'
             route='https://www.paypal.com/donate/?hosted_button_id=3HCQBB97LCV34'
+            style={{ flex: 1 }}
           />
         </View>
+        <FullWidthButton 
+          title='Coaches Corner'
+          icon='whistle'
+          backgroundColor='#000'
+          iconColor='#E0AE43'
+          style={{ borderColor: '#000', alignItems: 'center', width: 'auto', marginTop: 14 }}
+        />
         <NotificationPrompt />
       </ScrollView>
     </View>
@@ -96,7 +104,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 15
+    gap: 10
   },
   utilsContainer: {
     flexDirection: 'row',
@@ -107,7 +115,8 @@ const styles = StyleSheet.create({
     height: 40, // Adds some space before the bottom buttons
   },
   bottomButtons: {
-    gap: 15,
-    marginTop: 'auto', // Pushes the buttons to the bottom
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 'auto',
   },
 });
