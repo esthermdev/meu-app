@@ -5,11 +5,12 @@ export default function HomeLayout() {
 	return (
 		<Stack>
 			<Stack.Screen name='index' options={{ headerShown: false }} />
-			<Stack.Screen name='mygames' options={{ header: () => <CustomHeader title='My Games' />}} />
-			<Stack.Screen name='spirit' options={{ headerShown: false }} />
-			<Stack.Screen name='fieldmap' options={{ header: () => <CustomHeader title='Field Map' />}} />
-			<Stack.Screen name='volunteers' options={{ header: () => <CustomHeader title='Volunteers' />}} />
-			<Stack.Screen name='notifications' options={{ header: () => <CustomHeader title='Notifications' />}} />
+			<Stack.Screen name='mygames' options={{ header: () => <CustomHeader title='My Games' /> }} />
+			<Stack.Screen name='spirit' options={{ header: () => <CustomHeader title='Spirit of the Game' /> }} />
+			<Stack.Screen name='coachescorner' options={{ headerShown: false }} />
+			<Stack.Screen name='fieldmap' options={{ header: () => <CustomHeader title='Field Map' /> }} />
+			<Stack.Screen name='volunteers' options={{ header: () => <CustomHeader title='Volunteers' /> }} />
+			<Stack.Screen name='notifications' options={{ header: () => <CustomHeader title='Notifications' /> }} />
 			<Stack.Screen name='info' options={{ headerShown: false }} />
 		</Stack>
 	);

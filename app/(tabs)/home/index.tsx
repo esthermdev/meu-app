@@ -83,6 +83,7 @@ export default function HomeScreen() {
           icon='whistle'
           backgroundColor='#000'
           iconColor='#E0AE43'
+          route={'/(tabs)/home/coachescorner'}
           style={{ borderColor: '#000', alignItems: 'center', width: 'auto', marginTop: 14 }}
         />
         <NotificationPrompt />
