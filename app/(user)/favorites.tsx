@@ -7,7 +7,7 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
-  Keyboard
+  Keyboard,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
@@ -18,6 +18,7 @@ import { typography } from '@/constants/Typography';
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
 import CustomText from '@/components/CustomText';
+import { Link } from 'expo-router';
 
 type DivisionRow = Database['public']['Tables']['divisions']['Row'];
 
@@ -91,7 +92,7 @@ const FavoritesScreen = () => {
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.headerContainer}>
             <CustomText style={styles.title}>Select your favorite teams!</CustomText>
-            <CustomText style={styles.subtitle}>Follow their games on the My Games screen.</CustomText>
+            <CustomText style={styles.subtitle}>Follow their games on the <Link href="/(tabs)/home/mygames" style={styles.link}>My Games</Link> screen.</CustomText>
             
             {/* Custom Search Bar */}
             <View style={styles.searchBarContainer}>
@@ -249,6 +250,10 @@ const styles = StyleSheet.create({
     ...typography.textBold,
     color: '#555',
   },
+  link: {
+    color: '#4357AD',
+    textDecorationLine: 'underline',
+  }
 });
 
 export default FavoritesScreen;
