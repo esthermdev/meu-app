@@ -91,9 +91,6 @@ const CoachesCorner = () => {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          <CustomText variant="heading2" style={styles.title}>
-            Coaches Corner
-          </CustomText>
 
           <View style={styles.coachesGrid}>
             {coaches.map((coach, index) => renderCoachCard(coach, index))}
