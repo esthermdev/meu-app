@@ -32,7 +32,7 @@ const FeedbackScreen = () => {
       const { error } = await supabase
         .from('feedback')
         .insert([
-          { subject, message }
+          { subject, message, display: true }
         ]);
 
       if (error) throw error;
