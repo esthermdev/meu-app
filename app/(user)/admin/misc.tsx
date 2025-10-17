@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
   feedbackCard: {
     backgroundColor: '#262626',
-    borderRadius: 12,
+    borderRadius: 7,
     padding: 16,
     marginBottom: 12,
   },

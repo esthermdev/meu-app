@@ -8,7 +8,7 @@ export default function SpiritPage() {
   }
 
   const openPDF = () => {
-    Linking.openURL('https://opleqymigooimduhlvym.supabase.co/storage/v1/object/public/documents/SpiritPoints_Game.pdf')
+    Linking.openURL('https://opleqymigooimduhlvym.supabase.co/storage/v1/object/public/documents/Spirit%20Points%20_%20Games%20Version2.pdf')
   }
 
   return (
