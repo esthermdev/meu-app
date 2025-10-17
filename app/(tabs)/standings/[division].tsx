@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   rankNumber: {
     ...typography.textSmall,
     color: '#9E9E9E',
-    width: 15,
+    width: 20,
   },
   teamLogo: {
     width: 25,
