@@ -6,6 +6,7 @@ import CustomText from '@/components/CustomText';
 
 interface FeedbackItem {
   id: number;
+  subject: string;
   message: string;
   created_at: string;
 }
@@ -20,7 +21,7 @@ export default function MiscInfoScreen() {
     try {
       const { data, error } = await supabase
         .from('feedback')
-        .select('id, message, created_at')
+        .select('id, subject, message, created_at')
         .eq('display', true)
         .order('created_at', { ascending: false });
 
@@ -74,6 +75,7 @@ export default function MiscInfoScreen() {
         ) : (
           feedback.map((item) => (
             <View key={item.id} style={styles.feedbackCard}>
+              <CustomText style={styles.feedbackSubject}>{item.subject}</CustomText>
               <CustomText style={styles.feedbackMessage}>{item.message}</CustomText>
               <CustomText style={styles.dateText}>{formatDate(item.created_at)}</CustomText>
             </View>
@@ -108,6 +110,11 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     padding: 16,
     marginBottom: 12,
+  },
+  feedbackSubject: {
+    color: '#f9efa4ff',
+    ...typography.textLargeBold,
+    marginBottom: 8,
   },
   feedbackMessage: {
     color: '#fff',
