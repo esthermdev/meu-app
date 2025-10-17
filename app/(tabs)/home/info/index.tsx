@@ -5,6 +5,7 @@ import CustomText from "@/components/CustomText";
 
 // Define menu items with their exact paths
 const menuItems = [
+  { title: "General Requests / Feedback", route: "/(tabs)/home/info/feedback" as const, subtitle: "Report lost items, facility issues, bugs on app, or miscellaneous..." },
   { title: "Tournament Info", route: "/(tabs)/home/info/tournament-info" as const },
   { title: "Rules", route: "/(tabs)/home/info/rules" as const },
   // { title: "In Case of Emergency", route: "/(tabs)/home/info/emergency" as const },
@@ -13,7 +14,6 @@ const menuItems = [
   { title: "Restaurants & Hotels", route: "/(tabs)/home/info/restaurants-hotels" as const },
   { title: "Sponsors", route: "/(tabs)/home/info/sponsors" as const },
   { title: "Vendors", route: "/(tabs)/home/info/vendors" as const },
-  { title: "Report / Feedback", route: "/(tabs)/home/info/feedback" as const, subtitle: "Lost items, facility issues, report a bug, or miscellaneous..." },
   { title: "FAQ", route: "/(tabs)/home/info/faq" as const },
   { title: "Credits", route: "/(tabs)/home/info/credits" as const },
 ];

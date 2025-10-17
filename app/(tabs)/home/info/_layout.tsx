@@ -14,7 +14,7 @@ export default function InfoLayout() {
 			<Stack.Screen name="sponsors" options={{ header: () => <CustomHeader title='Sponsors' /> }} />
 			<Stack.Screen name="vendors" options={{ header: () => <CustomHeader title='Vendors' /> }} />
 			<Stack.Screen name="faq" options={{ header: () => <CustomHeader title='FAQ' /> }} />
-			<Stack.Screen name="feedback" options={{ header: () => <CustomHeader title='Report / Feedback' /> }} />
+			<Stack.Screen name="feedback" options={{ header: () => <CustomHeader title='Requests / Feedback' /> }} />
 			<Stack.Screen name="credits" options={{ header: () => <CustomHeader title='Credits' /> }} />
 		</Stack>
 	);

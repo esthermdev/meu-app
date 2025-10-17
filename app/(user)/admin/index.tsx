@@ -86,7 +86,7 @@ const AdminScreen = () => {
       route: '/admin/announcements',
     },
     {
-      title: 'Reports / Feedback',
+      title: 'General Requests / Feedback',
       iconName: 'information',
       route: '/admin/misc',
     },

@@ -70,13 +70,13 @@ const FeedbackScreen = () => {
               style={[styles.input, styles.messageInput]}
               value={message}
               onChangeText={setMessage}
-              placeholder="Your feedback, request info or bug report"
+              placeholder="Send in your requests or feedback here..."
               multiline
               allowFontScaling={false}
               placeholderTextColor={'#999'}
             />
             <PrimaryButton 
-              title='Submit Feedback'
+              title='Submit'
               disabled={isSubmitting}
               onPress={handleSubmit}
             />
