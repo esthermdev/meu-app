@@ -11,7 +11,7 @@ import {
   Keyboard,
 } from 'react-native';
 import { supabase } from '@/lib/supabase';
-import { typography } from '@/constants/Typography';
+import { fonts, typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 

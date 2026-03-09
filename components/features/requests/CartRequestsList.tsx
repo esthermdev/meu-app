@@ -24,7 +24,11 @@ type CartListItem = {
   request: CartRequest;
 };
 
-const CartRequestsList = () => {
+const CartRequestsList = ({
+  registerRefreshCallback,
+}: {
+  registerRefreshCallback: (callback: () => void) => void;
+}) => {
   const [currentRides, setCurrentRides] = useState<CartRequest[]>([]);
   const [pendingRides, setPendingRides] = useState<CartRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -32,7 +36,6 @@ const CartRequestsList = () => {
   const [isPendingCollapsed, setIsPendingCollapsed] = useState<boolean>(false);
   const { profile } = useAuth() as { profile: Profile };
   const fieldsMapRef = useRef<Record<number, string> | null>(null);
-  const realtimeRefreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const getFieldMap = useCallback(async () => {
     if (fieldsMapRef.current) {
@@ -115,45 +118,14 @@ const CartRequestsList = () => {
     [getFieldMap, profile.id],
   );
 
-  const scheduleRealtimeRefresh = useCallback(() => {
-    if (realtimeRefreshTimeoutRef.current) {
-      clearTimeout(realtimeRefreshTimeoutRef.current);
-    }
-
-    realtimeRefreshTimeoutRef.current = setTimeout(() => {
-      fetchRequests(false);
-    }, 250);
-  }, [fetchRequests]);
-
   useEffect(() => {
     fetchRequests(true);
+  }, [fetchRequests]);
 
-    const subscription = supabase
-      .channel('cart_requests_channel')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'cart_requests',
-        },
-        (payload) => {
-          console.log('Real-time update received:', payload);
-          scheduleRealtimeRefresh();
-        },
-      )
-      .subscribe((status) => {
-        console.log('Subscription status:', status);
-      });
-
-    return () => {
-      console.log('Unsubscribing from cart_requests_channel');
-      subscription.unsubscribe();
-      if (realtimeRefreshTimeoutRef.current) {
-        clearTimeout(realtimeRefreshTimeoutRef.current);
-      }
-    };
-  }, [fetchRequests, scheduleRealtimeRefresh]);
+  // Register the refresh callback with the parent
+  useEffect(() => {
+    registerRefreshCallback(() => fetchRequests(false));
+  }, [registerRefreshCallback, fetchRequests]);
 
   const acceptRequest = async (requestId: number) => {
     try {

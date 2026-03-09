@@ -1,5 +1,5 @@
 // app/(tabs)/teams/[id].tsx
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { StyleSheet, View, ScrollView, Image, RefreshControl } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { supabase } from '@/lib/supabase';
@@ -10,6 +10,7 @@ import { typography } from '@/constants/Typography';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import CustomHeader from '@/components/headers/CustomHeader';
 import CustomText from '@/components/CustomText';
+import { useTeamGamesSubscription } from '@/hooks/subscriptions/useTeamsSubscriptions';
 
 type TeamRow = Database['public']['Tables']['teams']['Row'];
 type GameRow = Database['public']['Tables']['games']['Row'];
@@ -36,7 +37,6 @@ const TeamDetails = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [team, setTeam] = useState<TeamDetail | null>(null);
   const [games, setGames] = useState<GameWithDetails[]>([]);
-  const subscriptionRef = useRef<any>(null);
 
   const fetchTeamDetails = useCallback(async () => {
     if (!id) return;
@@ -85,51 +85,11 @@ const TeamDetails = () => {
 
   // Set up real-time subscription for score updates
   useEffect(() => {
-    if (!id) return;
-
     fetchTeamDetails();
+  }, [fetchTeamDetails]);
 
-    // Get list of game IDs for this team
-    const setupSubscription = async () => {
-      // Clean up any existing subscription first
-      if (subscriptionRef.current) {
-        subscriptionRef.current.unsubscribe();
-      }
-
-      // Create a new subscription for score changes
-      const gameIds = games.map((game) => game.id);
-
-      if (gameIds.length > 0) {
-        subscriptionRef.current = supabase
-          .channel('team-games-score-changes')
-          .on(
-            'postgres_changes',
-            {
-              event: '*',
-              schema: 'public',
-              table: 'scores',
-              filter: gameIds.length > 0 ? `game_id=in.(${gameIds.join(',')})` : undefined,
-            },
-            (payload) => {
-              console.log('Real-time score update for team game:', payload);
-              // Fetch updated data when scores change
-              fetchTeamDetails();
-            },
-          )
-          .subscribe();
-      }
-    };
-
-    setupSubscription();
-
-    // Cleanup subscription on unmount
-    return () => {
-      if (subscriptionRef.current) {
-        subscriptionRef.current.unsubscribe();
-        subscriptionRef.current = null;
-      }
-    };
-  }, [id, fetchTeamDetails, games]);
+  const gameIds = games.map((game) => game.id);
+  useTeamGamesSubscription(gameIds, fetchTeamDetails);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);

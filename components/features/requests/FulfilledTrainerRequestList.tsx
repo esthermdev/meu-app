@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -10,11 +10,10 @@ import {
 import { Card } from '@/components/Card';
 import { MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/context/AuthProvider';
-import { useIsFocused } from '@react-navigation/native';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
+import { useTrainerRequestsSubscription } from '@/hooks/subscriptions/useRequestsSubscriptions';
 
 // Define types based on your Supabase schema
 type MedicalRequest = Database['public']['Tables']['medical_requests']['Row'] & {
@@ -26,51 +25,11 @@ type MedicalRequest = Database['public']['Tables']['medical_requests']['Row'] & 
   } | null;
 };
 
-type Profile = Database['public']['Tables']['profiles']['Row'];
-
 const FulfilledTrainerRequestList = () => {
   const [requests, setRequests] = useState<MedicalRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const { profile } = useAuth() as { profile: Profile };
-  const isFocused = useIsFocused();
 
-  // Effect that runs when the tab comes into focus
-  useEffect(() => {
-    if (isFocused) {
-      fetchFulfilledRequests();
-    }
-  }, [isFocused]);
-
-  // Regular effect for initial load and subscription
-  useEffect(() => {
-    fetchFulfilledRequests();
-
-    // Set up real-time subscription
-    const subscription = supabase
-      .channel('fulfilled_trainer_requests_channel')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'medical_requests',
-        },
-        (payload) => {
-          console.log('Fulfilled trainer requests real-time update:', payload);
-          fetchFulfilledRequests();
-        },
-      )
-      .subscribe((status) => {
-        console.log('Fulfilled trainer requests subscription status:', status);
-      });
-
-    return () => {
-      console.log('Unsubscribing from fulfilled_trainer_requests_channel');
-      subscription.unsubscribe();
-    };
-  }, [profile?.id]); // Add profile dependency to avoid stale closures
-
-  const fetchFulfilledRequests = async () => {
+  const fetchFulfilledRequests = useCallback(async () => {
     try {
       console.log('Fetching fulfilled trainer requests...');
       const { data, error } = await supabase
@@ -87,7 +46,15 @@ const FulfilledTrainerRequestList = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // Initial load
+  useEffect(() => {
+    fetchFulfilledRequests();
+  }, [fetchFulfilledRequests]);
+
+  // Set up real-time subscription
+  useTrainerRequestsSubscription(fetchFulfilledRequests);
 
   const deleteRequest = async (requestId: number) => {
     try {

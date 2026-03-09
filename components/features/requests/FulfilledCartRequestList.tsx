@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -9,7 +9,6 @@ import {
   Alert,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useIsFocused } from '@react-navigation/native';
 import { Card } from '@/components/Card';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthProvider';
@@ -28,7 +27,11 @@ type CartRequest = Database['public']['Tables']['cart_requests']['Row'] & {
 type Profile = Database['public']['Tables']['profiles']['Row'];
 type LocationType = Database['public']['Enums']['location_type'];
 
-const FulfilledCartRequestsList = () => {
+const FulfilledCartRequestsList = ({
+  registerRefreshCallback,
+}: {
+  registerRefreshCallback: (callback: () => void) => void;
+}) => {
   const [requests, setRequests] = useState<CartRequest[]>([]);
   const [pendingRides, setPendingRides] = useState<CartRequest[]>([]);
   const [confirmedRides, setConfirmedRides] = useState<CartRequest[]>([]);
@@ -36,72 +39,17 @@ const FulfilledCartRequestsList = () => {
   const [expiredRides, setExpiredRides] = useState<CartRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { profile } = useAuth() as { profile: Profile };
-  const isFocused = useIsFocused();
 
   // Collapsible section states
-  const [pendingCollapsed, setPendingCollapsed] = useState<boolean>(false);
-  const [confirmedCollapsed, setConfirmedCollapsed] = useState<boolean>(false);
-  const [completedCollapsed, setCompletedCollapsed] = useState<boolean>(false);
+  const [pendingCollapsed, setPendingCollapsed] = useState<boolean>(true);
+  const [confirmedCollapsed, setConfirmedCollapsed] = useState<boolean>(true);
+  const [completedCollapsed, setCompletedCollapsed] = useState<boolean>(true);
   const [expiredCollapsed, setExpiredCollapsed] = useState<boolean>(true); // Default collapsed
   const [loadingRequests, setLoadingRequests] = useState<Set<number>>(new Set());
 
   const driverName = profile.full_name;
 
-  // Collapsible section header component
-  const CollapsibleSectionHeader = ({
-    title,
-    count,
-    isCollapsed,
-    onToggle,
-  }: {
-    title: string;
-    count: number;
-    isCollapsed: boolean;
-    onToggle: () => void;
-  }) => (
-    <TouchableOpacity style={styles.sectionHeader} onPress={onToggle}>
-      <CustomText style={styles.sectionTitle}>
-        {title} ({count})
-      </CustomText>
-      <Ionicons name={isCollapsed ? 'chevron-down' : 'chevron-up'} size={20} color="#fff" />
-    </TouchableOpacity>
-  );
-
-  useEffect(() => {
-    if (isFocused) {
-      fetchAllRequests();
-    }
-  }, [isFocused]);
-
-  useEffect(() => {
-    fetchAllRequests();
-
-    // Set up real-time subscription
-    const subscription = supabase
-      .channel('fulfilled_requests_channel')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'cart_requests',
-        },
-        (payload) => {
-          console.log('Fulfilled requests real-time update:', payload);
-          fetchAllRequests();
-        },
-      )
-      .subscribe((status) => {
-        console.log('Fulfilled requests subscription status:', status);
-      });
-
-    return () => {
-      console.log('Unsubscribing from fulfilled_requests_channel');
-      subscription.unsubscribe();
-    };
-  }, [profile?.id]); // Add profile dependency to avoid stale closures
-
-  const fetchAllRequests = async () => {
+  const fetchAllRequests = useCallback(async () => {
     try {
       console.log('Fetching all cart requests...');
 
@@ -170,7 +118,32 @@ const FulfilledCartRequestsList = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // Collapsible section header component
+  const CollapsibleSectionHeader = ({
+    title,
+    count,
+    isCollapsed,
+    onToggle,
+  }: {
+    title: string;
+    count: number;
+    isCollapsed: boolean;
+    onToggle: () => void;
+  }) => (
+    <TouchableOpacity style={styles.sectionHeader} onPress={onToggle}>
+      <CustomText style={styles.sectionTitle}>
+        {title} ({count})
+      </CustomText>
+      <Ionicons name={isCollapsed ? 'chevron-down' : 'chevron-up'} size={20} color="#fff" />
+    </TouchableOpacity>
+  );
+
+  // Register the refresh callback with the parent
+  useEffect(() => {
+    registerRefreshCallback(fetchAllRequests);
+  }, [registerRefreshCallback, fetchAllRequests]);
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'N/A';

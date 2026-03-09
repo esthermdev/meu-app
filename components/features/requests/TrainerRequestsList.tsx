@@ -1,5 +1,5 @@
 // components/medical/RequestsList.tsx
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -17,6 +17,7 @@ import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
 import { getTimeSince } from '@/utils/getTimeSince';
+import { useTrainerRequestsSubscription } from '@/hooks/subscriptions/useRequestsSubscriptions';
 
 // Define types based on your Supabase schema
 type MedicalRequest = Database['public']['Tables']['medical_requests']['Row'] & {
@@ -35,7 +36,6 @@ const TrainerRequestsList = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { profile } = useAuth() as { profile: Profile };
-  const realtimeRefreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const fetchRequests = useCallback(async (isInitialLoad: boolean = false) => {
     try {
@@ -63,46 +63,12 @@ const TrainerRequestsList = () => {
     }
   }, []);
 
-  const scheduleRealtimeRefresh = useCallback(() => {
-    if (realtimeRefreshTimeoutRef.current) {
-      clearTimeout(realtimeRefreshTimeoutRef.current);
-    }
-
-    realtimeRefreshTimeoutRef.current = setTimeout(() => {
-      fetchRequests(false);
-    }, 250);
-  }, [fetchRequests]);
-
   useEffect(() => {
     fetchRequests(true);
+  }, [fetchRequests]);
 
-    // Set up real-time subscription
-    const subscription = supabase
-      .channel('trainer_requests_channel')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'medical_requests',
-        },
-        (payload) => {
-          console.log('Trainer requests real-time update:', payload);
-          scheduleRealtimeRefresh();
-        },
-      )
-      .subscribe((status) => {
-        console.log('Trainer requests subscription status:', status);
-      });
-
-    return () => {
-      console.log('Unsubscribing from trainer_requests_channel');
-      subscription.unsubscribe();
-      if (realtimeRefreshTimeoutRef.current) {
-        clearTimeout(realtimeRefreshTimeoutRef.current);
-      }
-    };
-  }, [fetchRequests, profile?.id, scheduleRealtimeRefresh]);
+  // Set up real-time subscription
+  useTrainerRequestsSubscription(() => fetchRequests(false));
 
   const resolveRequest = async (requestId: number) => {
     try {

@@ -15,6 +15,7 @@ import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
+import { useWaterRequestsSubscription } from '@/hooks/subscriptions/useRequestsSubscriptions';
 
 // Define types based on your Supabase schema
 type WaterRequest = Database['public']['Tables']['water_requests']['Row'];
@@ -29,22 +30,6 @@ const FulfilledWaterRequestsList = () => {
       fetchFulfilledRequests();
     }
   }, [isFocused]);
-
-  useEffect(() => {
-    fetchFulfilledRequests();
-    const subscription = supabase
-      .channel('water_requests')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'water_requests' },
-        fetchFulfilledRequests,
-      )
-      .subscribe();
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
 
   const fetchFulfilledRequests = async () => {
     try {
@@ -63,6 +48,9 @@ const FulfilledWaterRequestsList = () => {
       setLoading(false);
     }
   };
+
+  // Set up real-time subscription
+  useWaterRequestsSubscription(fetchFulfilledRequests);
 
   const deleteRequest = async (requestId: number) => {
     try {

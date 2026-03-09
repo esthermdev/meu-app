@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Link } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -9,6 +9,7 @@ import { useAuth } from '@/context/AuthProvider';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import { getTimeSince } from '@/utils/getTimeSince';
+import { useWaterRequestsSubscription } from '@/hooks/subscriptions/useRequestsSubscriptions';
 
 type WaterRequests = Database['public']['Tables']['water_requests']['Row'] & {
   fields?: {
@@ -24,7 +25,6 @@ const WaterRequestsList = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { profile } = useAuth() as { profile: Volunteer };
-  const realtimeRefreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const fetchRequests = useCallback(async (isInitialLoad: boolean = false) => {
     try {
@@ -53,35 +53,12 @@ const WaterRequestsList = () => {
     }
   }, []);
 
-  const scheduleRealtimeRefresh = useCallback(() => {
-    if (realtimeRefreshTimeoutRef.current) {
-      clearTimeout(realtimeRefreshTimeoutRef.current);
-    }
-
-    realtimeRefreshTimeoutRef.current = setTimeout(() => {
-      fetchRequests(false);
-    }, 250);
-  }, [fetchRequests]);
-
   useEffect(() => {
     fetchRequests(true);
+  }, [fetchRequests]);
 
-    const subscription = supabase
-      .channel('water_requests_changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'water_requests' },
-        scheduleRealtimeRefresh,
-      )
-      .subscribe();
-
-    return () => {
-      subscription.unsubscribe();
-      if (realtimeRefreshTimeoutRef.current) {
-        clearTimeout(realtimeRefreshTimeoutRef.current);
-      }
-    };
-  }, [fetchRequests, scheduleRealtimeRefresh]);
+  // Set up real-time subscription
+  useWaterRequestsSubscription(() => fetchRequests(false));
 
   const handleResolveRequest = async (requestId: number) => {
     try {
