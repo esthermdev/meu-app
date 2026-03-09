@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { View, ActivityIndicator, SectionList, StyleSheet, Image } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { usePoolIds } from '@/hooks/useGamesFilter';
@@ -9,7 +9,7 @@ import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
 import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
 
-type StandingsRow = Database['public']['Tables']['rankings']['Row']
+type StandingsRow = Database['public']['Tables']['rankings']['Row'];
 type TeamsRow = Database['public']['Tables']['teams']['Row'];
 
 interface Standings extends StandingsRow {
@@ -29,52 +29,44 @@ export default function DivisionStandings() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasGamesStarted, setHasGamesStarted] = useState(false);
 
-  useEffect(() => {
-    if (!loading) {
-      if (pools.length > 0) {
-        fetchStandings();
-      } else {
-        setIsLoading(false);
-      }
-    }
-  }, [pools, loading]);
-
-  const fetchStandings = async () => {
+  const fetchStandings = useCallback(async () => {
     setIsLoading(true);
-    const poolIds = pools.map(pool => pool.id);
+    const poolIds = pools.map((pool) => pool.id);
 
     // Get all the rankings data
     const { data, error } = await supabase
       .from('rankings')
-      .select(`
+      .select(
+        `
         *,
         teams!inner (id, pool_id, seed, name, avatar_uri)
-      `)
+      `,
+      )
       .in('teams.pool_id', poolIds);
 
     if (error) {
       console.error('Error fetching standings:', error);
     } else if (data) {
       // Check if games have started by seeing if there are any wins or losses
-      const gamesStarted = data.some(item => (item.wins || 0) > 0 || (item.losses || 0) > 0);
+      const gamesStarted = data.some((item) => (item.wins || 0) > 0 || (item.losses || 0) > 0);
       setHasGamesStarted(gamesStarted);
-      
+
       // Sort data based on whether games have started
       const sortedData = data.sort((a, b) => {
         // Always group by pool
         if ((a.teams?.pool_id || 0) !== (b.teams?.pool_id || 0)) {
           return (a.teams?.pool_id || 0) - (b.teams?.pool_id || 0);
         }
-        
+
         if (gamesStarted) {
           // If games have started, first sort by pool_rank
           const rankA = a.pool_rank || 0;
           const rankB = b.pool_rank || 0;
-          
+
           if (rankA !== rankB) {
             return rankA - rankB; // Sort by pool_rank ascending
           }
-          
+
           // If pool_rank is the same, fall back to original seeding
           const seedA = a.teams?.seed || 0;
           const seedB = b.teams?.seed || 0;
@@ -86,21 +78,29 @@ export default function DivisionStandings() {
           return seedA - seedB;
         }
       });
-      
+
       // Format data into sections
-      const sectionData: StandingsSection[] = pools.map(pool => ({
+      const sectionData: StandingsSection[] = pools.map((pool) => ({
         title: pool.name,
         poolId: pool.id,
-        data: sortedData.filter(standing => 
-          standing.teams?.pool_id === pool.id
-        ) as Standings[]
+        data: sortedData.filter((standing) => standing.teams?.pool_id === pool.id) as Standings[],
       }));
-      
+
       setStandingsData(sectionData);
     }
-    
+
     setIsLoading(false);
-  };
+  }, [pools]);
+
+  useEffect(() => {
+    if (!loading) {
+      if (pools.length > 0) {
+        fetchStandings();
+      } else {
+        setIsLoading(false);
+      }
+    }
+  }, [fetchStandings, loading, pools.length]);
 
   const renderSectionHeader = ({ section }: { section: StandingsSection }) => (
     <View style={styles.sectionHeader}>
@@ -115,19 +115,25 @@ export default function DivisionStandings() {
     </View>
   );
 
-  const renderItem = ({ item, index }: { item: Standings, index: number }) => (
+  const renderItem = ({ item, index }: { item: Standings; index: number }) => (
     <View style={styles.itemContainer}>
       <CustomText style={styles.rankNumber}>
         {hasGamesStarted ? item.pool_rank : item.teams?.seed}
       </CustomText>
-      <Image 
-        source={item.teams?.avatar_uri ? { uri: item.teams.avatar_uri } : require('@/assets/images/avatar-placeholder.png')} 
-        style={styles.teamLogo} 
+      <Image
+        source={
+          item.teams?.avatar_uri
+            ? { uri: item.teams.avatar_uri }
+            : require('@/assets/images/avatar-placeholder.png')
+        }
+        style={styles.teamLogo}
       />
       <CustomText style={styles.teamName}>{item.teams?.name}</CustomText>
       <View style={styles.recordContainer}>
         <CustomText style={styles.recordText}>{item.wins || 0}</CustomText>
-        <CustomText style={[styles.recordDivider, { color: '#000', ...typography.body }]}>—</CustomText>
+        <CustomText style={[styles.recordDivider, { color: '#000', ...typography.textSmall }]}>
+          —
+        </CustomText>
         <CustomText style={styles.recordText}>{item.losses || 0}</CustomText>
       </View>
     </View>
@@ -145,10 +151,7 @@ export default function DivisionStandings() {
     return (
       <View style={styles.container}>
         <CustomHeader title={divisionName} />
-        <ComingSoonPlaceholder 
-          message="Standings coming soon!"
-          iconName="leaderboard"
-        />
+        <ComingSoonPlaceholder message="Standings coming soon!" iconName="leaderboard" />
       </View>
     );
   }
@@ -157,10 +160,7 @@ export default function DivisionStandings() {
     return (
       <View style={styles.container}>
         <CustomHeader title={divisionName} />
-        <ComingSoonPlaceholder 
-          message="Pools coming soon!"
-          iconName="leaderboard"
-        />
+        <ComingSoonPlaceholder message="Pools coming soon!" iconName="leaderboard" />
       </View>
     );
   }
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 9,
-    paddingHorizontal: 12
+    paddingHorizontal: 12,
   },
   poolLabelContainer: {
     backgroundColor: '#fff',
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   },
   poolLabel: {
     ...typography.textLargeBold,
-    color: '#EA1D25'
+    color: '#EA1D25',
   },
   recordHeaderContainer: {
     flexDirection: 'row',
@@ -223,11 +223,11 @@ const styles = StyleSheet.create({
     ...typography.textLargeBold,
     textAlign: 'center',
     width: 30,
-    color: '#fff'
+    color: '#fff',
   },
   recordDivider: {
     ...typography.text,
-    color: '#fff'
+    color: '#fff',
   },
   itemContainer: {
     flexDirection: 'row',
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   },
   teamName: {
     flex: 1,
-    ...typography.textSemiBold
+    ...typography.textSemiBold,
   },
   recordContainer: {
     flexDirection: 'row',

@@ -4,7 +4,7 @@ import { View, StyleSheet, TouchableOpacity, Modal, Pressable } from 'react-nati
 import CustomText from '../CustomText';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { fonts, typography } from '@/constants/Typography';
+import { fonts } from '@/constants/Typography';
 import { MaterialIcons } from '@expo/vector-icons';
 
 interface CustomHeaderProps {
@@ -22,13 +22,12 @@ export const CustomHeader: React.FC<CustomHeaderProps> = ({ title, refreshInfo }
           <Ionicons name="arrow-back" size={23} color="#EA1D25" />
         </TouchableOpacity>
         <View style={styles.titleContainer}>
-          <CustomText style={styles.header} maxFontSizeMultiplier={1}>{title}</CustomText>      
+          <CustomText style={styles.header} maxFontSizeMultiplier={1}>
+            {title}
+          </CustomText>
         </View>
         {refreshInfo && (
-          <TouchableOpacity 
-            style={styles.infoButton}
-            onPress={() => setModalVisible(true)}
-          >
+          <TouchableOpacity style={styles.infoButton} onPress={() => setModalVisible(true)}>
             <MaterialIcons name="info-outline" size={20} color="#ea1d25" />
           </TouchableOpacity>
         )}
@@ -38,12 +37,8 @@ export const CustomHeader: React.FC<CustomHeaderProps> = ({ title, refreshInfo }
         animationType="fade"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <Pressable 
-          style={styles.modalOverlay} 
-          onPress={() => setModalVisible(false)}
-        >
+        onRequestClose={() => setModalVisible(false)}>
+        <Pressable style={styles.modalOverlay} onPress={() => setModalVisible(false)}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <View style={styles.modalHeader}>
@@ -52,7 +47,7 @@ export const CustomHeader: React.FC<CustomHeaderProps> = ({ title, refreshInfo }
                   <Ionicons name="close" size={24} color="#000" />
                 </TouchableOpacity>
               </View>
-              
+
               <View style={styles.modalBody}>
                 <View style={styles.infoItem}>
                   <MaterialIcons name="refresh" size={24} color="#EA1D25" style={styles.infoIcon} />
@@ -60,14 +55,19 @@ export const CustomHeader: React.FC<CustomHeaderProps> = ({ title, refreshInfo }
                     Pull down on the screen to refresh and get the latest scores
                   </CustomText>
                 </View>
-                
+
                 <View style={styles.infoItem}>
-                  <MaterialIcons name="info-outline" size={24} color="#EA1D25" style={styles.infoIcon} />
+                  <MaterialIcons
+                    name="info-outline"
+                    size={24}
+                    color="#EA1D25"
+                    style={styles.infoIcon}
+                  />
                   <CustomText style={styles.infoText}>
                     Scores are updated in real-time during tournaments
                   </CustomText>
                 </View>
-                
+
                 <View style={styles.infoItem}>
                   <MaterialIcons name="sync" size={24} color="#EA1D25" style={styles.infoIcon} />
                   <CustomText style={styles.infoText}>
@@ -76,10 +76,7 @@ export const CustomHeader: React.FC<CustomHeaderProps> = ({ title, refreshInfo }
                 </View>
               </View>
 
-              <TouchableOpacity 
-                style={styles.gotItButton}
-                onPress={() => setModalVisible(false)}
-              >
+              <TouchableOpacity style={styles.gotItButton} onPress={() => setModalVisible(false)}>
                 <CustomText style={styles.gotItButtonText}>Got it</CustomText>
               </TouchableOpacity>
             </View>
@@ -110,8 +107,8 @@ const styles = StyleSheet.create({
   infoButton: {
     position: 'absolute',
     right: 20,
-    zIndex: 10
-  },  
+    zIndex: 10,
+  },
   backButton: {
     position: 'absolute',
     left: 20,

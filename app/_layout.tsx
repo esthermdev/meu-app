@@ -9,7 +9,7 @@ import 'react-native-gesture-handler';
 import { useCheckUpdates } from '@/hooks/useCheckUpdates';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync().catch(error => {
+SplashScreen.preventAutoHideAsync().catch((error) => {
   console.warn('Error preventing splash screen from auto-hiding:', error);
 });
 
@@ -35,7 +35,7 @@ export default function RootLayout() {
         try {
           await SplashScreen.hideAsync();
         } catch (e) {
-          console.warn("Error hiding splash screen:", e);
+          console.warn('Error hiding splash screen:', e);
         }
       }
     };
@@ -54,7 +54,14 @@ export default function RootLayout() {
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'fade' }} />
           <Stack.Screen name="(user)" options={{ headerShown: false, gestureEnabled: false }} />
-          <Stack.Screen name="sign-in" options={{ headerShown: false, gestureEnabled: false, animation: 'none' }} />
+          <Stack.Screen
+            name="sign-in"
+            options={{
+              headerShown: false,
+              gestureEnabled: false,
+              animation: 'none',
+            }}
+          />
           <Stack.Screen name="sign-up" options={{ headerShown: false, gestureEnabled: false }} />
           <Stack.Screen name="+not-found" />
           <Stack.Screen name="index" options={{ headerShown: false }} />

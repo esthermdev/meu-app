@@ -1,9 +1,9 @@
-import PrimaryButton from "@/components/buttons/PrimaryButton";
-import CustomText from "@/components/CustomText";
-import { icons, images } from "@/constants";
-import { typography } from "@/constants/Typography";
-import { router } from "expo-router";
-import { View, StyleSheet, Image, SafeAreaView, Dimensions, StatusBar } from "react-native";
+import PrimaryButton from '@/components/buttons/PrimaryButton';
+import CustomText from '@/components/CustomText';
+import { icons, images } from '@/constants';
+import { typography } from '@/constants/Typography';
+import { router } from 'expo-router';
+import { View, StyleSheet, Image, SafeAreaView, Dimensions, StatusBar } from 'react-native';
 
 const { width } = Dimensions.get('window');
 const centerContainerWidth = width - 40;
@@ -11,16 +11,12 @@ const centerContainerWidth = width - 40;
 export default function Index() {
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor='#fff' />
-      <Image 
-        source={icons.frisbeePlayer}
-        resizeMode="contain"
-        style={styles.image}
-      />
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <Image source={icons.frisbeePlayer} resizeMode="contain" style={styles.image} />
       <View style={styles.contentContainer}>
         <CustomText style={styles.welcomeText}>Welcome to</CustomText>
         <View style={styles.tournamentLogoContainer}>
-          <Image 
+          <Image
             source={images.tournamentLogo}
             resizeMode="contain"
             style={styles.tournamentLogo}
@@ -36,9 +32,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: "flex-start",
-    alignItems: "center",
-    backgroundColor: '#fff'
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: '#fff',
   },
   contentContainer: {
     flex: 1,
@@ -54,13 +50,13 @@ const styles = StyleSheet.create({
     maxHeight: 250,
   },
   welcomeText: {
-    ...typography.h2,
-    color: "#EA1D25",
-    textAlign: 'center'
+    ...typography.heading2,
+    color: '#EA1D25',
+    textAlign: 'center',
   },
   tournamentLogoContainer: {
     maxHeight: 250,
     alignItems: 'center',
     justifyContent: 'center',
-  }
-})
+  },
+});

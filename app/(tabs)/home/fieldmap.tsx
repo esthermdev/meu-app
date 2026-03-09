@@ -8,13 +8,10 @@ const FieldMap = () => {
   return (
     <View style={styles.container}>
       {loading && <LoadingIndicator message="Loading map..." />}
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        maximumZoomScale={3}
-      >
+      <ScrollView contentContainerStyle={styles.scrollContainer} maximumZoomScale={3}>
         <Image
           source={images.fieldMap}
-          resizeMode='contain'
+          resizeMode="contain"
           style={styles.image}
           onLoadStart={() => setLoading(true)}
           onLoadEnd={() => setLoading(false)}
@@ -48,7 +45,7 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: '100%',
-  }
+  },
 });
 
 export default FieldMap;

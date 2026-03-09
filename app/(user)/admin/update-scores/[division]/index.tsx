@@ -11,7 +11,7 @@ import {
   Alert,
   LayoutAnimation,
   UIManager,
-  RefreshControl
+  RefreshControl,
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useGametypes } from '@/hooks/useScheduleConfig';
@@ -25,7 +25,6 @@ import { Database } from '@/database.types';
 import AdminGameComponent from '@/components/features/gameviews/AdminGameComponent';
 import { MaterialIcons } from '@expo/vector-icons';
 import AdminBottomActionButtons from '@/components/buttons/AdminBottomActionButtons';
-import { usePoolIds } from '@/hooks/useGamesFilter';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -40,8 +39,6 @@ type ScoresRow = Database['public']['Tables']['scores']['Row'];
 type FieldsRow = Database['public']['Tables']['fields']['Row'];
 type RoundsRow = Database['public']['Tables']['rounds']['Row'];
 type PoolsRow = Database['public']['Tables']['pools']['Row'];
-type GameTypesRow = Database['public']['Tables']['gametypes']['Row'];
-
 interface Games extends GamesRow {
   datetime: DatetimeRow | null;
   team1: TeamRow | null;
@@ -63,7 +60,9 @@ export default function GameTypesScreen() {
   const [filteredGames, setFilteredGames] = useState<Games[]>([]);
   const [gamesLoading, setGamesLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
-  const [collapsedSections, setCollapsedSections] = useState<{[key: string]: boolean}>({});
+  const [collapsedSections, setCollapsedSections] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [refreshKey, setRefreshKey] = useState(0);
 
   const insets = useSafeAreaInsets();
@@ -84,7 +83,8 @@ export default function GameTypesScreen() {
       if (!actionLoading) setGamesLoading(true);
       const { data, error: fetchError } = await supabase
         .from('games')
-        .select(`
+        .select(
+          `
           *,
           datetime: datetime_id (*),
           team1: team1_id (*),
@@ -93,7 +93,8 @@ export default function GameTypesScreen() {
           rounds: round_id (*),
           field: field_id (*),
           pool: pool_id (*)
-        `)
+        `,
+        )
         .eq('division_id', divisionId)
         .order('round_id, id');
 
@@ -114,7 +115,7 @@ export default function GameTypesScreen() {
   // Filter games by selected game type
   useEffect(() => {
     if (selectedGameType !== null) {
-      const filtered = games.filter(game => game.gametype_id === selectedGameType);
+      const filtered = games.filter((game) => game.gametype_id === selectedGameType);
       setFilteredGames(filtered);
     } else {
       setFilteredGames(games);
@@ -138,14 +139,14 @@ export default function GameTypesScreen() {
 
     LayoutAnimation.configureNext(animationConfig);
 
-    setCollapsedSections(prev => ({
+    setCollapsedSections((prev) => ({
       ...prev,
-      [sectionId]: !prev[sectionId]
+      [sectionId]: !prev[sectionId],
     }));
   }, []);
 
   const refreshGames = useCallback(() => {
-    setRefreshKey(prev => prev + 1);
+    setRefreshKey((prev) => prev + 1);
   }, []);
 
   // Group games by round_id
@@ -154,32 +155,35 @@ export default function GameTypesScreen() {
 
     // determine if selected gametype is poolplay
     const selectedGametypes = gametypes || [];
-    const selectedGt = selectedGametypes.find(gt => gt.id === selectedGameType);
+    const selectedGt = selectedGametypes.find((gt) => gt.id === selectedGameType);
     const isPoolPlay = selectedGt?.route === 'poolplay';
 
     if (isPoolPlay) {
       // Group by pool_id
-      const poolsMap = filteredGames.reduce((acc, game) => {
-        const poolId = game.pool_id;
-        const key = poolId ?? -1;
-        if (!acc[key]) {
-          acc[key] = {
-            title: game.pool?.name ? `Pool ${game.pool.name}` : (game.pool?.name ?? 'No Pool'),
-            data: [] as Games[],
-            poolId: poolId
-          };
-        }
-        acc[key].data.push(game);
-        return acc;
-      }, {} as Record<number, { title: string; data: Games[]; poolId: number | null }>);
+      const poolsMap = filteredGames.reduce(
+        (acc, game) => {
+          const poolId = game.pool_id;
+          const key = poolId ?? -1;
+          if (!acc[key]) {
+            acc[key] = {
+              title: game.pool?.name ? `Pool ${game.pool.name}` : (game.pool?.name ?? 'No Pool'),
+              data: [] as Games[],
+              poolId: poolId,
+            };
+          }
+          acc[key].data.push(game);
+          return acc;
+        },
+        {} as Record<number, { title: string; data: Games[]; poolId: number | null }>,
+      );
 
       return Object.keys(poolsMap)
-        .map(k => ({
+        .map((k) => ({
           id: `pool-${String(poolsMap[Number(k)].poolId ?? 'none')}`,
           title: poolsMap[Number(k)].title,
           data: poolsMap[Number(k)].data,
           poolId: poolsMap[Number(k)].poolId,
-          roundId: null
+          roundId: null,
         }))
         .sort((a, b) => {
           const aId = a.poolId ?? 0;
@@ -189,28 +193,31 @@ export default function GameTypesScreen() {
     }
 
     // Fallback: Group by round_id
-    const roundsMap = filteredGames.reduce((acc, game) => {
-      const roundId = game.round_id;
-      if (roundId === null) return acc;
+    const roundsMap = filteredGames.reduce(
+      (acc, game) => {
+        const roundId = game.round_id;
+        if (roundId === null) return acc;
 
-      if (!acc[roundId]) {
-        acc[roundId] = {
-          title: game.rounds?.stage || '',
-          data: []
-        };
-      }
-      acc[roundId].data.push(game);
-      return acc;
-    }, {} as Record<number, { title: string; data: Games[] }>);
+        if (!acc[roundId]) {
+          acc[roundId] = {
+            title: game.rounds?.stage || '',
+            data: [],
+          };
+        }
+        acc[roundId].data.push(game);
+        return acc;
+      },
+      {} as Record<number, { title: string; data: Games[] }>,
+    );
 
     // Convert map to array sorted by round id
     return Object.keys(roundsMap)
-      .map(roundId => ({
+      .map((roundId) => ({
         id: `round-${String(roundId)}`,
         title: roundsMap[Number(roundId)].title,
         data: roundsMap[Number(roundId)].data,
         roundId: Number(roundId),
-        poolId: null
+        poolId: null,
       }))
       .sort((a, b) => {
         const roundIdA = a.roundId ?? 0;
@@ -221,61 +228,63 @@ export default function GameTypesScreen() {
 
   // whether selected gametype is poolplay — used in renderers
   const isPoolPlay = useMemo(() => {
-    const selectedGt = (gametypes || []).find(gt => gt.id === selectedGameType);
+    const selectedGt = (gametypes || []).find((gt) => gt.id === selectedGameType);
     return selectedGt?.route === 'poolplay';
   }, [gametypes, selectedGameType]);
 
   // Handle marking all games as completed
   const handleMarkAllCompleted = async () => {
-    Alert.alert(
-      'Confirm',
-      'Are you sure you want to mark all games as completed?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Yes',
-          onPress: async () => {
-            setActionLoading(true);
-            try {
-              const updatePromises = filteredGames.map(async (game) => {
-                if (game.scores && game.scores.length > 0) {
-                  const { error: updateError } = await supabase
-                    .from('scores')
-                    .update({ is_finished: true })
-                    .eq('id', game.scores[0].id);
+    Alert.alert('Confirm', 'Are you sure you want to mark all games as completed?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Yes',
+        onPress: async () => {
+          setActionLoading(true);
+          try {
+            const updatePromises = filteredGames.map(async (game) => {
+              if (game.scores && game.scores.length > 0) {
+                const { error: updateError } = await supabase
+                  .from('scores')
+                  .update({ is_finished: true })
+                  .eq('id', game.scores[0].id);
 
-                  if (updateError) throw updateError;
-                }
-              });
+                if (updateError) throw updateError;
+              }
+            });
 
-              await Promise.all(updatePromises);
+            await Promise.all(updatePromises);
 
-              // Update local state
-              const updatedGames = games.map(game => {
-                if (game.scores && game.scores.length > 0 && filteredGames.find(fg => fg.id === game.id)) {
-                  return {
-                    ...game,
-                    scores: [{
+            // Update local state
+            const updatedGames = games.map((game) => {
+              if (
+                game.scores &&
+                game.scores.length > 0 &&
+                filteredGames.find((fg) => fg.id === game.id)
+              ) {
+                return {
+                  ...game,
+                  scores: [
+                    {
                       ...game.scores[0],
-                      is_finished: true
-                    }]
-                  };
-                }
-                return game;
-              });
+                      is_finished: true,
+                    },
+                  ],
+                };
+              }
+              return game;
+            });
 
-              setGames(updatedGames);
-              Alert.alert('Success', 'All games marked as completed');
-            } catch (err) {
-              console.error('Error marking games as completed:', err);
-              Alert.alert('Error', 'Failed to mark games as completed');
-            } finally {
-              setActionLoading(false);
-            }
+            setGames(updatedGames);
+            Alert.alert('Success', 'All games marked as completed');
+          } catch (err) {
+            console.error('Error marking games as completed:', err);
+            Alert.alert('Error', 'Failed to mark games as completed');
+          } finally {
+            setActionLoading(false);
           }
-        }
-      ]
-    );
+        },
+      },
+    ]);
   };
 
   // Handle resetting all games
@@ -291,8 +300,8 @@ export default function GameTypesScreen() {
             setActionLoading(true);
             try {
               const scoreIds = filteredGames
-                .filter(game => game.scores && game.scores.length > 0)
-                .map(game => game.scores![0].id);
+                .filter((game) => game.scores && game.scores.length > 0)
+                .map((game) => game.scores![0].id);
 
               if (scoreIds.length > 0) {
                 const { error: updateError } = await supabase
@@ -300,23 +309,29 @@ export default function GameTypesScreen() {
                   .update({
                     is_finished: false,
                     team1_score: 0,
-                    team2_score: 0
+                    team2_score: 0,
                   })
                   .in('id', scoreIds);
 
                 if (updateError) throw updateError;
 
                 // Update local state
-                const updatedGames = games.map(game => {
-                  if (game.scores && game.scores.length > 0 && filteredGames.find(fg => fg.id === game.id)) {
+                const updatedGames = games.map((game) => {
+                  if (
+                    game.scores &&
+                    game.scores.length > 0 &&
+                    filteredGames.find((fg) => fg.id === game.id)
+                  ) {
                     return {
                       ...game,
-                      scores: [{
-                        ...game.scores[0],
-                        is_finished: false,
-                        team1_score: 0,
-                        team2_score: 0
-                      }]
+                      scores: [
+                        {
+                          ...game.scores[0],
+                          is_finished: false,
+                          team1_score: 0,
+                          team2_score: 0,
+                        },
+                      ],
                     };
                   }
                   return game;
@@ -332,9 +347,9 @@ export default function GameTypesScreen() {
             } finally {
               setActionLoading(false);
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     );
   };
 
@@ -347,14 +362,14 @@ export default function GameTypesScreen() {
             key={gametype.id}
             style={[
               styles.filterButton,
-              selectedGameType === gametype.id && styles.selectedFilterButton
+              selectedGameType === gametype.id && styles.selectedFilterButton,
             ]}
-            onPress={() => setSelectedGameType(gametype.id)}
-          >
-            <CustomText style={[
-              styles.filterButtonText,
-              selectedGameType === gametype.id && styles.selectedFilterText
-            ]}>
+            onPress={() => setSelectedGameType(gametype.id)}>
+            <CustomText
+              style={[
+                styles.filterButtonText,
+                selectedGameType === gametype.id && styles.selectedFilterText,
+              ]}>
               {gametype.title}
             </CustomText>
           </TouchableOpacity>
@@ -381,7 +396,13 @@ export default function GameTypesScreen() {
 
   if (gamesLoading && (!games || games.length === 0)) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#000',
+        }}>
         <ActivityIndicator size="large" color="#EA1D25" />
       </View>
     );
@@ -390,10 +411,11 @@ export default function GameTypesScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#EA1D25" />
-      <View style={{
-        paddingTop: Platform.OS === 'android' ? statusBarHeight : insets.top,
-        backgroundColor: '#EA1D25'
-      }}>
+      <View
+        style={{
+          paddingTop: Platform.OS === 'android' ? statusBarHeight : insets.top,
+          backgroundColor: '#EA1D25',
+        }}>
         <CustomAdminHeader title={divisionName} />
       </View>
 
@@ -416,12 +438,7 @@ export default function GameTypesScreen() {
               if (collapsedSections[sectionId]) {
                 return null;
               }
-              return (
-                <AdminGameComponent
-                  game={item}
-                  onGameStatusChange={refreshGames}
-                />
-              );
+              return <AdminGameComponent game={item} onGameStatusChange={refreshGames} />;
             }}
             renderSectionHeader={({ section }) => {
               const sectionId = (section as any).id ?? section.data[0]?.round_id?.toString() ?? '';
@@ -431,12 +448,13 @@ export default function GameTypesScreen() {
                 <TouchableOpacity
                   style={styles.sectionHeader}
                   activeOpacity={0.7}
-                  onPress={() => toggleSection(sectionId)}
-                >
+                  onPress={() => toggleSection(sectionId)}>
                   <CustomText style={styles.sectionHeaderText}>{(section as any).title}</CustomText>
-                  {isCollapsed ?
-                    <MaterialIcons name='keyboard-arrow-down' size={24} color='#fff' /> :
-                    <MaterialIcons name='keyboard-arrow-left' size={24} color='#fff' />}
+                  {isCollapsed ? (
+                    <MaterialIcons name="keyboard-arrow-down" size={24} color="#fff" />
+                  ) : (
+                    <MaterialIcons name="keyboard-arrow-left" size={24} color="#fff" />
+                  )}
                 </TouchableOpacity>
               );
             }}
@@ -452,7 +470,7 @@ export default function GameTypesScreen() {
               <RefreshControl
                 refreshing={gamesLoading}
                 onRefresh={refreshGames}
-                colors={["#EA1D25"]}
+                colors={['#EA1D25']}
                 tintColor="#EA1D25"
               />
             }
@@ -462,10 +480,10 @@ export default function GameTypesScreen() {
           <AdminBottomActionButtons
             leftButton={handleMarkAllCompleted}
             rightButton={handleResetAllGames}
-            rightText='Reset All Games'
-            leftText='Mark All Games as Completed'
-            rightColor='#DDCF9B'
-            leftColor='#ED8C22'
+            rightText="Reset All Games"
+            leftText="Mark All Games as Completed"
+            rightColor="#DDCF9B"
+            leftColor="#ED8C22"
           />
         </>
       ) : (
@@ -501,7 +519,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
-    gap: 12
+    gap: 12,
   },
   gameTypeItem: {
     backgroundColor: '#222',
@@ -520,7 +538,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: '#EA1D25',
-    ...typography.textMedium
+    ...typography.textMedium,
   },
   // Filter styles
   filterContainer: {
@@ -533,13 +551,13 @@ const styles = StyleSheet.create({
   filterLabel: {
     ...typography.textBold,
     color: '#fff',
-    marginRight: 12
+    marginRight: 12,
   },
   filterScroll: {
     flexDirection: 'row',
     backgroundColor: '#222',
     borderRadius: 12,
-    padding: 7
+    padding: 7,
   },
   filterButton: {
     paddingVertical: 8,
@@ -548,7 +566,7 @@ const styles = StyleSheet.create({
   },
   filterButtonText: {
     ...typography.textMedium,
-    color: '#999999'
+    color: '#999999',
   },
   selectedFilterButton: {
     backgroundColor: '#EA1D25',
@@ -559,7 +577,7 @@ const styles = StyleSheet.create({
   // Game list styles
   gamesList: {
     paddingHorizontal: 15,
-    paddingBottom: 15
+    paddingBottom: 15,
   },
   sectionHeader: {
     backgroundColor: '#1a0000',
@@ -570,11 +588,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 15
+    marginTop: 15,
   },
   sectionHeaderText: {
     color: '#fff',
-    ...typography.textLargeSemiBold
+    ...typography.textLargeSemiBold,
   },
   emptyContainer: {
     padding: 40,

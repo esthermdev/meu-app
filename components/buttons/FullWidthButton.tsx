@@ -12,7 +12,7 @@ interface FullWidthButtonProps {
   icon: MaterialIconNames;
   backgroundColor: string;
   iconColor?: string;
-  route?: Href<string | object>;
+  route?: Href;
   disabled?: boolean;
   style?: ViewStyle;
 }
@@ -29,12 +29,11 @@ const FullWidthButton: React.FC<FullWidthButtonProps> = ({
   return (
     <TouchableOpacity
       style={[styles.button, { backgroundColor, borderColor: iconColor }, style]}
-      onPress={() => route ? router.push(route) : null}
-      disabled={disabled}
-    >
+      onPress={() => (route ? router.push(route) : null)}
+      disabled={disabled}>
       <View style={styles.content}>
-        <MaterialCommunityIcons name={icon} size={18} color={iconColor} /> 
-        <CustomText style={[styles.text, {color: iconColor}]}>{title}</CustomText>
+        <MaterialCommunityIcons name={icon} size={18} color={iconColor} />
+        <CustomText style={[styles.text, { color: iconColor }]}>{title}</CustomText>
       </View>
     </TouchableOpacity>
   );
@@ -47,16 +46,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderWidth: 1,
     width: '100%',
-    height: 40
+    height: 40,
   },
   content: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 5
+    gap: 5,
   },
   text: {
-    ...typography.bodyMediumBold
+    ...typography.textBold,
   },
 });
 

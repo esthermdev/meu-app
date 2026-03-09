@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Database } from '@/database.types';
 import {
   StyleSheet,
-  Text,
   Alert,
   View,
   Modal,
@@ -11,7 +10,7 @@ import {
   TouchableWithoutFeedback,
   Platform,
   KeyboardAvoidingView,
-  TextInput
+  TextInput,
 } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -32,12 +31,12 @@ type RequestStatus = Database['public']['Enums']['request_status'];
 // Define priority level type
 type PriorityLevel = 'High' | 'Medium' | 'Low';
 
-const FIELD_PLACEHOLDER = "Select Field";
+const FIELD_PLACEHOLDER = 'Select Field';
 
 const TrainerRequestButton = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [priorityLevel, setPriorityLevel] = useState<PriorityLevel>('Medium');
-  const [description, setDescription] = useState<string | undefined>('')
+  const [description, setDescription] = useState<string | undefined>('');
   const [fields, setFields] = useState<{ id: number; name: string }[]>([]);
   const [selectedField, setSelectedField] = useState<number | undefined>(undefined);
   const [selectedFieldLabel, setSelectedFieldLabel] = useState<string>(FIELD_PLACEHOLDER);
@@ -59,7 +58,7 @@ const TrainerRequestButton = () => {
       .from('fields')
       .select('id, name')
       .order('id', { ascending: true });
-  
+
     if (error) {
       console.error('Error fetching fields:', error);
     } else if (data) {
@@ -71,16 +70,16 @@ const TrainerRequestButton = () => {
 
   const handleFieldSelect = (fieldLabel: string) => {
     if (fieldLabel === FIELD_PLACEHOLDER) return;
-  
+
     // Find the field where the name matches the selected label
-    const field = fields.find(f => fieldLabel === f.name);
+    const field = fields.find((f) => fieldLabel === f.name);
     if (field) {
       setSelectedField(field.id);
       setSelectedFieldLabel(fieldLabel); // Set the display label to field name
-  
+
       // Clear the field error when a valid selection is made
       if (errors.field) {
-        setErrors(prev => ({ ...prev, field: undefined }));
+        setErrors((prev) => ({ ...prev, field: undefined }));
       }
     }
   };
@@ -103,7 +102,7 @@ const TrainerRequestButton = () => {
         priority_level: priorityLevel,
         description_of_emergency: description,
         team_name: teamName, // Add team name to the request
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
 
       const { error: insertError } = await supabase
@@ -127,12 +126,11 @@ const TrainerRequestButton = () => {
 
       Alert.alert(
         'Trainer Requested',
-        'Help is on the way. Please allow some time for a trainer to make their way to your location. If no trainer has arrived please try again later as trainers may be unavailable at the moment.'
+        'Help is on the way. Please allow some time for a trainer to make their way to your location. If no trainer has arrived please try again later as trainers may be unavailable at the moment.',
       );
-      setDescription('')
-      setPriorityLevel('Medium')
+      setDescription('');
+      setPriorityLevel('Medium');
       setIsModalVisible(false);
-
     } catch (error) {
       console.error('Error requesting medical assistance:', error);
       Alert.alert('Error', 'Failed to request medical assistance');
@@ -141,16 +139,16 @@ const TrainerRequestButton = () => {
 
   const validateForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
-  
+
     if (selectedField === undefined || selectedFieldLabel === FIELD_PLACEHOLDER) {
-      newErrors.field = "Please select a field";
+      newErrors.field = 'Please select a field';
     }
-    
+
     // Optional: Add validation for team name
     // if (!teamName.trim()) {
     //   newErrors.teamName = "Please enter the team name";
     // }
-  
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -167,23 +165,23 @@ const TrainerRequestButton = () => {
 
   const renderPriorityButton = (level: PriorityLevel, color: string) => (
     <TouchableOpacity
-      style={[styles.priorityButton, { backgroundColor: color }, priorityLevel === level && styles.selected]}
+      style={[
+        styles.priorityButton,
+        { backgroundColor: color },
+        priorityLevel === level && styles.selected,
+      ]}
       onPress={() => setPriorityLevel(level)}
-      activeOpacity={1}
-    >
+      activeOpacity={1}>
       <CustomText style={styles.priorityButtonText}>{level}</CustomText>
     </TouchableOpacity>
   );
 
   // Prepare field labels for dropdown
-  const fieldLabels = fields.map(field => field.name);
+  const fieldLabels = fields.map((field) => field.name);
 
   return (
     <View>
-      <TouchableOpacity
-        style={styles.circleButton}
-        onPress={() => setIsModalVisible(true)}
-      >
+      <TouchableOpacity style={styles.circleButton} onPress={() => setIsModalVisible(true)}>
         <MaterialCommunityIcons name="medical-bag" size={28} color="#DF4646" />
       </TouchableOpacity>
       <CustomText style={styles.label}>Trainer</CustomText>
@@ -192,12 +190,10 @@ const TrainerRequestButton = () => {
         visible={isModalVisible}
         transparent={true}
         animationType="fade"
-        onRequestClose={handleCloseModal}
-      >
+        onRequestClose={handleCloseModal}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.modalContainer}
-        >
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.modalContainer}>
           <TouchableWithoutFeedback onPress={handleCloseModal}>
             <View style={styles.modalOverlay}>
               <TouchableWithoutFeedback>
@@ -207,12 +203,21 @@ const TrainerRequestButton = () => {
                   </TouchableOpacity>
 
                   <ScrollView showsVerticalScrollIndicator={false}>
-                    <CustomText style={styles.noteText} allowFontScaling maxFontSizeMultiplier={1.3}>
-                      Note: Medical staff will respond as quickly as possible based on priority level and availability.
-                      Please ensure the field number is correct so trainers can locate you efficiently.
+                    <CustomText
+                      style={styles.noteText}
+                      allowFontScaling
+                      maxFontSizeMultiplier={1.3}>
+                      Note: Medical staff will respond as quickly as possible based on priority
+                      level and availability. Please ensure the field number is correct so trainers
+                      can locate you efficiently.
                     </CustomText>
 
-                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Team Name:</CustomText>
+                    <CustomText
+                      style={styles.labelHeader}
+                      allowFontScaling
+                      maxFontSizeMultiplier={1.2}>
+                      Team Name:
+                    </CustomText>
                     <TextInput
                       style={styles.textInput}
                       placeholder="Enter team name"
@@ -223,14 +228,24 @@ const TrainerRequestButton = () => {
                     />
                     {errors.teamName && <ErrorMessage message={errors.teamName} />}
 
-                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Level of Medical Emergency:</CustomText>
+                    <CustomText
+                      style={styles.labelHeader}
+                      allowFontScaling
+                      maxFontSizeMultiplier={1.2}>
+                      Level of Medical Emergency:
+                    </CustomText>
                     <View style={styles.priorityButtonContainer}>
                       {renderPriorityButton('High', '#FE310D')}
                       {renderPriorityButton('Medium', '#ED8C22')}
                       {renderPriorityButton('Low', '#276B5D')}
                     </View>
 
-                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Describe your emergency:</CustomText>
+                    <CustomText
+                      style={styles.labelHeader}
+                      allowFontScaling
+                      maxFontSizeMultiplier={1.2}>
+                      Describe your emergency:
+                    </CustomText>
                     <TextInput
                       style={styles.descriptionInput}
                       placeholder="e.g., Head injury, ACL tear, minor sprain, cramping..."
@@ -244,7 +259,12 @@ const TrainerRequestButton = () => {
                     />
                     <ErrorMessage message={errors.description} />
 
-                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Select Field Location:</CustomText>
+                    <CustomText
+                      style={styles.labelHeader}
+                      allowFontScaling
+                      maxFontSizeMultiplier={1.2}>
+                      Select Field Location:
+                    </CustomText>
                     <Dropdown
                       label="Select Field"
                       data={[FIELD_PLACEHOLDER, ...fieldLabels]}
@@ -282,7 +302,7 @@ const styles = StyleSheet.create({
   label: {
     textAlign: 'center',
     marginTop: 5,
-    ...typography.textSmallBold
+    ...typography.textSmallBold,
   },
   modalContainer: {
     flex: 1,
@@ -310,7 +330,7 @@ const styles = StyleSheet.create({
   },
   labelHeader: {
     ...typography.labelBold,
-    marginVertical: 4
+    marginVertical: 4,
   },
   priorityButtonContainer: {
     flexDirection: 'row',
@@ -326,7 +346,7 @@ const styles = StyleSheet.create({
   priorityButtonText: {
     color: 'white',
     textAlign: 'center',
-    ...typography.bodyBold,
+    ...typography.textSmallBold,
   },
   selected: {
     borderRadius: 8,
@@ -338,7 +358,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 5,
     padding: 10,
-    ...typography.body,
+    ...typography.textSmall,
     textAlignVertical: 'top',
     marginBottom: 5,
   },
@@ -348,7 +368,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: '#DD3333',
-    ...typography.bodySmall,
+    ...typography.textXSmall,
   },
   inputError: {
     borderColor: '#DD3333',
@@ -359,7 +379,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 5,
     padding: 10,
-    ...typography.body,
+    ...typography.textSmall,
     marginBottom: 5,
   },
 });

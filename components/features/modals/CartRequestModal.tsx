@@ -12,7 +12,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Platform,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { supabase } from '@/lib/supabase';
@@ -33,12 +33,13 @@ type LocationType = Database['public']['Enums']['location_type'];
 type RequestStatus = Database['public']['Enums']['request_status'];
 
 // Define locations as a const array of valid LocationType values
-const LOCATIONS: LocationType[] = ['Field', 'Tourney Central', 'Lot 1 (Grass)', 'Lot 2 (Pavement)', 'Entrance'];
-
-type Field = {
-  id: number;
-  name: string;
-};
+const LOCATIONS: LocationType[] = [
+  'Field',
+  'Tourney Central',
+  'Lot 1 (Grass)',
+  'Lot 2 (Pavement)',
+  'Entrance',
+];
 
 const CartRequestButton = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -46,7 +47,6 @@ const CartRequestButton = () => {
   const [toLocation, setToLocation] = useState<LocationType>('Field');
   const [fromFieldNumber, setFromFieldNumber] = useState<string>('');
   const [toFieldNumber, setToFieldNumber] = useState<string>('');
-  const [fields, setFields] = useState<Field[]>([]);
   const [fieldOptions, setFieldOptions] = useState<string[]>([]);
   const [fieldNameToIdMap, setFieldNameToIdMap] = useState<Record<string, number>>({});
   const [fieldIdToNameMap, setFieldIdToNameMap] = useState<Record<number, string>>({});
@@ -69,31 +69,25 @@ const CartRequestButton = () => {
     fetchFields();
   }, []);
 
-
   const fetchFields = async () => {
-    const { data, error } = await supabase
-      .from('fields')
-      .select('id, name')
-      .order('name');
-    
+    const { data, error } = await supabase.from('fields').select('id, name').order('name');
+
     if (error) {
       console.error('Error fetching fields:', error);
     } else if (data) {
-      setFields(data);
-      
       // Create the name-to-id and id-to-name mapping
       const nameToId: Record<string, number> = {};
       const idToName: Record<number, string> = {};
-      data.forEach(field => {
+      data.forEach((field) => {
         nameToId[field.name] = field.id;
         idToName[field.id] = field.name;
       });
-      
+
       setFieldNameToIdMap(nameToId);
       setFieldIdToNameMap(idToName);
-      
+
       // Set field names for the dropdown
-      setFieldOptions(data.map(field => field.name));
+      setFieldOptions(data.map((field) => field.name));
     }
   };
 
@@ -114,14 +108,10 @@ const CartRequestButton = () => {
         special_request: specialRequest,
         status: 'pending' as RequestStatus,
         requester_token: expoPushToken || null,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
 
-      const { error } = await supabase
-        .from('cart_requests')
-        .insert(insertData)
-        .select()
-        .single();
+      const { error } = await supabase.from('cart_requests').insert(insertData).select().single();
 
       if (error) throw error;
 
@@ -134,7 +124,13 @@ const CartRequestButton = () => {
     }
   };
 
-  const PassengerCountInput = ({ value, onValueChange }: { value: number; onValueChange: (value: number) => void }) => {
+  const PassengerCountInput = ({
+    value,
+    onValueChange,
+  }: {
+    value: number;
+    onValueChange: (value: number) => void;
+  }) => {
     const increment = () => onValueChange(Math.min(value + 1, 6));
     const decrement = () => onValueChange(Math.max(value - 1, 1));
 
@@ -143,7 +139,9 @@ const CartRequestButton = () => {
         <TouchableOpacity onPress={decrement} style={styles.passengerCountButton}>
           <Ionicons name="remove" size={24} color="#EA1D25" />
         </TouchableOpacity>
-        <CustomText style={styles.passengerCountText} allowFontScaling maxFontSizeMultiplier={1.3}>{value}</CustomText>
+        <CustomText style={styles.passengerCountText} allowFontScaling maxFontSizeMultiplier={1.3}>
+          {value}
+        </CustomText>
         <TouchableOpacity onPress={increment} style={styles.passengerCountButton}>
           <Ionicons name="add" size={24} color="#EA1D25" />
         </TouchableOpacity>
@@ -152,35 +150,35 @@ const CartRequestButton = () => {
   };
 
   const validateForm = (): boolean => {
-    const newErrors: {[key: string]: string} = {};
-    
+    const newErrors: { [key: string]: string } = {};
+
     // Validate requester name
     if (!requesterName.trim()) {
-      newErrors.requesterName = "Please enter your name";
+      newErrors.requesterName = 'Please enter your name';
     }
-    
+
     // Validate locations
     if (fromLocation === toLocation) {
       if (fromLocation === 'Field') {
         // For fields, check if the field numbers are the same
         if (fromFieldNumber === toFieldNumber) {
-          newErrors.toFieldNumber = "From and To field numbers cannot be the same";
+          newErrors.toFieldNumber = 'From and To field numbers cannot be the same';
         }
       } else {
         // For non-field locations (like 'Lot 1'), they can't be the same
-        newErrors.toLocation = "From and To locations cannot be the same";
+        newErrors.toLocation = 'From and To locations cannot be the same';
       }
     }
-    
+
     // Validate field numbers
     if (fromLocation === 'Field' && !fromFieldNumber) {
-      newErrors.fromFieldNumber = "Please select a field number";
+      newErrors.fromFieldNumber = 'Please select a field number';
     }
-    
+
     if (toLocation === 'Field' && !toFieldNumber) {
-      newErrors.toFieldNumber = "Please select a field number";
+      newErrors.toFieldNumber = 'Please select a field number';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -203,24 +201,21 @@ const CartRequestButton = () => {
 
   return (
     <View>
-      <TouchableOpacity
-        style={styles.circleButton}
-        onPress={() => setIsModalVisible(true)}
-      >
+      <TouchableOpacity style={styles.circleButton} onPress={() => setIsModalVisible(true)}>
         <MaterialCommunityIcons name="car" size={28} color="#72717B" />
       </TouchableOpacity>
-      <CustomText style={styles.label} allowFontScaling>Cart</CustomText>
+      <CustomText style={styles.label} allowFontScaling>
+        Cart
+      </CustomText>
 
       <Modal
         visible={isModalVisible}
         transparent={true}
         animationType="fade"
-        onRequestClose={handleCloseModal}
-      >
+        onRequestClose={handleCloseModal}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.modalContainer}
-        >
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
               <Ionicons name="close" size={20} color="#8F8DAA" />
@@ -236,21 +231,26 @@ const CartRequestButton = () => {
               enableOnAndroid={true}
               enableAutomaticScroll={Platform.OS === 'ios'}
               keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-            >
+              showsVerticalScrollIndicator={false}>
               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View>
                   <CustomText style={styles.noteText} allowFontScaling maxFontSizeMultiplier={1.3}>
-                    Note: Our volunteer drivers are dedicated to assisting you as quickly as possible. To help us serve everyone efficiently:
+                    Note: Our volunteer drivers are dedicated to assisting you as quickly as
+                    possible. To help us serve everyone efficiently:
+                    {'\n\n'}• If you're in a group, please submit only one request.{'\n'}• Allow up
+                    to 5 minutes for a driver to reach you.{'\n'}• If no driver arrives after 5
+                    minutes, feel free to submit another request.
                     {'\n\n'}
-                    • If you're in a group, please submit only one request.{'\n'}
-                    • Allow up to 5 minutes for a driver to reach you.{'\n'}
-                    • If no driver arrives after 5 minutes, feel free to submit another request.
-                    {'\n\n'}
-                    Thank you for your patience and understanding as we work to accommodate everyone's transportation needs.
+                    Thank you for your patience and understanding as we work to accommodate
+                    everyone's transportation needs.
                   </CustomText>
 
-                  <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Your Name:</CustomText>
+                  <CustomText
+                    style={styles.labelHeader}
+                    allowFontScaling
+                    maxFontSizeMultiplier={1.2}>
+                    Your Name:
+                  </CustomText>
                   <TextInput
                     style={[styles.nameInput, errors.requesterName && styles.inputError]}
                     placeholder="Enter your name"
@@ -258,29 +258,46 @@ const CartRequestButton = () => {
                     value={requesterName}
                     onChangeText={(text) => {
                       setRequesterName(text);
-                      setErrors(prev => ({...prev, requesterName: undefined}));
+                      setErrors((prev) => ({
+                        ...prev,
+                        requesterName: undefined,
+                      }));
                     }}
                     maxLength={50}
                     maxFontSizeMultiplier={1.2}
                   />
                   <ErrorMessage message={errors.requesterName} />
 
-                  <View style={{marginBottom: 5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row'}}>
-                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>Number of Passengers:</CustomText>
-                    <PassengerCountInput
-                      value={passengerCount}
-                      onValueChange={setPassengerCount}
-                    />
+                  <View
+                    style={{
+                      marginBottom: 5,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      flexDirection: 'row',
+                    }}>
+                    <CustomText
+                      style={styles.labelHeader}
+                      allowFontScaling
+                      maxFontSizeMultiplier={1.2}>
+                      Number of Passengers:
+                    </CustomText>
+                    <PassengerCountInput value={passengerCount} onValueChange={setPassengerCount} />
                   </View>
 
-                  <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>From:</Text>
+                  <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>
+                    From:
+                  </Text>
                   <Dropdown
                     label="From Location"
                     data={LOCATIONS}
                     onSelect={(item) => {
                       setFromLocation(item as LocationType);
                       // Clear error when user makes a selection
-                      setErrors(prev => ({...prev, fromLocation: undefined}));
+                      setErrors((prev) => ({
+                        ...prev,
+                        fromLocation: undefined,
+                      }));
                     }}
                     selectedValue={fromLocation}
                     error={!!errors.fromLocation}
@@ -293,24 +310,31 @@ const CartRequestButton = () => {
                       data={fieldOptions}
                       onSelect={(fieldName: string) => {
                         const fieldId = fieldNameToIdMap[fieldName]?.toString() || '';
-                        setFromFieldNumber(fieldId)
+                        setFromFieldNumber(fieldId);
                         // Clear error when user makes a selection
-                        setErrors(prev => ({...prev, fromFieldNumber: undefined}));
+                        setErrors((prev) => ({
+                          ...prev,
+                          fromFieldNumber: undefined,
+                        }));
                       }}
-                      selectedValue={fromFieldNumber ? fieldIdToNameMap[parseInt(fromFieldNumber)] : ''}
+                      selectedValue={
+                        fromFieldNumber ? fieldIdToNameMap[parseInt(fromFieldNumber)] : ''
+                      }
                       error={!!errors.fromFieldNumber}
                     />
                   )}
                   <ErrorMessage message={errors.fromFieldNumber} />
 
-                  <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>To:</Text>
+                  <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>
+                    To:
+                  </Text>
                   <Dropdown
                     label="To Location"
                     data={LOCATIONS}
                     onSelect={(item) => {
                       setToLocation(item as LocationType);
                       // Clear error when user makes a selection
-                      setErrors(prev => ({...prev, toLocation: undefined}));
+                      setErrors((prev) => ({ ...prev, toLocation: undefined }));
                     }}
                     selectedValue={toLocation}
                     error={!!errors.toLocation}
@@ -325,7 +349,10 @@ const CartRequestButton = () => {
                         const fieldId = fieldNameToIdMap[fieldName]?.toString() || '';
                         setToFieldNumber(fieldId);
                         // Clear error when user makes a selection
-                        setErrors(prev => ({...prev, toFieldNumber: undefined}));
+                        setErrors((prev) => ({
+                          ...prev,
+                          toFieldNumber: undefined,
+                        }));
                       }}
                       selectedValue={toFieldNumber ? fieldIdToNameMap[parseInt(toFieldNumber)] : ''}
                       error={!!errors.toFieldNumber}
@@ -333,7 +360,9 @@ const CartRequestButton = () => {
                   )}
                   <ErrorMessage message={errors.toFieldNumber} />
 
-                  <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>Special Request:</Text>
+                  <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>
+                    Special Request:
+                  </Text>
                   <TextInput
                     style={styles.specialRequestInput}
                     placeholder="e.g., Wheelchair needed, carrying large items..."
@@ -346,7 +375,7 @@ const CartRequestButton = () => {
                     maxFontSizeMultiplier={1.2}
                   />
 
-                  <ModalButton 
+                  <ModalButton
                     onCancel={handleCloseModal}
                     onConfirm={handleRequestCart}
                     confirmText="Request Cart"
@@ -373,7 +402,7 @@ const styles = StyleSheet.create({
   label: {
     textAlign: 'center',
     marginTop: 5,
-    ...typography.textSmallBold
+    ...typography.textSmallBold,
   },
   modalContainer: {
     flex: 1,
@@ -387,11 +416,11 @@ const styles = StyleSheet.create({
     padding: 20,
     width: '90%',
     height: modalHeight,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   labelHeader: {
-    ...typography.bodyMediumBold,
-    marginVertical: 5
+    ...typography.textBold,
+    marginVertical: 5,
   },
   noteText: {
     ...typography.textXSmall,
@@ -419,7 +448,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 5,
     padding: 10,
-    ...typography.body,
+    ...typography.textSmall,
     textAlignVertical: 'top',
   },
   buttonContainer: {
@@ -454,14 +483,14 @@ const styles = StyleSheet.create({
   },
   generalErrorText: {
     color: '#DD3333',
-    ...typography.text
+    ...typography.text,
   },
   nameInput: {
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
     padding: 12,
-    ...typography.body,
+    ...typography.textSmall,
     marginBottom: 10,
   },
   inputError: {

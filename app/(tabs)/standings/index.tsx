@@ -10,9 +10,8 @@ export default function StandingsIndex() {
   const { divisions, loading, error, refreshing, refreshDivisions } = useDivisions();
 
   if (loading && !refreshing) {
-    return <LoadingIndicator message='Loading Standings...' />;
+    return <LoadingIndicator message="Loading Standings..." />;
   }
-
 
   if (error) {
     return (
@@ -33,35 +32,40 @@ export default function StandingsIndex() {
           colors={['#EA1D25']} // Android
           tintColor="#EA1D25" // iOS
         />
-      }
-    >
+      }>
       <View style={styles.content}>
-        {divisions.length > 0 ? divisions.map((division) => (
-          <Link
-            key={division.id}
-            href={{
-              pathname: '/standings/[division]',
-              params: { division: division.id, divisionName: division.title }
-            }}
-            asChild
-          >
-            <TouchableOpacity>
-              <View style={[styles.card, { borderColor: division.color, borderBottomWidth: 4 }]}>
-                <CustomText style={[styles.title, { color: division.color, textDecorationColor: division.color }]}>{division.title}</CustomText>
-              </View>
-            </TouchableOpacity>
-          </Link>
-        )) : (
-          <ComingSoonPlaceholder 
-            message="Divisions coming soon!"
-            iconName="leaderboard"
-          />
+        {divisions.length > 0 ? (
+          divisions.map((division) => (
+            <Link
+              key={division.id}
+              href={{
+                pathname: '/standings/[division]',
+                params: { division: division.id, divisionName: division.title },
+              }}
+              asChild>
+              <TouchableOpacity>
+                <View style={[styles.card, { borderColor: division.color, borderBottomWidth: 4 }]}>
+                  <CustomText
+                    style={[
+                      styles.title,
+                      {
+                        color: division.color,
+                        textDecorationColor: division.color,
+                      },
+                    ]}>
+                    {division.title}
+                  </CustomText>
+                </View>
+              </TouchableOpacity>
+            </Link>
+          ))
+        ) : (
+          <ComingSoonPlaceholder message="Divisions coming soon!" iconName="leaderboard" />
         )}
       </View>
     </ScrollView>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -86,11 +90,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   title: {
-    ...typography.h4,
+    ...typography.heading4,
     textDecorationLine: 'underline',
   },
   errorText: {
     color: '#EA1D25',
-    ...typography.textMedium
+    ...typography.textMedium,
   },
 });

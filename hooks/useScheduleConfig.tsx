@@ -18,11 +18,8 @@ export function useDivisions() {
 
   const fetchDivisions = useCallback(async () => {
     try {
-      const { data, error } = await supabase
-        .from('divisions')
-        .select('*')
-        .order('display_order');
-  
+      const { data, error } = await supabase.from('divisions').select('*').order('display_order');
+
       if (error) throw error;
       setDivisions(data);
       setError(null);
@@ -33,7 +30,7 @@ export function useDivisions() {
       setRefreshing(false);
     }
   }, []);
-  
+
   // Replace your useEffect with this:
   useEffect(() => {
     fetchDivisions();
@@ -44,7 +41,15 @@ export function useDivisions() {
     await fetchDivisions();
   }, [fetchDivisions]);
 
-  return { divisionId, divisionName, divisions, loading, refreshing, error, refreshDivisions };
+  return {
+    divisionId,
+    divisionName,
+    divisions,
+    loading,
+    refreshing,
+    error,
+    refreshDivisions,
+  };
 }
 
 export function useGametypes(divisionId: number) {

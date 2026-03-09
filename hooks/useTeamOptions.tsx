@@ -15,10 +15,7 @@ export const useTeamOptions = (divisionId?: number | null) => {
     const fetchTeamOptions = async () => {
       setLoading(true);
       try {
-        let query = supabase
-          .from('teams')
-          .select('*')
-          .order('name');
+        let query = supabase.from('teams').select('*').order('name');
 
         // Filter by division if provided
         if (divisionId !== undefined && divisionId !== null) {
@@ -33,17 +30,18 @@ export const useTeamOptions = (divisionId?: number | null) => {
           return;
         }
 
-        const options: TeamOption[] = data?.map(item => ({
-          id: item.id,
-          label: item.name,
-          name: item.name
-        })) || [];
+        const options: TeamOption[] =
+          data?.map((item) => ({
+            id: item.id,
+            label: item.name,
+            name: item.name,
+          })) || [];
 
         // Add TBD option at the beginning
         const tbdOption: TeamOption = {
           id: -1,
           label: 'TBD',
-          name: 'TBD'
+          name: 'TBD',
         };
 
         setTeamOptions([tbdOption, ...options]);

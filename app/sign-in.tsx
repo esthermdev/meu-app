@@ -1,8 +1,19 @@
 // Add this to your sign-in.tsx file
 
 import { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, TextInput, KeyboardAvoidingView, 
-  TouchableWithoutFeedback, Platform, Keyboard, Text, Image, ScrollView, Alert } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  TextInput,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Platform,
+  Keyboard,
+  Image,
+  ScrollView,
+  Alert,
+} from 'react-native';
 import { Link, router } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
@@ -22,17 +33,17 @@ export default function SignIn() {
   // Check if the email belongs to a volunteer
   const checkIfVolunteer = async (email: string) => {
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('volunteers')
         .select('email')
         .eq('email', email.toLowerCase())
         .single();
-      
+
       if (error) {
         // Record not found or other error
         return false;
       }
-      
+
       return true; // Email exists in volunteers table
     } catch (error) {
       console.error('Error checking volunteer status:', error);
@@ -53,9 +64,9 @@ export default function SignIn() {
       const isVolunteer = await checkIfVolunteer(email);
 
       if (email === 'esmd258@gmail.com' || isVolunteer) {
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           email,
-          password: email === 'esmd258@gmail.com' ? 'developer' : 'regionals2025'
+          password: email === 'esmd258@gmail.com' ? 'developer' : 'regionals2025',
         });
 
         if (error) {
@@ -73,7 +84,7 @@ export default function SignIn() {
       }
     } catch (error) {
       console.error(error);
-      if (email === 'esmd258@gmail.com' || await checkIfVolunteer(email)) {
+      if (email === 'esmd258@gmail.com' || (await checkIfVolunteer(email))) {
         Alert.alert('Error', 'Could not sign in with developer account. Please try again.');
       } else {
         setError("Email doesn't exist. Please create an account to continue.");
@@ -87,18 +98,18 @@ export default function SignIn() {
   // const handleReviewerSignIn = async () => {
   //   try {
   //     setLoading(true);
-      
+
   //     // Direct sign-in with the reviewer account using Supabase's auth.signInWithPassword
   //     const { data, error } = await supabase.auth.signInWithPassword({
   //       email: 'reviewer@maineultimateapp.org',  // Use the email you set up for the reviewer
   //       password: 'app-review-25'   // Use the password you set up for the reviewer
   //     });
-      
+
   //     if (error) throw error;
-      
+
   //     // Navigate to the user section after successful sign-in
   //     router.replace('/(user)');
-      
+
   //   } catch (error) {
   //     console.error('Reviewer sign-in error:', error);
   //     Alert.alert('Error', 'Could not sign in with reviewer account. Please try again.');
@@ -111,21 +122,21 @@ export default function SignIn() {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 0}
-      >
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 0}>
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <TouchableOpacity onPress={() => router.replace('/(tabs)/home')} style={{ marginTop: 20 }}>
+          showsVerticalScrollIndicator={false}>
+          <TouchableOpacity
+            onPress={() => router.replace('/(tabs)/home')}
+            style={{ marginTop: 20 }}>
             <MaterialCommunityIcons name="home-outline" size={30} color="#000" />
           </TouchableOpacity>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.form}>
               <Image source={images.logoW} style={styles.image} />
-              
+
               <CustomText style={styles.title}>Sign In</CustomText>
               <CustomText style={styles.subtitle}>Sign in to continue</CustomText>
 
@@ -180,7 +191,6 @@ export default function SignIn() {
                   </TouchableOpacity>
                 </Link>
               </View>
-
             </View>
           </TouchableWithoutFeedback>
         </ScrollView>
@@ -211,7 +221,7 @@ const styles = StyleSheet.create({
   subtitle: {
     marginTop: 10,
     marginBottom: 20,
-    ...typography.heading5
+    ...typography.heading5,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -221,7 +231,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 20,
-    marginBottom: 15
+    marginBottom: 15,
   },
   inputWithIcon: {
     flex: 1,
@@ -236,11 +246,11 @@ const styles = StyleSheet.create({
     borderLeftColor: '#EF4444',
   },
   errorText: {
-    ...typography.body,
+    ...typography.textSmall,
     color: '#B91C1C',
   },
   signUpLink: {
-    ...typography.bodyMedium,
+    ...typography.textSemiBold,
     color: '#EA1D25',
     marginTop: 5,
     textDecorationLine: 'underline',
@@ -267,7 +277,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   reviewerButtonText: {
-    ...typography.bodyMedium,
+    ...typography.textSemiBold,
     color: '#333333',
-  }
+  },
 });

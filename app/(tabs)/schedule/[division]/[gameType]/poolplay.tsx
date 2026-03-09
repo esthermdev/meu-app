@@ -3,15 +3,14 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { usePoolIds } from '@/hooks/useGamesFilter';
 import { useLocalSearchParams } from 'expo-router';
 import { typography } from '@/constants/Typography';
-import PoolGameComponent from '@/components/features/gameviews/PoolGameComponent';
+import PoolGameView from '@/components/features/gameviews/PoolGameView';
 import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
-
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function PoolPlayScreen() {
   const params = useLocalSearchParams();
-  const divisionId = Number(params.division)
+  const divisionId = Number(params.division);
   const { pools, loading, error } = usePoolIds(divisionId);
 
   if (loading) {
@@ -23,12 +22,7 @@ export default function PoolPlayScreen() {
   }
 
   if (error || !pools.length) {
-    return (
-      <ComingSoonPlaceholder 
-        message="No pools available for this division"
-        iconName="pool"
-      />
-    );
+    return <ComingSoonPlaceholder message="No pools available for this division" iconName="pool" />;
   }
 
   return (
@@ -40,15 +34,12 @@ export default function PoolPlayScreen() {
         tabBarIndicatorStyle: { backgroundColor: '#EA1D25' },
         tabBarAllowFontScaling: false,
         lazy: true,
-      }}
-    >
+      }}>
       {pools.map((pool) => (
         <Tab.Screen
           key={pool.id}
           name={`POOL ${pool.name}`}
-          children={() => (
-            <PoolGameComponent poolId={pool.id} divisionId={divisionId} />
-          )}
+          children={() => <PoolGameView poolId={pool.id} divisionId={divisionId} />}
         />
       ))}
     </Tab.Navigator>

@@ -1,19 +1,19 @@
 import * as Updates from 'expo-updates';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
 export function useCheckUpdates() {
   const [isChecking, setIsChecking] = useState(false);
 
   // Function to check for updates
-  const checkForUpdates = async () => {
+  const checkForUpdates = useCallback(async () => {
     if (isChecking || __DEV__) return;
-    
+
     try {
       setIsChecking(true);
-      
+
       const update = await Updates.checkForUpdateAsync();
-      
+
       if (update.isAvailable) {
         await Updates.fetchUpdateAsync();
 
@@ -25,7 +25,7 @@ export function useCheckUpdates() {
     } finally {
       setIsChecking(false);
     }
-  };
+  }, [isChecking]);
 
   // Check for updates when app comes to foreground
   useEffect(() => {
@@ -41,7 +41,7 @@ export function useCheckUpdates() {
     return () => {
       subscription.remove();
     };
-  }, []);
+  }, [checkForUpdates]);
 
   return { checkForUpdates, isChecking };
 }

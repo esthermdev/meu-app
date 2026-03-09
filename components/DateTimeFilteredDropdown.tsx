@@ -20,12 +20,12 @@ interface DateTimeFilteredDropdownProps {
   error?: boolean;
 }
 
-export const DateTimeFilteredDropdown: React.FC<DateTimeFilteredDropdownProps> = ({ 
-  label, 
-  datetimeOptions, 
-  onSelect, 
-  selectedValue, 
-  error 
+export const DateTimeFilteredDropdown: React.FC<DateTimeFilteredDropdownProps> = ({
+  label,
+  datetimeOptions,
+  onSelect,
+  selectedValue,
+  error,
 }) => {
   const [visible, setVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -34,15 +34,15 @@ export const DateTimeFilteredDropdown: React.FC<DateTimeFilteredDropdownProps> =
   // Group options by date
   const groupedByDate = useMemo(() => {
     const groups = new Map<string, DatetimeOption[]>();
-    
-    datetimeOptions.forEach(option => {
+
+    datetimeOptions.forEach((option) => {
       const dateKey = option.date ? formatDate(option.date, 'short') : 'TBD';
       if (!groups.has(dateKey)) {
         groups.set(dateKey, []);
       }
       groups.get(dateKey)!.push(option);
     });
-    
+
     return groups;
   }, [datetimeOptions]);
 
@@ -83,20 +83,16 @@ export const DateTimeFilteredDropdown: React.FC<DateTimeFilteredDropdownProps> =
   };
 
   const renderDateItem = ({ item }: { item: string }) => (
-    <TouchableOpacity 
-      style={styles.item} 
-      onPress={() => handleDateSelect(item)}
-    >
-      <Text style={styles.listItem} maxFontSizeMultiplier={1}>{item}</Text>
+    <TouchableOpacity style={styles.item} onPress={() => handleDateSelect(item)}>
+      <Text style={styles.listItem} maxFontSizeMultiplier={1}>
+        {item}
+      </Text>
       <Ionicons name="chevron-forward" size={16} color="#666" />
     </TouchableOpacity>
   );
 
   const renderTimeItem = ({ item }: { item: DatetimeOption }) => (
-    <TouchableOpacity 
-      style={styles.item} 
-      onPress={() => handleTimeSelect(item)}
-    >
+    <TouchableOpacity style={styles.item} onPress={() => handleTimeSelect(item)}>
       <Text style={styles.listItem} maxFontSizeMultiplier={1}>
         {item.label.split(' at ')[1]}
       </Text>
@@ -105,21 +101,17 @@ export const DateTimeFilteredDropdown: React.FC<DateTimeFilteredDropdownProps> =
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity 
-        style={[styles.button, error ? { borderColor: '#EA1D25' } : null]} 
-        onPress={toggleDropdown}
-      >
+      <TouchableOpacity
+        style={[styles.button, error ? { borderColor: '#EA1D25' } : null]}
+        onPress={toggleDropdown}>
         <Text style={styles.buttonText} maxFontSizeMultiplier={1.1}>
           {selectedValue || label}
         </Text>
-        <Ionicons name={visible ? "caret-up" : "caret-down"} size={20} color="#333" />
+        <Ionicons name={visible ? 'caret-up' : 'caret-down'} size={20} color="#333" />
       </TouchableOpacity>
-      
+
       <Modal visible={visible} transparent animationType="none">
-        <TouchableOpacity
-          style={styles.overlay}
-          onPress={() => setVisible(false)}
-        >
+        <TouchableOpacity style={styles.overlay} onPress={() => setVisible(false)}>
           <View style={styles.dropdown}>
             {!showingDates && (
               <TouchableOpacity style={styles.backButton} onPress={handleBackToDates}>
@@ -127,11 +119,11 @@ export const DateTimeFilteredDropdown: React.FC<DateTimeFilteredDropdownProps> =
                 <Text style={styles.backText}>Back to dates</Text>
               </TouchableOpacity>
             )}
-            
+
             <Text style={styles.headerText}>
               {showingDates ? 'Select Date' : `Times for ${selectedDate}`}
             </Text>
-            
+
             {showingDates ? (
               <FlatList
                 data={uniqueDates}

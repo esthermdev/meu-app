@@ -7,14 +7,15 @@
       "@/*": ["./*", "./src/*"]
     },
     "typeRoots": ["./node_modules/@types", "./types"],
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     "**/*.d.ts",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts", 
+    "expo-env.d.ts",
     "app/index.tsx"  
-  ]
+  ],
+  "exclude": ["supabase/functions/**"]
 }

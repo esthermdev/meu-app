@@ -11,7 +11,6 @@ import TrainerRequestModal from '@/components/features/modals/TrainerRequestModa
 import NotificationPrompt from '@/components/features/notifications/NotificationPrompt';
 
 export default function HomeScreen() {
-
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -24,16 +23,16 @@ export default function HomeScreen() {
             route="/(tabs)/home/mygames"
             renderCustomBackground={() => <MyGamesButtonBackground title="My Games" />}
           />
-        
+
           <View style={styles.row}>
             <LargeCardButton
-              title='Spirit'
-              subtitle=''
+              title="Spirit"
+              subtitle=""
               icon={<MaterialCommunityIcons name="handshake-outline" size={28} color="#fff" />}
               backgroundColor="#E0AE43"
-              route='/(tabs)/home/spirit'
+              route="/(tabs)/home/spirit"
             />
-            
+
             {/* Watch Live button with background image and play button */}
             <LargeCardButton
               title="Watch Live"
@@ -46,11 +45,7 @@ export default function HomeScreen() {
 
         {/* Circular icon buttons */}
         <View style={styles.utilsContainer}>
-          <CircleIconButton 
-            icon='map'
-            label='Field Map'
-            route="/(tabs)/home/fieldmap"
-          />
+          <CircleIconButton icon="map" label="Field Map" route="/(tabs)/home/fieldmap" />
           <TrainerRequestModal />
           <CartRequestModal />
           <WaterRequestModal />
@@ -64,7 +59,7 @@ export default function HomeScreen() {
             title="Volunteers"
             icon="crowd"
             backgroundColor="#"
-            iconColor='#4357AD'
+            iconColor="#4357AD"
             route="/(tabs)/home/volunteers"
             style={{ flex: 1 }}
           />
@@ -73,18 +68,23 @@ export default function HomeScreen() {
             title="Donation"
             icon="heart"
             backgroundColor="#fff"
-            iconColor='#FE0000'
-            route='https://www.paypal.com/donate/?hosted_button_id=3HCQBB97LCV34'
+            iconColor="#FE0000"
+            route="https://www.paypal.com/donate/?hosted_button_id=3HCQBB97LCV34"
             style={{ flex: 1 }}
           />
         </View>
-        <FullWidthButton 
-          title='Coaches Corner'
-          icon='whistle'
-          backgroundColor='#000'
-          iconColor='#E0AE43'
+        <FullWidthButton
+          title="Coaches Corner"
+          icon="whistle"
+          backgroundColor="#000"
+          iconColor="#E0AE43"
           route={'/(tabs)/home/coachescorner'}
-          style={{ borderColor: '#000', alignItems: 'center', width: 'auto', marginTop: 14 }}
+          style={{
+            borderColor: '#000',
+            alignItems: 'center',
+            width: 'auto',
+            marginTop: 14,
+          }}
         />
         <NotificationPrompt />
       </ScrollView>
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 10
+    gap: 10,
   },
   utilsContainer: {
     flexDirection: 'row',

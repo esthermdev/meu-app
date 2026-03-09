@@ -3,8 +3,7 @@ import { Redirect, Stack } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
 
 export default function ProfileLayout() {
-
-	const { session, loading } = useAuth();
+  const { session, loading } = useAuth();
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (loading) {
     return <Text>Loading...</Text>;
@@ -22,12 +21,12 @@ export default function ProfileLayout() {
   return (
     <>
       <Stack>
-				<Stack.Screen
-					name="index"
-					options={{
-						headerShown: false
-					}}
-				/>
+        <Stack.Screen
+          name="index"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack>
     </>
   );

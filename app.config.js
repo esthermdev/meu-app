@@ -1,4 +1,4 @@
-import 'dotenv/config'
+import 'dotenv/config';
 
 const IS_DEV = process.env.APP_VARIANT === 'development';
 const IS_PREVIEW = process.env.APP_VARIANT === 'preview';
@@ -40,9 +40,6 @@ const getAndroidPackage = () => {
 };
 
 export default ({ config }) => {
-  // Handle Google Services file
-  let googleServicesFile = './google-services.json';
-  
   return {
     ...config,
     name: getAppName(),
@@ -58,9 +55,9 @@ export default ({ config }) => {
       ...config.extra,
       eas: {
         ...config.extra?.eas,
-        projectId: "16c193f8-cab3-49c3-afed-39fcf60c01b5"
+        projectId: '16c193f8-cab3-49c3-afed-39fcf60c01b5',
       },
-      appVariant: IS_DEV ? 'development' : IS_PREVIEW ? 'preview' : 'production'
-    }
+      appVariant: IS_DEV ? 'development' : IS_PREVIEW ? 'preview' : 'production',
+    },
   };
-}
+};

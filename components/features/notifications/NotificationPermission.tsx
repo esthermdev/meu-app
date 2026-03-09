@@ -15,41 +15,7 @@ const NotificationPermission: React.FC<NotificationPermissionProps> = ({ compact
   const { notificationPermission, requestNotificationPermissions } = usePushNotifications();
   const [isChecking, setIsChecking] = useState(false);
 
-  const handleEnablePress = useCallback(async () => {
-    setIsChecking(true);
-    
-    // First, check current permission status
-    const { status } = await Notifications.getPermissionsAsync();
-    
-    if (status === 'denied') {
-      // If permissions are denied at the system level, we need to direct user to settings
-      showSettingsAlert();
-    } else {
-      // Try to request permissions normally
-      await requestNotificationPermissions();
-    }
-    
-    setIsChecking(false);
-  }, [requestNotificationPermissions]);
-
-  const showSettingsAlert = () => {
-    Alert.alert(
-      "Notifications Disabled",
-      "Notifications are disabled in your device settings. Would you like to open settings to enable them?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel"
-        },
-        { 
-          text: "Open Settings", 
-          onPress: openSettings 
-        }
-      ]
-    );
-  };
-
-  const openSettings = () => {
+  const openSettings = useCallback(() => {
     // Use Linking to open device settings
     if (Platform.OS === 'ios') {
       Linking.openURL('app-settings:');
@@ -57,7 +23,41 @@ const NotificationPermission: React.FC<NotificationPermissionProps> = ({ compact
       // For Android, open app settings
       Linking.openSettings();
     }
-  };
+  }, []);
+
+  const showSettingsAlert = useCallback(() => {
+    Alert.alert(
+      'Notifications Disabled',
+      'Notifications are disabled in your device settings. Would you like to open settings to enable them?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Open Settings',
+          onPress: openSettings,
+        },
+      ],
+    );
+  }, [openSettings]);
+
+  const handleEnablePress = useCallback(async () => {
+    setIsChecking(true);
+
+    // First, check current permission status
+    const { status } = await Notifications.getPermissionsAsync();
+
+    if (status === 'denied') {
+      // If permissions are denied at the system level, we need to direct user to settings
+      showSettingsAlert();
+    } else {
+      // Try to request permissions normally
+      await requestNotificationPermissions();
+    }
+
+    setIsChecking(false);
+  }, [requestNotificationPermissions, showSettingsAlert]);
 
   // If permission is granted, either show nothing (compact mode) or the enabled message
   if (notificationPermission) {
@@ -75,17 +75,17 @@ const NotificationPermission: React.FC<NotificationPermissionProps> = ({ compact
         <>
           <FontAwesome5 name="bell-slash" size={20} color="#757575" />
           <CustomText style={styles.disabledText}>
-            Enable notifications to stay updated on game schedules and important tournament information
+            Enable notifications to stay updated on game schedules and important tournament
+            information
           </CustomText>
         </>
       )}
-      <TouchableOpacity 
-        style={[styles.button, compact && styles.compactButton]} 
+      <TouchableOpacity
+        style={[styles.button, compact && styles.compactButton]}
         onPress={handleEnablePress}
-        disabled={isChecking}
-      >
+        disabled={isChecking}>
         <CustomText style={styles.buttonText}>
-          {isChecking ? "Checking..." : (compact ? "Enable Notifications" : "Enable Now")}
+          {isChecking ? 'Checking...' : compact ? 'Enable Notifications' : 'Enable Now'}
         </CustomText>
       </TouchableOpacity>
     </View>
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   buttonText: {
-    ...typography.textMedium
+    ...typography.textMedium,
   },
 });
 

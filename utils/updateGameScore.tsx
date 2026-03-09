@@ -6,13 +6,13 @@ interface UpdateScoreParams {
   gameId: number;
   team1Score: string | number;
   team2Score: string | number;
-  scoreId?: number | null;  // Optional, used if we're updating an existing score
-  roundId?: number | null;  // Optional, for creating new scores
+  scoreId?: number | null; // Optional, used if we're updating an existing score
+  roundId?: number | null; // Optional, for creating new scores
   datetimeId?: number | null; // Optional, datetime ID to assign to the game
-  fieldId?: number | null;  // Optional, field ID to assign to the game
-  team1Id?: number | null;  // Optional, team1 ID to assign to the game
-  team2Id?: number | null;  // Optional, team2 ID to assign to the game
-  onSuccess?: () => void;   // Callback for successful operations
+  fieldId?: number | null; // Optional, field ID to assign to the game
+  team1Id?: number | null; // Optional, team1 ID to assign to the game
+  team2Id?: number | null; // Optional, team2 ID to assign to the game
+  onSuccess?: () => void; // Callback for successful operations
 }
 
 export const updateGameScore = async ({
@@ -25,7 +25,7 @@ export const updateGameScore = async ({
   fieldId,
   team1Id,
   team2Id,
-  onSuccess
+  onSuccess,
 }: UpdateScoreParams): Promise<boolean> => {
   try {
     console.log('updateGameScore called with:', {
@@ -37,15 +37,15 @@ export const updateGameScore = async ({
       datetimeId,
       fieldId,
       team1Id,
-      team2Id
+      team2Id,
     });
-    
+
     // Convert scores to numbers if they're strings
     const team1ScoreNum = typeof team1Score === 'string' ? parseInt(team1Score) : team1Score;
     const team2ScoreNum = typeof team2Score === 'string' ? parseInt(team2Score) : team2Score;
-    
+
     // Field ID is now provided directly, no need to look up by name
-    
+
     // Update games table if datetime, field, or teams need to be updated
     const gameUpdateData: any = {};
     if (datetimeId !== undefined && datetimeId !== null) {
@@ -60,16 +60,16 @@ export const updateGameScore = async ({
     if (team2Id !== undefined && team2Id !== null) {
       gameUpdateData.team2_id = team2Id === -1 ? null : team2Id;
     }
-    
+
     console.log('Game update data:', gameUpdateData);
-    
+
     if (Object.keys(gameUpdateData).length > 0) {
       console.log('Updating game', gameId, 'with data:', gameUpdateData);
       const { error: gameError } = await supabase
         .from('games')
         .update(gameUpdateData)
         .eq('id', gameId);
-      
+
       if (gameError) {
         console.error('Game update error:', gameError);
         throw gameError;
@@ -78,7 +78,7 @@ export const updateGameScore = async ({
     } else {
       console.log('No game updates needed');
     }
-    
+
     // First, check if we already know if the score exists (via scoreId)
     if (scoreId) {
       // Update existing score
@@ -89,7 +89,7 @@ export const updateGameScore = async ({
           team2_score: team2ScoreNum,
         })
         .eq('id', scoreId);
-        
+
       if (error) throw error;
     } else {
       // Check if score record exists for this game
@@ -97,9 +97,9 @@ export const updateGameScore = async ({
         .from('scores')
         .select('id')
         .eq('game_id', gameId);
-      
+
       if (checkError) throw checkError;
-      
+
       if (data && data.length > 0) {
         // Update existing score
         const { error } = await supabase
@@ -109,29 +109,27 @@ export const updateGameScore = async ({
             team2_score: team2ScoreNum,
           })
           .eq('game_id', gameId);
-          
+
         if (error) throw error;
       } else {
         // Create new score record
-        const { error } = await supabase
-          .from('scores')
-          .insert({
-            game_id: gameId,
-            team1_score: team1ScoreNum,
-            team2_score: team2ScoreNum,
-            is_finished: false,
-            round_id: roundId
-          });
-          
+        const { error } = await supabase.from('scores').insert({
+          game_id: gameId,
+          team1_score: team1ScoreNum,
+          team2_score: team2ScoreNum,
+          is_finished: false,
+          round_id: roundId,
+        });
+
         if (error) throw error;
       }
     }
-    
+
     // Call success callback if provided
     if (onSuccess) {
       onSuccess();
     }
-    
+
     return true;
   } catch (error) {
     console.error('Error updating game:', error);

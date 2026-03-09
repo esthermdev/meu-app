@@ -10,7 +10,6 @@ import NotificationPermission from '@/components/features/notifications/Notifica
 import CustomText from '@/components/CustomText';
 import { hasPermission } from '@/context/profileRoles';
 
-
 export default function UserDashboard() {
   const { profile, signOut } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -34,7 +33,7 @@ export default function UserDashboard() {
   };
 
   return (
-    <ScrollView style={styles.container}>      
+    <ScrollView style={styles.container}>
       <View style={styles.header}>
         <CustomText style={styles.welcomeText}>
           Welcome, <CustomText style={styles.username}>{profile?.full_name}!</CustomText>
@@ -59,27 +58,33 @@ export default function UserDashboard() {
           </Card>
         </TouchableOpacity>
 
-        {hasPermission(profile, 'view_admin_dashboard') ? 
+        {hasPermission(profile, 'view_admin_dashboard') ? (
           <TouchableOpacity onPress={() => router.push('/(user)/admin' as Href)}>
             <Card style={styles.card}>
               <Ionicons name="settings" size={24} color="#FE0000" style={styles.cardIcon} />
               <CustomText style={styles.cardLabel}>Admin</CustomText>
               <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
             </Card>
-          </TouchableOpacity>  :
-          null
-        }
+          </TouchableOpacity>
+        ) : null}
       </View>
 
       {/* Quick Actions */}
       <CustomText style={styles.sectionTitle}>Quick Actions</CustomText>
-      <TouchableOpacity onPress={() => router.navigate('/(user)/feedback')} style={styles.actionButton}>
+      <TouchableOpacity
+        onPress={() => router.navigate('/(user)/feedback')}
+        style={styles.actionButton}>
         <MaterialIcons name="feedback" size={24} color="##000" style={styles.cardIcon} />
         <CustomText style={styles.quickActionLabels}>Feedback</CustomText>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => handleSignOut()} style={[styles.actionButton, isSigningOut && styles.disabledButton]} disabled={isSigningOut}>
+      <TouchableOpacity
+        onPress={() => handleSignOut()}
+        style={[styles.actionButton, isSigningOut && styles.disabledButton]}
+        disabled={isSigningOut}>
         <Ionicons name="arrow-back-circle" size={24} color="##000" style={styles.cardIcon} />
-        <CustomText style={styles.quickActionLabels}>{isSigningOut ? 'Signing out...' : 'Sign Out'}</CustomText>
+        <CustomText style={styles.quickActionLabels}>
+          {isSigningOut ? 'Signing out...' : 'Sign Out'}
+        </CustomText>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleOpenExternalDeleteAccount} style={styles.actionButton}>
         <MaterialIcons name="delete-sweep" size={24} color="##000" style={styles.cardIcon} />
@@ -107,7 +112,7 @@ const styles = StyleSheet.create({
   },
   username: {
     color: '#000',
-    ...typography.heading3
+    ...typography.heading3,
   },
   card: {
     backgroundColor: '#FFF0F0',
@@ -134,7 +139,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     paddingVertical: 20,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   quickActionLabels: {
     ...typography.textLargeMedium,

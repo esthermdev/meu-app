@@ -1,80 +1,85 @@
-import { useState, useEffect } from 'react'
-import { StyleSheet, View, Alert, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, TextInput, Platform, ScrollView } from 'react-native'
-import { supabase } from '@/lib/supabase'
-import { Session } from '@supabase/supabase-js'
-import { Database } from '@/database.types'
-import { MaterialIcons, FontAwesome6 } from '@expo/vector-icons'
-import { typography } from '@/constants/Typography'
-import PrimaryButton from '@/components/buttons/PrimaryButton'
-import { useAuth } from '@/context/AuthProvider'
-import CustomText from './CustomText'
+import { useState, useEffect, useCallback } from 'react';
+import {
+  StyleSheet,
+  View,
+  Alert,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Keyboard,
+  TextInput,
+  Platform,
+  ScrollView,
+} from 'react-native';
+import { supabase } from '@/lib/supabase';
+import { Session } from '@supabase/supabase-js';
+import { Database } from '@/database.types';
+import { MaterialIcons, FontAwesome6 } from '@expo/vector-icons';
+import { typography } from '@/constants/Typography';
+import PrimaryButton from '@/components/buttons/PrimaryButton';
+import { useAuth } from '@/context/AuthProvider';
+import CustomText from './CustomText';
 
-type ProfileUpdate = Database['public']['Tables']['profiles']['Insert'];
+type ProfileUpdate = Database['public']['Tables']['profiles']['Update'];
 
 export default function Account({ session }: { session: Session }) {
   const { refreshProfile } = useAuth();
-  const [loading, setLoading] = useState(true)
-  const [fullName, setFullName] = useState('')
+  const [loading, setLoading] = useState(true);
+  const [fullName, setFullName] = useState('');
 
-  useEffect(() => {
-    if (session) getProfile()
-    console.log(session)
-  }, [session])
-
-  async function getProfile() {
+  const getProfile = useCallback(async () => {
     try {
-      setLoading(true)
-      if (!session?.user) throw new Error('No user on the session!')
+      setLoading(true);
+      if (!session?.user) throw new Error('No user on the session!');
 
       const { data, error, status } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', session?.user.id)
-        .single()
+        .single();
       if (error && status !== 406) {
-        throw error
+        throw error;
       }
 
       if (data) {
-        setFullName(data.full_name ?? '')
+        setFullName(data.full_name ?? '');
       }
     } catch (error) {
       if (error instanceof Error) {
-        Alert.alert(error.message)
+        Alert.alert(error.message);
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  }, [session]);
 
-  async function updateProfile({
-    full_name,
-  }: {
-    full_name: string
-  }) {
+  useEffect(() => {
+    if (session) getProfile();
+    console.log(session);
+  }, [getProfile, session]);
+
+  async function updateProfile({ full_name }: { full_name: string }) {
     try {
-      setLoading(true)
-      if (!session?.user) throw new Error('No user on the session!')
+      setLoading(true);
+      if (!session?.user) throw new Error('No user on the session!');
 
       const updates: ProfileUpdate = {
-        id: session?.user.id,
         full_name: full_name || null,
-        updated_at: new Date().toISOString()
-      }
+        updated_at: new Date().toISOString(),
+      };
 
-      const { error } = await supabase.from('profiles').upsert(updates)
+      const { error } = await supabase.from('profiles').update(updates).eq('id', session.user.id);
 
       if (error) {
-        throw error
+        throw error;
       }
-      await refreshProfile()
-      Alert.alert('Profile updated successfully')
+      await refreshProfile();
+      Alert.alert('Profile updated successfully');
     } catch (error) {
       if (error instanceof Error) {
-        Alert.alert(error.message)
+        Alert.alert(error.message);
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -82,14 +87,12 @@ export default function Account({ session }: { session: Session }) {
     <View style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 30 : 0}
-      >
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 30 : 0}>
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
+          showsVerticalScrollIndicator={false}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.form}>
               <CustomText style={styles.title}>Update your profile details here.</CustomText>
@@ -116,13 +119,12 @@ export default function Account({ session }: { session: Session }) {
                 onPress={() => updateProfile({ full_name: fullName })}
                 disabled={loading}
               />
-
             </View>
           </TouchableWithoutFeedback>
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -146,7 +148,7 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderWidth: 1,
     borderRadius: 12,
-    padding: 20
+    padding: 20,
   },
   disabledInput: {
     backgroundColor: '#f0f0f0',

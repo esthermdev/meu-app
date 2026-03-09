@@ -8,9 +8,9 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Dimensions,
-  FlatList
+  FlatList,
 } from 'react-native';
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Tables } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import ModalButton from '../../buttons/ModalButtons';
@@ -116,7 +116,10 @@ const WaterRequestButton = () => {
     // Check if the selected field is disabled
     const selectedFieldData = fields.find((f) => f.id === selectedField);
     if (selectedFieldData?.isDisabled) {
-      Alert.alert('Error', 'This field has a pending water request. Please wait 2 minutes before requesting again.');
+      Alert.alert(
+        'Error',
+        'This field has a pending water request. Please wait 2 minutes before requesting again.',
+      );
       return;
     }
 
@@ -128,7 +131,7 @@ const WaterRequestButton = () => {
           field_number: selectedField,
           status: 'pending',
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .select()
         .single();
@@ -147,11 +150,10 @@ const WaterRequestButton = () => {
       }
       hideModal();
       Alert.alert('Water Requested', 'Volunteers will attend to your request shortly.');
-
     } catch (error) {
       console.error('Error requesting water:', error);
       Alert.alert('Error', 'Failed to request water jug refill');
-    } 
+    }
   };
 
   const renderFieldBlock = ({ item }: { item: FieldWithCooldown }) => (
@@ -159,21 +161,19 @@ const WaterRequestButton = () => {
       style={[
         styles.fieldBlock,
         selectedField === item.id && styles.selectedFieldBlock,
-        item.isDisabled && styles.disabledFieldBlock
+        item.isDisabled && styles.disabledFieldBlock,
       ]}
       onPress={() => !item.isDisabled && selectField(item.id, item.name)}
       activeOpacity={item.isDisabled ? 1 : 0.7}
-      disabled={item.isDisabled}
-    >
+      disabled={item.isDisabled}>
       <CustomText
         style={[
           styles.fieldBlockText,
           selectedField === item.id && styles.selectedFieldText,
-          item.isDisabled && styles.disabledFieldText
+          item.isDisabled && styles.disabledFieldText,
         ]}
         allowFontScaling
-        maxFontSizeMultiplier={1.2}
-      >
+        maxFontSizeMultiplier={1.2}>
         {item.name}
       </CustomText>
     </TouchableOpacity>
@@ -181,10 +181,7 @@ const WaterRequestButton = () => {
 
   return (
     <View>
-      <TouchableOpacity
-        style={styles.circleButton}
-        onPress={showModal}
-      >
+      <TouchableOpacity style={styles.circleButton} onPress={showModal}>
         <MaterialIcons name="water-drop" size={28} color="#52B0BA" />
       </TouchableOpacity>
       <CustomText style={styles.label}>Water</CustomText>
@@ -192,14 +189,13 @@ const WaterRequestButton = () => {
       <Modal
         visible={isModalVisible}
         transparent={true}
-        animationType='fade'
-        onRequestClose={hideModal}
-      >
+        animationType="fade"
+        onRequestClose={hideModal}>
         <TouchableWithoutFeedback onPress={hideModal}>
           <View style={styles.modalContainer}>
             <View style={styles.pickerContainer}>
               <CustomText style={styles.pickerTitle}>Select Field</CustomText>
-              {selectedField && fields.find(f => f.id === selectedField)?.isDisabled && (
+              {selectedField && fields.find((f) => f.id === selectedField)?.isDisabled && (
                 <View style={styles.disabledNoteContainer}>
                   <CustomText style={styles.disabledNote}>
                     Water has already been requested for this field. Try again in 2 minutes.
@@ -216,18 +212,14 @@ const WaterRequestButton = () => {
                   showsVerticalScrollIndicator={false}
                 />
               </View>
-              
+
               <View style={styles.selectionInfo}>
                 <CustomText style={styles.selectionText}>
                   Selected: Field {selectedFieldName}
                 </CustomText>
               </View>
-              
-              <ModalButton 
-                onCancel={hideModal}
-                onConfirm={requestWater}
-                confirmText="Confirm"
-              />
+
+              <ModalButton onCancel={hideModal} onConfirm={requestWater} confirmText="Confirm" />
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -250,7 +242,7 @@ const styles = StyleSheet.create({
   label: {
     textAlign: 'center',
     marginTop: 5,
-    ...typography.labelBold
+    ...typography.labelBold,
   },
   modalContainer: {
     flex: 1,
@@ -274,7 +266,7 @@ const styles = StyleSheet.create({
   },
   gridContent: {
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   fieldBlock: {
     width: blockSize,

@@ -1,24 +1,23 @@
 // app/(tabs)/teams/index.tsx
 
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  RefreshControl, 
-  Keyboard, 
-  ActivityIndicator,
+import {
+  StyleSheet,
+  Text,
+  View,
+  RefreshControl,
+  Keyboard,
   TextInput,
   TouchableWithoutFeedback,
   TouchableOpacity,
-  Image
+  Image,
 } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { router } from 'expo-router';
 import { Database } from '@/database.types';
-import { fonts, typography } from '@/constants/Typography';
+import { typography } from '@/constants/Typography';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import CustomText from '@/components/CustomText';
 
@@ -53,24 +52,26 @@ const Teams = () => {
       // Fetch teams with division details
       const { data: teamsData, error: teamsError } = await supabase
         .from('teams')
-        .select(`
+        .select(
+          `
           *,
           pool: pool_id (*),
           division_details: division_id (*)
-        `)
+        `,
+        )
         .order('name');
-  
+
       if (teamsError) throw teamsError;
       setTeams(teamsData as unknown as TeamWithDetails[]);
-      
+
       // Fetch divisions
       const { data: divisionsData, error: divisionsError } = await supabase
         .from('divisions')
         .select('*')
         .order('display_order');
-        
+
       if (divisionsError) throw divisionsError;
-      
+
       // Create "All" filter and add with fetched divisions
       const allDivisions: DivisionInfo[] = [
         {
@@ -78,19 +79,18 @@ const Teams = () => {
           title: 'All',
           code: 'All',
           color: '#EA1D25',
-          color_light: '#EA1D2517'
+          color_light: '#EA1D2517',
         },
         ...divisionsData.map((div: DivisionRow) => ({
           id: div.id,
           title: div.title,
           code: div.code,
           color: div.color,
-          color_light: div.color_light || '#FFFFFF'
-        }))
+          color_light: div.color_light || '#FFFFFF',
+        })),
       ];
-      
+
       setDivisions(allDivisions);
-      
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -121,12 +121,10 @@ const Teams = () => {
   const filteredTeams = useMemo(() => {
     const lowercaseQuery = searchQuery.toLowerCase();
     return teams
-      .filter(team => 
-        selectedDivision === 'All' || team.division_details?.code === selectedDivision
+      .filter(
+        (team) => selectedDivision === 'All' || team.division_details?.code === selectedDivision,
       )
-      .filter(team => 
-        team.name.toLowerCase().includes(lowercaseQuery)
-      );
+      .filter((team) => team.name.toLowerCase().includes(lowercaseQuery));
   }, [teams, selectedDivision, searchQuery]);
 
   const renderTeamItem = ({ item }: { item: TeamWithDetails }) => {
@@ -135,57 +133,56 @@ const Teams = () => {
       title: item.division_details?.title || 'Unknown',
       color: '#EFEFEF',
       color_light: '#EFEFEF',
-      textColor: '#333333'
+      textColor: '#333333',
     };
-    
+
     if (item.division_details) {
       // Use division details directly from the team's joined division_details
       divisionInfo = {
         title: item.division_details.title,
         color: item.division_details.color,
         color_light: item.division_details.color_light || '#FFFFFF',
-        textColor: item.division_details.color
+        textColor: item.division_details.color,
       };
     }
-    
+
     return (
-      <TouchableOpacity 
-        style={styles.teamItem}
-        onPress={() => navigateToTeamDetails(item)}
-      >
+      <TouchableOpacity style={styles.teamItem} onPress={() => navigateToTeamDetails(item)}>
         <View style={styles.teamContent}>
           <View style={styles.teamAvatarContainer}>
             <View style={styles.teamAvatar}>
               {item.avatar_uri ? (
-                <Image 
-                  source={item.avatar_uri ? { uri: item.avatar_uri } : require('@/assets/images/avatar-placeholder.png') } 
-                  style={styles.teamAvatarImage} 
+                <Image
+                  source={
+                    item.avatar_uri
+                      ? { uri: item.avatar_uri }
+                      : require('@/assets/images/avatar-placeholder.png')
+                  }
+                  style={styles.teamAvatarImage}
                 />
               ) : (
                 <Text style={styles.teamAvatarText}>{item.name.charAt(0)}</Text>
               )}
             </View>
           </View>
-          
+
           <View style={styles.teamInfo}>
             <CustomText style={styles.teamName}>{item.name}</CustomText>
-            <View style={[
-              styles.divisionLabel, 
-              { 
-                backgroundColor: divisionInfo.color_light,
-                borderColor: divisionInfo.color,
-                borderWidth: 1
-              }
-            ]}>
-              <CustomText style={[
-                styles.divisionText,
-                { color: divisionInfo.textColor }
+            <View
+              style={[
+                styles.divisionLabel,
+                {
+                  backgroundColor: divisionInfo.color_light,
+                  borderColor: divisionInfo.color,
+                  borderWidth: 1,
+                },
               ]}>
+              <CustomText style={[styles.divisionText, { color: divisionInfo.textColor }]}>
                 {divisionInfo.title}
               </CustomText>
             </View>
           </View>
-          <MaterialIcons name='keyboard-arrow-right' size={24} />
+          <MaterialIcons name="keyboard-arrow-right" size={24} />
         </View>
       </TouchableOpacity>
     );
@@ -194,7 +191,6 @@ const Teams = () => {
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
-        
         {/* Search Bar */}
         <View style={styles.searchBarContainer}>
           <Ionicons name="search" size={20} color="#86939e" style={styles.searchIcon} />
@@ -206,42 +202,48 @@ const Teams = () => {
             placeholderTextColor="#86939e"
             allowFontScaling={false}
           />
-          <MaterialIcons name='close' size={15} color="#86939e" onPress={() => setSearchQuery('')} />
+          <MaterialIcons
+            name="close"
+            size={15}
+            color="#86939e"
+            onPress={() => setSearchQuery('')}
+          />
         </View>
-        
+
         {/* Filters Section */}
         <View style={styles.filtersSection}>
           <View style={styles.filterButtonsContainer}>
             <CustomText style={styles.filterLabel}>Filter:</CustomText>
-            {divisions.map((division) => {       
+            {divisions.map((division) => {
               return (
                 <TouchableOpacity
                   key={division.code}
                   style={[
                     styles.filterButton,
-                    { 
+                    {
                       backgroundColor: division.color_light,
                       borderColor: division.color,
-                      borderWidth: 1
-                    },
-                    selectedDivision === division.code && { 
                       borderWidth: 1,
-                      borderColor: division.color
-                    }
+                    },
+                    selectedDivision === division.code && {
+                      borderWidth: 1,
+                      borderColor: division.color,
+                    },
                   ]}
-                  onPress={() => setSelectedDivision(division.code)}
-                >
-                  <CustomText style={[styles.filterButtonText, { color: division.color }]} >{division.title}</CustomText>
+                  onPress={() => setSelectedDivision(division.code)}>
+                  <CustomText style={[styles.filterButtonText, { color: division.color }]}>
+                    {division.title}
+                  </CustomText>
                 </TouchableOpacity>
               );
             })}
           </View>
         </View>
-        
+
         {/* Team List */}
         <View style={styles.listContainer}>
           {loading ? (
-            <LoadingIndicator message='Loading Teams...' />
+            <LoadingIndicator message="Loading Teams..." />
           ) : (
             <FlashList
               data={filteredTeams}
@@ -306,7 +308,7 @@ const styles = StyleSheet.create({
   filterButtonsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 5
+    gap: 5,
   },
   filterButton: {
     paddingHorizontal: 7,
@@ -319,7 +321,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopWidth: 1,
     borderTopColor: '#EFEFEF',
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   loadingContainer: {
     flex: 1,
@@ -385,7 +387,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7,
   },
   divisionText: {
-    ...typography.textXSmall
+    ...typography.textXSmall,
   },
 });
 

@@ -1,5 +1,5 @@
 // app/(tabs)/home/notifications.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { View, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
@@ -20,10 +20,81 @@ const NotificationScreen = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const { session } = useAuth();
+  const userId = session?.user?.id;
+
+  const fetchNotifications = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      if (!userId) {
+        // If not logged in, just fetch notifications without read status
+        const { data, error } = await supabase
+          .from('notifications')
+          .select('*')
+          .is('user_id', null)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching notifications:', error);
+          return;
+        }
+
+        const notificationsWithReadStatus = (data || []).map((notification) => ({
+          ...notification,
+          created_at: notification.created_at || '',
+          is_read: false, // If not logged in, treat all as unread
+        }));
+
+        setNotifications(notificationsWithReadStatus);
+      } else {
+        // If logged in, fetch notifications and join with read status
+        // First get all notifications
+        const { data: notificationsData, error: notificationsError } = await supabase
+          .from('notifications')
+          .select('*')
+          .is('user_id', null)
+          .order('created_at', { ascending: false });
+
+        if (notificationsError) {
+          console.error('Error fetching notifications:', notificationsError);
+          return;
+        }
+
+        // Then get all read statuses for this user
+        const { data: readStatusData, error: readStatusError } = await supabase
+          .from('notification_read_status')
+          .select('notification_id')
+          .eq('user_id', userId);
+
+        if (readStatusError) {
+          console.error('Error fetching read status:', readStatusError);
+          return;
+        }
+
+        // Convert read status data to a Set for faster lookups
+        const readNotificationIds = new Set(
+          (readStatusData || []).map((status) => status.notification_id),
+        );
+
+        // Combine the data
+        const notificationsWithReadStatus = (notificationsData || []).map((notification) => ({
+          ...notification,
+          created_at: notification.created_at || '',
+          is_read: readNotificationIds.has(notification.id),
+        }));
+
+        setNotifications(notificationsWithReadStatus);
+      }
+    } catch (error) {
+      console.error('Unexpected error:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
 
   useEffect(() => {
     fetchNotifications();
-    
+
     // Set up a subscription to listen for new announcements
     const channel = supabase
       .channel('public:notifications')
@@ -38,108 +109,37 @@ const NotificationScreen = () => {
         (payload) => {
           // Add the new notification to our state
           const newNotification = {
-            ...payload.new as Notification,
-            is_read: false // New notifications are unread by default
+            ...(payload.new as Notification),
+            is_read: false, // New notifications are unread by default
           };
-          setNotifications(prev => [newNotification, ...prev]);
-        }
+          setNotifications((prev) => [newNotification, ...prev]);
+        },
       )
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [session]);
-
-  const fetchNotifications = async () => {
-    try {
-      setLoading(true);
-      
-      if (!session?.user) {
-        // If not logged in, just fetch notifications without read status
-        const { data, error } = await supabase
-          .from('notifications')
-          .select('*')
-          .is('user_id', null)
-          .order('created_at', { ascending: false });
-        
-        if (error) {
-          console.error('Error fetching notifications:', error);
-          return;
-        }
-        
-        const notificationsWithReadStatus = (data || []).map(notification => ({
-          ...notification,
-          created_at: notification.created_at || '',
-          is_read: false // If not logged in, treat all as unread
-        }));
-        
-        setNotifications(notificationsWithReadStatus);
-      } else {
-        // If logged in, fetch notifications and join with read status
-        // First get all notifications
-        const { data: notificationsData, error: notificationsError } = await supabase
-          .from('notifications')
-          .select('*')
-          .is('user_id', null)
-          .order('created_at', { ascending: false });
-        
-        if (notificationsError) {
-          console.error('Error fetching notifications:', notificationsError);
-          return;
-        }
-        
-        // Then get all read statuses for this user
-        const { data: readStatusData, error: readStatusError } = await supabase
-          .from('notification_read_status')
-          .select('notification_id')
-          .eq('user_id', session.user.id);
-        
-        if (readStatusError) {
-          console.error('Error fetching read status:', readStatusError);
-          return;
-        }
-        
-        // Convert read status data to a Set for faster lookups
-        const readNotificationIds = new Set(
-          (readStatusData || []).map(status => status.notification_id)
-        );
-        
-        // Combine the data
-        const notificationsWithReadStatus = (notificationsData || []).map(notification => ({
-          ...notification,
-          created_at: notification.created_at || '',
-          is_read: readNotificationIds.has(notification.id)
-        }));
-        
-        setNotifications(notificationsWithReadStatus);
-      }
-    } catch (error) {
-      console.error('Unexpected error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [fetchNotifications]);
 
   const markAsRead = async (notification: Notification) => {
     if (!notification.is_read && session?.user) {
       try {
         // Create a user-specific read status for this notification
-        const { error } = await supabase
-          .from('notification_read_status')
-          .insert({
-            notification_id: notification.id,
-            user_id: session.user.id,
-          });
-          
-        if (error && error.code !== '23505') { // Ignore unique violation errors
+        const { error } = await supabase.from('notification_read_status').insert({
+          notification_id: notification.id,
+          user_id: session.user.id,
+        });
+
+        if (error && error.code !== '23505') {
+          // Ignore unique violation errors
           console.error('Error marking notification as read:', error);
           return;
         }
-        
+
         // Update local state
-        setNotifications(prev => 
-          prev.map(n => n.id === notification.id ? { ...n, is_read: true } : n)
+        setNotifications((prev) =>
+          prev.map((n) => (n.id === notification.id ? { ...n, is_read: true } : n)),
         );
       } catch (error) {
         console.error('Unexpected error:', error);
@@ -156,7 +156,7 @@ const NotificationScreen = () => {
     const now = new Date();
     const date = new Date(dateString);
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    
+
     if (diffInSeconds < 60) {
       // Less than a minute ago
       return `${diffInSeconds}s ago`;
@@ -170,11 +170,11 @@ const NotificationScreen = () => {
       return `${hours}h ago`;
     } else {
       // More than a day ago
-      return date.toLocaleDateString('en-US', { 
-        month: 'short', 
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
         day: 'numeric',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
       });
     }
   };
@@ -187,18 +187,22 @@ const NotificationScreen = () => {
         </View>
       </View>
       <View style={styles.contentContainer}>
-        <CustomText style={styles.notificationTitle} allowFontScaling maxFontSizeMultiplier={1.2}>{item.title}</CustomText>
-        <CustomText allowFontScaling maxFontSizeMultiplier={1.2}>{item.message}</CustomText>
-        <CustomText style={styles.notificationTime} allowFontScaling maxFontSizeMultiplier={1.2}>{formatDate(item.created_at)}</CustomText>
+        <CustomText style={styles.notificationTitle} allowFontScaling maxFontSizeMultiplier={1.2}>
+          {item.title}
+        </CustomText>
+        <CustomText allowFontScaling maxFontSizeMultiplier={1.2}>
+          {item.message}
+        </CustomText>
+        <CustomText style={styles.notificationTime} allowFontScaling maxFontSizeMultiplier={1.2}>
+          {formatDate(item.created_at)}
+        </CustomText>
       </View>
-      {!item.is_read && (
-        <View style={styles.unreadIndicator} />
-      )}
+      {!item.is_read && <View style={styles.unreadIndicator} />}
     </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>      
+    <View style={styles.container}>
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#EA1D25" />
@@ -238,14 +242,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   listContainer: {
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   notificationItem: {
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
     alignItems: 'center',
-    paddingVertical: 15
+    paddingVertical: 15,
   },
   iconContainer: {
     marginRight: 15,
@@ -266,12 +270,12 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   notificationMessage: {
-    ...typography.text
+    ...typography.text,
   },
   notificationTime: {
     ...typography.textSmall,
     color: '#969696',
-    marginTop: 4
+    marginTop: 4,
   },
   unreadIndicator: {
     width: 8,
@@ -289,7 +293,7 @@ const styles = StyleSheet.create({
   emptyText: {
     color: '#888',
     marginTop: 16,
-    ...typography.textMedium
+    ...typography.textMedium,
   },
 });
 

@@ -1,13 +1,6 @@
 // components/AdminGameComponent.tsx
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  TextInput,
-  Alert,
-} from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { Database } from '@/database.types';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
@@ -61,19 +54,26 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
       setTeam2Score('0');
       setIsCompleted(false);
     }
-    
+
     // Update datetime, field, and team state
     setDatetimeId(game.datetime?.id || null);
     setFieldId(game.field?.id || null);
-    setTeam1Id(game.team1?.id || -1);  // -1 represents TBD
-    setTeam2Id(game.team2?.id || -1);  // -1 represents TBD
+    setTeam1Id(game.team1?.id || -1); // -1 represents TBD
+    setTeam2Id(game.team2?.id || -1); // -1 represents TBD
   }, [game]);
 
   const openScoreModal = () => {
     setModalVisible(true);
   };
 
-  const submitScore = async (team1ScoreStr: string, team2ScoreStr: string, selectedDatetimeId: number | null, selectedFieldId: number | null, selectedTeam1Id?: number | null, selectedTeam2Id?: number | null) => {
+  const submitScore = async (
+    team1ScoreStr: string,
+    team2ScoreStr: string,
+    selectedDatetimeId: number | null,
+    selectedFieldId: number | null,
+    selectedTeam1Id?: number | null,
+    selectedTeam2Id?: number | null,
+  ) => {
     setIsLoading(true);
 
     // Update local state immediately for UI feedback
@@ -97,7 +97,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
       onSuccess: () => {
         setModalVisible(false);
         onGameStatusChange();
-      }
+      },
     });
 
     setIsLoading(false);
@@ -119,29 +119,27 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
           const { error } = await supabase
             .from('scores')
             .update({
-              is_finished: true
+              is_finished: true,
             })
             .eq('id', game.scores[0].id);
 
           if (error) throw error;
         } else {
           // Create a new score record if none exists
-          const { error } = await supabase
-            .from('scores')
-            .insert({
-              game_id: game.id,
-              team1_score: parseInt(team1Score),
-              team2_score: parseInt(team2Score),
-              is_finished: true,
-              round_id: game.round_id
-            });
+          const { error } = await supabase.from('scores').insert({
+            game_id: game.id,
+            team1_score: parseInt(team1Score),
+            team2_score: parseInt(team2Score),
+            is_finished: true,
+            round_id: game.round_id,
+          });
 
           if (error) throw error;
         }
 
         // Update local state
         setIsCompleted(true);
-        
+
         // Notify parent component to refresh
         onGameStatusChange();
       }
@@ -170,7 +168,11 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
           {/* Team 1 */}
           <View style={styles.teamRow}>
             <Image
-              source={game.team1?.avatar_uri ? { uri: game.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
+              source={
+                game.team1?.avatar_uri
+                  ? { uri: game.team1.avatar_uri }
+                  : require('@/assets/images/avatar-placeholder.png')
+              }
               style={styles.teamLogo}
             />
             <CustomText style={styles.teamText}>{game.team1?.name || 'TBD'}</CustomText>
@@ -189,7 +191,11 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
           {/* Team 2 */}
           <View style={styles.teamRow}>
             <Image
-              source={game.team2?.avatar_uri ? { uri: game.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
+              source={
+                game.team2?.avatar_uri
+                  ? { uri: game.team2.avatar_uri }
+                  : require('@/assets/images/avatar-placeholder.png')
+              }
               style={styles.teamLogo}
             />
             <CustomText style={styles.teamText}>{game.team2?.name || 'TBD'}</CustomText>
@@ -213,20 +219,19 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
           style={[
             styles.actionButton,
             styles.markCompletedButton,
-            isCompleted && styles.completedButton
+            isCompleted && styles.completedButton,
           ]}
           onPress={handleMarkCompleted}
-          disabled={isCompleted || isLoading}
-        >
-          <CustomText style={[styles.buttonText, isCompleted ? { color: '#ED8C22' } : { color: '#242424' }]}>
+          disabled={isCompleted || isLoading}>
+          <CustomText
+            style={[styles.buttonText, isCompleted ? { color: '#ED8C22' } : { color: '#242424' }]}>
             {isCompleted ? 'COMPLETED' : 'Mark Completed'}
           </CustomText>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.actionButton, styles.updateScoreButton]}
-          onPress={openScoreModal}
-        >
+          onPress={openScoreModal}>
           <CustomText style={styles.buttonText}>Update Game</CustomText>
         </TouchableOpacity>
       </View>
@@ -285,7 +290,7 @@ const styles = StyleSheet.create({
   },
   timeText: {
     ...typography.text,
-    color: '#fff'
+    color: '#fff',
   },
   fieldText: {
     ...typography.textBold,
@@ -301,7 +306,7 @@ const styles = StyleSheet.create({
   teamsSection: {
     flex: 1,
     justifyContent: 'space-between',
-    gap: 15
+    gap: 15,
   },
   teamRow: {
     flexDirection: 'row',
@@ -311,7 +316,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 14,
-    marginRight: 8
+    marginRight: 8,
   },
   teamText: {
     ...typography.textLargeSemiBold,
@@ -325,12 +330,12 @@ const styles = StyleSheet.create({
   scoreInput: {
     color: '#FFF',
     ...typography.heading3,
-    textAlign: 'right'
+    textAlign: 'right',
   },
   actionContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 10
+    gap: 10,
   },
   actionButton: {
     flex: 1,
@@ -356,7 +361,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#242424',
-    ...typography.textSemiBold
+    ...typography.textSemiBold,
   },
 });
 

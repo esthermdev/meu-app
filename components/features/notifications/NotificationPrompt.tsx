@@ -17,7 +17,7 @@ const NotificationPrompt = () => {
       setVisible(false);
       return;
     }
-    
+
     // Only check if the prompt should be shown when permissions aren't granted
     checkIfPromptShown();
   }, [notificationPermission]);
@@ -60,31 +60,20 @@ const NotificationPrompt = () => {
   }
 
   return (
-    <Modal
-      transparent={true}
-      animationType="fade"
-      visible={visible}
-      onRequestClose={handleSkip}
-    >
+    <Modal transparent={true} animationType="fade" visible={visible} onRequestClose={handleSkip}>
       <View style={styles.modalOverlay}>
         <View style={styles.promptContainer}>
           <Text style={styles.title}>Stay Updated</Text>
           <Text style={styles.description}>
             Would you like to receive notifications on important tournament updates?
           </Text>
-          
+
           <View style={styles.buttonContainer}>
-            <TouchableOpacity 
-              style={[styles.button, styles.skipButton]} 
-              onPress={handleSkip}
-            >
+            <TouchableOpacity style={[styles.button, styles.skipButton]} onPress={handleSkip}>
               <Text style={styles.skipButtonText}>Not Now</Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity 
-              style={[styles.button, styles.enableButton]} 
-              onPress={handleEnable}
-            >
+
+            <TouchableOpacity style={[styles.button, styles.enableButton]} onPress={handleEnable}>
               <Text style={styles.enableButtonText}>Enable</Text>
             </TouchableOpacity>
           </View>

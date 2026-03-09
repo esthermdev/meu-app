@@ -1,10 +1,13 @@
 // utils/formatDate.tsx
-export const formatDate = (dateString?: string | null, format: 'full' | 'short' = 'full'): string => {
+export const formatDate = (
+  dateString?: string | null,
+  format: 'full' | 'short' = 'full',
+): string => {
   if (!dateString) return 'TBD';
-  
+
   try {
     const date = new Date(dateString);
-    
+
     if (format === 'short') {
       // Format like "00 MON" (e.g., "25 JUN")
       const day = date.getDate().toString().padStart(2, '0');
@@ -16,7 +19,7 @@ export const formatDate = (dateString?: string | null, format: 'full' | 'short' 
         weekday: 'long',
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
+        day: 'numeric',
       });
     }
   } catch (error) {

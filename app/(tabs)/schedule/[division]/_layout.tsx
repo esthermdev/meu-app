@@ -3,20 +3,17 @@ import CustomHeader from '@/components/headers/CustomHeader';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 
 export default function DivisionLayout() {
-	const { divisionName } = useDivisions()
+  const { divisionName } = useDivisions();
 
-	return (
-		<Stack>
-			<Stack.Screen
-				name="index"
-				options={{
-					header: () => <CustomHeader title={divisionName} />
-				}}
-			/>
-			<Stack.Screen
-				name="[gameType]"
-				options={{ headerShown: false }}
-			/>
-		</Stack>
-	);
+  return (
+    <Stack>
+      <Stack.Screen
+        name="index"
+        options={{
+          header: () => <CustomHeader title={divisionName} />,
+        }}
+      />
+      <Stack.Screen name="[gameType]" options={{ headerShown: false }} />
+    </Stack>
+  );
 }

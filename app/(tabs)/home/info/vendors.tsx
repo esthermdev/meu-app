@@ -1,5 +1,14 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Linking, SafeAreaView, Image } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+  Linking,
+  SafeAreaView,
+  Image,
+} from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Tables } from '@/database.types';
@@ -43,16 +52,15 @@ const VendorsScreen = () => {
   };
 
   const renderVendorItem = ({ item }: { item: Vendor }) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={styles.vendorItem}
       onPress={() => handleVendorPress(item.website)}
-      disabled={!item.website}
-    >
+      disabled={!item.website}>
       <View style={styles.vendorContent}>
         {item.avatar_url ? (
-          <Image 
-            source={{ uri: item.avatar_url }} 
-            style={styles.vendorImage} 
+          <Image
+            source={{ uri: item.avatar_url }}
+            style={styles.vendorImage}
             resizeMode="contain"
           />
         ) : (
@@ -61,11 +69,15 @@ const VendorsScreen = () => {
           </View>
         )}
         <View style={styles.vendorInfo}>
-          <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.vendorName}>{item.name}</CustomText>
+          <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.vendorName}>
+            {item.name}
+          </CustomText>
           {item.website && (
             <View style={styles.websiteContainer}>
               <FontAwesome5 name="link" size={14} color="#2871FF" style={styles.websiteIcon} />
-              <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.websiteText}>Visit website</CustomText>
+              <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.websiteText}>
+                Visit website
+              </CustomText>
             </View>
           )}
         </View>
@@ -86,10 +98,7 @@ const VendorsScreen = () => {
       <View style={styles.errorContainer}>
         <FontAwesome5 name="exclamation-circle" size={40} color="#EA1D25" />
         <CustomText style={styles.errorText}>{error}</CustomText>
-        <TouchableOpacity 
-          style={styles.retryButton}
-          onPress={fetchVendors}
-        >
+        <TouchableOpacity style={styles.retryButton} onPress={fetchVendors}>
           <CustomText style={styles.retryButtonText}>Retry</CustomText>
         </TouchableOpacity>
       </View>

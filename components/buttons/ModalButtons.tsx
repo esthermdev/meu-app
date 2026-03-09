@@ -22,16 +22,14 @@ const ModalButton: React.FC<ModalButtonContainerProps> = ({
 }) => {
   return (
     <View style={styles.buttonContainer}>
-      <TouchableOpacity 
-        style={[styles.cancelButton, { backgroundColor: cancelColor }]} 
-        onPress={onCancel}
-      >
+      <TouchableOpacity
+        style={[styles.cancelButton, { backgroundColor: cancelColor }]}
+        onPress={onCancel}>
         <CustomText style={styles.buttonText}>{cancelText}</CustomText>
       </TouchableOpacity>
-      <TouchableOpacity 
-        style={[styles.confirmButton, { backgroundColor: confirmColor }]} 
-        onPress={onConfirm}
-      >
+      <TouchableOpacity
+        style={[styles.confirmButton, { backgroundColor: confirmColor }]}
+        onPress={onConfirm}>
         <CustomText style={styles.buttonText}>{confirmText}</CustomText>
       </TouchableOpacity>
     </View>
@@ -59,7 +57,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     textAlign: 'center',
-    ...typography.bodyMedium
+    ...typography.textSemiBold,
   },
 });
 

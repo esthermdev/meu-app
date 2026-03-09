@@ -9,8 +9,12 @@ type FAQ = Tables<'faq'>;
 
 const FAQItem = ({ item }: { item: FAQ }) => (
   <View style={styles.faqItem}>
-    <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.question}>{item.question}</CustomText>
-    <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.answer}>{item.answer}</CustomText>
+    <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.question}>
+      {item.question}
+    </CustomText>
+    <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.answer}>
+      {item.answer}
+    </CustomText>
   </View>
 );
 

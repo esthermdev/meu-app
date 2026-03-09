@@ -10,25 +10,23 @@ interface CustomTextProps extends TextProps {
   children: React.ReactNode;
 }
 
-const CustomText = ({ 
-  variant = 'body',
-  style, 
-  children, 
+const CustomText = ({
+  variant = 'textSmall',
+  style,
+  children,
   allowFontScaling = false, // Default to preventing font scaling
   maxFontSizeMultiplier = 1,
-  ...restProps 
+  ...restProps
 }: CustomTextProps) => {
-  
-  // Use the specified typography variant or default to 'body'
-  const variantStyle = typography[variant] || typography.body;
-  
+  // Use the specified typography variant or default to textSmall
+  const variantStyle = typography[variant] || typography.textSmall;
+
   return (
     <RNText
       allowFontScaling={allowFontScaling}
       style={[variantStyle, style]}
       {...restProps}
-      maxFontSizeMultiplier={maxFontSizeMultiplier}
-    >
+      maxFontSizeMultiplier={maxFontSizeMultiplier}>
       {children}
     </RNText>
   );

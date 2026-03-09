@@ -1,14 +1,13 @@
 // announcements.tsx
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  StyleSheet, 
-  Alert, 
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Alert,
   KeyboardAvoidingView,
   Platform,
-  ScrollView
+  ScrollView,
 } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
@@ -29,23 +28,22 @@ const AnnouncementScreen = () => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('announcement', {
+      const { error } = await supabase.functions.invoke('announcement', {
         body: { title, message },
       });
 
       if (error) throw error;
 
       // Show success alert with an option to view notifications
-      Alert.alert(
-        'Success', 
-        'Announcement sent successfully',
-        [
-          { text: 'OK', onPress: () => {
+      Alert.alert('Success', 'Announcement sent successfully', [
+        {
+          text: 'OK',
+          onPress: () => {
             setTitle('');
             setMessage('');
-          }},
-        ]
-      );
+          },
+        },
+      ]);
     } catch (error) {
       console.error('Error sending announcement:', error);
       Alert.alert('Error', 'Failed to send announcement');
@@ -55,15 +53,16 @@ const AnnouncementScreen = () => {
   };
 
   return (
-    <View style={styles.container}>      
+    <View style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardAvoidView}
-      >
+        style={styles.keyboardAvoidView}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <CustomText style={styles.title}>Send Announcement</CustomText>
-          <CustomText style={styles.subtitle}>This will send a push notification to all users and appear in the notifications window.</CustomText>
-          <View>           
+          <CustomText style={styles.subtitle}>
+            This will send a push notification to all users and appear in the notifications window.
+          </CustomText>
+          <View>
             <CustomText style={styles.label}>Title</CustomText>
             <TextInput
               style={styles.input}
@@ -74,7 +73,7 @@ const AnnouncementScreen = () => {
               editable={!loading}
               allowFontScaling={false}
             />
-            
+
             <CustomText style={styles.label}>Message</CustomText>
             <TextInput
               style={[styles.input, styles.messageInput]}
@@ -86,8 +85,8 @@ const AnnouncementScreen = () => {
               editable={!loading}
               allowFontScaling={false}
             />
-            
-            <PrimaryButton onPress={handleSubmit} title='Post' />
+
+            <PrimaryButton onPress={handleSubmit} title="Post" />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -105,21 +104,21 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    padding: 20
+    padding: 20,
   },
   title: {
     color: '#fff',
-    ...typography.heading3
+    ...typography.heading3,
   },
   subtitle: {
     color: '#fff',
     ...typography.textMedium,
-    marginVertical: 15
+    marginVertical: 15,
   },
   label: {
     ...typography.textLargeBold,
     marginBottom: 8,
-    color: '#fff'
+    color: '#fff',
   },
   input: {
     borderWidth: 1,
@@ -129,12 +128,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
     marginBottom: 20,
-    ...typography.text
+    ...typography.text,
   },
   messageInput: {
     height: 120,
     textAlignVertical: 'top',
-
   },
 });
 

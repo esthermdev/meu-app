@@ -10,20 +10,15 @@ interface ComingSoonPlaceholderProps {
   style?: any;
 }
 
-export default function ComingSoonPlaceholder({ 
-  message = "Coming Soon", 
-  iconName = "schedule",
+export default function ComingSoonPlaceholder({
+  message = 'Coming Soon',
+  iconName = 'schedule',
   iconSize = 64,
-  style 
+  style,
 }: ComingSoonPlaceholderProps) {
   return (
     <View style={[styles.container, style]}>
-      <MaterialIcons
-        name={iconName}
-        size={iconSize}
-        color="#EA1D25"
-        style={styles.icon}
-      />
+      <MaterialIcons name={iconName} size={iconSize} color="#EA1D25" style={styles.icon} />
       <CustomText style={styles.message}>{message}</CustomText>
     </View>
   );

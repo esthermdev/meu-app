@@ -1,5 +1,13 @@
 import { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+  SafeAreaView,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useIsFocused } from '@react-navigation/native';
 import { Card } from '@/components/Card';
@@ -29,35 +37,33 @@ const FulfilledCartRequestsList = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const { profile } = useAuth() as { profile: Profile };
   const isFocused = useIsFocused();
-  
+
   // Collapsible section states
   const [pendingCollapsed, setPendingCollapsed] = useState<boolean>(false);
   const [confirmedCollapsed, setConfirmedCollapsed] = useState<boolean>(false);
   const [completedCollapsed, setCompletedCollapsed] = useState<boolean>(false);
   const [expiredCollapsed, setExpiredCollapsed] = useState<boolean>(true); // Default collapsed
   const [loadingRequests, setLoadingRequests] = useState<Set<number>>(new Set());
-  
+
   const driverName = profile.full_name;
 
   // Collapsible section header component
-  const CollapsibleSectionHeader = ({ 
-    title, 
-    count, 
-    isCollapsed, 
-    onToggle 
-  }: { 
-    title: string; 
-    count: number; 
-    isCollapsed: boolean; 
-    onToggle: () => void; 
+  const CollapsibleSectionHeader = ({
+    title,
+    count,
+    isCollapsed,
+    onToggle,
+  }: {
+    title: string;
+    count: number;
+    isCollapsed: boolean;
+    onToggle: () => void;
   }) => (
     <TouchableOpacity style={styles.sectionHeader} onPress={onToggle}>
-      <CustomText style={styles.sectionTitle}>{title} ({count})</CustomText>
-      <Ionicons 
-        name={isCollapsed ? "chevron-down" : "chevron-up"} 
-        size={20} 
-        color="#fff" 
-      />
+      <CustomText style={styles.sectionTitle}>
+        {title} ({count})
+      </CustomText>
+      <Ionicons name={isCollapsed ? 'chevron-down' : 'chevron-up'} size={20} color="#fff" />
     </TouchableOpacity>
   );
 
@@ -69,7 +75,7 @@ const FulfilledCartRequestsList = () => {
 
   useEffect(() => {
     fetchAllRequests();
-    
+
     // Set up real-time subscription
     const subscription = supabase
       .channel('fulfilled_requests_channel')
@@ -78,12 +84,12 @@ const FulfilledCartRequestsList = () => {
         {
           event: '*',
           schema: 'public',
-          table: 'cart_requests'
+          table: 'cart_requests',
         },
         (payload) => {
           console.log('Fulfilled requests real-time update:', payload);
           fetchAllRequests();
-        }
+        },
       )
       .subscribe((status) => {
         console.log('Fulfilled requests subscription status:', status);
@@ -98,7 +104,7 @@ const FulfilledCartRequestsList = () => {
   const fetchAllRequests = async () => {
     try {
       console.log('Fetching all cart requests...');
-      
+
       // Fetch both cart requests and fields data in parallel
       const [requestsResult, fieldsResult] = await Promise.all([
         supabase
@@ -106,40 +112,38 @@ const FulfilledCartRequestsList = () => {
           .select('*, driver:profiles!cart_requests_driver_fkey(full_name)')
           .in('status', ['pending', 'confirmed', 'resolved', 'expired'])
           .order('created_at', { ascending: false }),
-        supabase
-          .from('fields')
-          .select('id, name')
+        supabase.from('fields').select('id, name'),
       ]);
-      
+
       if (requestsResult.error) throw requestsResult.error;
       if (fieldsResult.error) throw fieldsResult.error;
-      
+
       // Create a mapping of field IDs to names
       const fieldMap: Record<number, string> = {};
       if (fieldsResult.data) {
-        fieldsResult.data.forEach(field => {
+        fieldsResult.data.forEach((field) => {
           fieldMap[field.id] = field.name;
         });
       }
-      
+
       // Process and categorize requests in a single pass
       const categorizedRequests = {
         pending: [] as CartRequest[],
         confirmed: [] as CartRequest[],
         completed: [] as CartRequest[],
         expired: [] as CartRequest[],
-        all: [] as CartRequest[]
+        all: [] as CartRequest[],
       };
-      
-      requestsResult.data.forEach(request => {
+
+      requestsResult.data.forEach((request) => {
         const enhancedRequest = {
           ...request,
           from_field_name: request.from_field_number ? fieldMap[request.from_field_number] : null,
-          to_field_name: request.to_field_number ? fieldMap[request.to_field_number] : null
+          to_field_name: request.to_field_number ? fieldMap[request.to_field_number] : null,
         };
-        
+
         categorizedRequests.all.push(enhancedRequest);
-        
+
         switch (request.status) {
           case 'pending':
             categorizedRequests.pending.push(enhancedRequest);
@@ -155,7 +159,7 @@ const FulfilledCartRequestsList = () => {
             break;
         }
       });
-      
+
       setPendingRides(categorizedRequests.pending);
       setConfirmedRides(categorizedRequests.confirmed);
       setCompletedRides(categorizedRequests.completed);
@@ -176,7 +180,7 @@ const FulfilledCartRequestsList = () => {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
@@ -202,75 +206,74 @@ const FulfilledCartRequestsList = () => {
       case 'pending':
         return {
           text: 'Pending',
-          color: '#FFD600' // Yellow for pending
+          color: '#FFD600', // Yellow for pending
         };
       case 'confirmed':
         return {
           text: 'Confirmed',
-          color: '#2196F3' // Blue for confirmed
+          color: '#2196F3', // Blue for confirmed
         };
       case 'resolved':
         return {
           text: 'Completed',
-          color: '#6EDF28' // Green for completed
+          color: '#6EDF28', // Green for completed
         };
       case 'expired':
         return {
           text: 'Expired',
-          color: '#EA1D25' // Red for expired
+          color: '#EA1D25', // Red for expired
         };
       default:
         return {
           text: 'Unknown',
-          color: '#666666' // Gray for unknown
+          color: '#666666', // Gray for unknown
         };
     }
   };
 
   const deleteRequest = async (requestId: number) => {
     try {
-      setLoadingRequests(prev => new Set(prev).add(requestId));
-      
+      setLoadingRequests((prev) => new Set(prev).add(requestId));
+
       // We'll just update the status to 'archived' to keep the record but hide it from the list
       const { error } = await supabase
         .from('cart_requests')
-        .update({ status: 'expired' as Database['public']['Enums']['request_status'] })
+        .update({
+          status: 'expired' as Database['public']['Enums']['request_status'],
+        })
         .eq('id', requestId);
 
       if (error) throw error;
-      
+
       // Find which category the request is in and update local state immediately
-      const requestToMove = requests.find(req => req.id === requestId);
+      const requestToMove = requests.find((req) => req.id === requestId);
       if (requestToMove) {
         const updatedRequest = { ...requestToMove, status: 'expired' as const };
-        
+
         // Remove from current category based on original status
         switch (requestToMove.status) {
           case 'pending':
-            setPendingRides(prev => prev.filter(req => req.id !== requestId));
+            setPendingRides((prev) => prev.filter((req) => req.id !== requestId));
             break;
           case 'confirmed':
-            setConfirmedRides(prev => prev.filter(req => req.id !== requestId));
+            setConfirmedRides((prev) => prev.filter((req) => req.id !== requestId));
             break;
           case 'resolved':
-            setCompletedRides(prev => prev.filter(req => req.id !== requestId));
+            setCompletedRides((prev) => prev.filter((req) => req.id !== requestId));
             break;
         }
-        
+
         // Add to expired rides
-        setExpiredRides(prev => [updatedRequest, ...prev]);
-        
+        setExpiredRides((prev) => [updatedRequest, ...prev]);
+
         // Update the main requests array
-        setRequests(prev => prev.map(req => 
-          req.id === requestId ? updatedRequest : req
-        ));
+        setRequests((prev) => prev.map((req) => (req.id === requestId ? updatedRequest : req)));
       }
-      
     } catch (error) {
       console.error('Error removing request:', error);
       Alert.alert('Error', 'Failed to remove the request. Please try again.');
     } finally {
-      setLoadingRequests(prev => {
+      setLoadingRequests((prev) => {
         const newSet = new Set(prev);
         newSet.delete(requestId);
         return newSet;
@@ -280,35 +283,34 @@ const FulfilledCartRequestsList = () => {
 
   const unarchiveRequest = async (requestId: number) => {
     try {
-      setLoadingRequests(prev => new Set(prev).add(requestId));
-      
+      setLoadingRequests((prev) => new Set(prev).add(requestId));
+
       const { error } = await supabase
         .from('cart_requests')
-        .update({ status: 'pending' as Database['public']['Enums']['request_status'] })
+        .update({
+          status: 'pending' as Database['public']['Enums']['request_status'],
+        })
         .eq('id', requestId);
 
       if (error) throw error;
-      
+
       // Update local state immediately without refetching
-      const requestToMove = expiredRides.find(req => req.id === requestId);
+      const requestToMove = expiredRides.find((req) => req.id === requestId);
       if (requestToMove) {
         const updatedRequest = { ...requestToMove, status: 'pending' as const };
-        
+
         // Remove from expired and add to pending
-        setExpiredRides(prev => prev.filter(req => req.id !== requestId));
-        setPendingRides(prev => [updatedRequest, ...prev]);
-        
+        setExpiredRides((prev) => prev.filter((req) => req.id !== requestId));
+        setPendingRides((prev) => [updatedRequest, ...prev]);
+
         // Update the main requests array
-        setRequests(prev => prev.map(req => 
-          req.id === requestId ? updatedRequest : req
-        ));
+        setRequests((prev) => prev.map((req) => (req.id === requestId ? updatedRequest : req)));
       }
-      
     } catch (error) {
       console.error('Error unarchiving request:', error);
       Alert.alert('Error', 'Failed to unarchive the request. Please try again.');
     } finally {
-      setLoadingRequests(prev => {
+      setLoadingRequests((prev) => {
         const newSet = new Set(prev);
         newSet.delete(requestId);
         return newSet;
@@ -319,18 +321,26 @@ const FulfilledCartRequestsList = () => {
   const renderItem = ({ item }: { item: CartRequest }) => {
     const statusBadge = getStatusBadge(item.status);
     const isLoading = loadingRequests.has(item.id);
-    
+
     return (
       <Card style={styles.cardContainer}>
         <View style={styles.cardHeader}>
           <View style={styles.requestIdBadge}>
             <CustomText style={styles.requestIdText}>#{item.id}</CustomText>
           </View>
-          <View style={[styles.statusBadge, { borderColor: statusBadge.color, borderWidth: 1, backgroundColor: `${statusBadge.color}3D` }]}>
+          <View
+            style={[
+              styles.statusBadge,
+              {
+                borderColor: statusBadge.color,
+                borderWidth: 1,
+                backgroundColor: `${statusBadge.color}3D`,
+              },
+            ]}>
             <CustomText style={styles.statusText}>{statusBadge.text}</CustomText>
           </View>
         </View>
-        
+
         <View style={styles.locationsContainer}>
           {/* Vertical route line with points on the left */}
           <View style={styles.routeVisualization}>
@@ -338,31 +348,31 @@ const FulfilledCartRequestsList = () => {
             <View style={styles.routeLine} />
             <View style={styles.routePoint} />
           </View>
-          
+
           {/* Locations information on the right */}
           <View style={styles.routeInfo}>
             {/* From section */}
             <View style={styles.locationInfo}>
               <CustomText style={styles.routeLabel}>From: </CustomText>
               <CustomText style={styles.locationText}>
-                {item.from_location === 'Field' 
-                  ? `Field ${item.from_field_name || item.from_field_number}` 
+                {item.from_location === 'Field'
+                  ? `Field ${item.from_field_name || item.from_field_number}`
                   : getLocationLabel(item.from_location)}
               </CustomText>
             </View>
-            
+
             {/* To section */}
             <View style={styles.locationInfo}>
               <CustomText style={styles.routeLabel}>To: </CustomText>
               <CustomText style={styles.locationText}>
-                {item.to_location === 'Field' 
+                {item.to_location === 'Field'
                   ? `Field ${item.to_field_name || item.to_field_number}`
                   : getLocationLabel(item.to_location)}
               </CustomText>
             </View>
           </View>
         </View>
-        
+
         <View style={styles.infoSection}>
           <View style={styles.infoRow}>
             <CustomText style={styles.labelText}>Passengers:</CustomText>
@@ -375,7 +385,9 @@ const FulfilledCartRequestsList = () => {
           {item.status !== 'pending' && (
             <View style={styles.infoRow}>
               <CustomText style={styles.labelText}>Driver:</CustomText>
-              <CustomText style={styles.driverText}>{item.driver ? item.driver.full_name : driverName}</CustomText>
+              <CustomText style={styles.driverText}>
+                {item.driver ? item.driver.full_name : driverName}
+              </CustomText>
             </View>
           )}
           <View style={styles.infoRow}>
@@ -383,7 +395,9 @@ const FulfilledCartRequestsList = () => {
               {item.status === 'pending' ? 'Created:' : 'Completed:'}
             </CustomText>
             <CustomText style={styles.valueText}>
-              {item.status === 'pending' ? formatDate(item.created_at) : formatDate(item.updated_at)}
+              {item.status === 'pending'
+                ? formatDate(item.created_at)
+                : formatDate(item.updated_at)}
             </CustomText>
           </View>
         </View>
@@ -394,19 +408,22 @@ const FulfilledCartRequestsList = () => {
             <CustomText style={styles.specialRequestText}>{item.special_request}</CustomText>
           </View>
         )}
-        
+
         <TouchableOpacity
           style={[
             item.status === 'expired' ? styles.unarchiveButton : styles.deleteButton,
-            isLoading && styles.buttonDisabled
+            isLoading && styles.buttonDisabled,
           ]}
           onPress={() => {
             if (!isLoading) {
-              item.status === 'expired' ? unarchiveRequest(item.id) : deleteRequest(item.id);
+              if (item.status === 'expired') {
+                unarchiveRequest(item.id);
+              } else {
+                deleteRequest(item.id);
+              }
             }
           }}
-          disabled={isLoading}
-        >
+          disabled={isLoading}>
           {isLoading ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (
@@ -449,14 +466,11 @@ const FulfilledCartRequestsList = () => {
                     isCollapsed={pendingCollapsed}
                     onToggle={() => setPendingCollapsed(!pendingCollapsed)}
                   />
-                  {!pendingCollapsed && pendingRides.map((item) => (
-                    <View key={item.id}>
-                      {renderItem({ item })}
-                    </View>
-                  ))}
+                  {!pendingCollapsed &&
+                    pendingRides.map((item) => <View key={item.id}>{renderItem({ item })}</View>)}
                 </View>
               )}
-              
+
               {/* Confirmed Rides Section */}
               {confirmedRides.length > 0 && (
                 <View style={styles.sectionContainer}>
@@ -466,14 +480,11 @@ const FulfilledCartRequestsList = () => {
                     isCollapsed={confirmedCollapsed}
                     onToggle={() => setConfirmedCollapsed(!confirmedCollapsed)}
                   />
-                  {!confirmedCollapsed && confirmedRides.map((item) => (
-                    <View key={item.id}>
-                      {renderItem({ item })}
-                    </View>
-                  ))}
+                  {!confirmedCollapsed &&
+                    confirmedRides.map((item) => <View key={item.id}>{renderItem({ item })}</View>)}
                 </View>
               )}
-              
+
               {/* Completed Rides Section */}
               {completedRides.length > 0 && (
                 <View style={styles.sectionContainer}>
@@ -483,14 +494,11 @@ const FulfilledCartRequestsList = () => {
                     isCollapsed={completedCollapsed}
                     onToggle={() => setCompletedCollapsed(!completedCollapsed)}
                   />
-                  {!completedCollapsed && completedRides.map((item) => (
-                    <View key={item.id}>
-                      {renderItem({ item })}
-                    </View>
-                  ))}
+                  {!completedCollapsed &&
+                    completedRides.map((item) => <View key={item.id}>{renderItem({ item })}</View>)}
                 </View>
               )}
-              
+
               {/* Expired Rides Section */}
               {expiredRides.length > 0 && (
                 <View style={styles.sectionContainer}>
@@ -500,11 +508,8 @@ const FulfilledCartRequestsList = () => {
                     isCollapsed={expiredCollapsed}
                     onToggle={() => setExpiredCollapsed(!expiredCollapsed)}
                   />
-                  {!expiredCollapsed && expiredRides.map((item) => (
-                    <View key={item.id}>
-                      {renderItem({ item })}
-                    </View>
-                  ))}
+                  {!expiredCollapsed &&
+                    expiredRides.map((item) => <View key={item.id}>{renderItem({ item })}</View>)}
                 </View>
               )}
             </View>
@@ -521,7 +526,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
   },
-  // Loading and empty 
+  // Loading and empty
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -540,20 +545,20 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     ...typography.textBold,
-    color: '#fff'
+    color: '#fff',
   },
   // Card styles
   listContainer: {
     paddingHorizontal: 15,
     paddingTop: 3,
-    paddingBottom: 15
+    paddingBottom: 15,
   },
   cardContainer: {
     borderRadius: 12,
     padding: 10,
     marginTop: 15,
     backgroundColor: '#262626',
-    borderWidth: 0
+    borderWidth: 0,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -561,7 +566,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     borderBottomWidth: 1,
     borderColor: '#CCCCCC66',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   requestIdBadge: {
     backgroundColor: '#EA1D25',
@@ -581,7 +586,7 @@ const styles = StyleSheet.create({
   },
   statusText: {
     ...typography.text,
-    color: '#fff'
+    color: '#fff',
   },
   locationsContainer: {
     flexDirection: 'row',
@@ -592,13 +597,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 8,
     height: '60%',
-    marginVertical: 'auto'
+    marginVertical: 'auto',
   },
   routeInfo: {
     flex: 1,
     justifyContent: 'space-between',
     gap: 10,
-    marginVertical: 10
+    marginVertical: 10,
   },
   locationInfo: {
     flexDirection: 'row',
@@ -627,7 +632,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC66',
-    paddingBottom: 8
+    paddingBottom: 8,
   },
   infoRow: {
     flexDirection: 'row',
@@ -652,7 +657,7 @@ const styles = StyleSheet.create({
     borderColor: '#EA1D25',
     borderRadius: 5,
     padding: 7,
-    marginVertical: 8
+    marginVertical: 8,
   },
   specialRequestLabel: {
     ...typography.text,
@@ -668,7 +673,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 15,
     alignItems: 'center',
-    marginTop: 5
+    marginTop: 5,
   },
   deleteButtonText: {
     ...typography.textBold,
@@ -680,7 +685,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 15,
     alignItems: 'center',
-    marginTop: 5
+    marginTop: 5,
   },
   buttonDisabled: {
     opacity: 0.6,

@@ -1,5 +1,16 @@
 import { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, TouchableWithoutFeedback, TextInput, Text, Image, KeyboardAvoidingView, Keyboard, Platform } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  TextInput,
+  Text,
+  Image,
+  KeyboardAvoidingView,
+  Keyboard,
+  Platform,
+} from 'react-native';
 import { Link } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -23,13 +34,13 @@ export default function SignUp() {
     // Reset any previous errors
     setNameError(null);
     setEmailError(null);
-    
+
     // Validate full name
     if (!fullName.trim()) {
       setNameError('Please enter your name');
       return;
     }
-    
+
     // Validate email
     if (!email.trim() || !email.includes('@')) {
       setEmailError('Please enter a valid email address');
@@ -39,7 +50,9 @@ export default function SignUp() {
     try {
       setLoading(true);
       await signUp(email, fullName);
-      alert('Check your email for the confirmation link!\n\nIf you don\'t receive an email, please:\n- Check your spam folder\n- Verify you entered the correct email address\n\nFor additional support, contact support@maineultimateapp.org');
+      alert(
+        "Check your email for the confirmation link!\n\nIf you don't receive an email, please:\n- Check your spam folder\n- Verify you entered the correct email address\n\nFor additional support, contact support@maineultimateapp.org",
+      );
       setEmail('');
       setFullName('');
     } catch (error) {
@@ -54,15 +67,15 @@ export default function SignUp() {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 0}
-      >
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 0}>
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <TouchableOpacity onPress={() => router.navigate('/(tabs)/home')} style={{ marginTop: 20 }}>
+          showsVerticalScrollIndicator={false}>
+          <TouchableOpacity
+            onPress={() => router.navigate('/(tabs)/home')}
+            style={{ marginTop: 20 }}>
             <MaterialCommunityIcons name="home-outline" size={30} color="#000" />
           </TouchableOpacity>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -87,13 +100,13 @@ export default function SignUp() {
                   placeholderTextColor={'lightgrey'}
                 />
               </View>
-              
+
               {nameError && (
                 <View style={styles.errorContainer}>
                   <Text style={styles.errorText}>{nameError}</Text>
                 </View>
               )}
-              
+
               <View style={styles.inputContainer}>
                 <MaterialIcons name="email" size={20} color="#000" />
                 <TextInput
@@ -110,14 +123,14 @@ export default function SignUp() {
                   placeholderTextColor={'lightgrey'}
                 />
               </View>
-              
+
               {emailError && (
                 <View style={styles.errorContainer}>
                   <Text style={styles.errorText}>{emailError}</Text>
                 </View>
               )}
 
-              <PrimaryButton 
+              <PrimaryButton
                 onPress={handleSignUp}
                 title={loading ? 'Creating account...' : 'Sign Up'}
                 disabled={loading}
@@ -151,7 +164,7 @@ const styles = StyleSheet.create({
     height: 90,
     width: 90,
     marginTop: 50,
-    marginBottom: 25,   
+    marginBottom: 25,
   },
   title: {
     ...typography.heading1,
@@ -161,7 +174,7 @@ const styles = StyleSheet.create({
   subtitle: {
     marginTop: 10,
     marginBottom: 20,
-    ...typography.heading5
+    ...typography.heading5,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -171,12 +184,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 20,
     paddingHorizontal: 16,
-    marginBottom: 8
+    marginBottom: 8,
   },
   inputWithIcon: {
     flex: 1,
     marginLeft: 8,
-    ...typography.textSemiBold
+    ...typography.textSemiBold,
   },
   errorContainer: {
     backgroundColor: '#FEE2E2',
@@ -187,7 +200,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   errorText: {
-    ...typography.body,
+    ...typography.textSmall,
     color: '#B91C1C',
   },
   footer: {

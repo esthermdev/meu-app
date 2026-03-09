@@ -16,10 +16,7 @@ export const useFieldOptions = () => {
     const fetchFieldOptions = async () => {
       setLoading(true);
       try {
-        const { data, error } = await supabase
-          .from('fields')
-          .select('*')
-          .order('name');
+        const { data, error } = await supabase.from('fields').select('*').order('name');
 
         if (error) {
           console.error('Error fetching field options:', error);
@@ -27,17 +24,18 @@ export const useFieldOptions = () => {
           return;
         }
 
-        const options: FieldOption[] = data?.map(item => {
-          // Create display label with location if available
-          const locationDisplay = item.location ? ` (${item.location})` : '';
-          
-          return {
-            id: item.id,
-            label: `${item.name}${locationDisplay}`,
-            name: item.name,
-            location: item.location
-          };
-        }) || [];
+        const options: FieldOption[] =
+          data?.map((item) => {
+            // Create display label with location if available
+            const locationDisplay = item.location ? ` (${item.location})` : '';
+
+            return {
+              id: item.id,
+              label: `${item.name}${locationDisplay}`,
+              name: item.name,
+              location: item.location,
+            };
+          }) || [];
 
         setFieldOptions(options);
       } catch (error) {

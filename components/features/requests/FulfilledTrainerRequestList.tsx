@@ -1,10 +1,16 @@
-import { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
+import { useState, useEffect } from 'react';
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import { Card } from '@/components/Card';
 import { MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthProvider';
-import { useRequests } from '@/context/RequestsContext';
 import { useIsFocused } from '@react-navigation/native';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
@@ -38,7 +44,7 @@ const FulfilledTrainerRequestList = () => {
   // Regular effect for initial load and subscription
   useEffect(() => {
     fetchFulfilledRequests();
-    
+
     // Set up real-time subscription
     const subscription = supabase
       .channel('fulfilled_trainer_requests_channel')
@@ -47,12 +53,12 @@ const FulfilledTrainerRequestList = () => {
         {
           event: '*',
           schema: 'public',
-          table: 'medical_requests'
+          table: 'medical_requests',
         },
         (payload) => {
           console.log('Fulfilled trainer requests real-time update:', payload);
           fetchFulfilledRequests();
-        }
+        },
       )
       .subscribe((status) => {
         console.log('Fulfilled trainer requests subscription status:', status);
@@ -86,11 +92,13 @@ const FulfilledTrainerRequestList = () => {
   const deleteRequest = async (requestId: number) => {
     try {
       // Optimistic update - remove from local state immediately
-      setRequests(prev => prev.filter(req => req.id !== requestId));
+      setRequests((prev) => prev.filter((req) => req.id !== requestId));
 
       const { error } = await supabase
         .from('medical_requests')
-        .update({ status: 'expired' as Database['public']['Enums']['request_status'] })
+        .update({
+          status: 'expired' as Database['public']['Enums']['request_status'],
+        })
         .eq('id', requestId);
 
       if (error) {
@@ -111,7 +119,7 @@ const FulfilledTrainerRequestList = () => {
       [
         {
           text: 'Cancel',
-          style: 'cancel'
+          style: 'cancel',
         },
         {
           text: 'Clear All',
@@ -121,21 +129,22 @@ const FulfilledTrainerRequestList = () => {
               // Update all confirmed and resolved requests to expired
               const { error } = await supabase
                 .from('medical_requests')
-                .update({ status: 'expired' as Database['public']['Enums']['request_status'] })
+                .update({
+                  status: 'expired' as Database['public']['Enums']['request_status'],
+                })
                 .in('status', ['confirmed', 'resolved']);
 
               if (error) throw error;
 
               // Clear the local state
               setRequests([]);
-
             } catch (error) {
               console.error('Error clearing all trainer requests:', error);
               Alert.alert('Error', 'Failed to clear all requests. Please try again.');
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     );
   };
 
@@ -147,34 +156,34 @@ const FulfilledTrainerRequestList = () => {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
   const getPriorityColor = (priority: string | null) => {
     if (!priority) return { backgroundColor: '#ED8C22' }; // Default orange for medium
-    
+
     switch (priority.toLowerCase()) {
       case 'high':
         return {
           backgroundColor: '#EA1D253D',
           borderColor: '#EA1D25',
           borderWidth: 1,
-          opacity: 0.3
+          opacity: 0.3,
         }; // Red for high priority
       case 'medium':
-        return { 
+        return {
           backgroundColor: '#ED8C223D',
           borderColor: '#ED8C22',
           borderWidth: 1,
-          opacity: 0.3
+          opacity: 0.3,
         }; // Orange for medium priority
       case 'low':
-        return { 
+        return {
           backgroundColor: '#0080003D',
           borderColor: '#008000',
           borderWidth: 1,
-          opacity: 0.3
+          opacity: 0.3,
         }; // Green for low priority
       default:
         return { backgroundColor: '#FFA500' }; // Orange as default
@@ -185,36 +194,44 @@ const FulfilledTrainerRequestList = () => {
     if (status === 'resolved') {
       return {
         text: 'Resolved',
-        color: '#73BF44' // Green for resolved
+        color: '#73BF44', // Green for resolved
       };
     } else {
       return {
         text: 'Confirmed',
-        color: '#28D4C0' // Cyan for confirmed
+        color: '#28D4C0', // Cyan for confirmed
       };
     }
   };
 
   const renderItem = ({ item }: { item: MedicalRequest }) => {
     const statusBadge = getStatusBadge(item.status);
-    
+
     return (
       <Card style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <View style={[styles.priorityBadge, getPriorityColor(item.priority_level) ]}>
+          <View style={[styles.priorityBadge, getPriorityColor(item.priority_level)]}>
             <CustomText style={styles.priorityText}>{item.priority_level || 'Medium'}</CustomText>
           </View>
-          <View style={[styles.statusBadge, { borderColor: statusBadge.color, borderWidth: 1, backgroundColor: '#73BF443D' }]}>
+          <View
+            style={[
+              styles.statusBadge,
+              {
+                borderColor: statusBadge.color,
+                borderWidth: 1,
+                backgroundColor: '#73BF443D',
+              },
+            ]}>
             <CustomText style={styles.statusText}>{statusBadge.text}</CustomText>
           </View>
           <View style={styles.fieldBadge}>
             <MaterialIcons name="location-on" size={14} color="#262626" />
             <CustomText style={styles.fieldText}>
-            Field {item.fields?.name || `Field ${item.field_number}`}
+              Field {item.fields?.name || `Field ${item.field_number}`}
             </CustomText>
           </View>
         </View>
-        
+
         <View style={styles.infoSection}>
           <View style={styles.infoRow}>
             <CustomText style={styles.labelText}>Request ID: </CustomText>
@@ -228,7 +245,9 @@ const FulfilledTrainerRequestList = () => {
           )}
           <View style={styles.infoRow}>
             <CustomText style={styles.labelText}>Trainer:</CustomText>
-            <CustomText style={styles.trainerNameText}>{item.trainer ? item.trainer.full_name : 'Unassigned'}</CustomText>
+            <CustomText style={styles.trainerNameText}>
+              {item.trainer ? item.trainer.full_name : 'Unassigned'}
+            </CustomText>
           </View>
           <View style={styles.infoRow}>
             <CustomText style={styles.labelText}>Created:</CustomText>
@@ -243,16 +262,11 @@ const FulfilledTrainerRequestList = () => {
         {item.description_of_emergency && (
           <View style={styles.descriptionContainer}>
             <CustomText style={styles.descriptionLabel}>Emergency Description:</CustomText>
-            <CustomText style={styles.descriptionText}>
-              {item.description_of_emergency}
-            </CustomText>
+            <CustomText style={styles.descriptionText}>{item.description_of_emergency}</CustomText>
           </View>
         )}
-        
-        <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={() => deleteRequest(item.id)}
-        >
+
+        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteRequest(item.id)}>
           <CustomText style={styles.deleteButtonText}>Remove</CustomText>
         </TouchableOpacity>
       </Card>
@@ -283,10 +297,7 @@ const FulfilledTrainerRequestList = () => {
             contentContainerStyle={styles.listContainer}
           />
           <View style={styles.clearAllContainer}>
-            <TouchableOpacity
-              style={styles.clearAllButton}
-              onPress={clearAllRequests}
-            >
+            <TouchableOpacity style={styles.clearAllButton} onPress={clearAllRequests}>
               <CustomText style={styles.clearAllButtonText}>Clear All</CustomText>
             </TouchableOpacity>
           </View>
@@ -301,7 +312,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
   },
-  // Loading and empty 
+  // Loading and empty
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -320,36 +331,36 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     ...typography.textBold,
-    color: '#fff'
+    color: '#fff',
   },
   // Card styles
   listContainer: {
     paddingHorizontal: 15,
     paddingTop: 3,
-    paddingBottom: 15
+    paddingBottom: 15,
   },
   cardContainer: {
     borderRadius: 12,
     padding: 10,
     marginTop: 12,
     backgroundColor: '#262626',
-    borderWidth: 0
+    borderWidth: 0,
   },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingBottom: 8,
     borderBottomWidth: 1,
-    borderColor: '#CCCCCC66'
+    borderColor: '#CCCCCC66',
   },
   priorityBadge: {
     paddingHorizontal: 7,
     borderRadius: 20,
-    paddingVertical: 2
+    paddingVertical: 2,
   },
   priorityText: {
     color: '#fff',
-    ...typography.text
+    ...typography.text,
   },
   fieldBadge: {
     flexDirection: 'row',
@@ -369,7 +380,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC66',
-    paddingBottom: 8
+    paddingBottom: 8,
   },
   infoRow: {
     flexDirection: 'row',
@@ -412,11 +423,11 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 20,
     marginRight: 'auto',
-    marginLeft: 5
+    marginLeft: 5,
   },
   statusText: {
     ...typography.text,
-    color: '#fff'
+    color: '#fff',
   },
   deleteButton: {
     backgroundColor: '#EA1D25',
@@ -437,7 +448,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     marginBottom: 0,
     backgroundColor: '#242424',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   clearAllButton: {
     backgroundColor: '#ea8e1dff',

@@ -1,8 +1,8 @@
 // lib/auth/AuthProvider.tsx
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Session, User } from '@supabase/supabase-js';
-import * as Linking from "expo-linking";
+import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { fetchProfileWithRole, ProfileWithRole } from './profileRoles';
@@ -10,7 +10,7 @@ import { fetchProfileWithRole, ProfileWithRole } from './profileRoles';
 type AuthContextType = {
   session: Session | null;
   user: User | null;
-  profile: ProfileWithRole | null
+  profile: ProfileWithRole | null;
   loading: boolean;
   signIn: (email: string) => Promise<void>;
   signUp: (email: string, full_name: string) => Promise<void>;
@@ -29,18 +29,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Flag to track if we're processing a deep link
   const [isProcessingDeepLink, setIsProcessingDeepLink] = useState(false);
+  const isProcessingDeepLinkRef = useRef(false);
+  const handleDeepLinkRef = useRef<(url: string) => Promise<void>>(async () => {});
+  const handleAnonymousPushTokenRef = useRef<() => Promise<void>>(async () => {});
+
+  useEffect(() => {
+    isProcessingDeepLinkRef.current = isProcessingDeepLink;
+  }, [isProcessingDeepLink]);
 
   // Simple function to update login status
   const updateLoginStatus = async (userId: string, isLoggedIn: boolean) => {
     try {
       await supabase
         .from('profiles')
-        .update({ 
-          is_logged_in: isLoggedIn
+        .update({
+          is_logged_in: isLoggedIn,
         })
         .eq('id', userId);
-      
-      console.log(`Updated login status for user ${userId} to ${isLoggedIn ? 'online' : 'offline'}`);
+
+      console.log(
+        `Updated login status for user ${userId} to ${isLoggedIn ? 'online' : 'offline'}`,
+      );
     } catch (error) {
       // Just log the error, don't disrupt the flow
       console.error('Error updating login status:', error);
@@ -51,16 +60,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       // Check if we have a token stored in AsyncStorage
       const token = await AsyncStorage.getItem('expo_push_token');
-      
+
       if (token) {
         // Update the user's profile with the token
         const { error: updateError } = await supabase
           .from('profiles')
           .update({ expo_push_token: token })
           .eq('id', userId);
-          
+
         if (updateError) throw updateError;
-        
+
         console.log('Successfully migrated anonymous push token to user profile');
       }
     } catch (error) {
@@ -71,31 +80,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function getProfile(userId: string) {
     try {
       const data = await fetchProfileWithRole(userId);
-      if (data) setProfile(data)
+      if (data) setProfile(data);
     } catch (error) {
-      console.error('Error fetching profile:', error)
-      setProfile(null)
+      console.error('Error fetching profile:', error);
+      setProfile(null);
     }
   }
 
   // Function to extract tokens from URL fragments
   const extractTokensFromHash = (hash: string) => {
     if (!hash || hash === '') return null;
-    
+
     // Remove the leading '#' if present
     const fragment = hash.startsWith('#') ? hash.substring(1) : hash;
-    
+
     // Split the fragment into key-value pairs
     const params = new URLSearchParams(fragment);
-    
+
     // Extract the tokens
     const accessToken = params.get('access_token');
     const refreshToken = params.get('refresh_token');
-    
+
     if (accessToken && refreshToken) {
       return { accessToken, refreshToken };
     }
-    
+
     return null;
   };
 
@@ -103,40 +112,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const handleDeepLink = async (url: string) => {
     try {
       setIsProcessingDeepLink(true);
-      console.log("Processing deep link:", url);
-      
+      console.log('Processing deep link:', url);
+
       // Check if this URL is coming from an auth flow
       if (url.includes('access_token=') || url.includes('refresh_token=')) {
-        console.log("Auth parameters detected in URL");
-        
+        console.log('Auth parameters detected in URL');
+
         // Extract the fragment from the URL (everything after #)
         const hashIndex = url.indexOf('#');
         if (hashIndex !== -1) {
           const fragment = url.substring(hashIndex);
           const tokens = extractTokensFromHash(fragment);
-          
+
           if (tokens) {
-            console.log("Extracted tokens, setting session");
-            
+            console.log('Extracted tokens, setting session');
+
             // Set the session with the extracted tokens
             const { data, error } = await supabase.auth.setSession({
               access_token: tokens.accessToken,
-              refresh_token: tokens.refreshToken
+              refresh_token: tokens.refreshToken,
             });
-            
+
             if (error) {
-              console.error("Error setting session:", error);
+              console.error('Error setting session:', error);
             } else if (data?.session) {
-              console.log("Session successfully established");
+              console.log('Session successfully established');
               setSession(data.session);
               setUser(data.session.user);
-              
+
               if (data.session.user) {
                 await getProfile(data.session.user.id);
                 // Update login status after successful sign-in via deep link
                 updateLoginStatus(data.session.user.id, true);
               }
-              
+
               // Navigate to the user page after a slight delay
               setTimeout(() => {
                 router.replace('/(tabs)/profile');
@@ -145,10 +154,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         }
       }
-      
+
       setIsProcessingDeepLink(false);
     } catch (error) {
-      console.error("Error handling deep link:", error);
+      console.error('Error handling deep link:', error);
       setIsProcessingDeepLink(false);
     }
   };
@@ -165,21 +174,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         updateLoginStatus(session.user.id, true);
       } else {
         // We're not logged in - check if we need to handle push token
-        handleAnonymousPushToken();
+        handleAnonymousPushTokenRef.current();
       }
       setLoading(false);
     });
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("Auth state change:", _event);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('Auth state change:', _event);
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
         getProfile(session.user.id);
         migrateAnonymousPushToken(session.user.id);
-        
+
         // Update login status when a user signs in
         if (_event === 'SIGNED_IN') {
           updateLoginStatus(session.user.id, true);
@@ -188,12 +199,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // We don't have the user ID here anymore (already signed out)
         // Handle anonymous token after sign out
         setTimeout(() => {
-          handleAnonymousPushToken();
+          handleAnonymousPushTokenRef.current();
         }, 1000);
       }
-      
+
       // Only update loading if we're not processing a deep link
-      if (!isProcessingDeepLink) {
+      if (!isProcessingDeepLinkRef.current) {
         setLoading(false);
       }
     });
@@ -203,29 +214,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const initialURL = await Linking.getInitialURL();
         if (initialURL) {
-          console.log("Found initial URL:", initialURL);
-          await handleDeepLink(initialURL);
+          console.log('Found initial URL:', initialURL);
+          await handleDeepLinkRef.current(initialURL);
         }
       } catch (error) {
-        console.error("Error handling initial URL:", error);
+        console.error('Error handling initial URL:', error);
         setLoading(false);
       }
     };
-    
+
     // Handle initial URL
     handleInitialURL();
-    
+
     // Subscribe to URL open events
     const linkingSubscription = Linking.addEventListener('url', async ({ url }) => {
-      console.log("App opened via URL:", url);
-      await handleDeepLink(url);
+      console.log('App opened via URL:', url);
+      await handleDeepLinkRef.current(url);
     });
 
     return () => {
       subscription.unsubscribe();
       linkingSubscription.remove();
     };
-
   }, []);
 
   // Completely revised approach for token handling
@@ -233,23 +243,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const token = await AsyncStorage.getItem('expo_push_token');
       const deviceId = await AsyncStorage.getItem('device_id');
-      
+
       if (!token || !deviceId) {
         console.log('No push token or device ID to register');
         return;
       }
-      
+
       console.log('Handling anonymous push token');
-      
+
       // Call a custom SQL function to handle this safely
       const { error } = await supabase.rpc('handle_anonymous_token', {
         p_device_id: deviceId,
-        p_token: token
+        p_token: token,
       });
-      
+
       if (error) {
         console.error('Error handling anonymous token with RPC:', error);
-        
+
         // Fallback approach if RPC fails
         console.log('Attempting fallback approach for token registration');
         await registerTokenFallback(deviceId, token);
@@ -260,38 +270,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Error in anonymous token handling:', error);
     }
   };
-  
+
+  handleDeepLinkRef.current = handleDeepLink;
+  handleAnonymousPushTokenRef.current = handleAnonymousPushToken;
+
   // Fallback method if RPC fails
   const registerTokenFallback = async (deviceId: string, token: string) => {
     try {
       // Try to delete first
       try {
-        await supabase
-          .from('anonymous_tokens')
-          .delete()
-          .eq('device_id', deviceId);
+        await supabase.from('anonymous_tokens').delete().eq('device_id', deviceId);
         console.log('Deleted any existing token in fallback');
-      } catch (error) {
+      } catch {
         console.log('No existing token or delete failed in fallback');
       }
-      
+
       // Wait a moment
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       // Then try to insert
-      const { error } = await supabase
-        .from('anonymous_tokens')
-        .insert({
-          device_id: deviceId,
-          token: token,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        });
-        
+      const { error } = await supabase.from('anonymous_tokens').insert({
+        device_id: deviceId,
+        token: token,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      });
+
       if (error) {
         throw error;
       }
-      
+
       console.log('Successfully registered token via fallback');
     } catch (error) {
       console.error('Fallback token registration failed:', error);
@@ -303,13 +311,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email,
       options: {
         shouldCreateUser: false,
-        emailRedirectTo: 'meu.app://(tabs)/profile'
+        emailRedirectTo: 'meu.app://(tabs)/profile',
       },
     });
     if (error) {
       // If the error mentions user doesn't exist or isn't confirmed
-      if (error.message.includes('Email not confirmed') || 
-          error.message.includes('User not found')) {
+      if (
+        error.message.includes('Email not confirmed') ||
+        error.message.includes('User not found')
+      ) {
         throw new Error('This email is not registered. Please sign up first.');
       }
       throw error;
@@ -323,9 +333,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         shouldCreateUser: true,
         emailRedirectTo: 'meu.app://(tabs)/profile',
         data: {
-          full_name: full_name
-        }
-      }
+          full_name: full_name,
+        },
+      },
     });
     if (error) throw error;
   };
@@ -334,28 +344,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       // Store the user ID before we sign out
       const currentUserId = user?.id;
-      
+
       if (currentUserId) {
-        console.log(`Attempting to update login status to offline for user ${currentUserId} before sign-out`);
-        
+        console.log(
+          `Attempting to update login status to offline for user ${currentUserId} before sign-out`,
+        );
+
         // Update login status to false with explicit await
-        await supabase
-          .from('profiles')
-          .update({ is_logged_in: false })
-          .eq('id', currentUserId);
-          
-        console.log(`Successfully updated login status to offline for user ${currentUserId} before sign-out`);
+        await supabase.from('profiles').update({ is_logged_in: false }).eq('id', currentUserId);
+
+        console.log(
+          `Successfully updated login status to offline for user ${currentUserId} before sign-out`,
+        );
       } else {
         console.log('No user ID available for updating login status during sign-out');
       }
-      
+
       // Proceed with sign out
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      
+
       console.log('User successfully signed out');
     } catch (error) {
-      console.error("Error during sign out:", error);
+      console.error('Error during sign out:', error);
       throw error;
     }
   };
@@ -371,7 +382,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Error refreshing profile:', error);
     }
   };
-  
+
   // Add this function
   const reviewerSignIn = async () => {
     try {
@@ -382,15 +393,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           id: 'app-reviewer',
           email: 'reviewer@maineultimateapp.org',
           user_metadata: {
-            full_name: 'App Reviewer'
-          }
-        }
+            full_name: 'App Reviewer',
+          },
+        },
       };
-      
+
       // Set the session state
       setSession(reviewSession as any);
       setUser(reviewSession.user as any);
-      
+
       // Create a fake profile
       const fakeProfile = {
         id: 'reviewer-id',
@@ -409,32 +420,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           'receive_water_notifications',
           'receive_medic_notifications',
         ],
-        role: { key: 'admin', name: 'Admin' }
+        role: { key: 'admin', name: 'Admin' },
       };
-      
+
       setProfile(fakeProfile as any);
       setLoading(false);
-      
+
       // Navigate to the user section
       router.replace('/(user)');
     } catch (error) {
       console.error('Error with reviewer sign-in:', error);
     }
   };
-  
 
   return (
-    <AuthContext.Provider value={{
-      session,
-      user,
-      profile,
-      loading,
-      signIn,
-      signUp,
-      signOut,
-      refreshProfile,
-      reviewerSignIn
-    }}>
+    <AuthContext.Provider
+      value={{
+        session,
+        user,
+        profile,
+        loading,
+        signIn,
+        signUp,
+        signOut,
+        refreshProfile,
+        reviewerSignIn,
+      }}>
       {children}
     </AuthContext.Provider>
   );

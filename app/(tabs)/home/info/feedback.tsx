@@ -31,9 +31,7 @@ const FeedbackScreen = () => {
     try {
       const { error } = await supabase
         .from('feedback')
-        .insert([
-          { subject, message, display: true }
-        ]);
+        .insert([{ subject, message, display: true }]);
 
       if (error) throw error;
 
@@ -50,9 +48,8 @@ const FeedbackScreen = () => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <View style={styles.content}>
@@ -75,11 +72,7 @@ const FeedbackScreen = () => {
               allowFontScaling={false}
               placeholderTextColor={'#999'}
             />
-            <PrimaryButton 
-              title='Submit'
-              disabled={isSubmitting}
-              onPress={handleSubmit}
-            />
+            <PrimaryButton title="Submit" disabled={isSubmitting} onPress={handleSubmit} />
           </View>
         </ScrollView>
       </TouchableWithoutFeedback>
@@ -108,7 +101,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 15,
-    ...typography.text
+    ...typography.text,
   },
   messageInput: {
     height: 150,
@@ -139,8 +132,8 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     fontSize: 14,
     lineHeight: 20,
-    color: 'gray'
-  }
+    color: 'gray',
+  },
 });
 
 export default FeedbackScreen;

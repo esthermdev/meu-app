@@ -23,87 +23,92 @@ export const useFavorites = (session: Session | null) => {
   const [loading, setLoading] = useState(true);
 
   // src/hooks/useFavorites.ts
-// src/hooks/useFavorites.ts
-  const toggleFavorite = useCallback(async (teamId: number) => {
-    if (!session?.user) return { success: false, isFavorited: false };
+  // src/hooks/useFavorites.ts
+  const toggleFavorite = useCallback(
+    async (teamId: number) => {
+      if (!session?.user) return { success: false, isFavorited: false };
 
-    const currentIsFavorited = favorites.has(teamId);
+      const currentIsFavorited = favorites.has(teamId);
 
-    try {
-      // Check if we're trying to add a new favorite
-      if (!currentIsFavorited) {
-        // Check max favorites limit before making the request
-        if (favorites.size >= MAX_FAVORITES) {
-          Alert.alert(
-            'Maximum Favorites Reached',
-            'You can only favorite up to 5 teams. Please remove a team before adding a new one.'
-          );
-          return { success: false, isFavorited: false };
-        }
+      try {
+        // Check if we're trying to add a new favorite
+        if (!currentIsFavorited) {
+          // Check max favorites limit before making the request
+          if (favorites.size >= MAX_FAVORITES) {
+            Alert.alert(
+              'Maximum Favorites Reached',
+              'You can only favorite up to 5 teams. Please remove a team before adding a new one.',
+            );
+            return { success: false, isFavorited: false };
+          }
 
-        // First check if the record already exists
-        const { data: existingFavorite } = await supabase
-          .from('favorite_teams')
-          .select()
-          .eq('team_id', teamId)
-          .eq('user_id', session.user.id)
-          .single();
-
-        // If it exists, we don't need to insert it again
-        if (!existingFavorite) {
-          const { error: insertError } = await supabase
+          // First check if the record already exists
+          const { data: existingFavorite } = await supabase
             .from('favorite_teams')
-            .insert([{ 
-              team_id: teamId,
-              user_id: session.user.id 
-            }]);
+            .select()
+            .eq('team_id', teamId)
+            .eq('user_id', session.user.id)
+            .single();
 
-          if (insertError) throw insertError;
-        }
-      } else {
-        // If we're removing a favorite
-        const { error: deleteError } = await supabase
-          .from('favorite_teams')
-          .delete()
-          .eq('team_id', teamId)
-          .eq('user_id', session.user.id);
+          // If it exists, we don't need to insert it again
+          if (!existingFavorite) {
+            const { error: insertError } = await supabase.from('favorite_teams').insert([
+              {
+                team_id: teamId,
+                user_id: session.user.id,
+              },
+            ]);
 
-        if (deleteError) throw deleteError;
-      }
-
-      // Update local state after successful database operation
-      setFavorites(prev => {
-        const newFavorites = new Set(prev);
-        if (currentIsFavorited) {
-          newFavorites.delete(teamId);
+            if (insertError) throw insertError;
+          }
         } else {
-          newFavorites.add(teamId);
-        }
-        return newFavorites;
-      });
+          // If we're removing a favorite
+          const { error: deleteError } = await supabase
+            .from('favorite_teams')
+            .delete()
+            .eq('team_id', teamId)
+            .eq('user_id', session.user.id);
 
-      return { success: true, isFavorited: !currentIsFavorited };
-    } catch (error: any) {
-      console.error('Error toggling favorite:', error);
-      
-      // Don't show error for duplicate entries
-      if (error.code !== '23505') {
-        Alert.alert('Error', 'Failed to update favorites. Please try again.');
+          if (deleteError) throw deleteError;
+        }
+
+        // Update local state after successful database operation
+        setFavorites((prev) => {
+          const newFavorites = new Set(prev);
+          if (currentIsFavorited) {
+            newFavorites.delete(teamId);
+          } else {
+            newFavorites.add(teamId);
+          }
+          return newFavorites;
+        });
+
+        return { success: true, isFavorited: !currentIsFavorited };
+      } catch (error: any) {
+        console.error('Error toggling favorite:', error);
+
+        // Don't show error for duplicate entries
+        if (error.code !== '23505') {
+          Alert.alert('Error', 'Failed to update favorites. Please try again.');
+        }
+
+        return { success: false, isFavorited: currentIsFavorited };
       }
-      
-      return { success: false, isFavorited: currentIsFavorited };
-    }
-  }, [session, favorites]);
+    },
+    [session, favorites],
+  );
 
   const fetchTeams = async () => {
     try {
       const { data, error } = await supabase
         .from('teams')
-        .select(`
+        .select(
+          `
           *, 
           pool: pool_id (id, name, division_id),
           division_details: division_id (*)
-        `)
+        `,
+        )
         .order('name');
 
       if (error) throw error;
@@ -114,7 +119,7 @@ export const useFavorites = (session: Session | null) => {
     }
   };
 
-  const fetchFavorites = async () => {
+  const fetchFavorites = useCallback(async () => {
     if (!session?.user) return;
 
     try {
@@ -124,24 +129,24 @@ export const useFavorites = (session: Session | null) => {
         .eq('user_id', session.user.id);
 
       if (error) throw error;
-      setFavorites(new Set(data.map(fav => fav.team_id)));
+      setFavorites(new Set(data.map((fav) => fav.team_id)));
     } catch (error) {
       console.error('Error fetching favorites:', error);
       Alert.alert('Error', 'Failed to fetch favorites. Please try again.');
     }
-  };
+  }, [session]);
 
   const loadData = useCallback(async () => {
     setLoading(true);
     await Promise.all([fetchTeams(), fetchFavorites()]);
     setLoading(false);
-  }, [session]);
+  }, [fetchFavorites]);
 
   useEffect(() => {
     if (session) {
       loadData();
     }
-  }, [session]);
+  }, [loadData, session]);
 
   return {
     teams,
@@ -149,6 +154,6 @@ export const useFavorites = (session: Session | null) => {
     loading,
     toggleFavorite,
     loadData,
-    remainingFavorites: MAX_FAVORITES - favorites.size
+    remainingFavorites: MAX_FAVORITES - favorites.size,
   };
 };

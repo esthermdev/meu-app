@@ -1,4 +1,3 @@
-// app/(tabs)/home/mygames.tsx
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -62,10 +61,10 @@ const MyGames = () => {
     if (session) {
       fetchFavoriteGames(session.user.id);
     }
-  }, []);
+  }, [session]);
 
   // Set up real-time subscription for favorite games
-  const gameIds = games.map(game => game.id);
+  const gameIds = games.map((game) => game.id);
   useFavoriteGamesSubscription(gameIds, () => {
     if (session) {
       fetchFavoriteGames(session.user.id);
@@ -76,8 +75,8 @@ const MyGames = () => {
     if (games.length > 0) {
       // Create a map to standardize dates and ensure uniqueness
       const dateMap = new Map<string, string>();
-      
-      games.forEach(game => {
+
+      games.forEach((game) => {
         if (game.datetime?.date) {
           // Create a standardized key for comparison by parsing and reformatting
           try {
@@ -85,30 +84,30 @@ const MyGames = () => {
             // Use ISO format date part for deduplication key
             const standardKey = dateObj.toISOString().split('T')[0];
             dateMap.set(standardKey, game.datetime.date);
-          } catch (e) {
+          } catch {
             // If date parsing fails, fall back to string normalization
             const standardKey = game.datetime.date.trim();
             dateMap.set(standardKey, game.datetime.date);
           }
         }
       });
-      
+
       // Convert the map values (original date strings) to an array
       const uniqueDates = Array.from(dateMap.values());
-      
+
       // Sort dates chronologically
       uniqueDates.sort((a, b) => {
         return new Date(a).getTime() - new Date(b).getTime();
       });
-      
+
       setDates(uniqueDates);
-      
+
       // Set first date as selected by default
       if (uniqueDates.length > 0 && !selectedDate) {
         setSelectedDate(uniqueDates[0]);
       }
     }
-  }, [games]);
+  }, [games, selectedDate]);
 
   useEffect(() => {
     if (selectedDate) {
@@ -116,46 +115,46 @@ const MyGames = () => {
         // Parse the selected date for comparison
         const selectedDateObj = new Date(selectedDate);
         const selectedDateStr = selectedDateObj.toISOString().split('T')[0];
-        
-        const filtered = games.filter(game => {
+
+        const filtered = games.filter((game) => {
           try {
             // Check if the game has a datetime
             if (!game.datetime?.date) {
               return false;
             }
-            
+
             // Parse the game date for standardized comparison
             const gameDateObj = new Date(game.datetime.date);
             const gameDateStr = gameDateObj.toISOString().split('T')[0];
-            
+
             return gameDateStr === selectedDateStr;
-          } catch (e) {
+          } catch {
             // If date parsing fails, fall back to string comparison
             const normalizedGameDate = game.datetime?.date?.trim() ?? '';
             const normalizedSelectedDate = selectedDate.trim();
-            
+
             return normalizedGameDate === normalizedSelectedDate;
           }
         });
-        
+
         // Sort filtered games by time
         filtered.sort((a, b) => {
           const timeA = a.datetime?.time || '';
           const timeB = b.datetime?.time || '';
           return timeA.localeCompare(timeB);
         });
-        
+
         setFilteredGames(filtered);
-      } catch (e) {
+      } catch {
         // If date parsing completely fails, fall back to basic string comparison
         const normalizedSelectedDate = selectedDate.trim();
-        const filtered = games.filter(game => {
+        const filtered = games.filter((game) => {
           const gameDate = game.datetime?.date || '';
           const normalizedGameDate = gameDate.trim();
-          
+
           return normalizedGameDate === normalizedSelectedDate;
         });
-        
+
         setFilteredGames(filtered);
       }
     } else {
@@ -182,20 +181,22 @@ const MyGames = () => {
         return;
       }
 
-      const teamIds = favoriteTeams.map(team => team.team_id);
+      const teamIds = favoriteTeams.map((team) => team.team_id);
       setFavoriteTeamIds(teamIds);
 
       // Then fetch all games where either team1 or team2 is in the favorite teams
       const { data, error: gamesError } = await supabase
         .from('games')
-        .select(`
+        .select(
+          `
           *, 
           datetime: datetime_id (*),
           team1:team1_id (*),
           team2:team2_id (*),
           scores(*),
           field: field_id (*)
-        `)
+        `,
+        )
         .or(`team1_id.in.(${teamIds.join(',')}),team2_id.in.(${teamIds.join(',')})`)
         .order('datetime_id', { ascending: true });
 
@@ -235,12 +236,13 @@ const MyGames = () => {
 
   // Helper function to update local state optimistically
   const updateLocalGameState = (gameId: number, team1Score: number, team2Score: number) => {
-    const updatedGames = games.map(game => {
+    const updatedGames = games.map((game) => {
       if (game.id === gameId) {
         // Create proper structure for scores array
-        const updatedScores = game.scores && game.scores.length > 0
-          ? [...game.scores] // Copy existing scores array
-          : []; // Create new array if none exists
+        const updatedScores =
+          game.scores && game.scores.length > 0
+            ? [...game.scores] // Copy existing scores array
+            : []; // Create new array if none exists
 
         if (updatedScores.length > 0) {
           // Update first score in array
@@ -248,7 +250,7 @@ const MyGames = () => {
             ...updatedScores[0],
             team1_score: team1Score,
             team2_score: team2Score,
-            game_id: gameId
+            game_id: gameId,
           };
         } else {
           // Add new score to array
@@ -258,30 +260,37 @@ const MyGames = () => {
             game_id: gameId,
             id: 0, // Temporary ID, will be replaced on next fetch
             is_finished: false, // Default value
-            round_id: null // Default value
+            round_id: null, // Default value
           });
         }
 
         return {
           ...game,
-          scores: updatedScores
+          scores: updatedScores,
         };
       }
       return game;
     });
 
     setGames(updatedGames);
-    setFilteredGames(prev => prev.map(game => {
-      if (game.id === gameId) {
-        const found = updatedGames.find(g => g.id === game.id);
-        return found || game;
-      }
-      return game;
-    }));
+    setFilteredGames((prev) =>
+      prev.map((game) => {
+        if (game.id === gameId) {
+          const found = updatedGames.find((g) => g.id === game.id);
+          return found || game;
+        }
+        return game;
+      }),
+    );
   };
 
   // This function processes the score update with optimistic UI
-  const submitScore = async (team1ScoreStr: string, team2ScoreStr: string, _datetimeId: number | null, _fieldId: number | null) => {
+  const submitScore = async (
+    team1ScoreStr: string,
+    team2ScoreStr: string,
+    _datetimeId: number | null,
+    _fieldId: number | null,
+  ) => {
     if (!currentGame) return;
 
     const team1ScoreNum = parseInt(team1ScoreStr);
@@ -314,16 +323,10 @@ const MyGames = () => {
         {dates.map((date) => (
           <TouchableOpacity
             key={date}
-            style={[
-              styles.dateButton,
-              selectedDate === date && styles.selectedDateButton
-            ]}
-            onPress={() => setSelectedDate(date)}
-          >
-            <CustomText style={[
-              styles.dateButtonText,
-              selectedDate === date && styles.selectedDateText
-            ]}>
+            style={[styles.dateButton, selectedDate === date && styles.selectedDateButton]}
+            onPress={() => setSelectedDate(date)}>
+            <CustomText
+              style={[styles.dateButtonText, selectedDate === date && styles.selectedDateText]}>
               {formatDate(date, 'short')}
             </CustomText>
           </TouchableOpacity>
@@ -338,7 +341,9 @@ const MyGames = () => {
     return (
       <View style={styles.gameCard}>
         <View style={styles.gameHeader}>
-          <CustomText style={styles.dateText}>{formatDate(item.datetime?.date, 'short')}</CustomText>
+          <CustomText style={styles.dateText}>
+            {formatDate(item.datetime?.date, 'short')}
+          </CustomText>
           <View style={styles.timeContainer}>
             <CustomText style={styles.timeText}>{formatTime(item.datetime?.time)}</CustomText>
           </View>
@@ -352,13 +357,18 @@ const MyGames = () => {
             {/* Team 1 */}
             <View style={styles.teamRow}>
               <Image
-                source={item.team1.avatar_uri ? { uri: item.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
+                source={
+                  item.team1.avatar_uri
+                    ? { uri: item.team1.avatar_uri }
+                    : require('@/assets/images/avatar-placeholder.png')
+                }
                 style={styles.teamLogo}
               />
-              <CustomText style={[
-                styles.teamText,
-                favoriteTeamIds.includes(item.team1.id) && styles.highlightedTeam
-              ]}>
+              <CustomText
+                style={[
+                  styles.teamText,
+                  favoriteTeamIds.includes(item.team1.id) && styles.highlightedTeam,
+                ]}>
                 {item.team1.name}
               </CustomText>
             </View>
@@ -366,13 +376,18 @@ const MyGames = () => {
             {/* Team 2 */}
             <View style={styles.teamRow}>
               <Image
-                source={item.team2.avatar_uri ? { uri: item.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
+                source={
+                  item.team2.avatar_uri
+                    ? { uri: item.team2.avatar_uri }
+                    : require('@/assets/images/avatar-placeholder.png')
+                }
                 style={styles.teamLogo}
               />
-              <CustomText style={[
-                styles.teamText,
-                favoriteTeamIds.includes(item.team2.id) && styles.highlightedTeam
-              ]}>
+              <CustomText
+                style={[
+                  styles.teamText,
+                  favoriteTeamIds.includes(item.team2.id) && styles.highlightedTeam,
+                ]}>
                 {item.team2.name}
               </CustomText>
             </View>
@@ -394,27 +409,30 @@ const MyGames = () => {
             <CustomText style={styles.completedText}>Game completed</CustomText>
           </View>
         ) : (
-          <TouchableOpacity
-            style={styles.updateScoreButton}
-            onPress={() => openScoreModal(item)}
-          >
+          <TouchableOpacity style={styles.updateScoreButton} onPress={() => openScoreModal(item)}>
             <CustomText style={styles.updateScoreText}>Update Score</CustomText>
           </TouchableOpacity>
         )}
       </View>
     );
-  }
+  };
 
   if (!session) {
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.messageText}>Please <Text style={styles.linkText} onPress={() => router.push('/(user)')}>log in</Text> to view your favorite games</Text>
+        <Text style={styles.messageText}>
+          Please{' '}
+          <Text style={styles.linkText} onPress={() => router.push('/(user)')}>
+            log in
+          </Text>{' '}
+          to view your favorite games
+        </Text>
       </View>
     );
   }
 
   if (loading && !refreshing) {
-    return <LoadingIndicator message='Loading your games...' />;
+    return <LoadingIndicator message="Loading your games..." />;
   }
 
   return (
@@ -426,9 +444,7 @@ const MyGames = () => {
             data={filteredGames}
             renderItem={renderGame}
             keyExtractor={(item) => item.id.toString()}
-            refreshControl={
-              <RefreshControl refreshing={false} onRefresh={onRefresh} />
-            }
+            refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />}
             contentContainerStyle={styles.listContainer}
           />
 
@@ -455,13 +471,14 @@ const MyGames = () => {
       ) : (
         <View style={styles.centerContainer}>
           <Text style={styles.messageText}>
-            No games found. Add some teams to your favorites list <Text
-              onPress={() => router.push('/(tabs)/profile')}
-              style={styles.linkText}
-            >here</Text>!
+            No games found. Add some teams to your favorites list{' '}
+            <Text onPress={() => router.push('/(tabs)/profile')} style={styles.linkText}>
+              here
+            </Text>
+            !
           </Text>
           <PrimaryButton
-            title='Go back'
+            title="Go back"
             onPress={() => router.back()}
             style={{ backgroundColor: '#000', padding: 12, width: 125 }}
           />
@@ -480,12 +497,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    gap: 15
+    gap: 15,
   },
   linkText: {
     color: '#EA1D25',
     ...typography.heading5,
-    textDecorationLine: 'underline'
+    textDecorationLine: 'underline',
   },
   messageText: {
     ...typography.heading5,
@@ -501,13 +518,13 @@ const styles = StyleSheet.create({
   dateLabel: {
     ...typography.textBold,
     color: '#333',
-    marginRight: 12
+    marginRight: 12,
   },
   dateScroll: {
     flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 7
+    padding: 7,
   },
   dateButton: {
     paddingVertical: 8,
@@ -516,7 +533,7 @@ const styles = StyleSheet.create({
   },
   dateButtonText: {
     ...typography.textMedium,
-    color: '#999999'
+    color: '#999999',
   },
   selectedDateButton: {
     backgroundColor: '#FE0000',
@@ -549,7 +566,7 @@ const styles = StyleSheet.create({
   listContainer: {
     paddingTop: 5,
     paddingHorizontal: 20,
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   gameCard: {
     backgroundColor: '#fff',
@@ -571,7 +588,7 @@ const styles = StyleSheet.create({
   dateText: {
     ...typography.textBold,
     color: '#999',
-    width: 100
+    width: 100,
   },
   timeContainer: {
     backgroundColor: '#999',
@@ -580,13 +597,13 @@ const styles = StyleSheet.create({
   },
   timeText: {
     ...typography.text,
-    color: '#fff'
+    color: '#fff',
   },
   fieldText: {
     ...typography.textBold,
     color: '#276B5D',
     width: 100,
-    textAlign: 'right'
+    textAlign: 'right',
   },
   teamText: {
     ...typography.textLargeSemiBold,
@@ -611,7 +628,7 @@ const styles = StyleSheet.create({
   updateScoreText: {
     ...typography.textSmallBold,
     color: '#EA1D25',
-    textDecorationLine: 'underline'
+    textDecorationLine: 'underline',
   },
   completedContainer: {
     alignItems: 'center',

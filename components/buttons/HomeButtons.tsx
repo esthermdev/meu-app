@@ -8,27 +8,32 @@ const buttonWidth = (width - 80) / 2;
 type FontAwesomeNames = keyof typeof FontAwesome.glyphMap;
 
 interface HomeButtonsProps {
-    title: string;
-    icon: FontAwesomeNames;
-    buttonColor: object;
-    route?: Href<string | object>;
-    disabled: boolean;
+  title: string;
+  icon: FontAwesomeNames;
+  buttonColor: object;
+  route?: Href;
+  disabled: boolean;
 }
 
 export const HomeButtons: React.FC<HomeButtonsProps> = ({
-    title, icon, buttonColor, route, disabled
+  title,
+  icon,
+  buttonColor,
+  route,
+  disabled,
 }) => {
-    return (
-        <TouchableOpacity 
-            style={[styles.buttonStyle, buttonColor]}
-            onPress={() => route ? router.push(route) : router.dismissAll()}
-            disabled={disabled}
-        >
-            <FontAwesome name={icon} size={24} color='#fff' />
-            <Text maxFontSizeMultiplier={1.1} style={styles.buttonText}>{title}</Text>
-        </TouchableOpacity>
-    );
-}
+  return (
+    <TouchableOpacity
+      style={[styles.buttonStyle, buttonColor]}
+      onPress={() => (route ? router.push(route) : router.dismissAll())}
+      disabled={disabled}>
+      <FontAwesome name={icon} size={24} color="#fff" />
+      <Text maxFontSizeMultiplier={1.1} style={styles.buttonText}>
+        {title}
+      </Text>
+    </TouchableOpacity>
+  );
+};
 
 export default HomeButtons;
 
@@ -40,11 +45,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderRadius: 22,
     minWidth: buttonWidth,
-    minHeight: 120 
+    minHeight: 120,
   },
   buttonText: {
     fontSize: 18,
     fontFamily: 'OutfitBold',
-    color: '#fff'
-  }
-})
+    color: '#fff',
+  },
+});

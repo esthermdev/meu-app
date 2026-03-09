@@ -1,7 +1,15 @@
 // components/medical/RequestsList.tsx
-import { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
-import { Card } from '@/components/Card'
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+  SafeAreaView,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import { Card } from '@/components/Card';
 import { MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthProvider';
@@ -25,11 +33,49 @@ type Profile = Database['public']['Tables']['profiles']['Row'];
 const TrainerRequestsList = () => {
   const [requests, setRequests] = useState<MedicalRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const { profile } = useAuth() as { profile: Profile };
+  const realtimeRefreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const fetchRequests = useCallback(async (isInitialLoad: boolean = false) => {
+    try {
+      if (isInitialLoad) {
+        setLoading(true);
+      } else {
+        setRefreshing(true);
+      }
+
+      console.log('Fetching trainer requests...');
+      const { data, error } = await supabase
+        .from('medical_requests')
+        .select('*, trainer:profiles(full_name), fields:fields(name)')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setRequests(data as MedicalRequest[]);
+      console.log(`Loaded ${data?.length || 0} pending trainer requests`);
+    } catch (error) {
+      console.error('Error fetching requests:', error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
+
+  const scheduleRealtimeRefresh = useCallback(() => {
+    if (realtimeRefreshTimeoutRef.current) {
+      clearTimeout(realtimeRefreshTimeoutRef.current);
+    }
+
+    realtimeRefreshTimeoutRef.current = setTimeout(() => {
+      fetchRequests(false);
+    }, 250);
+  }, [fetchRequests]);
 
   useEffect(() => {
-    fetchRequests();
-    
+    fetchRequests(true);
+
     // Set up real-time subscription
     const subscription = supabase
       .channel('trainer_requests_channel')
@@ -38,12 +84,12 @@ const TrainerRequestsList = () => {
         {
           event: '*',
           schema: 'public',
-          table: 'medical_requests'
+          table: 'medical_requests',
         },
         (payload) => {
           console.log('Trainer requests real-time update:', payload);
-          fetchRequests();
-        }
+          scheduleRealtimeRefresh();
+        },
       )
       .subscribe((status) => {
         console.log('Trainer requests subscription status:', status);
@@ -52,40 +98,24 @@ const TrainerRequestsList = () => {
     return () => {
       console.log('Unsubscribing from trainer_requests_channel');
       subscription.unsubscribe();
+      if (realtimeRefreshTimeoutRef.current) {
+        clearTimeout(realtimeRefreshTimeoutRef.current);
+      }
     };
-  }, [profile?.id]); // Add profile dependency to avoid stale closures
-
-  const fetchRequests = async () => {
-    try {
-      console.log('Fetching trainer requests...');
-      const { data, error } = await supabase
-        .from('medical_requests')
-        .select('*, trainer:profiles(full_name), fields:fields(name)')
-        .eq('status', 'pending') // For TrainerRequestsList.tsx
-        .order('created_at', { ascending: false });
-  
-      if (error) throw error;
-      setRequests(data as MedicalRequest[]);
-      console.log(`Loaded ${data?.length || 0} pending trainer requests`);
-    } catch (error) {
-      console.error('Error fetching requests:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [fetchRequests, profile?.id, scheduleRealtimeRefresh]);
 
   const resolveRequest = async (requestId: number) => {
     try {
       // Optimistic update - remove from local state immediately
-      setRequests(prev => prev.filter(request => request.id !== requestId));
-      
+      setRequests((prev) => prev.filter((request) => request.id !== requestId));
+
       const { data, error } = await supabase
         .from('medical_requests')
         .update({
           status: 'resolved' as Database['public']['Enums']['request_status'],
           assigned_to: profile.id,
           trainer: profile.id,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', requestId)
         .eq('status', 'pending')
@@ -95,14 +125,17 @@ const TrainerRequestsList = () => {
       if (error) {
         console.error('Supabase error details:', error);
         // Revert optimistic update on error
-        fetchRequests();
+        fetchRequests(false);
         throw error;
       }
 
       if (!data) {
         // Revert optimistic update if request was already taken
-        fetchRequests();
-        Alert.alert('Request Unavailable', 'This request has already been handled by another trainer.');
+        fetchRequests(false);
+        Alert.alert(
+          'Request Unavailable',
+          'This request has already been handled by another trainer.',
+        );
       }
     } catch (error) {
       console.error('Error resolving request:', error);
@@ -118,7 +151,7 @@ const TrainerRequestsList = () => {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
@@ -144,19 +177,19 @@ const TrainerRequestsList = () => {
         return {
           backgroundColor: '#EA1D253D',
           borderColor: '#EA1D25',
-          borderWidth: 1
+          borderWidth: 1,
         }; // Red for high priority
       case 'medium':
         return {
           backgroundColor: '#ED8C223D',
           borderColor: '#ED8C22',
-          borderWidth: 1
+          borderWidth: 1,
         }; // Orange for medium priority
       case 'low':
         return {
           backgroundColor: '#0080003D',
           borderColor: '#008000',
-          borderWidth: 1
+          borderWidth: 1,
         }; // Green for low priority
       default:
         return { backgroundColor: '#FFA500' }; // Orange as default
@@ -201,7 +234,9 @@ const TrainerRequestsList = () => {
           </View>
           <View style={styles.infoRow}>
             <CustomText style={styles.labelText}>Trainer:</CustomText>
-            <CustomText style={styles.trainerNameText}>{item.trainer ? item.trainer.full_name : 'Unassigned'}</CustomText>
+            <CustomText style={styles.trainerNameText}>
+              {item.trainer ? item.trainer.full_name : 'Unassigned'}
+            </CustomText>
           </View>
           <View style={styles.infoRow}>
             <CustomText style={styles.labelText}>Created:</CustomText>
@@ -212,23 +247,18 @@ const TrainerRequestsList = () => {
         {item.description_of_emergency && (
           <View style={styles.descriptionContainer}>
             <CustomText style={styles.descriptionLabel}>Description of Emergency:</CustomText>
-            <CustomText style={styles.descriptionText}>
-              {item.description_of_emergency}
-            </CustomText>
+            <CustomText style={styles.descriptionText}>{item.description_of_emergency}</CustomText>
           </View>
         )}
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.resolveButton}
-            onPress={() => resolveRequest(item.id)}
-          >
+          <TouchableOpacity style={styles.resolveButton} onPress={() => resolveRequest(item.id)}>
             <CustomText style={styles.buttonText}>Resolved</CustomText>
             <MaterialIcons name="check" size={14} color="white" />
           </TouchableOpacity>
         </View>
       </Card>
-    )
+    );
   };
 
   if (loading) {
@@ -252,6 +282,8 @@ const TrainerRequestsList = () => {
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.listContainer}
+          refreshing={refreshing}
+          onRefresh={() => fetchRequests(false)}
         />
       )}
     </SafeAreaView>
@@ -263,7 +295,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
   },
-  // Loading and empty 
+  // Loading and empty
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -282,20 +314,20 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     ...typography.textBold,
-    color: '#fff'
+    color: '#fff',
   },
   // Request card styles
   listContainer: {
     paddingHorizontal: 15,
     paddingTop: 3,
-    paddingBottom: 15
+    paddingBottom: 15,
   },
   cardContainer: {
     borderRadius: 12,
     padding: 10,
     marginTop: 12,
     backgroundColor: '#262626',
-    borderWidth: 0
+    borderWidth: 0,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -303,16 +335,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 8,
     borderBottomWidth: 1,
-    borderColor: '#CCCCCC66'
+    borderColor: '#CCCCCC66',
   },
   priorityBadge: {
     paddingHorizontal: 7,
     borderRadius: 20,
-    paddingVertical: 2
+    paddingVertical: 2,
   },
   priorityText: {
     color: '#fff',
-    ...typography.text
+    ...typography.text,
   },
   requestIdBadge: {
     backgroundColor: '#EA1D25',
@@ -332,7 +364,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     paddingLeft: 2,
     paddingRight: 3,
-    paddingVertical: 2
+    paddingVertical: 2,
   },
   fieldText: {
     color: '#262626',
@@ -340,7 +372,7 @@ const styles = StyleSheet.create({
   },
   infoSection: {
     gap: 8,
-    marginVertical: 15
+    marginVertical: 15,
   },
   infoRow: {
     flexDirection: 'row',
@@ -395,7 +427,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   resolveButton: {
     flex: 1,

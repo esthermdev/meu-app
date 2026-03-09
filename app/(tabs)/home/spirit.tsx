@@ -1,15 +1,17 @@
-import { View, StyleSheet, ScrollView, Linking, TouchableOpacity } from 'react-native'
-import CustomText from '@/components/CustomText'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { View, StyleSheet, ScrollView, Linking, TouchableOpacity } from 'react-native';
+import CustomText from '@/components/CustomText';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function SpiritPage() {
   const openSpiritScoreForm = () => {
-    Linking.openURL('https://forms.gle/heqcEkMLGPUeYT7L7')
-  }
+    Linking.openURL('https://forms.gle/heqcEkMLGPUeYT7L7');
+  };
 
   const openPDF = () => {
-    Linking.openURL('https://opleqymigooimduhlvym.supabase.co/storage/v1/object/public/documents/Spirit%20Points%20_%20Games%20Version2.pdf')
-  }
+    Linking.openURL(
+      'https://opleqymigooimduhlvym.supabase.co/storage/v1/object/public/documents/Spirit%20Points%20_%20Games%20Version2.pdf',
+    );
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -20,8 +22,10 @@ export default function SpiritPage() {
             This year, we have{' '}
             <CustomText variant="textBold" style={styles.name}>
               Lucas Brown
-            </CustomText>
-            {' '}as our Spirit Coordinator! He'll be showing teams fun sideline and timeout games, running some Spirit points, and answering any questions teams have about Spirit of the Game!
+            </CustomText>{' '}
+            as our Spirit Coordinator! He'll be showing teams fun sideline and timeout games,
+            running some Spirit points, and answering any questions teams have about Spirit of the
+            Game!
           </CustomText>
         </View>
 
@@ -54,7 +58,7 @@ export default function SpiritPage() {
         </TouchableOpacity>
       </View>
     </ScrollView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -117,4 +121,4 @@ const styles = StyleSheet.create({
   pdfButtonSubtext: {
     color: '#666',
   },
-})
+});

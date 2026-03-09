@@ -1,6 +1,12 @@
 import { typography } from '@/constants/Typography';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, Text, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
 import CustomText from '../CustomText';
 
 interface PrimaryButtonProps {
@@ -22,15 +28,10 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
 }) => {
   return (
     <TouchableOpacity
-      style={[
-        styles.button,
-        disabled && styles.buttonDisabled,
-        style,
-      ]}
+      style={[styles.button, disabled && styles.buttonDisabled, style]}
       onPress={onPress}
       disabled={disabled || loading}
-      activeOpacity={0.8}
-    >
+      activeOpacity={0.8}>
       {loading ? (
         <ActivityIndicator color="#FFFFFF" size="small" />
       ) : (

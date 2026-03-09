@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View, ImageBackground } from 'react-native';
 import { router, Href } from 'expo-router';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { fonts, typography } from '@/constants/Typography';
+import { typography } from '@/constants/Typography';
 import CustomText from '../CustomText';
 
 type FontAwesomeNames = keyof typeof FontAwesome.glyphMap;
@@ -13,7 +13,7 @@ interface LargeCardButtonProps {
   subtitle: string;
   icon?: FontAwesomeNames | React.ReactNode;
   backgroundColor?: string;
-  route?: Href<string | object>;
+  route?: Href;
   disabled?: boolean;
   backgroundImage?: any; // For image background
   renderCustomBackground?: () => React.ReactNode; // For complex backgrounds
@@ -33,14 +33,10 @@ const LargeCardButton: React.FC<LargeCardButtonProps> = ({
     if (renderCustomBackground) {
       return renderCustomBackground();
     }
-    
+
     if (backgroundImage) {
       return (
-        <ImageBackground 
-          source={backgroundImage} 
-          style={styles.backgroundImage}
-          resizeMode="cover"
-        >
+        <ImageBackground source={backgroundImage} style={styles.backgroundImage} resizeMode="cover">
           <View style={styles.watchLiveContainer}>
             <MaterialIcons name="play-circle" size={28} color="#fff" />
             <CustomText style={styles.text}>{title}</CustomText>
@@ -48,19 +44,12 @@ const LargeCardButton: React.FC<LargeCardButtonProps> = ({
         </ImageBackground>
       );
     }
-    
+
     return (
       <View style={[styles.contentContainer, { backgroundColor }]}>
-        {icon && typeof icon !== 'string' && (
-          <View>{icon}</View>
-        )}
+        {icon && typeof icon !== 'string' && <View>{icon}</View>}
 
-        <CustomText 
-            style={[
-              styles.text, 
-              { color: disabled ? '#e5d9c8' : '#ffffff' }
-            ]}
-        >
+        <CustomText style={[styles.text, { color: disabled ? '#e5d9c8' : '#ffffff' }]}>
           {title}
         </CustomText>
       </View>
@@ -69,13 +58,9 @@ const LargeCardButton: React.FC<LargeCardButtonProps> = ({
 
   return (
     <TouchableOpacity
-      style={[
-        styles.button,
-        styles.halfWidth,
-      ]}
-      onPress={() => route ? router.push(route) : null}
-      disabled={disabled}
-    >
+      style={[styles.button, styles.halfWidth]}
+      onPress={() => (route ? router.push(route) : null)}
+      disabled={disabled}>
       {renderBackground()}
     </TouchableOpacity>
   );
@@ -99,7 +84,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 14,
     justifyContent: 'space-between',
-    alignContent: 'space-between'
+    alignContent: 'space-between',
   },
   watchLiveContainer: {
     padding: 15,
@@ -109,8 +94,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#fff',
-    ...typography.textLargeBold
-
+    ...typography.textLargeBold,
   },
 });
 

@@ -7,7 +7,7 @@ export default function ScheduleLayout() {
       <Stack.Screen
         name="index"
         options={{
-          header: () => <ScreenTitle title='Schedule' route={'/(tabs)'} showBackButton={false} />
+          header: () => <ScreenTitle title="Schedule" showBackButton={false} />,
         }}
       />
       <Stack.Screen name="[division]" options={{ headerShown: false }} />

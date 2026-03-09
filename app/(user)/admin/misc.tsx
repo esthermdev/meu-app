@@ -49,7 +49,11 @@ export default function MiscInfoScreen() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return (
+      date.toLocaleDateString() +
+      ' ' +
+      date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    );
   };
 
   if (loading && !refreshing) {
@@ -62,12 +66,9 @@ export default function MiscInfoScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView 
-        contentContainerStyle={{ padding: 20, }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
+      <ScrollView
+        contentContainerStyle={{ padding: 20 }}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         {feedback.length === 0 ? (
           <View style={styles.centerContent}>
             <CustomText style={styles.emptyText}>No feedback submitted yet</CustomText>

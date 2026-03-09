@@ -6,38 +6,44 @@ import CustomText from '@/components/CustomText';
 const CreditsScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.contentContainer}
-      >
-        <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.title}>Credits</CustomText>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
+        <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.title}>
+          Credits
+        </CustomText>
         <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.content}>
           This app was developed by{' '}
-          <Link href="https://www.linkedin.com/in/esther-devadas-6ab90a20b/" style={styles.linkStyle}>
+          <Link
+            href="https://www.linkedin.com/in/esther-devadas-6ab90a20b/"
+            style={styles.linkStyle}>
             Esther Devadas
-          </Link>.
+          </Link>
+          .
         </CustomText>
-        <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.content}>Design credits go to her sister, Deborah Devadas.</CustomText>
-        
+        <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.content}>
+          Design credits go to her sister, Deborah Devadas.
+        </CustomText>
+
         <View style={styles.section}>
-          <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.sectionTitle}>Technology Stack</CustomText>
+          <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.sectionTitle}>
+            Technology Stack
+          </CustomText>
           <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.content}>
-            • React Native & Expo{'\n'}
-            • TypeScript{'\n'}
-            • Supabase{'\n'}
-            • Expo Router
+            • React Native & Expo{'\n'}• TypeScript{'\n'}• Supabase{'\n'}• Expo Router
           </CustomText>
         </View>
-        
+
         <View style={styles.section}>
-          <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.sectionTitle}>Special Thanks</CustomText>
+          <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.sectionTitle}>
+            Special Thanks
+          </CustomText>
           <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.content}>
-            To all the volunteers, staff, and participants who make Maine Ultimate
-            events possible.
+            To all the volunteers, staff, and participants who make Maine Ultimate events possible.
           </CustomText>
         </View>
-        
-        <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.version}>Version 2.0.6</CustomText>
+
+        <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.version}>
+          Version 2.0.6
+        </CustomText>
       </ScrollView>
     </SafeAreaView>
   );
@@ -77,7 +83,7 @@ const styles = StyleSheet.create({
   linkStyle: {
     textDecorationLine: 'underline',
     color: '#2871FF',
-    ...typography.textMedium
+    ...typography.textMedium,
   },
   version: {
     ...typography.text,

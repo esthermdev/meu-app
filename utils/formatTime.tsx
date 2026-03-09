@@ -10,7 +10,7 @@ export const formatTime = (timeString: string | null | undefined) => {
     } else {
       return timeString; // Return original string if it's too short
     }
-  } catch (error) {
+  } catch {
     return 'Invalid time';
   }
 };

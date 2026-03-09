@@ -1,16 +1,20 @@
 // components/features/requests/FulfilledWaterRequestList.tsx
 
 import { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { Card } from '@/components/Card';
 import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/context/AuthProvider';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
-import { getTimeSince } from '@/utils/getTimeSince';
-import { getTimeColor } from '@/utils/getTimeColor';
 
 // Define types based on your Supabase schema
 type WaterRequest = Database['public']['Tables']['water_requests']['Row'];
@@ -30,7 +34,11 @@ const FulfilledWaterRequestsList = () => {
     fetchFulfilledRequests();
     const subscription = supabase
       .channel('water_requests')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'water_requests' }, fetchFulfilledRequests)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'water_requests' },
+        fetchFulfilledRequests,
+      )
       .subscribe();
 
     return () => {
@@ -59,16 +67,12 @@ const FulfilledWaterRequestsList = () => {
   const deleteRequest = async (requestId: number) => {
     try {
       // Simply delete the record since it's already fulfilled
-      const { error } = await supabase
-        .from('water_requests')
-        .delete()
-        .eq('id', requestId);
+      const { error } = await supabase.from('water_requests').delete().eq('id', requestId);
 
       if (error) throw error;
 
       // Update the local state by removing the deleted request
-      setRequests(requests.filter(req => req.id !== requestId));
-
+      setRequests(requests.filter((req) => req.id !== requestId));
     } catch (error) {
       console.error('Error removing water request:', error);
       Alert.alert('Error', 'Failed to remove the request. Please try again.');
@@ -82,16 +86,13 @@ const FulfilledWaterRequestsList = () => {
       [
         {
           text: 'Cancel',
-          style: 'cancel'
+          style: 'cancel',
         },
         {
           text: 'Clear All',
           style: 'destructive',
           onPress: async () => {
             try {
-              // Get all request IDs
-              const requestIds = requests.map(req => req.id);
-
               // Delete all fulfilled requests
               const { error } = await supabase
                 .from('water_requests')
@@ -102,19 +103,17 @@ const FulfilledWaterRequestsList = () => {
 
               // Clear the local state
               setRequests([]);
-
             } catch (error) {
               console.error('Error clearing all water requests:', error);
               Alert.alert('Error', 'Failed to clear all requests. Please try again.');
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     );
   };
 
   const renderItem = ({ item }: { item: WaterRequest }) => {
-    
     return (
       <Card style={styles.cardContainer}>
         <View style={styles.cardHeader}>
@@ -122,17 +121,25 @@ const FulfilledWaterRequestsList = () => {
           <View style={styles.requestIdBadge}>
             <CustomText style={styles.requestIdText}>#{item.id}</CustomText>
           </View>
-          <View style={[styles.statusBadge, { backgroundColor: '#6EDF283D', borderColor: '#6EDF28', borderWidth: 1 }]}>
+          <View
+            style={[
+              styles.statusBadge,
+              {
+                backgroundColor: '#6EDF283D',
+                borderColor: '#6EDF28',
+                borderWidth: 1,
+              },
+            ]}>
             <CustomText style={styles.statusText}>Resolved</CustomText>
           </View>
         </View>
-        
+
         <View style={styles.infoSection}>
           <View style={styles.infoRow}>
             <CustomText style={styles.labelText}>Field:</CustomText>
             <CustomText style={styles.valueText}>Field {item.field_number}</CustomText>
           </View>
-          
+
           {item.volunteer && (
             <View style={styles.infoRow}>
               <CustomText style={styles.labelText}>Volunteer:</CustomText>
@@ -140,11 +147,8 @@ const FulfilledWaterRequestsList = () => {
             </View>
           )}
         </View>
-        
-        <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={() => deleteRequest(item.id)}
-        >
+
+        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteRequest(item.id)}>
           <CustomText style={styles.deleteButtonText}>Remove</CustomText>
         </TouchableOpacity>
       </Card>
@@ -177,10 +181,7 @@ const FulfilledWaterRequestsList = () => {
             onRefresh={fetchFulfilledRequests}
           />
           <View style={styles.clearAllContainer}>
-            <TouchableOpacity
-              style={styles.clearAllButton}
-              onPress={clearAllRequests}
-            >
+            <TouchableOpacity style={styles.clearAllButton} onPress={clearAllRequests}>
               <CustomText style={styles.clearAllButtonText}>Clear All</CustomText>
             </TouchableOpacity>
           </View>
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
   },
-  // Loading and empty 
+  // Loading and empty
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -214,32 +215,32 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     ...typography.textBold,
-    color: '#fff'
+    color: '#fff',
   },
   // Card styles
   listContainer: {
     paddingHorizontal: 15,
     paddingTop: 3,
-    paddingBottom: 15
+    paddingBottom: 15,
   },
   cardContainer: {
     borderRadius: 12,
     padding: 10,
     marginVertical: 12,
     backgroundColor: '#262626',
-    borderWidth: 0
+    borderWidth: 0,
   },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingBottom: 8,
     borderBottomWidth: 1,
-    borderColor: '#CCCCCC66'
+    borderColor: '#CCCCCC66',
   },
   waterTitle: {
     ...typography.textLargeBold,
     color: '#fff',
-    marginRight: 'auto'
+    marginRight: 'auto',
   },
   requestIdBadge: {
     marginRight: 5,
@@ -260,14 +261,14 @@ const styles = StyleSheet.create({
   },
   statusText: {
     ...typography.text,
-    color: '#fff'
+    color: '#fff',
   },
   infoSection: {
     gap: 8,
     marginVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC66',
-    paddingBottom: 8
+    paddingBottom: 8,
   },
   infoRow: {
     flexDirection: 'row',
@@ -302,7 +303,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 15,
     alignItems: 'center',
-    marginTop: 5
+    marginTop: 5,
   },
   deleteButtonText: {
     ...typography.textBold,
@@ -314,7 +315,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     marginBottom: 0,
     backgroundColor: '#242424',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   clearAllButton: {
     backgroundColor: '#ea8e1dff',

@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  Image,
-} from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import { Database } from '@/database.types';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
@@ -30,7 +26,6 @@ interface GameComponentProps {
 }
 
 const GameComponent: React.FC<GameComponentProps> = ({ game }) => {
-
   const renderGame = ({ item }: { item: FetchedGame }) => (
     <View style={styles.gameCard}>
       <View style={styles.gameHeader}>
@@ -48,7 +43,11 @@ const GameComponent: React.FC<GameComponentProps> = ({ game }) => {
           {/* Team 1 */}
           <View style={styles.teamRow}>
             <Image
-              source={item.team1?.avatar_uri ? { uri: item.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
+              source={
+                item.team1?.avatar_uri
+                  ? { uri: item.team1.avatar_uri }
+                  : require('@/assets/images/avatar-placeholder.png')
+              }
               style={styles.teamLogo}
             />
             <CustomText style={styles.teamText}>{item.team1 ? item.team1?.name : 'TBD'}</CustomText>
@@ -57,7 +56,11 @@ const GameComponent: React.FC<GameComponentProps> = ({ game }) => {
           {/* Team 2 */}
           <View style={styles.teamRow}>
             <Image
-              source={item.team2?.avatar_uri ? { uri: item.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
+              source={
+                item.team2?.avatar_uri
+                  ? { uri: item.team2.avatar_uri }
+                  : require('@/assets/images/avatar-placeholder.png')
+              }
               style={styles.teamLogo}
             />
             <CustomText style={styles.teamText}>{item.team2 ? item.team2?.name : 'TBD'}</CustomText>
@@ -79,9 +82,7 @@ const GameComponent: React.FC<GameComponentProps> = ({ game }) => {
 
   return (
     <View style={styles.container}>
-      <View key={game.id.toString()}>
-        {renderGame({ item: game as FetchedGame })}
-      </View>
+      <View key={game.id.toString()}>{renderGame({ item: game as FetchedGame })}</View>
     </View>
   );
 };
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    marginTop: 10
+    marginTop: 10,
   },
   gameHeader: {
     flexDirection: 'row',
@@ -120,7 +121,7 @@ const styles = StyleSheet.create({
   },
   timeText: {
     ...typography.text,
-    color: '#fff'
+    color: '#fff',
   },
   fieldText: {
     ...typography.textBold,

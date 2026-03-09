@@ -10,7 +10,7 @@ type MaterialIconNames = keyof typeof MaterialCommunityIcons.glyphMap;
 interface CircleIconButtonProps {
   icon: MaterialIconNames;
   label: string;
-  route?: Href<string | object>;
+  route?: Href;
   disabled?: boolean;
 }
 
@@ -24,9 +24,8 @@ const CircleIconButton: React.FC<CircleIconButtonProps> = ({
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => route ? router.push(route) : null}
-        disabled={disabled}
-      >
+        onPress={() => (route ? router.push(route) : null)}
+        disabled={disabled}>
         <MaterialCommunityIcons name={icon} size={28} color="#67BF30" />
       </TouchableOpacity>
       <CustomText style={styles.label}>{label}</CustomText>
@@ -49,7 +48,7 @@ const styles = StyleSheet.create({
   label: {
     textAlign: 'center',
     marginTop: 5,
-    ...typography.textSmallBold
+    ...typography.textSmallBold,
   },
 });
 

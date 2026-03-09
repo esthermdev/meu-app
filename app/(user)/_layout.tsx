@@ -22,11 +22,7 @@ export default function UserLayout() {
   // This layout can be deferred because it's not the root layout.
   return (
     <>
-      <StatusBar
-        barStyle="default"
-        backgroundColor="#EA1D25"
-        translucent
-      />
+      <StatusBar barStyle="default" backgroundColor="#EA1D25" translucent />
       <Stack>
         <Stack.Screen
           name="index"
@@ -35,7 +31,7 @@ export default function UserLayout() {
           }}
         />
         <Stack.Screen
-          name='account'
+          name="account"
           options={{
             title: 'My Profile',
             headerTitleAlign: 'center',
@@ -44,16 +40,14 @@ export default function UserLayout() {
             },
             headerTintColor: '#fff',
             headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => router.back()}
-              >
+              <TouchableOpacity onPress={() => router.back()}>
                 <MaterialIcons name="arrow-back" size={24} color="#fff" />
               </TouchableOpacity>
             ),
           }}
         />
         <Stack.Screen
-          name='favorites'
+          name="favorites"
           options={{
             title: 'Favorites',
             headerTitleAlign: 'center',
@@ -62,16 +56,14 @@ export default function UserLayout() {
             },
             headerTintColor: '#fff',
             headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => router.back()}
-              >
+              <TouchableOpacity onPress={() => router.back()}>
                 <MaterialIcons name="arrow-back" size={24} color="#fff" />
               </TouchableOpacity>
             ),
           }}
         />
         <Stack.Screen
-          name='feedback'
+          name="feedback"
           options={{
             title: 'Feedback',
             headerTitleAlign: 'center',
@@ -80,18 +72,16 @@ export default function UserLayout() {
             },
             headerTintColor: '#fff',
             headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => router.back()}
-              >
+              <TouchableOpacity onPress={() => router.back()}>
                 <MaterialIcons name="arrow-back" size={24} color="#fff" />
               </TouchableOpacity>
             ),
           }}
         />
         <Stack.Screen
-          name='admin'
+          name="admin"
           options={{
-            headerShown: false
+            headerShown: false,
           }}
         />
       </Stack>

@@ -1,13 +1,6 @@
 // app/(tabs)/teams/[id].tsx
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  ScrollView, 
-  Image,
-  RefreshControl
-} from 'react-native';
+import { StyleSheet, View, ScrollView, Image, RefreshControl } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
@@ -25,7 +18,7 @@ type ScoresRow = Database['public']['Tables']['scores']['Row'];
 type FieldRow = Database['public']['Tables']['fields']['Row'];
 type DivisionRow = Database['public']['Tables']['divisions']['Row'];
 
-interface TeamDetails extends TeamRow {
+interface TeamDetail extends TeamRow {
   division_details?: DivisionRow | null;
 }
 
@@ -41,41 +34,45 @@ const TeamDetails = () => {
   const { id } = useLocalSearchParams();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [team, setTeam] = useState<TeamDetails | null>(null);
+  const [team, setTeam] = useState<TeamDetail | null>(null);
   const [games, setGames] = useState<GameWithDetails[]>([]);
   const subscriptionRef = useRef<any>(null);
 
   const fetchTeamDetails = useCallback(async () => {
     if (!id) return;
-    
+
     try {
       // First fetch the team with division details
       const { data: teamData, error: teamError } = await supabase
         .from('teams')
-        .select(`
+        .select(
+          `
           *,
           division_details:division_id(*)
-        `)
+        `,
+        )
         .eq('id', id)
         .single();
-        
+
       if (teamError) throw teamError;
-      setTeam(teamData as unknown as TeamDetails);
-      
+      setTeam(teamData as unknown as TeamDetail);
+
       // Then fetch games where this team is playing
       const { data: gamesData, error: gamesError } = await supabase
         .from('games')
-        .select(`
+        .select(
+          `
           *,
           team1:team1_id(*),
           team2:team2_id(*),
           datetime:datetime_id(*),
           field:field_id(*),
           scores(*)
-        `)
+        `,
+        )
         .or(`team1_id.eq.${id},team2_id.eq.${id}`)
         .order('datetime_id', { ascending: true });
-        
+
       if (gamesError) throw gamesError;
       setGames(gamesData as unknown as GameWithDetails[]);
     } catch (error) {
@@ -89,7 +86,7 @@ const TeamDetails = () => {
   // Set up real-time subscription for score updates
   useEffect(() => {
     if (!id) return;
-    
+
     fetchTeamDetails();
 
     // Get list of game IDs for this team
@@ -98,32 +95,33 @@ const TeamDetails = () => {
       if (subscriptionRef.current) {
         subscriptionRef.current.unsubscribe();
       }
-      
+
       // Create a new subscription for score changes
-      const gameIds = games.map(game => game.id);
-      
+      const gameIds = games.map((game) => game.id);
+
       if (gameIds.length > 0) {
         subscriptionRef.current = supabase
           .channel('team-games-score-changes')
-          .on('postgres_changes', 
-            { 
-              event: '*', 
-              schema: 'public', 
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
               table: 'scores',
-              filter: gameIds.length > 0 ? `game_id=in.(${gameIds.join(',')})` : undefined
-            }, 
+              filter: gameIds.length > 0 ? `game_id=in.(${gameIds.join(',')})` : undefined,
+            },
             (payload) => {
               console.log('Real-time score update for team game:', payload);
               // Fetch updated data when scores change
               fetchTeamDetails();
-            }
+            },
           )
           .subscribe();
       }
     };
-    
+
     setupSubscription();
-    
+
     // Cleanup subscription on unmount
     return () => {
       if (subscriptionRef.current) {
@@ -131,7 +129,7 @@ const TeamDetails = () => {
         subscriptionRef.current = null;
       }
     };
-  }, [id, fetchTeamDetails, games.length]); // Include games.length to reset subscription when games are fetched
+  }, [id, fetchTeamDetails, games]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -147,35 +145,45 @@ const TeamDetails = () => {
         </View>
         <CustomText style={styles.fieldText}>Field {game.field?.name}</CustomText>
       </View>
-      
+
       {/* Teams and Score Container */}
       <View style={styles.matchupContainer}>
         {/* Left side: Teams */}
         <View style={styles.teamsSection}>
           {/* Team 1 */}
           <View style={styles.teamRow}>
-            <Image 
-              source={game.team1?.avatar_uri ? { uri: game.team1.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
+            <Image
+              source={
+                game.team1?.avatar_uri
+                  ? { uri: game.team1.avatar_uri }
+                  : require('@/assets/images/avatar-placeholder.png')
+              }
               style={styles.teamLogo}
             />
-            <CustomText style={[
-              styles.teamText,
-              game.team1?.id.toString() === id ? styles.highlightedTeam : null
-            ]}>
+            <CustomText
+              style={[
+                styles.teamText,
+                game.team1?.id.toString() === id ? styles.highlightedTeam : null,
+              ]}>
               {game.team1?.name || 'TBD'}
             </CustomText>
-          </View>  
+          </View>
 
           {/* Team 2 */}
           <View style={styles.teamRow}>
-            <Image 
-              source={game.team2?.avatar_uri ? { uri: game.team2.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
+            <Image
+              source={
+                game.team2?.avatar_uri
+                  ? { uri: game.team2.avatar_uri }
+                  : require('@/assets/images/avatar-placeholder.png')
+              }
               style={styles.teamLogo}
             />
-            <CustomText style={[
-              styles.teamText,
-              game.team2?.id.toString() === id ? styles.highlightedTeam : null
-            ]}>
+            <CustomText
+              style={[
+                styles.teamText,
+                game.team2?.id.toString() === id ? styles.highlightedTeam : null,
+              ]}>
               {game.team2?.name || 'TBD'}
             </CustomText>
           </View>
@@ -195,12 +203,12 @@ const TeamDetails = () => {
   );
 
   return (
-    <View style={styles.container}>  
-      <CustomHeader title={team?.name ? team.name : ""} refreshInfo={true} />    
+    <View style={styles.container}>
+      <CustomHeader title={team?.name ? team.name : ''} refreshInfo={true} />
       {loading && !refreshing ? (
-        <LoadingIndicator message='Loading games for selected team...' />
+        <LoadingIndicator message="Loading games for selected team..." />
       ) : team ? (
-        <ScrollView 
+        <ScrollView
           style={styles.content}
           refreshControl={
             <RefreshControl
@@ -209,41 +217,43 @@ const TeamDetails = () => {
               colors={['#EA1D25']}
               tintColor="#EA1D25"
             />
-          }
-        >
+          }>
           {/* Team Info */}
           <View style={styles.teamInfoContainer}>
-            <Image 
-              source={team.avatar_uri ? { uri: team.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
+            <Image
+              source={
+                team.avatar_uri
+                  ? { uri: team.avatar_uri }
+                  : require('@/assets/images/avatar-placeholder.png')
+              }
               style={styles.teamBadge}
             />
-            
+
             {team.division_details && (
-              <View style={[
-                styles.divisionContainer,
-                {
-                  backgroundColor: team.division_details.color_light || '#EFEFEF',
-                  borderColor: team.division_details.color,
-                  borderWidth: 1
-                }
-              ]}>
+              <View
+                style={[
+                  styles.divisionContainer,
+                  {
+                    backgroundColor: team.division_details.color_light || '#EFEFEF',
+                    borderColor: team.division_details.color,
+                    borderWidth: 1,
+                  },
+                ]}>
                 <CustomText style={[styles.divisionText, { color: team.division_details.color }]}>
                   {team.division_details.title}
                 </CustomText>
               </View>
             )}
           </View>
-          
+
           {/* Games Section */}
           <View style={styles.gamesSection}>
             <View style={styles.sectionHeader}>
               <CustomText style={styles.sectionTitle}>Games</CustomText>
             </View>
-            
+
             {games.length > 0 ? (
-              <View style={styles.gamesList}>
-                {games.map(game => renderGameCard(game))}
-              </View>
+              <View style={styles.gamesList}>{games.map((game) => renderGameCard(game))}</View>
             ) : (
               <View style={styles.noGamesContainer}>
                 <CustomText style={styles.noGamesText}>No games scheduled</CustomText>
@@ -285,7 +295,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   divisionText: {
-    ...typography.textMedium
+    ...typography.textMedium,
   },
   gamesSection: {
     padding: 20,
@@ -334,7 +344,7 @@ const styles = StyleSheet.create({
   },
   timeText: {
     ...typography.text,
-    color: '#fff'
+    color: '#fff',
   },
   fieldText: {
     ...typography.textBold,

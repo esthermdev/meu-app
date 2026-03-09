@@ -1,5 +1,12 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SectionList, Linking, ActivityIndicator, TouchableOpacity, SafeAreaView } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  SectionList,
+  Linking,
+  TouchableOpacity,
+  SafeAreaView,
+} from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { FontAwesome } from '@expo/vector-icons';
 import { Tables } from '@/database.types';
@@ -25,17 +32,14 @@ const RestaurantsHotelsScreen = () => {
 
   const fetchRestaurantsHotels = async () => {
     try {
-      const { data, error } = await supabase
-        .from('restaurants')
-        .select('*')
-        .order('name');
+      const { data, error } = await supabase.from('restaurants').select('*').order('name');
 
       if (error) throw error;
 
       // Group the data by category
       const groupedData: Record<string, Restaurant[]> = {};
-      
-      data?.forEach(item => {
+
+      data?.forEach((item) => {
         const category = item.category || 'Uncategorized';
         if (!groupedData[category]) {
           groupedData[category] = [];
@@ -44,9 +48,9 @@ const RestaurantsHotelsScreen = () => {
       });
 
       // Convert to the format needed for SectionList
-      const sectionListData = Object.keys(groupedData).map(category => ({
+      const sectionListData = Object.keys(groupedData).map((category) => ({
         title: category,
-        data: groupedData[category]
+        data: groupedData[category],
       }));
 
       setData(sectionListData);
@@ -59,20 +63,23 @@ const RestaurantsHotelsScreen = () => {
   };
 
   const renderItem = ({ item }: { item: Restaurant }) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={styles.item}
-      onPress={() => item.website ? Linking.openURL(item.website) : null}
-    >
+      onPress={() => (item.website ? Linking.openURL(item.website) : null)}>
       <View style={styles.itemContent}>
-        <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.itemName}>{item.name}</CustomText>
+        <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.itemName}>
+          {item.name}
+        </CustomText>
         {item.discount && (
           <View style={styles.discountContainer}>
             <FontAwesome name="tag" size={14} color="#EA1D25" />
-            <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.itemDiscount}>{item.discount}</CustomText>
+            <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.itemDiscount}>
+              {item.discount}
+            </CustomText>
           </View>
         )}
       </View>
-      
+
       {item.website && (
         <View style={styles.websiteContainer}>
           <FontAwesome name="external-link" size={16} color="#2871FF" />
@@ -83,14 +90,14 @@ const RestaurantsHotelsScreen = () => {
 
   const renderSectionHeader = ({ section }: { section: SectionData }) => (
     <View style={styles.sectionHeader}>
-      <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.sectionHeaderText}>{section.title}</CustomText>
+      <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.sectionHeaderText}>
+        {section.title}
+      </CustomText>
     </View>
   );
 
   if (loading) {
-    return (
-      <LoadingIndicator message='Loading restaurants...' />
-    );
+    return <LoadingIndicator message="Loading restaurants..." />;
   }
 
   if (error) {
@@ -98,10 +105,7 @@ const RestaurantsHotelsScreen = () => {
       <View style={styles.errorContainer}>
         <FontAwesome name="exclamation-circle" size={40} color="#EA1D25" />
         <CustomText style={styles.errorText}>{error}</CustomText>
-        <TouchableOpacity 
-          style={styles.retryButton}
-          onPress={fetchRestaurantsHotels}
-        >
+        <TouchableOpacity style={styles.retryButton} onPress={fetchRestaurantsHotels}>
           <CustomText style={styles.retryButtonText}>Retry</CustomText>
         </TouchableOpacity>
       </View>
@@ -200,7 +204,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#EA1D25',
     paddingVertical: 12,
     paddingHorizontal: 20,
-    marginBottom: 10
+    marginBottom: 10,
   },
   sectionHeaderText: {
     ...typography.textLargeBold,

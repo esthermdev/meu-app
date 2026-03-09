@@ -9,7 +9,6 @@ type PoolsRow = Database['public']['Tables']['pools']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
 type ScoresRow = Database['public']['Tables']['scores']['Row'];
 
-
 interface Games extends GamesRow {
   team1: TeamsRow | null;
   team2: TeamsRow | null;
@@ -39,12 +38,13 @@ export function useGameSubscription(divisionId: number, roundId: number, onUpdat
     // Create a subscription channel for both games and scores
     const subscription = supabase
       .channel(`games-and-scores-${divisionId}-${roundId}`)
-      .on('postgres_changes',
+      .on(
+        'postgres_changes',
         {
           event: '*',
           schema: 'public',
           table: 'games',
-          filter: `division_id=eq.${divisionId}`
+          filter: `division_id=eq.${divisionId}`,
         },
         (payload: RealtimePostgresChangesPayload<GamesRow>) => {
           console.log('Received game update:', payload);
@@ -53,18 +53,19 @@ export function useGameSubscription(divisionId: number, roundId: number, onUpdat
           if (updatedGame && updatedGame.round_id === roundId) {
             debouncedUpdate();
           }
-        }
+        },
       )
-      .on('postgres_changes',
+      .on(
+        'postgres_changes',
         {
           event: '*',
           schema: 'public',
-          table: 'scores'
+          table: 'scores',
         },
         (payload: RealtimePostgresChangesPayload<ScoresRow>) => {
           console.log('Received score update:', payload);
           debouncedUpdate();
-        }
+        },
       )
       .subscribe();
 
@@ -78,10 +79,15 @@ export function useGameSubscription(divisionId: number, roundId: number, onUpdat
   }, [divisionId, roundId, debouncedUpdate]);
 }
 
-export function useScheduleSubscription(divisionId: number, scheduleId: number, gameIds: number[], onUpdate: () => void) {
+export function useScheduleSubscription(
+  divisionId: number,
+  scheduleId: number,
+  gameIds: number[],
+  onUpdate: () => void,
+) {
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const gameIdsRef = useRef<number[]>([]);
-  
+
   // Update the ref when gameIds change
   useEffect(() => {
     gameIdsRef.current = gameIds;
@@ -101,27 +107,37 @@ export function useScheduleSubscription(divisionId: number, scheduleId: number, 
   useEffect(() => {
     if (!divisionId || !scheduleId) return;
 
-    console.log('Setting up real-time subscription for division:', divisionId, 'schedule:', scheduleId);
+    console.log(
+      'Setting up real-time subscription for division:',
+      divisionId,
+      'schedule:',
+      scheduleId,
+    );
 
     // Subscribe to score changes for this schedule
     const subscription = supabase
       .channel(`schedule-scores-${divisionId}-${scheduleId}`)
-      .on('postgres_changes',
+      .on(
+        'postgres_changes',
         {
           event: '*',
           schema: 'public',
-          table: 'scores'
+          table: 'scores',
         },
         (payload: RealtimePostgresChangesPayload<ScoresRow>) => {
           const updatedScore = payload.new as ScoresRow;
           const currentGameIds = gameIdsRef.current;
-          
+
           // Check if this score update is relevant to our current schedule
-          if (updatedScore && updatedScore.game_id && currentGameIds.includes(updatedScore.game_id)) {
+          if (
+            updatedScore &&
+            updatedScore.game_id &&
+            currentGameIds.includes(updatedScore.game_id)
+          ) {
             console.log('Score updated for game in current schedule:', updatedScore.game_id);
             debouncedUpdate();
           }
-        }
+        },
       )
       .subscribe();
 
@@ -134,28 +150,35 @@ export function useScheduleSubscription(divisionId: number, scheduleId: number, 
   }, [divisionId, scheduleId, debouncedUpdate]);
 }
 
-export function useScoreSubscription(gameIds: number[], onUpdate: (updatedGameId?: number) => void) {
+export function useScoreSubscription(
+  gameIds: number[],
+  onUpdate: (updatedGameId?: number) => void,
+) {
   const previousGameIdsRef = useRef<number[]>([]);
 
   // We'll use a debounce mechanism to avoid too frequent updates
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const debouncedUpdate = useCallback((gameId?: number) => {
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current);
-    }
+  const debouncedUpdate = useCallback(
+    (gameId?: number) => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
 
-    debounceTimeoutRef.current = setTimeout(() => {
-      onUpdate(gameId);
-      debounceTimeoutRef.current = null;
-    }, 300); // 300ms debounce
-  }, [onUpdate]);
+      debounceTimeoutRef.current = setTimeout(() => {
+        onUpdate(gameId);
+        debounceTimeoutRef.current = null;
+      }, 300); // 300ms debounce
+    },
+    [onUpdate],
+  );
 
   useEffect(() => {
     if (!gameIds || gameIds.length === 0) return;
 
     // Only resubscribe if game IDs have changed
-    const gameIdsChanged = gameIds.length !== previousGameIdsRef.current.length ||
+    const gameIdsChanged =
+      gameIds.length !== previousGameIdsRef.current.length ||
       gameIds.some((id, index) => previousGameIdsRef.current[index] !== id);
 
     if (!gameIdsChanged && previousGameIdsRef.current.length > 0) {
@@ -169,21 +192,23 @@ export function useScoreSubscription(gameIds: number[], onUpdate: (updatedGameId
     // Create a subscription channel
     const subscription = supabase
       .channel('game-scores-updates')
-      .on('postgres_changes',
+      .on(
+        'postgres_changes',
         {
           event: '*',
           schema: 'public',
-          table: 'scores'
+          table: 'scores',
         },
         (payload: RealtimePostgresChangesPayload<ScoresRow>) => {
           console.log('Received score update:', payload);
 
           // Check if this update is relevant to our games
-          const updatedGameId = payload.new && 'game_id' in payload.new ? payload.new.game_id : undefined;
+          const updatedGameId =
+            payload.new && 'game_id' in payload.new ? payload.new.game_id : undefined;
           if (updatedGameId && gameIds.includes(updatedGameId)) {
             debouncedUpdate(updatedGameId);
           }
-        }
+        },
       )
       .subscribe();
 
@@ -206,19 +231,21 @@ export function useRoundIds(divisionId: number, roundId: number) {
   // Fetch games function that can be called both initially and after score updates
   const fetchGames = useCallback(async () => {
     if (!divisionId) return;
-    
+
     try {
       setLoading(true);
       const { data, error } = await supabase
         .from('games')
-        .select(`
+        .select(
+          `
           *,
           datetime: datetime_id (*),
           team1: team1_id (*),
           team2: team2_id (*),
           scores(*),
           field: field_id(*)
-        `)
+        `,
+        )
         .eq('division_id', divisionId)
         .eq('round_id', roundId)
         .order('id')
@@ -241,10 +268,15 @@ export function useRoundIds(divisionId: number, roundId: number) {
   // Set up real-time subscription for both games and scores
   useGameSubscription(divisionId, roundId, () => {
     console.log('Game or score updated, refreshing data');
-    setRefreshTrigger(prev => prev + 1);
+    setRefreshTrigger((prev) => prev + 1);
   });
 
-  return { games, loading, error, refreshData: () => setRefreshTrigger(prev => prev + 1) };
+  return {
+    games,
+    loading,
+    error,
+    refreshData: () => setRefreshTrigger((prev) => prev + 1),
+  };
 }
 
 export function useScheduleId(divisionId: number, scheduleId: number, refreshKey = 0) {
@@ -255,12 +287,13 @@ export function useScheduleId(divisionId: number, scheduleId: number, refreshKey
 
   const fetchGamesBySchedule = useCallback(async () => {
     if (!divisionId || !scheduleId) return;
-    
+
     try {
       setLoading(true);
       const { data, error } = await supabase
         .from('games')
-        .select(`
+        .select(
+          `
           *,
           datetime: datetime_id (*),
           team1: team1_id (*),
@@ -268,7 +301,8 @@ export function useScheduleId(divisionId: number, scheduleId: number, refreshKey
           scores(*),
           rounds: round_id (*),
           field: field_id (*)
-        `)
+        `,
+        )
         .eq('division_id', divisionId)
         .eq('gametype_id', scheduleId)
         .order('round_id, id');
@@ -288,25 +322,25 @@ export function useScheduleId(divisionId: number, scheduleId: number, refreshKey
   }, [fetchGamesBySchedule, refreshTrigger, refreshKey]);
 
   // Extract game IDs for subscription
-  const gameIds = games.map(game => game.id);
-  
+  const gameIds = games.map((game) => game.id);
+
   // Set up real-time subscription for score updates
   useScheduleSubscription(divisionId, scheduleId, gameIds, () => {
-    setRefreshTrigger(prev => prev + 1);
+    setRefreshTrigger((prev) => prev + 1);
   });
 
-  return { 
-    games, 
-    loading, 
-    error, 
-    refreshData: () => setRefreshTrigger(prev => prev + 1) 
+  return {
+    games,
+    loading,
+    error,
+    refreshData: () => setRefreshTrigger((prev) => prev + 1),
   };
 }
 
 export function useFavoriteGamesSubscription(gameIds: number[], onUpdate: () => void) {
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const gameIdsRef = useRef<number[]>([]);
-  
+
   // Update the ref when gameIds change
   useEffect(() => {
     gameIdsRef.current = gameIds;
@@ -331,22 +365,27 @@ export function useFavoriteGamesSubscription(gameIds: number[], onUpdate: () => 
     // Subscribe to score changes for favorite games
     const subscription = supabase
       .channel('favorite-games-scores')
-      .on('postgres_changes',
+      .on(
+        'postgres_changes',
         {
           event: '*',
           schema: 'public',
-          table: 'scores'
+          table: 'scores',
         },
         (payload: RealtimePostgresChangesPayload<ScoresRow>) => {
           const updatedScore = payload.new as ScoresRow;
           const currentGameIds = gameIdsRef.current;
-          
+
           // Check if this score update is relevant to favorite games
-          if (updatedScore && updatedScore.game_id && currentGameIds.includes(updatedScore.game_id)) {
+          if (
+            updatedScore &&
+            updatedScore.game_id &&
+            currentGameIds.includes(updatedScore.game_id)
+          ) {
             console.log('Score updated for favorite game:', updatedScore.game_id);
             debouncedUpdate();
           }
-        }
+        },
       )
       .subscribe();
 
@@ -356,7 +395,7 @@ export function useFavoriteGamesSubscription(gameIds: number[], onUpdate: () => 
       }
       subscription.unsubscribe();
     };
-  }, [gameIds.length, debouncedUpdate]); // Only depend on gameIds.length to avoid frequent reconnects
+  }, [gameIds, debouncedUpdate]);
 }
 
 export function usePoolIds(divisionId: number) {
@@ -369,26 +408,26 @@ export function usePoolIds(divisionId: number) {
 
     async function fetchPools() {
       try {
-        console.log("Fetching pools for division ID:", divisionId);
+        console.log('Fetching pools for division ID:', divisionId);
 
         const { data, error } = await supabase
           .from('pools')
-          .select('*')  // Just select all fields from pools
+          .select('*') // Just select all fields from pools
           .eq('division_id', divisionId)
           .order('name');
 
         if (error) {
-          console.error("Supabase error:", error);
+          console.error('Supabase error:', error);
           throw error;
         }
 
-        console.log("Fetched pools:", data);
+        console.log('Fetched pools:', data);
 
         if (isMounted) {
           setPools(data || []);
         }
       } catch (e) {
-        console.error("Error in usePoolIds:", e);
+        console.error('Error in usePoolIds:', e);
         if (isMounted) {
           setError(e instanceof Error ? e.message : 'An error occurred');
         }
@@ -402,7 +441,7 @@ export function usePoolIds(divisionId: number) {
     if (divisionId) {
       fetchPools();
     } else {
-      console.warn("No division ID provided to usePoolIds");
+      console.warn('No division ID provided to usePoolIds');
       setLoading(false);
     }
 
@@ -413,4 +452,3 @@ export function usePoolIds(divisionId: number) {
 
   return { pools, loading, error };
 }
-

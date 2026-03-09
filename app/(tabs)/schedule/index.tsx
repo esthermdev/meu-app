@@ -12,12 +12,12 @@ export default function ScheduleIndex() {
   const handleSelectDivision = (divisionId: number, divisionName: string) => {
     router.push({
       pathname: `/(tabs)/schedule/[division]`,
-      params: { division: divisionId, divisionName }
+      params: { division: divisionId, divisionName },
     });
   };
 
   if (loading && !refreshing) {
-    return <LoadingIndicator message='Loading Schedule...' />;
+    return <LoadingIndicator message="Loading Schedule..." />;
   }
 
   if (error) {
@@ -39,29 +39,34 @@ export default function ScheduleIndex() {
           colors={['#EA1D25']} // Android
           tintColor="#EA1D25" // iOS
         />
-      }
-    >
+      }>
       <View style={styles.content}>
-        {divisions.length > 0 ? divisions.map((division) => (
-          <TouchableOpacity
-            key={division.id}
-            onPress={() => handleSelectDivision(division.id, division.title)}
-          >
-            <View style={[styles.card, { borderColor: division.color, borderBottomWidth: 4 }]}>
-              <CustomText style={[styles.title, { color: division.color, textDecorationColor: division.color }]}>{division.title}</CustomText>
-            </View>
-          </TouchableOpacity>
-        )) : (
-          <ComingSoonPlaceholder 
-            message="Divisions coming soon!"
-            iconName="sports"
-          />
+        {divisions.length > 0 ? (
+          divisions.map((division) => (
+            <TouchableOpacity
+              key={division.id}
+              onPress={() => handleSelectDivision(division.id, division.title)}>
+              <View style={[styles.card, { borderColor: division.color, borderBottomWidth: 4 }]}>
+                <CustomText
+                  style={[
+                    styles.title,
+                    {
+                      color: division.color,
+                      textDecorationColor: division.color,
+                    },
+                  ]}>
+                  {division.title}
+                </CustomText>
+              </View>
+            </TouchableOpacity>
+          ))
+        ) : (
+          <ComingSoonPlaceholder message="Divisions coming soon!" iconName="sports" />
         )}
       </View>
     </ScrollView>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -91,6 +96,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: '#EA1D25',
-    ...typography.textMedium
+    ...typography.textMedium,
   },
 });

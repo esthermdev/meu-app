@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { fonts, typography } from '@/constants/Typography';
+import { typography } from '@/constants/Typography';
 
-interface AdminBottomActionButtons {
+interface AdminBottomActionButtonsProps {
   leftButton: () => void;
   rightButton: () => void;
   rightText?: string;
@@ -11,7 +11,7 @@ interface AdminBottomActionButtons {
   leftColor?: string;
 }
 
-const AdminBottomActionButtons: React.FC<AdminBottomActionButtons> = ({
+const AdminBottomActionButtons: React.FC<AdminBottomActionButtonsProps> = ({
   leftButton,
   rightButton,
   rightText = 'Confirm',
@@ -21,17 +21,19 @@ const AdminBottomActionButtons: React.FC<AdminBottomActionButtons> = ({
 }) => {
   return (
     <View style={styles.buttonContainer}>
-      <TouchableOpacity 
-        style={[styles.leftButton, { backgroundColor: leftColor }]} 
-        onPress={leftButton}
-      >
-        <Text style={styles.buttonText} allowFontScaling={false}>{leftText}</Text>
+      <TouchableOpacity
+        style={[styles.leftButton, { backgroundColor: leftColor }]}
+        onPress={leftButton}>
+        <Text style={styles.buttonText} allowFontScaling={false}>
+          {leftText}
+        </Text>
       </TouchableOpacity>
-      <TouchableOpacity 
-        style={[styles.rightButton, { backgroundColor: rightColor }]} 
-        onPress={rightButton}
-      >
-        <Text style={styles.buttonText} allowFontScaling={false}>{rightText}</Text>
+      <TouchableOpacity
+        style={[styles.rightButton, { backgroundColor: rightColor }]}
+        onPress={rightButton}>
+        <Text style={styles.buttonText} allowFontScaling={false}>
+          {rightText}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -48,7 +50,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#242424',
     gap: 12,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   leftButton: {
     flex: 1,
@@ -64,7 +66,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     height: 62,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   buttonText: {
     color: '#242424',

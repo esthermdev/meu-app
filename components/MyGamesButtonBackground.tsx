@@ -9,10 +9,10 @@ const MyGamesButtonBackground = ({ title }: { title: string }) => {
     <View style={styles.container}>
       {/* Decorative circle */}
       <View style={styles.circleContainer} />
-      
+
       {/* Icon */}
       <Feather name="target" size={28} color="#fff" />
-      
+
       {/* Title */}
       <CustomText style={styles.title}>{title}</CustomText>
     </View>
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#fff',
-    ...typography.textLargeBold
+    ...typography.textLargeBold,
   },
 });
 
