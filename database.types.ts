@@ -542,6 +542,33 @@ export type Database = {
         }
         Relationships: []
       }
+      permissions: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: number
+          key: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          key: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          key?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pools: {
         Row: {
           division_id: number | null
@@ -568,18 +595,51 @@ export type Database = {
           },
         ]
       }
+      profile_roles: {
+        Row: {
+          created_at: string
+          is_primary: boolean
+          profile_id: string
+          role_id: number
+        }
+        Insert: {
+          created_at?: string
+          is_primary?: boolean
+          profile_id: string
+          role_id: number
+        }
+        Update: {
+          created_at?: string
+          is_primary?: boolean
+          profile_id?: string
+          role_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_roles_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_roles_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           expo_push_token: string | null
           full_name: string | null
           id: string
-          is_admin: boolean | null
           is_available: boolean | null
-          is_driver: boolean | null
           is_logged_in: boolean | null
-          is_medical_staff: boolean | null
-          is_volunteer: boolean | null
+          role_id: number
           updated_at: string | null
         }
         Insert: {
@@ -587,12 +647,9 @@ export type Database = {
           expo_push_token?: string | null
           full_name?: string | null
           id: string
-          is_admin?: boolean | null
           is_available?: boolean | null
-          is_driver?: boolean | null
           is_logged_in?: boolean | null
-          is_medical_staff?: boolean | null
-          is_volunteer?: boolean | null
+          role_id: number
           updated_at?: string | null
         }
         Update: {
@@ -600,15 +657,20 @@ export type Database = {
           expo_push_token?: string | null
           full_name?: string | null
           id?: string
-          is_admin?: boolean | null
           is_available?: boolean | null
-          is_driver?: boolean | null
           is_logged_in?: boolean | null
-          is_medical_staff?: boolean | null
-          is_volunteer?: boolean | null
+          role_id?: number
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       rankings: {
         Row: {
@@ -663,6 +725,69 @@ export type Database = {
           id?: number
           name?: string
           website?: string | null
+        }
+        Relationships: []
+      }
+      role_permissions: {
+        Row: {
+          created_at: string
+          permission_id: number
+          role_id: number
+        }
+        Insert: {
+          created_at?: string
+          permission_id: number
+          role_id: number
+        }
+        Update: {
+          created_at?: string
+          permission_id?: number
+          role_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_permissions_permission_id_fkey"
+            columns: ["permission_id"]
+            isOneToOne: false
+            referencedRelation: "permissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "role_permissions_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      roles: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: number
+          is_default: boolean
+          key: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          is_default?: boolean
+          key: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          is_default?: boolean
+          key?: string
+          name?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -935,17 +1060,22 @@ export type Database = {
       }
     }
     Functions: {
-      calculate_tiebreakers: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      calculate_tiebreakers: { Args: never; Returns: undefined }
       client_update_rankings_and_tiebreakers: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: undefined
       }
       create_deletion_tokens_table_if_not_exists: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: undefined
+      }
+      get_default_role_id: { Args: never; Returns: number }
+      get_profile_access: {
+        Args: { p_profile_id: string }
+        Returns: {
+          permission_keys: string[]
+          role_keys: string[]
+        }[]
       }
       handle_anonymous_token: {
         Args: { p_device_id: string; p_token: string }
@@ -955,14 +1085,8 @@ export type Database = {
         Args: { round_id_param: number }
         Returns: undefined
       }
-      reset_pool_scores: {
-        Args: { pool_id_param: number }
-        Returns: undefined
-      }
-      update_pool_rankings: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      reset_pool_scores: { Args: { pool_id_param: number }; Returns: undefined }
+      update_pool_rankings: { Args: never; Returns: undefined }
     }
     Enums: {
       division: "X" | "O" | "W" | "MU" | "MM" | "ML" | "WU" | "WL"

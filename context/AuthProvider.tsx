@@ -2,17 +2,15 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Session, User } from '@supabase/supabase-js';
-import { Database } from '@/database.types'
 import * as Linking from "expo-linking";
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-type Profile = Database['public']['Tables']['profiles']['Row']
+import { fetchProfileWithRole, ProfileWithRole } from './profileRoles';
 
 type AuthContextType = {
   session: Session | null;
   user: User | null;
-  profile: Profile | null
+  profile: ProfileWithRole | null
   loading: boolean;
   signIn: (email: string) => Promise<void>;
   signUp: (email: string, full_name: string) => Promise<void>;
@@ -26,7 +24,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<ProfileWithRole | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Flag to track if we're processing a deep link
@@ -72,13 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function getProfile(userId: string) {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single()
-
-      if (error) throw error
+      const data = await fetchProfileWithRole(userId);
       if (data) setProfile(data)
     } catch (error) {
       console.error('Error fetching profile:', error)
@@ -372,14 +364,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const id = userId || user?.id;
       if (!id) return;
-      
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', id)
-        .single();
-  
-      if (error) throw error;
+
+      const data = await fetchProfileWithRole(id);
       if (data) setProfile(data);
     } catch (error) {
       console.error('Error refreshing profile:', error);
@@ -409,8 +395,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const fakeProfile = {
         id: 'reviewer-id',
         full_name: 'App Reviewer',
-        is_admin: true, // Grant admin access to see all features
-        is_logged_in: true
+        is_logged_in: true,
+        role_key: 'admin',
+        role_name: 'Admin',
+        role_keys: ['admin'],
+        permission_keys: [
+          'view_admin_dashboard',
+          'manage_games',
+          'manage_transport',
+          'manage_water',
+          'manage_trainer_requests',
+          'receive_cart_notifications',
+          'receive_water_notifications',
+          'receive_medic_notifications',
+        ],
+        role: { key: 'admin', name: 'Admin' }
       };
       
       setProfile(fakeProfile as any);

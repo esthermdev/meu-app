@@ -95,8 +95,8 @@ Deno.serve(async (req: Request) => {
       }
 
       // Extract tokens from both sources and deduplicate
-      const authTokens = authUserResponse.data.map(user => user.expo_push_token);
-      const anonymousTokens = anonymousResponse.data.map(entry => entry.token);
+      const authTokens = authUserResponse.data.map((user: { expo_push_token: string }) => user.expo_push_token);
+      const anonymousTokens = anonymousResponse.data.map((entry: { token: string }) => entry.token);
       
       // Combine and remove duplicates
       const allTokens = [...new Set([...authTokens, ...anonymousTokens])];

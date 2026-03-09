@@ -10,7 +10,12 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "update-types": "npx supabase gen types --lang=typescript --project-id \"opleqymigooimduhlvym\" > database.types.ts"
+    "migration:new": "node ./scripts/new-migration.js",
+    "supabase:link": "npx supabase link --project-ref \"opleqymigooimduhlvym\"",
+    "supabase:pull": "npx supabase db pull",
+    "update-types": "npx supabase gen types --lang=typescript --project-id \"opleqymigooimduhlvym\" > database.types.ts",
+    "schema:sync": "npm run supabase:pull && npm run update-types",
+    "schema:check-types": "npm run update-types && git diff --exit-code -- database.types.ts"
   },
   "jest": {
     "preset": "jest-expo"
@@ -28,6 +33,7 @@
     "@supabase/supabase-js": "^2.45.6",
     "dotenv": "^16.4.7",
     "expo": "~52.0.47",
+    "expo-build-properties": "~0.13.3",
     "expo-constants": "~17.0.8",
     "expo-dev-client": "~5.0.20",
     "expo-device": "~7.0.3",
@@ -55,8 +61,7 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.10",
     "react-native-webview": "13.12.5",
-    "rneui": "^1.0.0-stable.0",
-    "expo-build-properties": "~0.13.3"
+    "rneui": "^1.0.0-stable.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

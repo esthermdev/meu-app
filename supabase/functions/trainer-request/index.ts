@@ -17,9 +17,14 @@ interface WebhookPayload {
   old_record: null | MedicalRequest;
 }
 
+interface MedicRecipient {
+  id: string;
+  expo_push_token: string | null;
+}
+
 const supabase = createClient(
   Deno.env.get("EXPO_PUBLIC_SUPABASE_URL")!,
-  Deno.env.get("EXPO_PUBLIC_SUPABASE_ANON_KEY")!,
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? Deno.env.get("EXPO_PUBLIC_SUPABASE_ANON_KEY")!,
 );
 
 Deno.serve(async (req) => {
@@ -52,8 +57,8 @@ Deno.serve(async (req) => {
     // Get medical staff who should receive notifications
     const { data: medicalStaff, error } = await supabase
       .from("profiles")
-      .select("id, expo_push_token")
-      .eq("is_medical_staff", true)
+      .select("id, expo_push_token, profile_roles!inner(roles!inner(key))")
+      .eq("profile_roles.roles.key", "medic")
       .eq("is_available", true)
       .eq("is_logged_in", true);
 
@@ -68,7 +73,7 @@ Deno.serve(async (req) => {
     console.log(`Found ${medicalStaff?.length || 0} available medical staff`);
 
     // Filter out staff without valid push tokens
-    const validStaff = medicalStaff?.filter(staff => 
+    const validStaff = (medicalStaff as MedicRecipient[] | null)?.filter((staff: MedicRecipient) => 
       staff.expo_push_token && 
       staff.expo_push_token.startsWith('ExponentPushToken[')
     ) || [];
@@ -95,7 +100,7 @@ Deno.serve(async (req) => {
       };
 
       // Send to each token individually
-      const sendPromises = validStaff.map(staff => {
+      const sendPromises = validStaff.map((staff: MedicRecipient) => {
         const message = {
           to: staff.expo_push_token,
           ...notification,

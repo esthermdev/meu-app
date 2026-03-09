@@ -116,8 +116,8 @@ const TrainerRequestButton = () => {
 
       const { data: medicStaff, error: staffError } = await supabase
         .from('profiles')
-        .select('id, expo_push_token')
-        .eq('is_medical_staff', true);
+        .select('id, expo_push_token, profile_roles!inner(roles!inner(key))')
+        .eq('profile_roles.roles.key', 'medic');
 
       if (staffError) throw staffError;
 

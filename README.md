@@ -39,3 +39,22 @@ Copyright (C) 2024 Esther Devadas
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License. See the LICENSE file for more details.
+
+## Supabase Schema Sync Workflow
+
+Keep the local migration history and generated TypeScript types in sync with Supabase:
+
+1. One-time setup per machine:
+  - `npm run supabase:link`
+2. Whenever schema changes are made in Supabase dashboard:
+  - `npm run schema:sync`
+
+### Scripts
+
+- `npm run supabase:link` links this repository to remote project `opleqymigooimduhlvym`.
+- `npm run supabase:pull` pulls remote database changes into local Supabase migration files.
+- `npm run update-types` regenerates `database.types.ts` from the remote schema.
+- `npm run schema:sync` runs pull + type generation together.
+- `npm run schema:check-types` is CI-friendly and fails if `database.types.ts` is out of date.
+
+For complete local-first and remote-first DB workflows, see [docs/supabase-database-sync.md](docs/supabase-database-sync.md).

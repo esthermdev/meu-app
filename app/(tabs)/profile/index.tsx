@@ -8,6 +8,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { typography } from '@/constants/Typography';
 import NotificationPermission from '@/components/features/notifications/NotificationPermission';
 import CustomText from '@/components/CustomText';
+import { hasPermission } from '@/context/profileRoles';
 
 
 export default function UserDashboard() {
@@ -58,7 +59,7 @@ export default function UserDashboard() {
           </Card>
         </TouchableOpacity>
 
-        {profile?.is_admin ? 
+        {hasPermission(profile, 'view_admin_dashboard') ? 
           <TouchableOpacity onPress={() => router.push('/(user)/admin' as Href)}>
             <Card style={styles.card}>
               <Ionicons name="settings" size={24} color="#FE0000" style={styles.cardIcon} />

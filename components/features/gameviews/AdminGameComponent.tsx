@@ -17,6 +17,7 @@ import UpdateScoreModal from '../modals/UpdateScoreModal';
 import { updateGameScore } from '@/utils/updateGameScore';
 import CustomText from '@/components/CustomText';
 import { useAuth } from '@/context/AuthProvider';
+import { hasPermission } from '@/context/profileRoles';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
@@ -249,7 +250,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
         team2Id={team2Id}
         setTeam1Id={setTeam1Id}
         setTeam2Id={setTeam2Id}
-        showAdminFields={profile?.is_admin || false}
+        showAdminFields={hasPermission(profile, 'manage_games')}
         divisionId={game.division_id}
         isLoading={isLoading}
       />

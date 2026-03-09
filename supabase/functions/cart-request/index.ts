@@ -23,9 +23,14 @@ interface WebhookPayload {
   old_record: null | CartRequest;
 }
 
+interface DriverRecipient {
+  id: string;
+  expo_push_token: string | null;
+}
+
 const supabase = createClient(
   Deno.env.get("EXPO_PUBLIC_SUPABASE_URL")!,
-  Deno.env.get("EXPO_PUBLIC_SUPABASE_ANON_KEY")!,
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? Deno.env.get("EXPO_PUBLIC_SUPABASE_ANON_KEY")!,
 );
 
 Deno.serve(async (req) => {
@@ -63,8 +68,8 @@ async function handleNewCartRequest(cartRequest: CartRequest) {
 
     const { data: drivers, error } = await supabase
       .from("profiles")
-      .select("id, expo_push_token")
-      .eq("is_driver", true)
+      .select("id, expo_push_token, profile_roles!inner(roles!inner(key))")
+      .eq("profile_roles.roles.key", "driver")
       .eq("is_available", true)
       .eq("is_logged_in", true)
 
@@ -79,7 +84,7 @@ async function handleNewCartRequest(cartRequest: CartRequest) {
     console.log(`Found ${drivers?.length || 0} available drivers`);
 
     // Filter out drivers without valid push tokens
-    const validDrivers = drivers?.filter(driver => 
+    const validDrivers = (drivers as DriverRecipient[] | null)?.filter((driver: DriverRecipient) => 
       driver.expo_push_token && 
       driver.expo_push_token.startsWith('ExponentPushToken[')
     ) || [];
@@ -114,7 +119,7 @@ async function handleNewCartRequest(cartRequest: CartRequest) {
       };
 
       // Send to each token individually to ensure delivery
-      const sendPromises = validDrivers.map(driver => {
+      const sendPromises = validDrivers.map((driver: DriverRecipient) => {
         const message = {
           to: driver.expo_push_token,
           ...notification,
@@ -293,7 +298,7 @@ async function getFieldNames(fieldIds: number[]): Promise<Record<number, string>
     // Create a mapping of field IDs to names
     const fieldMap: Record<number, string> = {};
     if (data) {
-      data.forEach(field => {
+      data.forEach((field: { id: number; name: string }) => {
         fieldMap[field.id] = field.name;
       });
     }

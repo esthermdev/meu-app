@@ -137,8 +137,8 @@ const WaterRequestButton = () => {
 
       const { data: volunteers, error: volunteerError } = await supabase
         .from('profiles')
-        .select('id, expo_push_token')
-        .eq('is_volunteer', true);
+        .select('id, expo_push_token, profile_roles!inner(roles!inner(key))')
+        .eq('profile_roles.roles.key', 'volunteer');
 
       if (volunteerError) throw volunteerError;
 

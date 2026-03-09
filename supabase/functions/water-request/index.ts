@@ -15,9 +15,14 @@ interface WebhookPayload {
   old_record: null | WaterRequest;
 }
 
+interface VolunteerRecipient {
+  id: string;
+  expo_push_token: string | null;
+}
+
 const supabase = createClient(
   Deno.env.get("EXPO_PUBLIC_SUPABASE_URL")!,
-  Deno.env.get("EXPO_PUBLIC_SUPABASE_ANON_KEY")!,
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? Deno.env.get("EXPO_PUBLIC_SUPABASE_ANON_KEY")!,
 );
 
 Deno.serve(async (req) => {
@@ -49,8 +54,8 @@ Deno.serve(async (req) => {
 
     const { data: volunteers, error } = await supabase
       .from("profiles")
-      .select("id, expo_push_token")
-      .eq("is_volunteer", true)
+      .select("id, expo_push_token, profile_roles!inner(roles!inner(key))")
+      .eq("profile_roles.roles.key", "volunteer")
       .eq("is_available", true)
       .eq("is_logged_in", true)
       
@@ -65,7 +70,7 @@ Deno.serve(async (req) => {
     console.log(`Found ${volunteers?.length || 0} available volunteers`);
 
     // Filter out volunteers without valid push tokens
-    const validVolunteers = volunteers?.filter(volunteer => 
+    const validVolunteers = (volunteers as VolunteerRecipient[] | null)?.filter((volunteer: VolunteerRecipient) => 
       volunteer.expo_push_token && 
       volunteer.expo_push_token.startsWith('ExponentPushToken[')
     ) || [];
@@ -88,7 +93,7 @@ Deno.serve(async (req) => {
       };
 
       // Send to each token individually
-      const sendPromises = validVolunteers.map(volunteer => {
+      const sendPromises = validVolunteers.map((volunteer: VolunteerRecipient) => {
         const message = {
           to: volunteer.expo_push_token,
           ...notification,

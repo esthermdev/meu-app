@@ -182,8 +182,8 @@ const VolunteerAvailabilityScreen = () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
-        .eq('is_volunteer', true)
+        .select('*, profile_roles!inner(roles!inner(key))')
+        .eq('profile_roles.roles.key', 'volunteer')
         .order('full_name');
 
       if (error) throw error;

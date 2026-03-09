@@ -517,8 +517,8 @@ const DriversAvailabilityScreen = () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
-        .eq('is_driver', true)
+        .select('*, profile_roles!inner(roles!inner(key))')
+        .eq('profile_roles.roles.key', 'driver')
         .order('full_name');
 
       if (error) throw error;
