@@ -22,7 +22,7 @@ import PrimaryButton from '@/components/buttons/PrimaryButton';
 import UpdateScoreModal from '@/components/features/modals/UpdateScoreModal';
 import { updateGameScore } from '@/utils/updateGameScore';
 import CustomText from '@/components/CustomText';
-import { useFavoriteGamesSubscription } from '@/hooks/subscriptions/useGamesSubscriptions';
+import { useFavoriteGamesSubscription } from '@/hooks/realtime/useGameSubscriptions';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
-import { useRoundIds } from '@/hooks/useGamesFilter';
+import { useGamesByRound } from '@/hooks/useGamesData';
 import { typography } from '@/constants/Typography';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
@@ -14,7 +14,7 @@ type TeamRow = Database['public']['Tables']['teams']['Row'];
 type ScoresRow = Database['public']['Tables']['scores']['Row'];
 type FieldsRow = Database['public']['Tables']['fields']['Row'];
 
-// Define the interface that matches what useRoundIds returns
+// Define the interface that matches what useGamesByRound returns
 interface FetchedGame extends GamesRow {
   team1: TeamRow | null;
   team2: TeamRow | null;
@@ -29,7 +29,7 @@ type Props = {
 };
 
 const PoolGameView: React.FC<Props> = ({ poolId, divisionId }) => {
-  const { games, refreshData } = useRoundIds(divisionId, 1);
+  const { games, refreshData } = useGamesByRound(divisionId, 1);
 
   const poolGames = games.filter((game) => game.pool_id === poolId) as FetchedGame[];
 

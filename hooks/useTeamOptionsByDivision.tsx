@@ -7,7 +7,7 @@ interface TeamOption {
   name: string;
 }
 
-export const useTeamOptions = (divisionId?: number | null) => {
+export const useTeamOptionsByDivision = (divisionId?: number | null) => {
   const [teamOptions, setTeamOptions] = useState<TeamOption[]>([]);
   const [loading, setLoading] = useState(false);
 

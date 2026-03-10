@@ -12,7 +12,7 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { useAuth } from '@/context/AuthProvider';
-import { useFavorites } from '@/hooks/useFavorites';
+import { useFavoriteTeams } from '@/hooks/useFavoriteTeams';
 import { FavoriteTeamsList } from '@/components/features/favorites/FavoriteTeamsList';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
@@ -30,7 +30,8 @@ const FavoritesScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const { session } = useAuth();
-  const { teams, favorites, toggleFavorite, loadData, remainingFavorites } = useFavorites(session);
+  const { teams, favorites, toggleFavorite, loadData, remainingFavorites } =
+    useFavoriteTeams(session);
 
   const filteredTeams = useMemo(() => {
     const lowercaseQuery = searchQuery.toLowerCase();

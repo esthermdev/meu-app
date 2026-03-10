@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { View, ActivityIndicator, SectionList, StyleSheet, Image } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { usePoolIds } from '@/hooks/useGamesFilter';
+import { usePoolsByDivision } from '@/hooks/useGamesData';
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
 import CustomHeader from '@/components/headers/CustomHeader';
@@ -24,7 +24,7 @@ interface StandingsSection {
 
 export default function DivisionStandings() {
   const { division, divisionName } = useLocalSearchParams();
-  const { pools, loading, error } = usePoolIds(Number(division));
+  const { pools, loading, error } = usePoolsByDivision(Number(division));
   const [standingsData, setStandingsData] = useState<StandingsSection[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasGamesStarted, setHasGamesStarted] = useState(false);

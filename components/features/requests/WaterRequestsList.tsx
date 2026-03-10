@@ -9,7 +9,7 @@ import { useAuth } from '@/context/AuthProvider';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import { getTimeSince } from '@/utils/getTimeSince';
-import { useWaterRequestsSubscription } from '@/hooks/subscriptions/useRequestsSubscriptions';
+import { useWaterRequestsSubscription } from '@/hooks/realtime/useRequestSubscriptions';
 
 type WaterRequests = Database['public']['Tables']['water_requests']['Row'] & {
   fields?: {

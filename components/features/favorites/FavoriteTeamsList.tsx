@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ActivityIndicator, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { TeamWithDetails } from '@/hooks/useFavorites';
+import { TeamWithDetails } from '@/hooks/useFavoriteTeams';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
 

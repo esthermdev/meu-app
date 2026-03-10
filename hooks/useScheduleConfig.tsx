@@ -31,7 +31,6 @@ export function useDivisions() {
     }
   }, []);
 
-  // Replace your useEffect with this:
   useEffect(() => {
     fetchDivisions();
   }, [fetchDivisions]);
@@ -52,7 +51,7 @@ export function useDivisions() {
   };
 }
 
-export function useGametypes(divisionId: number) {
+export function useGameTypesByDivision(divisionId: number) {
   const [gametypes, setGametypes] = useState<GameTypes[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

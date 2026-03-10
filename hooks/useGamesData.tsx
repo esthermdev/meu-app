@@ -1,10 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
-import {
-  useGameSubscription,
-  useScheduleSubscription,
-} from './subscriptions/useGamesSubscriptions';
+import { useGameSubscription, useScheduleSubscription } from './realtime/useGameSubscriptions';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type TeamsRow = Database['public']['Tables']['teams']['Row'];
@@ -19,7 +16,7 @@ interface Games extends GamesRow {
   scores: ScoresRow[] | null;
 }
 
-export function useRoundIds(divisionId: number, roundId: number) {
+export function useGamesByRound(divisionId: number, roundId: number) {
   const [games, setGames] = useState<Games[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -76,7 +73,7 @@ export function useRoundIds(divisionId: number, roundId: number) {
   };
 }
 
-export function useScheduleId(divisionId: number, scheduleId: number, refreshKey = 0) {
+export function useGamesBySchedule(divisionId: number, scheduleId: number, refreshKey = 0) {
   const [games, setGames] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -134,7 +131,7 @@ export function useScheduleId(divisionId: number, scheduleId: number, refreshKey
   };
 }
 
-export function usePoolIds(divisionId: number) {
+export function usePoolsByDivision(divisionId: number) {
   const [pools, setPools] = useState<PoolsRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -164,7 +161,7 @@ export function usePoolIds(divisionId: number) {
           (data || []).map((pool) => ({ id: pool.id, name: pool.name })),
         );
       } catch (e) {
-        console.error('Error in usePoolIds:', e);
+        console.error('Error in usePoolsByDivision:', e);
         if (isMounted) {
           setError(e instanceof Error ? e.message : 'An error occurred');
         }
@@ -178,7 +175,7 @@ export function usePoolIds(divisionId: number) {
     if (divisionId) {
       fetchPools();
     } else {
-      console.warn('No division ID provided to usePoolIds');
+      console.warn('No division ID provided to usePoolsByDivision');
       setLoading(false);
     }
 

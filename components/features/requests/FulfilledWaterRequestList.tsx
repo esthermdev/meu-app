@@ -15,7 +15,7 @@ import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
-import { useWaterRequestsSubscription } from '@/hooks/subscriptions/useRequestsSubscriptions';
+import { useWaterRequestsSubscription } from '@/hooks/realtime/useRequestSubscriptions';
 
 // Define types based on your Supabase schema
 type WaterRequest = Database['public']['Tables']['water_requests']['Row'];

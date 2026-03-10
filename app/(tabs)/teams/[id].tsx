@@ -10,7 +10,7 @@ import { typography } from '@/constants/Typography';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import CustomHeader from '@/components/headers/CustomHeader';
 import CustomText from '@/components/CustomText';
-import { useTeamGamesSubscription } from '@/hooks/subscriptions/useTeamsSubscriptions';
+import { useTeamGamesSubscription } from '@/hooks/realtime/useTeamSubscriptions';
 
 type TeamRow = Database['public']['Tables']['teams']['Row'];
 type GameRow = Database['public']['Tables']['games']['Row'];

@@ -14,7 +14,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { useGametypes } from '@/hooks/useScheduleConfig';
+import { useGameTypesByDivision } from '@/hooks/useScheduleConfig';
 import { fonts, typography } from '@/constants/Typography';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
@@ -54,7 +54,7 @@ export default function GameTypesScreen() {
   const divisionId = Number(params.division);
   const divisionName = params.divisionName as string;
 
-  const { gametypes, loading: gametypesLoading, error } = useGametypes(divisionId);
+  const { gametypes, loading: gametypesLoading, error } = useGameTypesByDivision(divisionId);
   const [selectedGameType, setSelectedGameType] = useState<number | null>(null);
   const [games, setGames] = useState<Games[]>([]);
   const [filteredGames, setFilteredGames] = useState<Games[]>([]);

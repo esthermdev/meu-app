@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useGametypes } from '@/hooks/useScheduleConfig';
+import { useGameTypesByDivision } from '@/hooks/useScheduleConfig';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
 import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
@@ -18,7 +18,7 @@ export default function GameTypesScreen() {
   const divisionId = Number(params.division);
   const divisionName = params.divisionName as string;
 
-  const { gametypes, loading, error } = useGametypes(divisionId);
+  const { gametypes, loading, error } = useGameTypesByDivision(divisionId);
 
   const handleSelectGameType = (gameTypeId: number, gameTypeTitle: string, route: string) => {
     // Check if it's a pool play route

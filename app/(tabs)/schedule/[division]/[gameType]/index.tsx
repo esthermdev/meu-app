@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { typography } from '@/constants/Typography';
-import { useScheduleId } from '@/hooks/useGamesFilter';
+import { useGamesBySchedule } from '@/hooks/useGamesData';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { MaterialIcons } from '@expo/vector-icons';
 import GameComponent from '@/components/features/gameviews/GameComponent';
@@ -33,7 +33,7 @@ export default function ScheduleScreen() {
   const scheduleId = Number(params.gameType);
   const gameTypeTitle = params.gameTypeTitle as string;
 
-  const { games, loading, error, refreshData } = useScheduleId(divisionId, scheduleId);
+  const { games, loading, error, refreshData } = useGamesBySchedule(divisionId, scheduleId);
 
   const [collapsedSections, setCollapsedSections] = useState<{
     [key: string]: boolean;

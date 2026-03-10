@@ -17,7 +17,7 @@ import { Database } from '@/database.types';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
 import { getTimeSince } from '@/utils/getTimeSince';
-import { useTrainerRequestsSubscription } from '@/hooks/subscriptions/useRequestsSubscriptions';
+import { useTrainerRequestsSubscription } from '@/hooks/realtime/useRequestSubscriptions';
 
 // Define types based on your Supabase schema
 type MedicalRequest = Database['public']['Tables']['medical_requests']['Row'] & {

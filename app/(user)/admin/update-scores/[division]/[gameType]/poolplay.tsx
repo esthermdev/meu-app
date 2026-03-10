@@ -1,7 +1,7 @@
 // app/(user)/admin/update-scores/[division]/[gameType]/poolplay.tsx
 import { View, ActivityIndicator, Text } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { usePoolIds } from '@/hooks/useGamesFilter';
+import { usePoolsByDivision } from '@/hooks/useGamesData';
 import { useLocalSearchParams } from 'expo-router';
 import PoolAdminView from '@/components/features/gameviews/AdminPoolGameView';
 import { typography } from '@/constants/Typography';
@@ -11,7 +11,7 @@ const Tab = createMaterialTopTabNavigator();
 export default function PoolPlayScreen() {
   const params = useLocalSearchParams();
   const divisionId = Number(params.division);
-  const { pools, loading, error } = usePoolIds(divisionId);
+  const { pools, loading, error } = usePoolsByDivision(divisionId);
 
   if (loading) {
     return (

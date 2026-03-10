@@ -1,6 +1,6 @@
 import { View, ActivityIndicator } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { usePoolIds } from '@/hooks/useGamesFilter';
+import { usePoolsByDivision } from '@/hooks/useGamesData';
 import { useLocalSearchParams } from 'expo-router';
 import { typography } from '@/constants/Typography';
 import PoolGameView from '@/components/features/gameviews/PoolGameView';
@@ -11,7 +11,7 @@ const Tab = createMaterialTopTabNavigator();
 export default function PoolPlayScreen() {
   const params = useLocalSearchParams();
   const divisionId = Number(params.division);
-  const { pools, loading, error } = usePoolIds(divisionId);
+  const { pools, loading, error } = usePoolsByDivision(divisionId);
 
   if (loading) {
     return (

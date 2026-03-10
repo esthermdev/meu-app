@@ -7,7 +7,7 @@ import { Dropdown } from '@/components/Dropdown';
 import { DateTimeFilteredDropdown } from '@/components/DateTimeFilteredDropdown';
 import { useDatetimeOptions } from '@/hooks/useDatetimeOptions';
 import { useFieldOptions } from '@/hooks/useFieldOptions';
-import { useTeamOptions } from '@/hooks/useTeamOptions';
+import { useTeamOptionsByDivision } from '@/hooks/useTeamOptionsByDivision';
 
 interface UpdateScoreModalProps {
   visible: boolean;
@@ -65,7 +65,7 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
 }) => {
   const { datetimeOptions } = useDatetimeOptions();
   const { fieldOptions } = useFieldOptions();
-  const { teamOptions } = useTeamOptions(divisionId);
+  const { teamOptions } = useTeamOptionsByDivision(divisionId);
 
   // Find selected datetime option for display
   const selectedDatetime = useMemo(() => {

@@ -2,7 +2,7 @@ import * as Updates from 'expo-updates';
 import { useCallback, useEffect, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
-export function useCheckUpdates() {
+export function useCheckForAppUpdates() {
   const [isChecking, setIsChecking] = useState(false);
 
   // Function to check for updates

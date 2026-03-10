@@ -1,4 +1,3 @@
-// src/hooks/useFavorites.ts
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Session } from '@supabase/supabase-js';
@@ -17,13 +16,11 @@ export interface TeamWithDetails extends TeamRow {
 
 const MAX_FAVORITES = 5;
 
-export const useFavorites = (session: Session | null) => {
+export const useFavoriteTeams = (session: Session | null) => {
   const [teams, setTeams] = useState<TeamWithDetails[]>([]);
   const [favorites, setFavorites] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
 
-  // src/hooks/useFavorites.ts
-  // src/hooks/useFavorites.ts
   const toggleFavorite = useCallback(
     async (teamId: number) => {
       if (!session?.user) return { success: false, isFavorited: false };
