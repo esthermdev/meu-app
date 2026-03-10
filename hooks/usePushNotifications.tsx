@@ -41,10 +41,7 @@ const usePushNotifications = () => {
       try {
         // If user is authenticated, save to their profile
         if (user) {
-          const { error } = await supabase
-            .from('profiles')
-            .update({ expo_push_token: token })
-            .eq('id', user.id);
+          const { error } = await supabase.from('profiles').update({ expo_push_token: token }).eq('id', user.id);
 
           if (error) throw error;
           console.log('Expo push token saved to user profile:', token);
@@ -103,9 +100,7 @@ const usePushNotifications = () => {
 
       // Create a new UUID-like identifier
       const newId =
-        'device_' +
-        Math.random().toString(36).substring(2, 15) +
-        Math.random().toString(36).substring(2, 15);
+        'device_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
       await AsyncStorage.setItem('device_id', newId);
       return newId;
     } catch (error) {

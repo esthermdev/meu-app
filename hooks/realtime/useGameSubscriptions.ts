@@ -95,12 +95,7 @@ export function useScheduleSubscription(
   useEffect(() => {
     if (!divisionId || !scheduleId) return;
 
-    console.log(
-      'Setting up real-time subscription for division:',
-      divisionId,
-      'schedule:',
-      scheduleId,
-    );
+    console.log('Setting up real-time subscription for division:', divisionId, 'schedule:', scheduleId);
 
     // Subscribe to score changes for this schedule
     const subscription = supabase
@@ -117,11 +112,7 @@ export function useScheduleSubscription(
           const currentGameIds = gameIdsRef.current;
 
           // Check if this score update is relevant to our current schedule
-          if (
-            updatedScore &&
-            updatedScore.game_id &&
-            currentGameIds.includes(updatedScore.game_id)
-          ) {
+          if (updatedScore && updatedScore.game_id && currentGameIds.includes(updatedScore.game_id)) {
             console.log('Score updated for game in current schedule:', updatedScore.game_id);
             debouncedUpdate();
           }
@@ -138,10 +129,7 @@ export function useScheduleSubscription(
   }, [divisionId, scheduleId, debouncedUpdate]);
 }
 
-export function useScoreSubscription(
-  gameIds: number[],
-  onUpdate: (updatedGameId?: number) => void,
-) {
+export function useScoreSubscription(gameIds: number[], onUpdate: (updatedGameId?: number) => void) {
   const previousGameIdsRef = useRef<number[]>([]);
 
   // We'll use a debounce mechanism to avoid too frequent updates
@@ -191,8 +179,7 @@ export function useScoreSubscription(
           console.log('Received score update:', payload);
 
           // Check if this update is relevant to our games
-          const updatedGameId =
-            payload.new && 'game_id' in payload.new ? payload.new.game_id : undefined;
+          const updatedGameId = payload.new && 'game_id' in payload.new ? payload.new.game_id : undefined;
           if (updatedGameId && gameIds.includes(updatedGameId)) {
             debouncedUpdate(updatedGameId);
           }
@@ -256,11 +243,7 @@ export function useFavoriteGamesSubscription(gameIds: number[], onUpdate: () => 
           const currentGameIds = gameIdsRef.current;
 
           // Check if this score update is relevant to favorite games
-          if (
-            updatedScore &&
-            updatedScore.game_id &&
-            currentGameIds.includes(updatedScore.game_id)
-          ) {
+          if (updatedScore && updatedScore.game_id && currentGameIds.includes(updatedScore.game_id)) {
             console.log('Score updated for favorite game:', updatedScore.game_id, updatedScore);
             debouncedUpdate();
           }

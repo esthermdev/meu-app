@@ -24,11 +24,7 @@ type CartListItem = {
   request: CartRequest;
 };
 
-const CartRequestsList = ({
-  registerRefreshCallback,
-}: {
-  registerRefreshCallback: (callback: () => void) => void;
-}) => {
+const CartRequestsList = ({ registerRefreshCallback }: { registerRefreshCallback: (callback: () => void) => void }) => {
   const [currentRides, setCurrentRides] = useState<CartRequest[]>([]);
   const [pendingRides, setPendingRides] = useState<CartRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -42,9 +38,7 @@ const CartRequestsList = ({
       return fieldsMapRef.current;
     }
 
-    const { data: fieldsData, error: fieldsError } = await supabase
-      .from('fields')
-      .select('id, name');
+    const { data: fieldsData, error: fieldsError } = await supabase.from('fields').select('id, name');
     if (fieldsError) {
       throw fieldsError;
     }
@@ -69,11 +63,7 @@ const CartRequestsList = ({
 
         const [fieldMap, pendingResult, currentResult] = await Promise.all([
           getFieldMap(),
-          supabase
-            .from('cart_requests')
-            .select('*')
-            .eq('status', 'pending')
-            .order('created_at', { ascending: false }),
+          supabase.from('cart_requests').select('*').eq('status', 'pending').order('created_at', { ascending: false }),
           supabase
             .from('cart_requests')
             .select('*')
@@ -89,9 +79,7 @@ const CartRequestsList = ({
           throw currentResult.error;
         }
 
-        const enhanceRequest = (
-          request: Database['public']['Tables']['cart_requests']['Row'],
-        ): CartRequest => ({
+        const enhanceRequest = (request: Database['public']['Tables']['cart_requests']['Row']): CartRequest => ({
           ...request,
           from_field_name: request.from_field_number ? fieldMap[request.from_field_number] : null,
           to_field_name: request.to_field_number ? fieldMap[request.to_field_number] : null,
@@ -103,9 +91,7 @@ const CartRequestsList = ({
         setCurrentRides(nextCurrent);
         setPendingRides(nextPending);
 
-        console.log(
-          `Loaded ${nextCurrent.length} current rides, ${nextPending.length} pending rides`,
-        );
+        console.log(`Loaded ${nextCurrent.length} current rides, ${nextPending.length} pending rides`);
       } catch (error) {
         console.error('Error fetching cart requests:', error);
       } finally {
@@ -130,10 +116,7 @@ const CartRequestsList = ({
       const requestToMove = pendingRides.find((request) => request.id === requestId);
       if (requestToMove) {
         setPendingRides((prev) => prev.filter((request) => request.id !== requestId));
-        setCurrentRides((prev) => [
-          ...prev,
-          { ...requestToMove, status: 'confirmed', driver: profile.id },
-        ]);
+        setCurrentRides((prev) => [...prev, { ...requestToMove, status: 'confirmed', driver: profile.id }]);
       }
 
       const { data, error } = await supabase
@@ -155,10 +138,7 @@ const CartRequestsList = ({
 
       if (!data || data.length === 0) {
         fetchRequests(false);
-        Alert.alert(
-          'Request Unavailable',
-          'This request has already been accepted by another driver.',
-        );
+        Alert.alert('Request Unavailable', 'This request has already been accepted by another driver.');
       }
     } catch (error) {
       console.error('Error accepting request:', error);
@@ -477,14 +457,8 @@ const CartRequestsList = ({
                   <TouchableOpacity
                     style={styles.sectionHeader}
                     onPress={() => setIsPendingCollapsed(!isPendingCollapsed)}>
-                    <CustomText style={styles.sectionTitle}>
-                      Pending Rides ({pendingRides.length})
-                    </CustomText>
-                    <Ionicons
-                      name={isPendingCollapsed ? 'chevron-down' : 'chevron-up'}
-                      size={20}
-                      color="#fff"
-                    />
+                    <CustomText style={styles.sectionTitle}>Pending Rides ({pendingRides.length})</CustomText>
+                    <Ionicons name={isPendingCollapsed ? 'chevron-down' : 'chevron-up'} size={20} color="#fff" />
                   </TouchableOpacity>
                 </View>
               )}

@@ -73,9 +73,7 @@ export default function SignUp() {
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
-          <TouchableOpacity
-            onPress={() => router.navigate('/(tabs)/home')}
-            style={{ marginTop: 20 }}>
+          <TouchableOpacity onPress={() => router.navigate('/(tabs)/home')} style={{ marginTop: 20 }}>
             <MaterialCommunityIcons name="home-outline" size={30} color="#000" />
           </TouchableOpacity>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

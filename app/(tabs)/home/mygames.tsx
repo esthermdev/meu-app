@@ -326,8 +326,7 @@ const MyGames = () => {
             key={date}
             style={[styles.dateButton, selectedDate === date && styles.selectedDateButton]}
             onPress={() => setSelectedDate(date)}>
-            <CustomText
-              style={[styles.dateButtonText, selectedDate === date && styles.selectedDateText]}>
+            <CustomText style={[styles.dateButtonText, selectedDate === date && styles.selectedDateText]}>
               {formatDate(date, 'short')}
             </CustomText>
           </TouchableOpacity>
@@ -342,9 +341,7 @@ const MyGames = () => {
     return (
       <View style={styles.gameCard}>
         <View style={styles.gameHeader}>
-          <CustomText style={styles.dateText}>
-            {formatDate(item.datetime?.date, 'short')}
-          </CustomText>
+          <CustomText style={styles.dateText}>{formatDate(item.datetime?.date, 'short')}</CustomText>
           <View style={styles.timeContainer}>
             <CustomText style={styles.timeText}>{formatTime(item.datetime?.time)}</CustomText>
           </View>
@@ -365,11 +362,7 @@ const MyGames = () => {
                 }
                 style={styles.teamLogo}
               />
-              <CustomText
-                style={[
-                  styles.teamText,
-                  favoriteTeamIds.includes(item.team1.id) && styles.highlightedTeam,
-                ]}>
+              <CustomText style={[styles.teamText, favoriteTeamIds.includes(item.team1.id) && styles.highlightedTeam]}>
                 {item.team1.name}
               </CustomText>
             </View>
@@ -384,11 +377,7 @@ const MyGames = () => {
                 }
                 style={styles.teamLogo}
               />
-              <CustomText
-                style={[
-                  styles.teamText,
-                  favoriteTeamIds.includes(item.team2.id) && styles.highlightedTeam,
-                ]}>
+              <CustomText style={[styles.teamText, favoriteTeamIds.includes(item.team2.id) && styles.highlightedTeam]}>
                 {item.team2.name}
               </CustomText>
             </View>

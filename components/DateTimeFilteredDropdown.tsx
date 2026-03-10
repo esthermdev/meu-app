@@ -101,9 +101,7 @@ export const DateTimeFilteredDropdown: React.FC<DateTimeFilteredDropdownProps> =
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={[styles.button, error ? { borderColor: '#EA1D25' } : null]}
-        onPress={toggleDropdown}>
+      <TouchableOpacity style={[styles.button, error ? { borderColor: '#EA1D25' } : null]} onPress={toggleDropdown}>
         <Text style={styles.buttonText} maxFontSizeMultiplier={1.1}>
           {selectedValue || label}
         </Text>
@@ -120,16 +118,10 @@ export const DateTimeFilteredDropdown: React.FC<DateTimeFilteredDropdownProps> =
               </TouchableOpacity>
             )}
 
-            <Text style={styles.headerText}>
-              {showingDates ? 'Select Date' : `Times for ${selectedDate}`}
-            </Text>
+            <Text style={styles.headerText}>{showingDates ? 'Select Date' : `Times for ${selectedDate}`}</Text>
 
             {showingDates ? (
-              <FlatList
-                data={uniqueDates}
-                renderItem={renderDateItem}
-                keyExtractor={(item) => item.toString()}
-              />
+              <FlatList data={uniqueDates} renderItem={renderDateItem} keyExtractor={(item) => item.toString()} />
             ) : (
               <FlatList
                 data={timesForSelectedDate}

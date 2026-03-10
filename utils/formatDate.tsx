@@ -1,8 +1,5 @@
 // utils/formatDate.tsx
-export const formatDate = (
-  dateString?: string | null,
-  format: 'full' | 'short' = 'full',
-): string => {
+export const formatDate = (dateString?: string | null, format: 'full' | 'short' = 'full'): string => {
   if (!dateString) return 'TBD';
 
   try {

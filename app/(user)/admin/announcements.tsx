@@ -1,14 +1,6 @@
 // announcements.tsx
 import React, { useState } from 'react';
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-} from 'react-native';
+import { View, TextInput, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import { typography } from '@/constants/Typography';
@@ -54,9 +46,7 @@ const AnnouncementScreen = () => {
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardAvoidView}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardAvoidView}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <CustomText style={styles.title}>Send Announcement</CustomText>
           <CustomText style={styles.subtitle}>

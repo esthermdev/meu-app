@@ -109,9 +109,7 @@ const WaterRequestsList = () => {
       </View>
 
       {item.status === 'pending' && (
-        <TouchableOpacity
-          style={styles.resolveButton}
-          onPress={() => handleResolveRequest(item.id)}>
+        <TouchableOpacity style={styles.resolveButton} onPress={() => handleResolveRequest(item.id)}>
           <CustomText style={styles.resolveButtonText}>Resolved</CustomText>
           <MaterialIcons name="check" size={14} color="white" />
         </TouchableOpacity>

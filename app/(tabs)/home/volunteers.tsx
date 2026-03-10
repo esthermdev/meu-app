@@ -48,11 +48,7 @@ const Volunteers = () => {
     <View style={styles.itemContainer}>
       <Image
         style={styles.avatar}
-        source={
-          item.avatar_uri
-            ? { uri: item.avatar_uri }
-            : require('../../../assets/icons/placeholder_user.png')
-        }
+        source={item.avatar_uri ? { uri: item.avatar_uri } : require('../../../assets/icons/placeholder_user.png')}
       />
       <CustomText style={styles.badgeText} allowFontScaling maxFontSizeMultiplier={1.1}>
         {item.badge}

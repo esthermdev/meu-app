@@ -1,13 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  ViewStyle,
-  Dimensions,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ViewStyle, Dimensions, Alert } from 'react-native';
 import { Href, router } from 'expo-router';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { typography } from '@/constants/Typography';
@@ -113,8 +104,7 @@ const AdminScreen = () => {
             iconName={option.iconName}
             route={option.route}
             onPress={
-              option.onPress ||
-              (option.route !== undefined ? () => router.push(option.route as Href) : undefined)
+              option.onPress || (option.route !== undefined ? () => router.push(option.route as Href) : undefined)
             }
           />
         ))}

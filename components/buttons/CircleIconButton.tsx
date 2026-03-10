@@ -14,18 +14,10 @@ interface CircleIconButtonProps {
   disabled?: boolean;
 }
 
-const CircleIconButton: React.FC<CircleIconButtonProps> = ({
-  icon,
-  label,
-  route,
-  disabled = false,
-}) => {
+const CircleIconButton: React.FC<CircleIconButtonProps> = ({ icon, label, route, disabled = false }) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => (route ? router.push(route) : null)}
-        disabled={disabled}>
+      <TouchableOpacity style={styles.button} onPress={() => (route ? router.push(route) : null)} disabled={disabled}>
         <MaterialCommunityIcons name={icon} size={28} color="#67BF30" />
       </TouchableOpacity>
       <CustomText style={styles.label}>{label}</CustomText>

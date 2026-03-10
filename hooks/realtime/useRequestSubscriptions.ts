@@ -17,11 +17,7 @@ export function useWaterRequestsSubscription(onUpdate: () => void) {
   useEffect(() => {
     const subscription = supabase
       .channel('water_requests_changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'water_requests' },
-        scheduleRealtimeRefresh,
-      )
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'water_requests' }, scheduleRealtimeRefresh)
       .subscribe();
 
     return () => {

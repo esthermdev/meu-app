@@ -75,8 +75,7 @@ const NotificationPermission: React.FC<NotificationPermissionProps> = ({ compact
         <>
           <FontAwesome5 name="bell-slash" size={20} color="#757575" />
           <CustomText style={styles.disabledText}>
-            Enable notifications to stay updated on game schedules and important tournament
-            information
+            Enable notifications to stay updated on game schedules and important tournament information
           </CustomText>
         </>
       )}

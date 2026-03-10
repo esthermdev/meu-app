@@ -223,18 +223,13 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
 
           {/* Action Buttons */}
           <View style={styles.modalButtonContainer}>
-            <TouchableOpacity
-              style={styles.modalCancelButton}
-              onPress={onClose}
-              disabled={isLoading}>
+            <TouchableOpacity style={styles.modalCancelButton} onPress={onClose} disabled={isLoading}>
               <CustomText style={styles.modalCancelButtonText}>Cancel</CustomText>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.modalUpdateButton}
-              onPress={() =>
-                onSubmit(team1Score, team2Score, datetimeId, fieldId, team1Id, team2Id)
-              }
+              onPress={() => onSubmit(team1Score, team2Score, datetimeId, fieldId, team1Id, team2Id)}
               disabled={isLoading}>
               <CustomText style={styles.modalUpdateButtonText}>Update Game</CustomText>
             </TouchableOpacity>

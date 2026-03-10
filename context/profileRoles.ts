@@ -49,13 +49,7 @@ const DEFAULT_ROLE_PERMISSIONS: Record<RoleKey, PermissionKey[]> = {
 };
 
 function isRoleKey(value: string | null | undefined): value is RoleKey {
-  return (
-    value === 'user' ||
-    value === 'admin' ||
-    value === 'medic' ||
-    value === 'driver' ||
-    value === 'volunteer'
-  );
+  return value === 'user' || value === 'admin' || value === 'medic' || value === 'driver' || value === 'volunteer';
 }
 
 export function getRoleKey(profile: RoleAwareProfile | null | undefined): RoleKey | null {
@@ -87,17 +81,10 @@ export function hasRole(profile: RoleAwareProfile | null | undefined, role: Role
   return getRoleKeys(profile).includes(role);
 }
 
-export function hasPermission(
-  profile: RoleAwareProfile | null | undefined,
-  permission: PermissionKey,
-): boolean {
+export function hasPermission(profile: RoleAwareProfile | null | undefined, permission: PermissionKey): boolean {
   if (!profile) return false;
 
-  if (
-    'permission_keys' in profile &&
-    Array.isArray(profile.permission_keys) &&
-    profile.permission_keys.length > 0
-  ) {
+  if ('permission_keys' in profile && Array.isArray(profile.permission_keys) && profile.permission_keys.length > 0) {
     return profile.permission_keys.includes(permission);
   }
 
@@ -124,12 +111,9 @@ export async function fetchProfileWithRole(userId: string): Promise<ProfileWithR
   const rawProfile = data as ProfileRow & ProfileRoleJoin;
   const roleKey = isRoleKey(rawProfile.role?.key) ? rawProfile.role.key : null;
 
-  const { data: accessData, error: accessError } = await (supabase as any).rpc(
-    'get_profile_access',
-    {
-      p_profile_id: userId,
-    },
-  );
+  const { data: accessData, error: accessError } = await (supabase as any).rpc('get_profile_access', {
+    p_profile_id: userId,
+  });
 
   if (accessError) {
     throw accessError;

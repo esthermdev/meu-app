@@ -12,8 +12,8 @@ const RulesAndSOTG = () => {
         </CustomText>
         <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>
           • Games are hard capped at 90 minutes. Soft cap at 80 minutes.{'\n'}• Games are to 15.
-          {'\n'}• 2 timeouts per half.{'\n'}• A point begins as soon as a goal is scored.{'\n'}• The
-          caps do NOT affect timeouts.
+          {'\n'}• 2 timeouts per half.{'\n'}• A point begins as soon as a goal is scored.{'\n'}• The caps do NOT affect
+          timeouts.
           {'\n'}• Use the port-o-potties, not the bushes.{'\n'}
         </CustomText>
         <Link

@@ -1,7 +1,4 @@
-export const getTimeColor = (
-  dateString: string | null,
-  thresholds?: { recent: number; moderate: number },
-) => {
+export const getTimeColor = (dateString: string | null, thresholds?: { recent: number; moderate: number }) => {
   if (!dateString) return '#EA1D25'; // Default to red if unknown
 
   const now = new Date();

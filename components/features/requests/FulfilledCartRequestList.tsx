@@ -1,13 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  ActivityIndicator,
-  SafeAreaView,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Card } from '@/components/Card';
 import { supabase } from '@/lib/supabase';
@@ -355,19 +347,13 @@ const FulfilledCartRequestsList = ({
           {item.status !== 'pending' && (
             <View style={styles.infoRow}>
               <CustomText style={styles.labelText}>Driver:</CustomText>
-              <CustomText style={styles.driverText}>
-                {item.driver ? item.driver.full_name : driverName}
-              </CustomText>
+              <CustomText style={styles.driverText}>{item.driver ? item.driver.full_name : driverName}</CustomText>
             </View>
           )}
           <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>
-              {item.status === 'pending' ? 'Created:' : 'Completed:'}
-            </CustomText>
+            <CustomText style={styles.labelText}>{item.status === 'pending' ? 'Created:' : 'Completed:'}</CustomText>
             <CustomText style={styles.valueText}>
-              {item.status === 'pending'
-                ? formatDate(item.created_at)
-                : formatDate(item.updated_at)}
+              {item.status === 'pending' ? formatDate(item.created_at) : formatDate(item.updated_at)}
             </CustomText>
           </View>
         </View>
@@ -436,8 +422,7 @@ const FulfilledCartRequestsList = ({
                     isCollapsed={pendingCollapsed}
                     onToggle={() => setPendingCollapsed(!pendingCollapsed)}
                   />
-                  {!pendingCollapsed &&
-                    pendingRides.map((item) => <View key={item.id}>{renderItem({ item })}</View>)}
+                  {!pendingCollapsed && pendingRides.map((item) => <View key={item.id}>{renderItem({ item })}</View>)}
                 </View>
               )}
 
@@ -478,8 +463,7 @@ const FulfilledCartRequestsList = ({
                     isCollapsed={expiredCollapsed}
                     onToggle={() => setExpiredCollapsed(!expiredCollapsed)}
                   />
-                  {!expiredCollapsed &&
-                    expiredRides.map((item) => <View key={item.id}>{renderItem({ item })}</View>)}
+                  {!expiredCollapsed && expiredRides.map((item) => <View key={item.id}>{renderItem({ item })}</View>)}
                 </View>
               )}
             </View>

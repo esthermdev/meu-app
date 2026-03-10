@@ -11,10 +11,7 @@ interface CustomAdminHeaderProps {
   rightIcon?: boolean;
 }
 
-export const CustomAdminHeader: React.FC<CustomAdminHeaderProps> = ({
-  title,
-  rightIcon = true,
-}) => {
+export const CustomAdminHeader: React.FC<CustomAdminHeaderProps> = ({ title, rightIcon = true }) => {
   return (
     <View style={styles.headerContainer}>
       <TouchableOpacity onPress={() => router.back()}>

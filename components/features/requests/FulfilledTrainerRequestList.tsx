@@ -1,12 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  ActivityIndicator,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import { Card } from '@/components/Card';
 import { MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
@@ -78,39 +71,35 @@ const FulfilledTrainerRequestList = () => {
   };
 
   const clearAllRequests = async () => {
-    Alert.alert(
-      'Clear All Requests',
-      'Are you sure you want to remove all fulfilled trainer requests?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Clear All',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              // Update all confirmed and resolved requests to expired
-              const { error } = await supabase
-                .from('medical_requests')
-                .update({
-                  status: 'expired' as Database['public']['Enums']['request_status'],
-                })
-                .in('status', ['confirmed', 'resolved']);
+    Alert.alert('Clear All Requests', 'Are you sure you want to remove all fulfilled trainer requests?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Clear All',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            // Update all confirmed and resolved requests to expired
+            const { error } = await supabase
+              .from('medical_requests')
+              .update({
+                status: 'expired' as Database['public']['Enums']['request_status'],
+              })
+              .in('status', ['confirmed', 'resolved']);
 
-              if (error) throw error;
+            if (error) throw error;
 
-              // Clear the local state
-              setRequests([]);
-            } catch (error) {
-              console.error('Error clearing all trainer requests:', error);
-              Alert.alert('Error', 'Failed to clear all requests. Please try again.');
-            }
-          },
+            // Clear the local state
+            setRequests([]);
+          } catch (error) {
+            console.error('Error clearing all trainer requests:', error);
+            Alert.alert('Error', 'Failed to clear all requests. Please try again.');
+          }
         },
-      ],
-    );
+      },
+    ]);
   };
 
   const formatDate = (dateString: string | null) => {
@@ -191,9 +180,7 @@ const FulfilledTrainerRequestList = () => {
           </View>
           <View style={styles.fieldBadge}>
             <MaterialIcons name="location-on" size={14} color="#262626" />
-            <CustomText style={styles.fieldText}>
-              Field {item.fields?.name || `Field ${item.field_number}`}
-            </CustomText>
+            <CustomText style={styles.fieldText}>Field {item.fields?.name || `Field ${item.field_number}`}</CustomText>
           </View>
         </View>
 

@@ -256,11 +256,7 @@ export default function GameTypesScreen() {
 
             // Update local state
             const updatedGames = games.map((game) => {
-              if (
-                game.scores &&
-                game.scores.length > 0 &&
-                filteredGames.find((fg) => fg.id === game.id)
-              ) {
+              if (game.scores && game.scores.length > 0 && filteredGames.find((fg) => fg.id === game.id)) {
                 return {
                   ...game,
                   scores: [
@@ -317,11 +313,7 @@ export default function GameTypesScreen() {
 
                 // Update local state
                 const updatedGames = games.map((game) => {
-                  if (
-                    game.scores &&
-                    game.scores.length > 0 &&
-                    filteredGames.find((fg) => fg.id === game.id)
-                  ) {
+                  if (game.scores && game.scores.length > 0 && filteredGames.find((fg) => fg.id === game.id)) {
                     return {
                       ...game,
                       scores: [
@@ -360,16 +352,10 @@ export default function GameTypesScreen() {
         {gametypes.map((gametype) => (
           <TouchableOpacity
             key={gametype.id}
-            style={[
-              styles.filterButton,
-              selectedGameType === gametype.id && styles.selectedFilterButton,
-            ]}
+            style={[styles.filterButton, selectedGameType === gametype.id && styles.selectedFilterButton]}
             onPress={() => setSelectedGameType(gametype.id)}>
             <CustomText
-              style={[
-                styles.filterButtonText,
-                selectedGameType === gametype.id && styles.selectedFilterText,
-              ]}>
+              style={[styles.filterButtonText, selectedGameType === gametype.id && styles.selectedFilterText]}>
               {gametype.title}
             </CustomText>
           </TouchableOpacity>

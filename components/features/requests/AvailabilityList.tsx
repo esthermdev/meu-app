@@ -42,10 +42,7 @@ const AvailabilityList = ({ roleKey, fallbackName }: AvailabilityListProps) => {
     try {
       const nextAvailability = !currentAvailability;
 
-      const { error } = await supabase
-        .from('profiles')
-        .update({ is_available: nextAvailability })
-        .eq('id', profileId);
+      const { error } = await supabase.from('profiles').update({ is_available: nextAvailability }).eq('id', profileId);
 
       if (error) {
         throw error;
@@ -71,8 +68,7 @@ const AvailabilityList = ({ roleKey, fallbackName }: AvailabilityListProps) => {
     <View style={styles.item}>
       <View style={styles.info}>
         <CustomText style={styles.name}>{item.full_name || fallbackName}</CustomText>
-        <CustomText
-          style={[styles.availabilityText, { color: item.is_available ? '#59DE07' : '#EA1D25' }]}>
+        <CustomText style={[styles.availabilityText, { color: item.is_available ? '#59DE07' : '#EA1D25' }]}>
           {item.is_available ? 'Available' : 'Unavailable'}
         </CustomText>
       </View>
@@ -93,12 +89,7 @@ const AvailabilityList = ({ roleKey, fallbackName }: AvailabilityListProps) => {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={['#EA1D25']}
-            tintColor="#EA1D25"
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#EA1D25']} tintColor="#EA1D25" />
         }
       />
     </View>

@@ -13,23 +13,15 @@ interface FilterButtonProps {
   isSelected: boolean;
 }
 
-export const FilterButton = React.memo<FilterButtonProps>(
-  ({ title, color, division, onPress, isSelected }) => (
-    <TouchableOpacity
-      style={[
-        styles.filterButton,
-        { backgroundColor: color },
-        isSelected && styles.filterButtonSelected,
-      ]}
-      onPress={() => onPress(division)}>
-      <Text
-        maxFontSizeMultiplier={1.2}
-        style={[styles.filterByText, isSelected && styles.filterByTextSelected]}>
-        {title}
-      </Text>
-    </TouchableOpacity>
-  ),
-);
+export const FilterButton = React.memo<FilterButtonProps>(({ title, color, division, onPress, isSelected }) => (
+  <TouchableOpacity
+    style={[styles.filterButton, { backgroundColor: color }, isSelected && styles.filterButtonSelected]}
+    onPress={() => onPress(division)}>
+    <Text maxFontSizeMultiplier={1.2} style={[styles.filterByText, isSelected && styles.filterByTextSelected]}>
+      {title}
+    </Text>
+  </TouchableOpacity>
+));
 
 FilterButton.displayName = 'FilterButton';
 

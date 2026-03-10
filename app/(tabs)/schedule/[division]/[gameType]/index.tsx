@@ -121,10 +121,7 @@ export default function ScheduleScreen() {
           const isCollapsed = collapsedSections[sectionId];
 
           return (
-            <TouchableOpacity
-              style={styles.sectionHeader}
-              activeOpacity={0.7}
-              onPress={() => toggleSection(sectionId)}>
+            <TouchableOpacity style={styles.sectionHeader} activeOpacity={0.7} onPress={() => toggleSection(sectionId)}>
               <CustomText style={styles.sectionHeaderText}>{section.title}</CustomText>
               {isCollapsed ? (
                 <MaterialIcons name="keyboard-arrow-down" size={24} color="#fff" />
@@ -137,10 +134,7 @@ export default function ScheduleScreen() {
         contentContainerStyle={styles.gamesList}
         stickySectionHeadersEnabled={true}
         ListEmptyComponent={() => (
-          <ComingSoonPlaceholder
-            message="No games scheduled for this game type"
-            iconName="event-note"
-          />
+          <ComingSoonPlaceholder message="No games scheduled for this game type" iconName="event-note" />
         )}
         onRefresh={refreshData}
         refreshing={false}

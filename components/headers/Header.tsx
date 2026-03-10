@@ -19,9 +19,7 @@ const Header = () => {
           <TouchableOpacity onPress={() => router.navigate('/(tabs)/home')}>
             <Image source={images.logoW} style={{ width: 40, height: 40 }} />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => router.navigate('/(tabs)/home/notifications' as Href)}
-            style={{ margin: 6 }}>
+          <TouchableOpacity onPress={() => router.navigate('/(tabs)/home/notifications' as Href)} style={{ margin: 6 }}>
             <MaterialCommunityIcons name="bell" size={20} color="#000" />
           </TouchableOpacity>
         </View>

@@ -4,7 +4,7 @@ module.exports = {
   ignorePatterns: ['/dist/*', 'supabase/functions/**'],
   plugins: ['prettier', 'react-native'],
   rules: {
-    'prettier/prettier': 'warn',
+    'prettier/prettier': ['warn', { printWidth: 120 /* …any other options you use*/ }],
     'react-native/sort-styles': [
       'warn',
       'asc',

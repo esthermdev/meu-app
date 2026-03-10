@@ -29,10 +29,7 @@ const FAQScreen = () => {
   const fetchFAQs = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('faq')
-        .select('*')
-        .order('id', { ascending: true });
+      const { data, error } = await supabase.from('faq').select('*').order('id', { ascending: true });
 
       if (error) {
         throw error;
@@ -61,9 +58,7 @@ const FAQScreen = () => {
         renderItem={({ item }) => <FAQItem item={item} />}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContainer}
-        ListEmptyComponent={
-          <CustomText style={styles.emptyText}>No FAQs available at the moment.</CustomText>
-        }
+        ListEmptyComponent={<CustomText style={styles.emptyText}>No FAQs available at the moment.</CustomText>}
       />
     </SafeAreaView>
   );

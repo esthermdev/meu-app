@@ -15,11 +15,7 @@ export function RequestsProvider({ children }: { children: React.ReactNode }) {
     setRefreshTrigger((prev) => prev + 1);
   };
 
-  return (
-    <RequestsContext.Provider value={{ refreshTrigger, triggerRefresh }}>
-      {children}
-    </RequestsContext.Provider>
-  );
+  return <RequestsContext.Provider value={{ refreshTrigger, triggerRefresh }}>{children}</RequestsContext.Provider>;
 }
 
 export function useRequests() {

@@ -117,23 +117,17 @@ export default function DivisionStandings() {
 
   const renderItem = ({ item, index }: { item: Standings; index: number }) => (
     <View style={styles.itemContainer}>
-      <CustomText style={styles.rankNumber}>
-        {hasGamesStarted ? item.pool_rank : item.teams?.seed}
-      </CustomText>
+      <CustomText style={styles.rankNumber}>{hasGamesStarted ? item.pool_rank : item.teams?.seed}</CustomText>
       <Image
         source={
-          item.teams?.avatar_uri
-            ? { uri: item.teams.avatar_uri }
-            : require('@/assets/images/avatar-placeholder.png')
+          item.teams?.avatar_uri ? { uri: item.teams.avatar_uri } : require('@/assets/images/avatar-placeholder.png')
         }
         style={styles.teamLogo}
       />
       <CustomText style={styles.teamName}>{item.teams?.name}</CustomText>
       <View style={styles.recordContainer}>
         <CustomText style={styles.recordText}>{item.wins || 0}</CustomText>
-        <CustomText style={[styles.recordDivider, { color: '#000', ...typography.textSmall }]}>
-          —
-        </CustomText>
+        <CustomText style={[styles.recordDivider, { color: '#000', ...typography.textSmall }]}>—</CustomText>
         <CustomText style={styles.recordText}>{item.losses || 0}</CustomText>
       </View>
     </View>

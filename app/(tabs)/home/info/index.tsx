@@ -42,10 +42,7 @@ export default function InfoScreen() {
                 {item.title}
               </CustomText>
               {item.subtitle && (
-                <CustomText
-                  allowFontScaling
-                  maxFontSizeMultiplier={1.2}
-                  style={styles.subtitleText}>
+                <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.subtitleText}>
                   {item.subtitle}
                 </CustomText>
               )}

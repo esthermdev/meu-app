@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useGameTypesByDivision } from '@/hooks/useScheduleConfig';
@@ -72,12 +65,7 @@ export default function GameTypesScreen() {
               style={styles.gameTypeItem}
               onPress={() => handleSelectGameType(option.id, option.title, option.route)}>
               {option.icon && (
-                <MaterialCommunityIcons
-                  name={option.icon as any}
-                  size={24}
-                  color="#EA1D25"
-                  style={styles.icon}
-                />
+                <MaterialCommunityIcons name={option.icon as any} size={24} color="#EA1D25" style={styles.icon} />
               )}
               <CustomText style={styles.gameTypeText}>{option.title}</CustomText>
             </TouchableOpacity>

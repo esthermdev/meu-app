@@ -1,12 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  SectionList,
-  Linking,
-  TouchableOpacity,
-  SafeAreaView,
-} from 'react-native';
+import { View, StyleSheet, SectionList, Linking, TouchableOpacity, SafeAreaView } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { FontAwesome } from '@expo/vector-icons';
 import { Tables } from '@/database.types';
@@ -63,9 +56,7 @@ const RestaurantsHotelsScreen = () => {
   };
 
   const renderItem = ({ item }: { item: Restaurant }) => (
-    <TouchableOpacity
-      style={styles.item}
-      onPress={() => (item.website ? Linking.openURL(item.website) : null)}>
+    <TouchableOpacity style={styles.item} onPress={() => (item.website ? Linking.openURL(item.website) : null)}>
       <View style={styles.itemContent}>
         <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.itemName}>
           {item.name}

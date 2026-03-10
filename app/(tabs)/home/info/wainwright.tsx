@@ -11,11 +11,11 @@ const Wainwright = () => {
         </CustomText>
         <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>
           • Respect for equipment, the facility, and all playing surfaces are expected at all times.
-          {'\n'}• An adult shall supervise groups and organizations at all times.{'\n'}• All groups
-          and individuals are expected to leave fields free of trash and equipment.{'\n'}• Please
-          report any vandalism to the Parks and Recreation, or Police Department as soon as it is
-          discovered.{'\n'}• All participants, officials and spectators are expected to display
-          proper sportsmanship and respect to all others on the facility.
+          {'\n'}• An adult shall supervise groups and organizations at all times.{'\n'}• All groups and individuals are
+          expected to leave fields free of trash and equipment.{'\n'}• Please report any vandalism to the Parks and
+          Recreation, or Police Department as soon as it is discovered.
+          {'\n'}• All participants, officials and spectators are expected to display proper sportsmanship and respect to
+          all others on the facility.
         </CustomText>
       </ScrollView>
     </View>

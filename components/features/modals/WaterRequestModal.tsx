@@ -43,10 +43,7 @@ const WaterRequestButton = () => {
 
   const fetchFields = async () => {
     // Fetch all fields
-    const { data: fieldsData, error: fieldsError } = await supabase
-      .from('fields')
-      .select('*')
-      .order('name');
+    const { data: fieldsData, error: fieldsError } = await supabase.from('fields').select('*').order('name');
 
     if (fieldsError) {
       console.error('Error fetching fields:', fieldsError);
@@ -116,10 +113,7 @@ const WaterRequestButton = () => {
     // Check if the selected field is disabled
     const selectedFieldData = fields.find((f) => f.id === selectedField);
     if (selectedFieldData?.isDisabled) {
-      Alert.alert(
-        'Error',
-        'This field has a pending water request. Please wait 2 minutes before requesting again.',
-      );
+      Alert.alert('Error', 'This field has a pending water request. Please wait 2 minutes before requesting again.');
       return;
     }
 
@@ -186,11 +180,7 @@ const WaterRequestButton = () => {
       </TouchableOpacity>
       <CustomText style={styles.label}>Water</CustomText>
 
-      <Modal
-        visible={isModalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={hideModal}>
+      <Modal visible={isModalVisible} transparent={true} animationType="fade" onRequestClose={hideModal}>
         <TouchableWithoutFeedback onPress={hideModal}>
           <View style={styles.modalContainer}>
             <View style={styles.pickerContainer}>
@@ -214,9 +204,7 @@ const WaterRequestButton = () => {
               </View>
 
               <View style={styles.selectionInfo}>
-                <CustomText style={styles.selectionText}>
-                  Selected: Field {selectedFieldName}
-                </CustomText>
+                <CustomText style={styles.selectionText}>Selected: Field {selectedFieldName}</CustomText>
               </View>
 
               <ModalButton onCancel={hideModal} onConfirm={requestWater} confirmText="Confirm" />

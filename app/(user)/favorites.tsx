@@ -30,8 +30,7 @@ const FavoritesScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const { session } = useAuth();
-  const { teams, favorites, toggleFavorite, loadData, remainingFavorites } =
-    useFavoriteTeams(session);
+  const { teams, favorites, toggleFavorite, loadData, remainingFavorites } = useFavoriteTeams(session);
 
   const filteredTeams = useMemo(() => {
     const lowercaseQuery = searchQuery.toLowerCase();
@@ -80,12 +79,7 @@ const FavoritesScreen = () => {
                 placeholderTextColor="#86939e"
                 allowFontScaling={false}
               />
-              <MaterialIcons
-                name="close"
-                size={15}
-                color="#86939e"
-                onPress={() => setSearchQuery('')}
-              />
+              <MaterialIcons name="close" size={15} color="#86939e" onPress={() => setSearchQuery('')} />
             </View>
 
             {/* Status Bar */}
@@ -95,9 +89,7 @@ const FavoritesScreen = () => {
                 selected
               </CustomText>
               <CustomText style={styles.remainingSlots}>
-                <CustomText style={styles.remainingSlotsNumber}>
-                  {remainingFavorites} slots{' '}
-                </CustomText>
+                <CustomText style={styles.remainingSlotsNumber}>{remainingFavorites} slots </CustomText>
                 remaining
               </CustomText>
             </View>
@@ -117,9 +109,7 @@ const FavoritesScreen = () => {
 
           return (
             <>
-              {shouldShowHeader && (
-                <SectionHeader title={currentItemFavorited ? 'Favorite Teams' : 'All Teams'} />
-              )}
+              {shouldShowHeader && <SectionHeader title={currentItemFavorited ? 'Favorite Teams' : 'All Teams'} />}
               <FavoriteTeamsList
                 item={item}
                 isFavorited={currentItemFavorited}
@@ -130,9 +120,7 @@ const FavoritesScreen = () => {
           );
         }}
         keyExtractor={(item) => item.id.toString()}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#EA1D25']} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#EA1D25']} />}
         ListEmptyComponent={
           <View style={styles.centeredContainer}>
             <CustomText style={styles.messageText}>No teams found</CustomText>

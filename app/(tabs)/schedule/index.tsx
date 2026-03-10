@@ -43,9 +43,7 @@ export default function ScheduleIndex() {
       <View style={styles.content}>
         {divisions.length > 0 ? (
           divisions.map((division) => (
-            <TouchableOpacity
-              key={division.id}
-              onPress={() => handleSelectDivision(division.id, division.title)}>
+            <TouchableOpacity key={division.id} onPress={() => handleSelectDivision(division.id, division.title)}>
               <View style={[styles.card, { borderColor: division.color, borderBottomWidth: 4 }]}>
                 <CustomText
                   style={[

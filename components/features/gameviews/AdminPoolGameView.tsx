@@ -1,14 +1,6 @@
 // components/PoolAdminView.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  FlatList,
-  Alert,
-  RefreshControl,
-} from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, FlatList, Alert, RefreshControl } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { typography } from '@/constants/Typography';
 import AdminGameComponent from './AdminGameComponent';
@@ -225,16 +217,9 @@ const PoolAdminView: React.FC<PoolAdminViewProps> = ({ poolId, divisionId }) => 
       <FlatList
         data={games}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <AdminGameComponent game={item} onGameStatusChange={handleGameStatusChange} />
-        )}
+        renderItem={({ item }) => <AdminGameComponent game={item} onGameStatusChange={handleGameStatusChange} />}
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={['#EA1D25']}
-            tintColor="#EA1D25"
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#EA1D25']} tintColor="#EA1D25" />
         }
         contentContainerStyle={styles.gamesList}
         ListEmptyComponent={() => (

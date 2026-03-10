@@ -16,11 +16,7 @@ export default function Index() {
       <View style={styles.contentContainer}>
         <CustomText style={styles.welcomeText}>Welcome to</CustomText>
         <View style={styles.tournamentLogoContainer}>
-          <Image
-            source={images.tournamentLogo}
-            resizeMode="contain"
-            style={styles.tournamentLogo}
-          />
+          <Image source={images.tournamentLogo} resizeMode="contain" style={styles.tournamentLogo} />
         </View>
         <PrimaryButton title="Continue" onPress={() => router.push('/(tabs)/home')} />
       </View>

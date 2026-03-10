@@ -18,11 +18,7 @@ export const useDatetimeOptions = () => {
     const fetchDatetimeOptions = async () => {
       setLoading(true);
       try {
-        const { data, error } = await supabase
-          .from('datetime')
-          .select('*')
-          .order('date')
-          .order('time');
+        const { data, error } = await supabase.from('datetime').select('*').order('date').order('time');
 
         if (error) {
           console.error('Error fetching datetime options:', error);

@@ -72,9 +72,7 @@ const NotificationScreen = () => {
         }
 
         // Convert read status data to a Set for faster lookups
-        const readNotificationIds = new Set(
-          (readStatusData || []).map((status) => status.notification_id),
-        );
+        const readNotificationIds = new Set((readStatusData || []).map((status) => status.notification_id));
 
         // Combine the data
         const notificationsWithReadStatus = (notificationsData || []).map((notification) => ({
@@ -138,9 +136,7 @@ const NotificationScreen = () => {
         }
 
         // Update local state
-        setNotifications((prev) =>
-          prev.map((n) => (n.id === notification.id ? { ...n, is_read: true } : n)),
-        );
+        setNotifications((prev) => prev.map((n) => (n.id === notification.id ? { ...n, is_read: true } : n)));
       } catch (error) {
         console.error('Unexpected error:', error);
       }

@@ -120,11 +120,7 @@ const TeamDetails = () => {
               }
               style={styles.teamLogo}
             />
-            <CustomText
-              style={[
-                styles.teamText,
-                game.team1?.id.toString() === id ? styles.highlightedTeam : null,
-              ]}>
+            <CustomText style={[styles.teamText, game.team1?.id.toString() === id ? styles.highlightedTeam : null]}>
               {game.team1?.name || 'TBD'}
             </CustomText>
           </View>
@@ -139,11 +135,7 @@ const TeamDetails = () => {
               }
               style={styles.teamLogo}
             />
-            <CustomText
-              style={[
-                styles.teamText,
-                game.team2?.id.toString() === id ? styles.highlightedTeam : null,
-              ]}>
+            <CustomText style={[styles.teamText, game.team2?.id.toString() === id ? styles.highlightedTeam : null]}>
               {game.team2?.name || 'TBD'}
             </CustomText>
           </View>
@@ -171,21 +163,12 @@ const TeamDetails = () => {
         <ScrollView
           style={styles.content}
           refreshControl={
-            <RefreshControl
-              refreshing={false}
-              onRefresh={onRefresh}
-              colors={['#EA1D25']}
-              tintColor="#EA1D25"
-            />
+            <RefreshControl refreshing={false} onRefresh={onRefresh} colors={['#EA1D25']} tintColor="#EA1D25" />
           }>
           {/* Team Info */}
           <View style={styles.teamInfoContainer}>
             <Image
-              source={
-                team.avatar_uri
-                  ? { uri: team.avatar_uri }
-                  : require('@/assets/images/avatar-placeholder.png')
-              }
+              source={team.avatar_uri ? { uri: team.avatar_uri } : require('@/assets/images/avatar-placeholder.png')}
               style={styles.teamBadge}
             />
 

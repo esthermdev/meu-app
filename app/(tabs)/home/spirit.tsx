@@ -23,9 +23,8 @@ export default function SpiritPage() {
             <CustomText variant="textBold" style={styles.name}>
               Lucas Brown
             </CustomText>{' '}
-            as our Spirit Coordinator! He'll be showing teams fun sideline and timeout games,
-            running some Spirit points, and answering any questions teams have about Spirit of the
-            Game!
+            as our Spirit Coordinator! He'll be showing teams fun sideline and timeout games, running some Spirit
+            points, and answering any questions teams have about Spirit of the Game!
           </CustomText>
         </View>
 

@@ -51,10 +51,7 @@ export const updateGameScore = async ({
 
     if (Object.keys(gameUpdateData).length > 0) {
       console.log('Updating game', gameId, 'with data:', gameUpdateData);
-      const { error: gameError } = await supabase
-        .from('games')
-        .update(gameUpdateData)
-        .eq('id', gameId);
+      const { error: gameError } = await supabase.from('games').update(gameUpdateData).eq('id', gameId);
 
       if (gameError) {
         console.error('Game update error:', gameError);
@@ -77,10 +74,7 @@ export const updateGameScore = async ({
       if (error) throw error;
     } else {
       // Check if score record exists for this game
-      const { data, error: checkError } = await supabase
-        .from('scores')
-        .select('id')
-        .eq('game_id', gameId);
+      const { data, error: checkError } = await supabase.from('scores').select('id').eq('game_id', gameId);
 
       if (checkError) throw checkError;
 

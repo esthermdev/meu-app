@@ -54,10 +54,7 @@ const TrainerRequestButton = () => {
   }, []);
 
   const fetchFields = async () => {
-    const { data, error } = await supabase
-      .from('fields')
-      .select('id, name')
-      .order('id', { ascending: true });
+    const { data, error } = await supabase.from('fields').select('id, name').order('id', { ascending: true });
 
     if (error) {
       console.error('Error fetching fields:', error);
@@ -105,11 +102,7 @@ const TrainerRequestButton = () => {
         created_at: new Date().toISOString(),
       };
 
-      const { error: insertError } = await supabase
-        .from('medical_requests')
-        .insert(insertData)
-        .select()
-        .single();
+      const { error: insertError } = await supabase.from('medical_requests').insert(insertData).select().single();
 
       if (insertError) throw insertError;
 
@@ -165,11 +158,7 @@ const TrainerRequestButton = () => {
 
   const renderPriorityButton = (level: PriorityLevel, color: string) => (
     <TouchableOpacity
-      style={[
-        styles.priorityButton,
-        { backgroundColor: color },
-        priorityLevel === level && styles.selected,
-      ]}
+      style={[styles.priorityButton, { backgroundColor: color }, priorityLevel === level && styles.selected]}
       onPress={() => setPriorityLevel(level)}
       activeOpacity={1}>
       <CustomText style={styles.priorityButtonText}>{level}</CustomText>
@@ -186,14 +175,8 @@ const TrainerRequestButton = () => {
       </TouchableOpacity>
       <CustomText style={styles.label}>Trainer</CustomText>
 
-      <Modal
-        visible={isModalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={handleCloseModal}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.modalContainer}>
+      <Modal visible={isModalVisible} transparent={true} animationType="fade" onRequestClose={handleCloseModal}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalContainer}>
           <TouchableWithoutFeedback onPress={handleCloseModal}>
             <View style={styles.modalOverlay}>
               <TouchableWithoutFeedback>
@@ -203,19 +186,12 @@ const TrainerRequestButton = () => {
                   </TouchableOpacity>
 
                   <ScrollView showsVerticalScrollIndicator={false}>
-                    <CustomText
-                      style={styles.noteText}
-                      allowFontScaling
-                      maxFontSizeMultiplier={1.3}>
-                      Note: Medical staff will respond as quickly as possible based on priority
-                      level and availability. Please ensure the field number is correct so trainers
-                      can locate you efficiently.
+                    <CustomText style={styles.noteText} allowFontScaling maxFontSizeMultiplier={1.3}>
+                      Note: Medical staff will respond as quickly as possible based on priority level and availability.
+                      Please ensure the field number is correct so trainers can locate you efficiently.
                     </CustomText>
 
-                    <CustomText
-                      style={styles.labelHeader}
-                      allowFontScaling
-                      maxFontSizeMultiplier={1.2}>
+                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
                       Team Name:
                     </CustomText>
                     <TextInput
@@ -228,10 +204,7 @@ const TrainerRequestButton = () => {
                     />
                     {errors.teamName && <ErrorMessage message={errors.teamName} />}
 
-                    <CustomText
-                      style={styles.labelHeader}
-                      allowFontScaling
-                      maxFontSizeMultiplier={1.2}>
+                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
                       Level of Medical Emergency:
                     </CustomText>
                     <View style={styles.priorityButtonContainer}>
@@ -240,10 +213,7 @@ const TrainerRequestButton = () => {
                       {renderPriorityButton('Low', '#276B5D')}
                     </View>
 
-                    <CustomText
-                      style={styles.labelHeader}
-                      allowFontScaling
-                      maxFontSizeMultiplier={1.2}>
+                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
                       Describe your emergency:
                     </CustomText>
                     <TextInput
@@ -259,10 +229,7 @@ const TrainerRequestButton = () => {
                     />
                     <ErrorMessage message={errors.description} />
 
-                    <CustomText
-                      style={styles.labelHeader}
-                      allowFontScaling
-                      maxFontSizeMultiplier={1.2}>
+                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
                       Select Field Location:
                     </CustomText>
                     <Dropdown
@@ -274,11 +241,7 @@ const TrainerRequestButton = () => {
                     />
                     <ErrorMessage message={errors.field} />
 
-                    <ModalButton
-                      onCancel={handleCloseModal}
-                      onConfirm={requestTrainer}
-                      confirmText="Request Trainer"
-                    />
+                    <ModalButton onCancel={handleCloseModal} onConfirm={requestTrainer} confirmText="Request Trainer" />
                   </ScrollView>
                 </View>
               </TouchableWithoutFeedback>

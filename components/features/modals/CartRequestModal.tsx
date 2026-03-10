@@ -33,13 +33,7 @@ type LocationType = Database['public']['Enums']['location_type'];
 type RequestStatus = Database['public']['Enums']['request_status'];
 
 // Define locations as a const array of valid LocationType values
-const LOCATIONS: LocationType[] = [
-  'Field',
-  'Tourney Central',
-  'Lot 1 (Grass)',
-  'Lot 2 (Pavement)',
-  'Entrance',
-];
+const LOCATIONS: LocationType[] = ['Field', 'Tourney Central', 'Lot 1 (Grass)', 'Lot 2 (Pavement)', 'Entrance'];
 
 const CartRequestButton = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -124,13 +118,7 @@ const CartRequestButton = () => {
     }
   };
 
-  const PassengerCountInput = ({
-    value,
-    onValueChange,
-  }: {
-    value: number;
-    onValueChange: (value: number) => void;
-  }) => {
+  const PassengerCountInput = ({ value, onValueChange }: { value: number; onValueChange: (value: number) => void }) => {
     const increment = () => onValueChange(Math.min(value + 1, 6));
     const decrement = () => onValueChange(Math.max(value - 1, 1));
 
@@ -208,14 +196,8 @@ const CartRequestButton = () => {
         Cart
       </CustomText>
 
-      <Modal
-        visible={isModalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={handleCloseModal}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.modalContainer}>
+      <Modal visible={isModalVisible} transparent={true} animationType="fade" onRequestClose={handleCloseModal}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
               <Ionicons name="close" size={20} color="#8F8DAA" />
@@ -235,20 +217,17 @@ const CartRequestButton = () => {
               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View>
                   <CustomText style={styles.noteText} allowFontScaling maxFontSizeMultiplier={1.3}>
-                    Note: Our volunteer drivers are dedicated to assisting you as quickly as
-                    possible. To help us serve everyone efficiently:
-                    {'\n\n'}• If you're in a group, please submit only one request.{'\n'}• Allow up
-                    to 5 minutes for a driver to reach you.{'\n'}• If no driver arrives after 5
-                    minutes, feel free to submit another request.
+                    Note: Our volunteer drivers are dedicated to assisting you as quickly as possible. To help us serve
+                    everyone efficiently:
+                    {'\n\n'}• If you're in a group, please submit only one request.{'\n'}• Allow up to 5 minutes for a
+                    driver to reach you.{'\n'}• If no driver arrives after 5 minutes, feel free to submit another
+                    request.
                     {'\n\n'}
-                    Thank you for your patience and understanding as we work to accommodate
-                    everyone's transportation needs.
+                    Thank you for your patience and understanding as we work to accommodate everyone's transportation
+                    needs.
                   </CustomText>
 
-                  <CustomText
-                    style={styles.labelHeader}
-                    allowFontScaling
-                    maxFontSizeMultiplier={1.2}>
+                  <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
                     Your Name:
                   </CustomText>
                   <TextInput
@@ -276,10 +255,7 @@ const CartRequestButton = () => {
                       justifyContent: 'space-between',
                       flexDirection: 'row',
                     }}>
-                    <CustomText
-                      style={styles.labelHeader}
-                      allowFontScaling
-                      maxFontSizeMultiplier={1.2}>
+                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
                       Number of Passengers:
                     </CustomText>
                     <PassengerCountInput value={passengerCount} onValueChange={setPassengerCount} />
@@ -317,9 +293,7 @@ const CartRequestButton = () => {
                           fromFieldNumber: undefined,
                         }));
                       }}
-                      selectedValue={
-                        fromFieldNumber ? fieldIdToNameMap[parseInt(fromFieldNumber)] : ''
-                      }
+                      selectedValue={fromFieldNumber ? fieldIdToNameMap[parseInt(fromFieldNumber)] : ''}
                       error={!!errors.fromFieldNumber}
                     />
                   )}
@@ -375,11 +349,7 @@ const CartRequestButton = () => {
                     maxFontSizeMultiplier={1.2}
                   />
 
-                  <ModalButton
-                    onCancel={handleCloseModal}
-                    onConfirm={handleRequestCart}
-                    confirmText="Request Cart"
-                  />
+                  <ModalButton onCancel={handleCloseModal} onConfirm={handleRequestCart} confirmText="Request Cart" />
                 </View>
               </TouchableWithoutFeedback>
             </KeyboardAwareScrollView>

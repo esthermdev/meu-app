@@ -31,11 +31,7 @@ export default function Account({ session }: { session: Session }) {
       setLoading(true);
       if (!session?.user) throw new Error('No user on the session!');
 
-      const { data, error, status } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session?.user.id)
-        .single();
+      const { data, error, status } = await supabase.from('profiles').select('*').eq('id', session?.user.id).single();
       if (error && status !== 406) {
         throw error;
       }

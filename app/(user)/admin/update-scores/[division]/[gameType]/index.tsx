@@ -323,10 +323,7 @@ export default function UpdateScoresScreen() {
           const isCollapsed = collapsedSections[sectionId];
 
           return (
-            <TouchableOpacity
-              style={styles.sectionHeader}
-              activeOpacity={0.7}
-              onPress={() => toggleSection(sectionId)}>
+            <TouchableOpacity style={styles.sectionHeader} activeOpacity={0.7} onPress={() => toggleSection(sectionId)}>
               <CustomText style={styles.sectionHeaderText}>{section.title}</CustomText>
               {isCollapsed ? (
                 <MaterialIcons name="keyboard-arrow-down" size={24} color="#fff" />
@@ -345,12 +342,7 @@ export default function UpdateScoresScreen() {
         )}
         extraData={[games, collapsedSections]}
         refreshControl={
-          <RefreshControl
-            refreshing={loading}
-            onRefresh={refreshGames}
-            colors={['#EA1D25']}
-            tintColor="#EA1D25"
-          />
+          <RefreshControl refreshing={loading} onRefresh={refreshGames} colors={['#EA1D25']} tintColor="#EA1D25" />
         }
       />
 

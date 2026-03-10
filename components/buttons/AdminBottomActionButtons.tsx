@@ -21,16 +21,12 @@ const AdminBottomActionButtons: React.FC<AdminBottomActionButtonsProps> = ({
 }) => {
   return (
     <View style={styles.buttonContainer}>
-      <TouchableOpacity
-        style={[styles.leftButton, { backgroundColor: leftColor }]}
-        onPress={leftButton}>
+      <TouchableOpacity style={[styles.leftButton, { backgroundColor: leftColor }]} onPress={leftButton}>
         <Text style={styles.buttonText} allowFontScaling={false}>
           {leftText}
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.rightButton, { backgroundColor: rightColor }]}
-        onPress={rightButton}>
+      <TouchableOpacity style={[styles.rightButton, { backgroundColor: rightColor }]} onPress={rightButton}>
         <Text style={styles.buttonText} allowFontScaling={false}>
           {rightText}
         </Text>

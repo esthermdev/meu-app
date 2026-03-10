@@ -12,13 +12,7 @@ interface DropdownProps {
   error?: boolean;
 }
 
-export const Dropdown: React.FC<DropdownProps> = ({
-  label,
-  data,
-  onSelect,
-  selectedValue,
-  error,
-}) => {
+export const Dropdown: React.FC<DropdownProps> = ({ label, data, onSelect, selectedValue, error }) => {
   const [visible, setVisible] = useState(false);
 
   const toggleDropdown = () => {
@@ -40,9 +34,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={[styles.button, error ? { borderColor: '#EA1D25' } : null]}
-        onPress={toggleDropdown}>
+      <TouchableOpacity style={[styles.button, error ? { borderColor: '#EA1D25' } : null]} onPress={toggleDropdown}>
         <Text style={styles.buttonText} maxFontSizeMultiplier={1.1}>
           {selectedValue || label}
         </Text>
@@ -51,11 +43,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       <Modal visible={visible} transparent animationType="none">
         <TouchableOpacity style={styles.overlay} onPress={() => setVisible(false)}>
           <View style={styles.dropdown}>
-            <FlatList
-              data={data}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.toString()}
-            />
+            <FlatList data={data} renderItem={renderItem} keyExtractor={(item) => item.toString()} />
           </View>
         </TouchableOpacity>
       </Modal>

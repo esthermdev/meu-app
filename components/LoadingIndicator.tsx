@@ -20,12 +20,7 @@ const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
   transparent = true,
 }) => {
   return (
-    <View
-      style={[
-        styles.container,
-        fullscreen ? styles.fullscreen : null,
-        transparent ? styles.transparent : null,
-      ]}>
+    <View style={[styles.container, fullscreen ? styles.fullscreen : null, transparent ? styles.transparent : null]}>
       <ActivityIndicator size={size} color={color} />
       {message ? <CustomText style={styles.text}>{message}</CustomText> : null}
     </View>

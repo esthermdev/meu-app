@@ -57,15 +57,8 @@ export const CustomHeader: React.FC<CustomHeaderProps> = ({ title, refreshInfo }
                 </View>
 
                 <View style={styles.infoItem}>
-                  <MaterialIcons
-                    name="info-outline"
-                    size={24}
-                    color="#EA1D25"
-                    style={styles.infoIcon}
-                  />
-                  <CustomText style={styles.infoText}>
-                    Scores are updated in real-time during tournaments
-                  </CustomText>
+                  <MaterialIcons name="info-outline" size={24} color="#EA1D25" style={styles.infoIcon} />
+                  <CustomText style={styles.infoText}>Scores are updated in real-time during tournaments</CustomText>
                 </View>
 
                 <View style={styles.infoItem}>

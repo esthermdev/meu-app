@@ -121,9 +121,7 @@ const Teams = () => {
   const filteredTeams = useMemo(() => {
     const lowercaseQuery = searchQuery.toLowerCase();
     return teams
-      .filter(
-        (team) => selectedDivision === 'All' || team.division_details?.code === selectedDivision,
-      )
+      .filter((team) => selectedDivision === 'All' || team.division_details?.code === selectedDivision)
       .filter((team) => team.name.toLowerCase().includes(lowercaseQuery));
   }, [teams, selectedDivision, searchQuery]);
 
@@ -154,9 +152,7 @@ const Teams = () => {
               {item.avatar_uri ? (
                 <Image
                   source={
-                    item.avatar_uri
-                      ? { uri: item.avatar_uri }
-                      : require('@/assets/images/avatar-placeholder.png')
+                    item.avatar_uri ? { uri: item.avatar_uri } : require('@/assets/images/avatar-placeholder.png')
                   }
                   style={styles.teamAvatarImage}
                 />
@@ -202,12 +198,7 @@ const Teams = () => {
             placeholderTextColor="#86939e"
             allowFontScaling={false}
           />
-          <MaterialIcons
-            name="close"
-            size={15}
-            color="#86939e"
-            onPress={() => setSearchQuery('')}
-          />
+          <MaterialIcons name="close" size={15} color="#86939e" onPress={() => setSearchQuery('')} />
         </View>
 
         {/* Filters Section */}
@@ -231,9 +222,7 @@ const Teams = () => {
                     },
                   ]}
                   onPress={() => setSelectedDivision(division.code)}>
-                  <CustomText style={[styles.filterButtonText, { color: division.color }]}>
-                    {division.title}
-                  </CustomText>
+                  <CustomText style={[styles.filterButtonText, { color: division.color }]}>{division.title}</CustomText>
                 </TouchableOpacity>
               );
             })}
@@ -249,13 +238,7 @@ const Teams = () => {
               data={filteredTeams}
               renderItem={renderTeamItem}
               keyExtractor={(item) => item.id.toString()}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                  colors={['#EA1D25']}
-                />
-              }
+              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#EA1D25']} />}
               ListEmptyComponent={
                 <View style={styles.emptyContainer}>
                   <Text style={styles.emptyText}>No teams found</Text>

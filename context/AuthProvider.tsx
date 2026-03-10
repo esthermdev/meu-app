@@ -301,10 +301,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     if (error) {
       // If the error mentions user doesn't exist or isn't confirmed
-      if (
-        error.message.includes('Email not confirmed') ||
-        error.message.includes('User not found')
-      ) {
+      if (error.message.includes('Email not confirmed') || error.message.includes('User not found')) {
         throw new Error('This email is not registered. Please sign up first.');
       }
       throw error;
@@ -332,10 +329,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (currentUserId) {
         // Update login status to false with explicit await
-        const { error } = await supabase
-          .from('profiles')
-          .update({ is_logged_in: false })
-          .eq('id', currentUserId);
+        const { error } = await supabase.from('profiles').update({ is_logged_in: false }).eq('id', currentUserId);
         if (error) {
           console.error('Error updating login status during sign-out:', error);
         }

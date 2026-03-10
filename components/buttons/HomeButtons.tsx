@@ -15,13 +15,7 @@ interface HomeButtonsProps {
   disabled: boolean;
 }
 
-export const HomeButtons: React.FC<HomeButtonsProps> = ({
-  title,
-  icon,
-  buttonColor,
-  route,
-  disabled,
-}) => {
+export const HomeButtons: React.FC<HomeButtonsProps> = ({ title, icon, buttonColor, route, disabled }) => {
   return (
     <TouchableOpacity
       style={[styles.buttonStyle, buttonColor]}

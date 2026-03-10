@@ -1,14 +1,6 @@
 // components/medical/RequestsList.tsx
 import { useCallback, useEffect, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  ActivityIndicator,
-  SafeAreaView,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
 import { Card } from '@/components/Card';
 import { MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
@@ -97,10 +89,7 @@ const TrainerRequestsList = () => {
       if (!data) {
         // Revert optimistic update if request was already taken
         fetchRequests(false);
-        Alert.alert(
-          'Request Unavailable',
-          'This request has already been handled by another trainer.',
-        );
+        Alert.alert('Request Unavailable', 'This request has already been handled by another trainer.');
       }
     } catch (error) {
       console.error('Error resolving request:', error);
@@ -177,9 +166,7 @@ const TrainerRequestsList = () => {
           </View>
           <View style={styles.fieldBadge}>
             <MaterialIcons name="location-on" size={14} color="#262626" />
-            <CustomText style={styles.fieldText}>
-              Field {item.fields?.name || `Field ${item.field_number}`}
-            </CustomText>
+            <CustomText style={styles.fieldText}>Field {item.fields?.name || `Field ${item.field_number}`}</CustomText>
           </View>
         </View>
 

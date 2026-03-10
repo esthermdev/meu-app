@@ -1,14 +1,7 @@
 // components/features/requests/FulfilledWaterRequestList.tsx
 
 import { useState, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  ActivityIndicator,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { Card } from '@/components/Card';
 import { supabase } from '@/lib/supabase';
@@ -68,37 +61,30 @@ const FulfilledWaterRequestsList = () => {
   };
 
   const clearAllRequests = async () => {
-    Alert.alert(
-      'Clear All Requests',
-      'Are you sure you want to remove all fulfilled water requests?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Clear All',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              // Delete all fulfilled requests
-              const { error } = await supabase
-                .from('water_requests')
-                .delete()
-                .eq('status', 'resolved');
+    Alert.alert('Clear All Requests', 'Are you sure you want to remove all fulfilled water requests?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Clear All',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            // Delete all fulfilled requests
+            const { error } = await supabase.from('water_requests').delete().eq('status', 'resolved');
 
-              if (error) throw error;
+            if (error) throw error;
 
-              // Clear the local state
-              setRequests([]);
-            } catch (error) {
-              console.error('Error clearing all water requests:', error);
-              Alert.alert('Error', 'Failed to clear all requests. Please try again.');
-            }
-          },
+            // Clear the local state
+            setRequests([]);
+          } catch (error) {
+            console.error('Error clearing all water requests:', error);
+            Alert.alert('Error', 'Failed to clear all requests. Please try again.');
+          }
         },
-      ],
-    );
+      },
+    ]);
   };
 
   const renderItem = ({ item }: { item: WaterRequest }) => {

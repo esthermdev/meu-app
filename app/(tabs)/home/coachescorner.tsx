@@ -1,13 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  SafeAreaView,
-  ScrollView,
-  Image,
-  Modal,
-  TouchableOpacity,
-  Pressable,
-} from 'react-native';
+import { StyleSheet, View, SafeAreaView, ScrollView, Image, Modal, TouchableOpacity, Pressable } from 'react-native';
 import { useState } from 'react';
 import CustomText from '@/components/CustomText';
 import CustomHeader from '@/components/headers/CustomHeader';
@@ -102,11 +93,7 @@ const CoachesCorner = () => {
   };
 
   const renderCoachCard = (coach: Coach, index: number) => (
-    <TouchableOpacity
-      key={index}
-      style={styles.coachCard}
-      onPress={() => handleCoachPress(coach)}
-      activeOpacity={0.7}>
+    <TouchableOpacity key={index} style={styles.coachCard} onPress={() => handleCoachPress(coach)} activeOpacity={0.7}>
       <View style={styles.avatarContainer}>
         {coach.avatar ? (
           <Image source={{ uri: coach.avatar }} style={styles.avatar} resizeMode="cover" />
@@ -134,30 +121,18 @@ const CoachesCorner = () => {
     <>
       <CustomHeader title="Coaches Corner" />
       <SafeAreaView style={styles.container}>
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}>
-          <View style={styles.coachesGrid}>
-            {coaches.map((coach, index) => renderCoachCard(coach, index))}
-          </View>
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          <View style={styles.coachesGrid}>{coaches.map((coach, index) => renderCoachCard(coach, index))}</View>
         </ScrollView>
       </SafeAreaView>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={closeModal}>
+      <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={closeModal}>
         <Pressable style={styles.modalOverlay} onPress={closeModal}>
           <View style={styles.modalWrapper}>
             {selectedCoach && (
               <View style={styles.modalAvatarContainer}>
                 {selectedCoach.avatar ? (
-                  <Image
-                    source={{ uri: selectedCoach.avatar }}
-                    style={styles.modalAvatar}
-                    resizeMode="cover"
-                  />
+                  <Image source={{ uri: selectedCoach.avatar }} style={styles.modalAvatar} resizeMode="cover" />
                 ) : (
                   <View style={styles.modalAvatarPlaceholder}>
                     <CustomText style={styles.modalAvatarInitial}>

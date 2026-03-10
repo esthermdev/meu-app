@@ -12,9 +12,7 @@ const CreditsScreen = () => {
         </CustomText>
         <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.content}>
           This app was developed by{' '}
-          <Link
-            href="https://www.linkedin.com/in/esther-devadas-6ab90a20b/"
-            style={styles.linkStyle}>
+          <Link href="https://www.linkedin.com/in/esther-devadas-6ab90a20b/" style={styles.linkStyle}>
             Esther Devadas
           </Link>
           .

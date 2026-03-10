@@ -120,10 +120,7 @@ export const useFavoriteTeams = (session: Session | null) => {
     if (!session?.user) return;
 
     try {
-      const { data, error } = await supabase
-        .from('favorite_teams')
-        .select('team_id')
-        .eq('user_id', session.user.id);
+      const { data, error } = await supabase.from('favorite_teams').select('team_id').eq('user_id', session.user.id);
 
       if (error) throw error;
       setFavorites(new Set(data.map((fav) => fav.team_id)));

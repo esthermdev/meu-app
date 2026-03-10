@@ -33,11 +33,7 @@ export default function SignIn() {
   // Check if the email belongs to a volunteer
   const checkIfVolunteer = async (email: string) => {
     try {
-      const { error } = await supabase
-        .from('volunteers')
-        .select('email')
-        .eq('email', email.toLowerCase())
-        .single();
+      const { error } = await supabase.from('volunteers').select('email').eq('email', email.toLowerCase()).single();
 
       if (error) {
         // Record not found or other error
@@ -128,9 +124,7 @@ export default function SignIn() {
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
-          <TouchableOpacity
-            onPress={() => router.replace('/(tabs)/home')}
-            style={{ marginTop: 20 }}>
+          <TouchableOpacity onPress={() => router.replace('/(tabs)/home')} style={{ marginTop: 20 }}>
             <MaterialCommunityIcons name="home-outline" size={30} color="#000" />
           </TouchableOpacity>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -168,11 +162,7 @@ export default function SignIn() {
                 </View>
               )}
 
-              <PrimaryButton
-                onPress={handleSignIn}
-                title={loading ? 'Signing in...' : 'Sign In'}
-                disabled={loading}
-              />
+              <PrimaryButton onPress={handleSignIn} title={loading ? 'Signing in...' : 'Sign In'} disabled={loading} />
 
               {/* Add the App Store Reviewer button */}
               {/* <TouchableOpacity 

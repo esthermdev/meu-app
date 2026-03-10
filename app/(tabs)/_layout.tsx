@@ -10,24 +10,22 @@ export default function TabLayout() {
 
   useEffect(() => {
     // Set up notification response listener for navigation
-    notificationResponseListener.current = Notifications.addNotificationResponseReceivedListener(
-      (response) => {
-        // Extract notification data
-        const data = response.notification.request.content.data;
-        const type = typeof data?.type === 'string' ? data.type : null;
+    notificationResponseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
+      // Extract notification data
+      const data = response.notification.request.content.data;
+      const type = typeof data?.type === 'string' ? data.type : null;
 
-        // Handle notification navigation
-        if (type === 'new_water_request') {
-          router.push('/(user)/admin/water-requests');
-        } else if (type === 'new_medic_request') {
-          router.push('/(user)/admin/trainers-list');
-        } else if (type === 'new_cart_request') {
-          router.push('/(user)/admin/cart-requests');
-        } else if (type === 'announcement') {
-          router.push('/(tabs)/home/notifications');
-        }
-      },
-    );
+      // Handle notification navigation
+      if (type === 'new_water_request') {
+        router.push('/(user)/admin/water-requests');
+      } else if (type === 'new_medic_request') {
+        router.push('/(user)/admin/trainers-list');
+      } else if (type === 'new_cart_request') {
+        router.push('/(user)/admin/cart-requests');
+      } else if (type === 'announcement') {
+        router.push('/(tabs)/home/notifications');
+      }
+    });
 
     return () => {
       if (notificationResponseListener.current) {
@@ -53,45 +51,35 @@ export default function TabLayout() {
         name="home"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name="house" color={focused ? color : '#00000066'} />
-          ),
+          tabBarIcon: ({ color, focused }) => <TabBarIcon name="house" color={focused ? color : '#00000066'} />,
         }}
       />
       <Tabs.Screen
         name="schedule"
         options={{
           title: 'Schedule',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name="calendar-week" color={focused ? color : '#00000066'} />
-          ),
+          tabBarIcon: ({ color, focused }) => <TabBarIcon name="calendar-week" color={focused ? color : '#00000066'} />,
         }}
       />
       <Tabs.Screen
         name="standings"
         options={{
           title: 'Standings',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name="ranking-star" color={focused ? color : '#00000066'} />
-          ),
+          tabBarIcon: ({ color, focused }) => <TabBarIcon name="ranking-star" color={focused ? color : '#00000066'} />,
         }}
       />
       <Tabs.Screen
         name="teams"
         options={{
           title: 'Teams',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name="people-group" color={focused ? color : '#00000066'} />
-          ),
+          tabBarIcon: ({ color, focused }) => <TabBarIcon name="people-group" color={focused ? color : '#00000066'} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name="circle-user" color={focused ? color : '#00000066'} />
-          ),
+          tabBarIcon: ({ color, focused }) => <TabBarIcon name="circle-user" color={focused ? color : '#00000066'} />,
         }}
       />
     </Tabs>

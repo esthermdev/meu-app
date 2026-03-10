@@ -1,11 +1,4 @@
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-  ActivityIndicator,
-  Platform,
-} from 'react-native';
+import { View, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator, Platform } from 'react-native';
 import { router } from 'expo-router';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 import { typography } from '@/constants/Typography';
@@ -44,9 +37,7 @@ export default function UpdateScoresIndex() {
           key={division.id}
           style={[
             styles.divisionItem,
-            Platform.OS === 'android'
-              ? { borderBottomColor: division.color }
-              : { shadowColor: division.color },
+            Platform.OS === 'android' ? { borderBottomColor: division.color } : { shadowColor: division.color },
           ]}
           onPress={() => handleSelectDivision(division.id, division.title)}>
           <CustomText style={styles.divisionText}>{division.title}</CustomText>

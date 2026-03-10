@@ -216,22 +216,15 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
       {/* Action buttons */}
       <View style={styles.actionContainer}>
         <TouchableOpacity
-          style={[
-            styles.actionButton,
-            styles.markCompletedButton,
-            isCompleted && styles.completedButton,
-          ]}
+          style={[styles.actionButton, styles.markCompletedButton, isCompleted && styles.completedButton]}
           onPress={handleMarkCompleted}
           disabled={isCompleted || isLoading}>
-          <CustomText
-            style={[styles.buttonText, isCompleted ? { color: '#ED8C22' } : { color: '#242424' }]}>
+          <CustomText style={[styles.buttonText, isCompleted ? { color: '#ED8C22' } : { color: '#242424' }]}>
             {isCompleted ? 'COMPLETED' : 'Mark Completed'}
           </CustomText>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.actionButton, styles.updateScoreButton]}
-          onPress={openScoreModal}>
+        <TouchableOpacity style={[styles.actionButton, styles.updateScoreButton]} onPress={openScoreModal}>
           <CustomText style={styles.buttonText}>Update Game</CustomText>
         </TouchableOpacity>
       </View>

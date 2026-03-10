@@ -29,11 +29,7 @@ const VendorsScreen = () => {
   const fetchVendors = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('vendors')
-        .select('*')
-        .eq('type', 'vendor')
-        .order('name');
+      const { data, error } = await supabase.from('vendors').select('*').eq('type', 'vendor').order('name');
 
       if (error) throw error;
       setVendors(data || []);
@@ -58,11 +54,7 @@ const VendorsScreen = () => {
       disabled={!item.website}>
       <View style={styles.vendorContent}>
         {item.avatar_url ? (
-          <Image
-            source={{ uri: item.avatar_url }}
-            style={styles.vendorImage}
-            resizeMode="contain"
-          />
+          <Image source={{ uri: item.avatar_url }} style={styles.vendorImage} resizeMode="contain" />
         ) : (
           <View style={styles.vendorImagePlaceholder}>
             <FontAwesome5 name="home" size={24} color="#ccc" />
@@ -112,9 +104,7 @@ const VendorsScreen = () => {
         renderItem={renderVendorItem}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContainer}
-        ListEmptyComponent={
-          <CustomText style={styles.emptyText}>No vendors available at the moment.</CustomText>
-        }
+        ListEmptyComponent={<CustomText style={styles.emptyText}>No vendors available at the moment.</CustomText>}
       />
     </SafeAreaView>
   );

@@ -71,9 +71,7 @@ export default function UserDashboard() {
 
       {/* Quick Actions */}
       <CustomText style={styles.sectionTitle}>Quick Actions</CustomText>
-      <TouchableOpacity
-        onPress={() => router.navigate('/(user)/feedback')}
-        style={styles.actionButton}>
+      <TouchableOpacity onPress={() => router.navigate('/(user)/feedback')} style={styles.actionButton}>
         <MaterialIcons name="feedback" size={24} color="##000" style={styles.cardIcon} />
         <CustomText style={styles.quickActionLabels}>Feedback</CustomText>
       </TouchableOpacity>
@@ -82,9 +80,7 @@ export default function UserDashboard() {
         style={[styles.actionButton, isSigningOut && styles.disabledButton]}
         disabled={isSigningOut}>
         <Ionicons name="arrow-back-circle" size={24} color="##000" style={styles.cardIcon} />
-        <CustomText style={styles.quickActionLabels}>
-          {isSigningOut ? 'Signing out...' : 'Sign Out'}
-        </CustomText>
+        <CustomText style={styles.quickActionLabels}>{isSigningOut ? 'Signing out...' : 'Sign Out'}</CustomText>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleOpenExternalDeleteAccount} style={styles.actionButton}>
         <MaterialIcons name="delete-sweep" size={24} color="##000" style={styles.cardIcon} />
