@@ -24,27 +24,27 @@ const FieldMap = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 10,
+    flex: 1,
   },
   image: {
-    width: '100%',
     height: '100%',
+    width: '100%',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    zIndex: 10,
+  },
+  scrollContainer: {
+    alignItems: 'center',
+    flexGrow: 1,
+    justifyContent: 'center',
   },
 });
 

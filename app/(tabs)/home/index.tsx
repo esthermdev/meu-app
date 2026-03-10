@@ -93,31 +93,31 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  scrollContent: {
-    flexGrow: 1, // This allows the content to grow to fill available space
-    padding: 20,
-    justifyContent: 'space-between',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 10,
-  },
-  utilsContainer: {
-    flexDirection: 'row',
-    paddingVertical: 15,
-    justifyContent: 'space-between',
-  },
-  spacer: {
-    height: 40, // Adds some space before the bottom buttons
-  },
   bottomButtons: {
     flexDirection: 'row',
     gap: 12,
     marginTop: 'auto',
+  },
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
+  },
+  row: {
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'space-between',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'space-between',
+    padding: 20,
+  },
+  spacer: {
+    height: 40, // Adds some space before the bottom buttons
+  },
+  utilsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 15,
   },
 });

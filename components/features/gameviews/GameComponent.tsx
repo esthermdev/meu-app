@@ -91,33 +91,33 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  // Game Card Styles
-  gameCard: {
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 12,
-    gap: 15,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    marginTop: 10,
-  },
-  gameHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
   dateText: {
     ...typography.textBold,
     color: '#999',
     width: 100,
   },
+  // Game Card Styles
+  gameCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    elevation: 2,
+    gap: 15,
+    marginTop: 10,
+    padding: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  gameHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   timeContainer: {
     backgroundColor: '#999',
-    paddingHorizontal: 8,
     borderRadius: 20,
+    paddingHorizontal: 8,
   },
   timeText: {
     ...typography.text,
@@ -126,39 +126,39 @@ const styles = StyleSheet.create({
   fieldText: {
     ...typography.textBold,
     color: '#276B5D',
-    width: 100,
     textAlign: 'right',
+    width: 100,
   },
   // New layout styles
   matchupContainer: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
   teamsSection: {
     flex: 3,
-    justifyContent: 'space-between',
     gap: 10,
+    justifyContent: 'space-between',
   },
   teamRow: {
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
     gap: 8,
   },
   teamLogo: {
-    width: 27,
-    height: 27,
     borderRadius: 18,
+    height: 27,
+    width: 27,
   },
   teamText: {
     ...typography.textSemiBold,
     color: '#444',
   },
   scoresSection: {
-    flex: 1,
     alignItems: 'flex-end',
-    justifyContent: 'space-between',
+    flex: 1,
     gap: 10,
+    justifyContent: 'space-between',
   },
   scoreText: {
     ...typography.textLargeBold,

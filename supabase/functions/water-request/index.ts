@@ -1,4 +1,4 @@
-// Edge function for water requests
+// deno-lint-ignore no-import-prefix
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 interface WaterRequest {
@@ -27,9 +27,6 @@ const supabase = createClient(
 
 Deno.serve(async (req) => {
   const payload: WebhookPayload = await req.json();
-  
-  // Log the received payload for debugging
-  console.log("Received webhook payload:", JSON.stringify(payload));
 
   // Only proceed if this is an INSERT operation
   if (payload.type !== "INSERT") {
@@ -67,15 +64,11 @@ Deno.serve(async (req) => {
       });
     }
 
-    console.log(`Found ${volunteers?.length || 0} available volunteers`);
-
     // Filter out volunteers without valid push tokens
     const validVolunteers = (volunteers as VolunteerRecipient[] | null)?.filter((volunteer: VolunteerRecipient) => 
       volunteer.expo_push_token && 
       volunteer.expo_push_token.startsWith('ExponentPushToken[')
     ) || [];
-
-    console.log(`Found ${validVolunteers.length} volunteers with valid push tokens`);
 
     if (validVolunteers.length > 0) {
       // Format notification - now using field name instead of just number
@@ -112,7 +105,6 @@ Deno.serve(async (req) => {
 
       // Wait for all notification sends to complete
       const results = await Promise.all(sendPromises);
-      console.log("Push notification results:", JSON.stringify(results));
 
       return new Response(JSON.stringify({ 
         message: "Notifications sent", 
@@ -122,7 +114,6 @@ Deno.serve(async (req) => {
         headers: { "Content-Type": "application/json" },
       });
     } else {
-      console.log("No available volunteers with valid push tokens found");
       return new Response(JSON.stringify({ 
         message: "No available volunteers with valid push tokens found" 
       }), {

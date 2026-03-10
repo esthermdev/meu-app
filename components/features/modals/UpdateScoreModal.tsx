@@ -246,90 +246,90 @@ const UpdateScoreModal: React.FC<UpdateScoreModalProps> = ({
 };
 
 const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    alignItems: 'center',
-  },
-  modalContent: {
-    marginTop: 70,
-    width: '80%',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalTitle: {
-    ...typography.heading4,
-    marginBottom: 15,
-  },
-  modalTeamContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  modalTeamName: {
-    ...typography.heading5,
-    flex: 1,
-  },
-  modalScoreInputContainer: {
-    width: 48,
-    height: 40,
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-  },
-  modalScoreInput: {
-    width: '100%',
-    height: '100%',
-    textAlign: 'center',
-    ...typography.heading3,
-  },
   modalButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   modalCancelButton: {
     backgroundColor: '#000000',
-    padding: 12,
     borderRadius: 6,
-    width: '48%',
     justifyContent: 'center',
+    padding: 12,
+    width: '48%',
   },
   modalCancelButtonText: {
     color: 'white',
     textAlign: 'center',
     ...typography.textMedium,
   },
-  modalUpdateButton: {
-    backgroundColor: '#EA1D25',
-    padding: 12,
-    borderRadius: 6,
-    width: '48%',
-    justifyContent: 'center',
-  },
-  modalUpdateButtonText: {
-    color: 'white',
-    textAlign: 'center',
-    ...typography.textMedium,
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    elevation: 5,
+    marginTop: 70,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    width: '80%',
   },
   modalFieldContainer: {
     marginBottom: 15,
+  },
+  modalFieldInput: {
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    borderWidth: 1,
+    padding: 12,
+    ...typography.textMedium,
   },
   modalFieldLabel: {
     ...typography.textMedium,
     marginBottom: 5,
   },
-  modalFieldInput: {
-    borderWidth: 1,
+  modalOverlay: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flex: 1,
+  },
+  modalScoreInput: {
+    height: '100%',
+    textAlign: 'center',
+    width: '100%',
+    ...typography.heading3,
+  },
+  modalScoreInputContainer: {
     borderColor: '#E0E0E0',
     borderRadius: 8,
+    borderWidth: 1,
+    height: 40,
+    width: 48,
+  },
+  modalTeamContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
+  modalTeamName: {
+    ...typography.heading5,
+    flex: 1,
+  },
+  modalTitle: {
+    ...typography.heading4,
+    marginBottom: 15,
+  },
+  modalUpdateButton: {
+    backgroundColor: '#EA1D25',
+    borderRadius: 6,
+    justifyContent: 'center',
     padding: 12,
+    width: '48%',
+  },
+  modalUpdateButtonText: {
+    color: 'white',
+    textAlign: 'center',
     ...typography.textMedium,
   },
   readOnlyInput: {

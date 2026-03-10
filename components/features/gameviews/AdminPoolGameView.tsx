@@ -259,44 +259,44 @@ const PoolAdminView: React.FC<PoolAdminViewProps> = ({ poolId, divisionId }) => 
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
   centerContent: {
+    alignItems: 'center',
+    backgroundColor: '#000',
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000',
   },
-  gamesList: {
-    paddingHorizontal: 15,
-    paddingTop: 3,
-    paddingBottom: 15,
+  container: {
+    backgroundColor: '#000',
+    flex: 1,
   },
   emptyContainer: {
-    padding: 40,
     alignItems: 'center',
+    padding: 40,
   },
   emptyText: {
     color: '#888',
     ...typography.textMedium,
     textAlign: 'center',
   },
-  loadingOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000,
-  },
   errorText: {
     color: '#EA1D25',
     ...typography.textMedium,
+  },
+  gamesList: {
+    paddingBottom: 15,
+    paddingHorizontal: 15,
+    paddingTop: 3,
+  },
+  loadingOverlay: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    bottom: 0,
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    zIndex: 1000,
   },
 });
 

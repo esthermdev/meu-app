@@ -264,67 +264,58 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
 };
 
 const styles = StyleSheet.create({
-  gameCard: {
-    backgroundColor: '#2A2A2A',
-    padding: 15,
-    borderRadius: 12,
-    gap: 12,
-    marginTop: 12,
-  },
-  gameHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  actionButton: {
     alignItems: 'center',
+    borderRadius: 8,
+    flex: 1,
+    justifyContent: 'center',
+    paddingVertical: 10,
+  },
+  actionContainer: {
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'space-between',
+  },
+  buttonText: {
+    color: '#242424',
+    ...typography.textSemiBold,
+  },
+  completedButton: {
+    backgroundColor: '#242424',
+    borderColor: '#ED8C22',
+    borderWidth: 1,
   },
   dateText: {
     ...typography.textBold,
     color: '#CCCCCC',
     width: 100,
   },
-  timeContainer: {
-    backgroundColor: '#EA1D253D',
-    borderColor: '#EA1D25',
-    borderWidth: 1,
-    paddingHorizontal: 8,
-    borderRadius: 20,
-  },
-  timeText: {
-    ...typography.text,
-    color: '#fff',
-  },
   fieldText: {
     ...typography.textBold,
     color: '#CCCCCC',
-    width: 100,
     textAlign: 'right',
+    width: 100,
+  },
+  gameCard: {
+    backgroundColor: '#2A2A2A',
+    borderRadius: 12,
+    gap: 12,
+    marginTop: 12,
+    padding: 15,
+  },
+  gameHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  markCompletedButton: {
+    backgroundColor: '#ED8C22',
+    borderColor: '#ED8C22',
+    borderWidth: 1,
   },
   matchupContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  teamsSection: {
-    flex: 1,
-    justifyContent: 'space-between',
-    gap: 15,
-  },
-  teamRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-  },
-  teamLogo: {
-    width: 30,
-    height: 30,
-    borderRadius: 14,
-    marginRight: 8,
-  },
-  teamText: {
-    ...typography.textLargeSemiBold,
-    color: '#FFF',
-  },
-  scoresSection: {
-    flex: 2,
-    alignItems: 'flex-end',
     justifyContent: 'space-between',
   },
   scoreInput: {
@@ -332,36 +323,45 @@ const styles = StyleSheet.create({
     ...typography.heading3,
     textAlign: 'right',
   },
-  actionContainer: {
-    flexDirection: 'row',
+  scoresSection: {
+    alignItems: 'flex-end',
+    flex: 2,
     justifyContent: 'space-between',
-    gap: 10,
   },
-  actionButton: {
-    flex: 1,
-    paddingVertical: 10,
-    borderRadius: 8,
+  teamLogo: {
+    borderRadius: 14,
+    height: 30,
+    marginRight: 8,
+    width: 30,
+  },
+  teamRow: {
     alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'row',
   },
-  markCompletedButton: {
-    backgroundColor: '#ED8C22',
-    borderColor: '#ED8C22',
-    borderWidth: 1,
+  teamText: {
+    ...typography.textLargeSemiBold,
+    color: '#FFF',
   },
-  completedButton: {
-    backgroundColor: '#242424',
-    borderColor: '#ED8C22',
+  teamsSection: {
+    flex: 1,
+    gap: 15,
+    justifyContent: 'space-between',
+  },
+  timeContainer: {
+    backgroundColor: '#EA1D253D',
+    borderColor: '#EA1D25',
+    borderRadius: 20,
     borderWidth: 1,
+    paddingHorizontal: 8,
+  },
+  timeText: {
+    ...typography.text,
+    color: '#fff',
   },
   updateScoreButton: {
     backgroundColor: '#CCCCCC',
     borderColor: '#CCCCCC',
     borderWidth: 1,
-  },
-  buttonText: {
-    color: '#242424',
-    ...typography.textSemiBold,
   },
 });
 

@@ -35,20 +35,20 @@ FilterButton.displayName = 'FilterButton';
 
 const styles = StyleSheet.create({
   filterButton: {
+    borderColor: 'transparent',
     borderRadius: 100,
+    borderWidth: 1,
     paddingHorizontal: 8,
     paddingVertical: 2,
-    borderWidth: 1,
-    borderColor: 'transparent',
   },
   filterButtonSelected: {
     borderColor: '#000',
     opacity: 1,
   },
   filterByText: {
+    color: '#fff',
     fontFamily: 'OutfitLight',
     fontSize: 12,
-    color: '#fff',
   },
   filterByTextSelected: {
     fontFamily: 'OutfitMedium',

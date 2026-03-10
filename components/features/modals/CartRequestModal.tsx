@@ -391,110 +391,110 @@ const CartRequestButton = () => {
 };
 
 const styles = StyleSheet.create({
-  circleButton: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: '#edebebff',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  label: {
-    textAlign: 'center',
-    marginTop: 5,
-    ...typography.textSmallBold,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 20,
-    width: '90%',
-    height: modalHeight,
-    overflow: 'hidden',
-  },
-  labelHeader: {
-    ...typography.textBold,
-    marginVertical: 5,
-  },
-  noteText: {
-    ...typography.textXSmall,
-    color: '#666',
-  },
-  passengerCountContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  passengerCountButton: {
-    backgroundColor: '#F0F0F0',
-    borderRadius: 20,
-    width: 35,
-    height: 35,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  passengerCountText: {
-    ...typography.textBold,
-    paddingHorizontal: 20,
-  },
-  specialRequestInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    ...typography.textSmall,
-    textAlignVertical: 'top',
-  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   cancelButton: {
     backgroundColor: '#000000',
-    padding: 12,
     borderRadius: 6,
-    width: '48%',
     justifyContent: 'center',
+    padding: 12,
+    width: '48%',
   },
-  confirmButton: {
-    backgroundColor: '#E74C3C',
-    padding: 12,
-    borderRadius: 6,
-    width: '48%',
+  circleButton: {
+    alignItems: 'center',
+    backgroundColor: '#edebebff',
+    borderRadius: 35,
+    height: 70,
     justifyContent: 'center',
+    width: 70,
   },
   closeButton: {
     alignSelf: 'flex-end',
     marginBottom: 5,
   },
+  confirmButton: {
+    backgroundColor: '#E74C3C',
+    borderRadius: 6,
+    justifyContent: 'center',
+    padding: 12,
+    width: '48%',
+  },
   generalErrorContainer: {
     backgroundColor: '#FFEEEE',
-    padding: 10,
+    borderLeftColor: '#DD3333',
+    borderLeftWidth: 4,
     borderRadius: 5,
     marginBottom: 10,
-    borderLeftWidth: 4,
-    borderLeftColor: '#DD3333',
+    padding: 10,
   },
   generalErrorText: {
     color: '#DD3333',
     ...typography.text,
   },
+  inputError: {
+    borderColor: '#DD3333',
+  },
+  label: {
+    marginTop: 5,
+    textAlign: 'center',
+    ...typography.textSmallBold,
+  },
+  labelHeader: {
+    ...typography.textBold,
+    marginVertical: 5,
+  },
+  modalContainer: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    height: modalHeight,
+    overflow: 'hidden',
+    padding: 20,
+    width: '90%',
+  },
   nameInput: {
-    borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
+    borderWidth: 1,
     padding: 12,
     ...typography.textSmall,
     marginBottom: 10,
   },
-  inputError: {
-    borderColor: '#DD3333',
+  noteText: {
+    ...typography.textXSmall,
+    color: '#666',
+  },
+  passengerCountButton: {
+    alignItems: 'center',
+    backgroundColor: '#F0F0F0',
+    borderRadius: 20,
+    height: 35,
+    justifyContent: 'center',
+    width: 35,
+  },
+  passengerCountContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  passengerCountText: {
+    ...typography.textBold,
+    paddingHorizontal: 20,
+  },
+  specialRequestInput: {
+    borderColor: '#ccc',
+    borderRadius: 5,
+    borderWidth: 1,
+    padding: 10,
+    ...typography.textSmall,
+    textAlignVertical: 'top',
   },
 });
 

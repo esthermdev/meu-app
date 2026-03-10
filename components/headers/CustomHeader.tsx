@@ -88,75 +88,75 @@ export const CustomHeader: React.FC<CustomHeaderProps> = ({ title, refreshInfo }
 };
 
 const styles = StyleSheet.create({
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomColor: '#D9D9D9',
-    borderBottomWidth: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: '#fff',
-    position: 'relative',
-  },
   header: {
+    color: '#000',
     fontFamily: fonts.semiBold,
     fontSize: 18,
-    color: '#000',
     textAlign: 'center',
+  },
+  headerContainer: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderBottomColor: '#D9D9D9',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    position: 'relative',
+  },
+  backButton: {
+    left: 20,
+    position: 'absolute',
+    zIndex: 10,
   },
   infoButton: {
     position: 'absolute',
     right: 20,
     zIndex: 10,
   },
-  backButton: {
-    position: 'absolute',
-    left: 20,
-    zIndex: 10,
-  },
   titleContainer: {
-    flex: 1,
     alignItems: 'center',
+    flex: 1,
     justifyContent: 'center',
   },
   // Modal styles
   modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flex: 1,
+    justifyContent: 'center',
   },
   modalContainer: {
-    width: '85%',
     backgroundColor: 'white',
     borderRadius: 12,
-    overflow: 'hidden',
     elevation: 5,
+    overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+    width: '85%',
   },
   modalContent: {
     padding: 20,
   },
   modalHeader: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: 15,
   },
   modalTitle: {
+    color: '#000',
     fontFamily: fonts.semiBold,
     fontSize: 18,
-    color: '#000',
   },
   modalBody: {
     marginBottom: 20,
   },
   infoItem: {
-    flexDirection: 'row',
     alignItems: 'flex-start',
+    flexDirection: 'row',
     marginBottom: 15,
   },
   infoIcon: {
@@ -164,21 +164,21 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   infoText: {
-    fontFamily: fonts.regular,
-    fontSize: 16,
     color: '#333',
     flex: 1,
+    fontFamily: fonts.regular,
+    fontSize: 16,
   },
   gotItButton: {
-    backgroundColor: '#EA1D25',
-    paddingVertical: 12,
-    borderRadius: 8,
     alignItems: 'center',
+    backgroundColor: '#EA1D25',
+    borderRadius: 8,
+    paddingVertical: 12,
   },
   gotItButtonText: {
+    color: 'white',
     fontFamily: fonts.medium,
     fontSize: 16,
-    color: 'white',
   },
 });
 

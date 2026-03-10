@@ -30,11 +30,11 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#fff',
+    flex: 1,
+    justifyContent: 'flex-start',
+    padding: 20,
   },
   contentContainer: {
     flex: 1,
@@ -42,21 +42,21 @@ const styles = StyleSheet.create({
   },
   image: {
     marginTop: 50,
-    width: '60%',
     maxHeight: 170,
+    width: '60%',
   },
   tournamentLogo: {
+    maxHeight: 250,
     width: '80%',
+  },
+  tournamentLogoContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
     maxHeight: 250,
   },
   welcomeText: {
     ...typography.heading2,
     color: '#EA1D25',
     textAlign: 'center',
-  },
-  tournamentLogoContainer: {
-    maxHeight: 250,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

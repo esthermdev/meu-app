@@ -39,7 +39,7 @@ const usePushNotifications = () => {
             .eq('id', user.id);
 
           if (error) throw error;
-          console.log('Push token saved to user profile');
+          console.log('Expo push token saved to user profile');
         }
 
         // Always save token to local storage (for anonymous users or backup)
@@ -76,7 +76,6 @@ const usePushNotifications = () => {
       });
 
       const token = pushTokenResponse.data;
-      console.log('Push token obtained:', token);
       setExpoPushToken(token);
 
       await saveTokenToStorage(token);

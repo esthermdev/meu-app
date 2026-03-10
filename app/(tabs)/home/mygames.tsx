@@ -489,15 +489,40 @@ const MyGames = () => {
 };
 
 const styles = StyleSheet.create({
+  centerContainer: {
+    alignItems: 'center',
+    flex: 1,
+    gap: 15,
+    justifyContent: 'center',
+    padding: 20,
+  },
   container: {
     flex: 1,
   },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
+  dateButton: {
+    borderRadius: 6,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+  },
+  dateButtonText: {
+    ...typography.textMedium,
+    color: '#999999',
+  },
+  dateFilterContainer: {
     alignItems: 'center',
+    flexDirection: 'row',
     padding: 20,
-    gap: 15,
+  },
+  dateLabel: {
+    ...typography.textBold,
+    color: '#333',
+    marginRight: 12,
+  },
+  dateScroll: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    flexDirection: 'row',
+    padding: 7,
   },
   linkText: {
     color: '#EA1D25',
@@ -509,32 +534,6 @@ const styles = StyleSheet.create({
     color: '#00000066',
     textAlign: 'center',
   },
-  // Date filter container
-  dateFilterContainer: {
-    padding: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  dateLabel: {
-    ...typography.textBold,
-    color: '#333',
-    marginRight: 12,
-  },
-  dateScroll: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 7,
-  },
-  dateButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 6,
-  },
-  dateButtonText: {
-    ...typography.textMedium,
-    color: '#999999',
-  },
   selectedDateButton: {
     backgroundColor: '#FE0000',
   },
@@ -543,47 +542,47 @@ const styles = StyleSheet.create({
   },
   // Game List Container
   matchupContainer: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
   teamsSection: {
     flex: 3,
-    justifyContent: 'space-between',
     gap: 10,
+    justifyContent: 'space-between',
   },
   teamRow: {
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
     gap: 8,
   },
   scoresSection: {
-    flex: 1,
     alignItems: 'flex-end',
-    justifyContent: 'space-between',
+    flex: 1,
     gap: 10,
+    justifyContent: 'space-between',
   },
   listContainer: {
-    paddingTop: 5,
-    paddingHorizontal: 20,
     paddingBottom: 10,
+    paddingHorizontal: 20,
+    paddingTop: 5,
   },
   gameCard: {
     backgroundColor: '#fff',
-    padding: 10,
     borderRadius: 12,
-    marginBottom: 12,
-    gap: 15,
     elevation: 2,
+    gap: 15,
+    marginBottom: 12,
+    padding: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   gameHeader: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
   dateText: {
     ...typography.textBold,
@@ -592,8 +591,8 @@ const styles = StyleSheet.create({
   },
   timeContainer: {
     backgroundColor: '#999',
-    paddingHorizontal: 8,
     borderRadius: 20,
+    paddingHorizontal: 8,
   },
   timeText: {
     ...typography.text,
@@ -602,8 +601,8 @@ const styles = StyleSheet.create({
   fieldText: {
     ...typography.textBold,
     color: '#276B5D',
-    width: 100,
     textAlign: 'right',
+    width: 100,
   },
   teamText: {
     ...typography.textLargeSemiBold,
@@ -614,9 +613,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   teamLogo: {
-    width: 27,
-    height: 27,
     borderRadius: 18,
+    height: 27,
+    width: 27,
   },
   scoreText: {
     ...typography.heading4,

@@ -122,74 +122,80 @@ const SponsorScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#f8f8f8',
+    flex: 1,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f8f8f8',
+  emptyText: {
+    ...typography.text,
+    color: '#666',
+    marginTop: 40,
+    textAlign: 'center',
   },
   errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f8f8f8',
+    flex: 1,
+    justifyContent: 'center',
     padding: 20,
   },
   errorText: {
     ...typography.textMedium,
     color: '#333',
-    textAlign: 'center',
-    marginTop: 10,
     marginBottom: 20,
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  listContainer: {
+    padding: 20,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    backgroundColor: '#f8f8f8',
+    flex: 1,
+    justifyContent: 'center',
   },
   retryButton: {
     backgroundColor: '#EA1D25',
+    borderRadius: 8,
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 8,
   },
   retryButtonText: {
     ...typography.textMedium,
     color: 'white',
   },
-  listContainer: {
-    padding: 20,
+  vendorContent: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  vendorImage: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    height: 60,
+    width: 60,
+  },
+  vendorImagePlaceholder: {
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    height: 60,
+    justifyContent: 'center',
+    width: 60,
+  },
+  vendorInfo: {
+    flex: 1,
+    marginLeft: 16,
   },
   vendorItem: {
     backgroundColor: 'white',
     borderRadius: 10,
+    elevation: 2,
     marginBottom: 10,
     padding: 16,
-    elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-  },
-  vendorContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  vendorImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 8,
-    backgroundColor: '#fff',
-  },
-  vendorImagePlaceholder: {
-    width: 60,
-    height: 60,
-    borderRadius: 8,
-    backgroundColor: '#f0f0f0',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  vendorInfo: {
-    marginLeft: 16,
-    flex: 1,
   },
   vendorName: {
     ...typography.textLargeBold,
@@ -197,8 +203,8 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   websiteContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
     marginTop: 6,
   },
   websiteIcon: {
@@ -207,12 +213,6 @@ const styles = StyleSheet.create({
   websiteText: {
     ...typography.textSmall,
     color: '#2871FF',
-  },
-  emptyText: {
-    ...typography.text,
-    color: '#666',
-    textAlign: 'center',
-    marginTop: 40,
   },
 });
 

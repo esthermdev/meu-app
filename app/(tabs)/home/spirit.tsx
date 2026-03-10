@@ -62,63 +62,63 @@ export default function SpiritPage() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  content: {
-    padding: 20,
-  },
-  card: {
-    backgroundColor: '#f8f8f8',
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 20,
-    borderLeftWidth: 4,
-    borderLeftColor: '#E0AE43',
-  },
-  message: {
-    lineHeight: 24,
-    color: '#333',
-  },
-  name: {
-    color: '#E0AE43',
-  },
-  formButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#E0AE43',
-    borderRadius: 12,
-    padding: 18,
-    marginBottom: 16,
-    gap: 12,
-  },
-  buttonTextContainer: {
-    flex: 1,
+  buttonSubtext: {
+    color: '#fff',
+    opacity: 0.9,
   },
   buttonText: {
     color: '#fff',
     marginBottom: 2,
   },
-  buttonSubtext: {
-    color: '#fff',
-    opacity: 0.9,
+  buttonTextContainer: {
+    flex: 1,
+  },
+  card: {
+    backgroundColor: '#f8f8f8',
+    borderLeftColor: '#E0AE43',
+    borderLeftWidth: 4,
+    borderRadius: 12,
+    marginBottom: 20,
+    padding: 20,
+  },
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
+  },
+  content: {
+    padding: 20,
+  },
+  formButton: {
+    alignItems: 'center',
+    backgroundColor: '#E0AE43',
+    borderRadius: 12,
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+    padding: 18,
+  },
+  message: {
+    color: '#333',
+    lineHeight: 24,
+  },
+  name: {
+    color: '#E0AE43',
   },
   pdfButton: {
-    flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 18,
-    borderWidth: 2,
     borderColor: '#E0AE43',
+    borderRadius: 12,
+    borderWidth: 2,
+    flexDirection: 'row',
     gap: 12,
+    padding: 18,
+  },
+  pdfButtonSubtext: {
+    color: '#666',
   },
   pdfButtonText: {
     color: '#333',
     marginBottom: 2,
-  },
-  pdfButtonSubtext: {
-    color: '#666',
   },
 });

@@ -20,22 +20,22 @@ const MyGamesButtonBackground = ({ title }: { title: string }) => {
 };
 
 const styles = StyleSheet.create({
+  circleContainer: {
+    backgroundColor: '#ff5a46',
+    borderRadius: 150,
+    height: 300,
+    opacity: 0.7,
+    position: 'absolute',
+    right: -100,
+    top: -120,
+    width: 300,
+  },
   container: {
-    flex: 1,
     backgroundColor: '#e63e2f',
+    flex: 1,
+    justifyContent: 'space-between',
     overflow: 'hidden',
     padding: 14,
-    justifyContent: 'space-between',
-  },
-  circleContainer: {
-    position: 'absolute',
-    top: -120,
-    right: -100,
-    width: 300,
-    height: 300,
-    borderRadius: 150,
-    backgroundColor: '#ff5a46',
-    opacity: 0.7,
   },
   title: {
     color: '#fff',

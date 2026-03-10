@@ -1,4 +1,4 @@
-// Edge function for medical requests
+// deno-lint-ignore no-import-prefix
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 interface MedicalRequest {
@@ -29,9 +29,6 @@ const supabase = createClient(
 
 Deno.serve(async (req) => {
   const payload: WebhookPayload = await req.json();
-  
-  // Log the received payload for debugging
-  console.log("Received webhook payload:", JSON.stringify(payload));
 
   // Only proceed if this is an INSERT operation
   if (payload.type !== "INSERT") {
@@ -70,15 +67,11 @@ Deno.serve(async (req) => {
       });
     }
 
-    console.log(`Found ${medicalStaff?.length || 0} available medical staff`);
-
     // Filter out staff without valid push tokens
     const validStaff = (medicalStaff as MedicRecipient[] | null)?.filter((staff: MedicRecipient) => 
       staff.expo_push_token && 
       staff.expo_push_token.startsWith('ExponentPushToken[')
     ) || [];
-
-    console.log(`Found ${validStaff.length} medical staff with valid push tokens`);
 
     if (validStaff.length > 0) {
       // Format notification - now includes field name instead of just ID
@@ -119,7 +112,6 @@ Deno.serve(async (req) => {
 
       // Wait for all notification sends to complete
       const results = await Promise.all(sendPromises);
-      console.log("Push notification results:", JSON.stringify(results));
 
       return new Response(JSON.stringify({ 
         message: "Notifications sent", 
@@ -129,7 +121,6 @@ Deno.serve(async (req) => {
         headers: { "Content-Type": "application/json" },
       });
     } else {
-      console.log("No available medical staff with valid push tokens found");
       return new Response(JSON.stringify({ 
         message: "No available medical staff with valid push tokens found" 
       }), {

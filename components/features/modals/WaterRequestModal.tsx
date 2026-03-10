@@ -232,23 +232,64 @@ export default WaterRequestButton;
 
 const styles = StyleSheet.create({
   circleButton: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: '#edebebff',
-    justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#edebebff',
+    borderRadius: 35,
+    height: 70,
+    justifyContent: 'center',
+    width: 70,
+  },
+  disabledFieldBlock: {
+    backgroundColor: '#D0D0D0',
+    borderColor: '#B0B0B0',
+    opacity: 0.5,
+  },
+  disabledFieldText: {
+    color: '#999',
+  },
+  disabledNote: {
+    ...typography.label,
+    color: '#E74C3C',
+    textAlign: 'center',
+  },
+  disabledNoteContainer: {
+    backgroundColor: '#FFEBEE',
+    borderColor: '#FFCDD2',
+    borderRadius: 8,
+    borderWidth: 1,
+    marginVertical: 10,
+    padding: 10,
+  },
+  fieldBlock: {
+    alignItems: 'center',
+    backgroundColor: '#F0F0F0',
+    borderColor: '#E0E0E0',
+    borderWidth: 1,
+    height: blockSize,
+    justifyContent: 'center',
+    width: blockSize,
+  },
+  fieldBlockText: {
+    ...typography.labelBold,
+    textAlign: 'center',
+  },
+  fieldGridContainer: {
+    maxHeight: 300,
+  },
+  gridContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   label: {
-    textAlign: 'center',
     marginTop: 5,
+    textAlign: 'center',
     ...typography.labelBold,
   },
   modalContainer: {
-    flex: 1,
-    paddingTop: 100,
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flex: 1,
+    paddingTop: 100,
   },
   pickerContainer: {
     backgroundColor: 'white',
@@ -258,67 +299,26 @@ const styles = StyleSheet.create({
   },
   pickerTitle: {
     ...typography.heading4,
-    textAlign: 'center',
     marginBottom: 15,
-  },
-  fieldGridContainer: {
-    maxHeight: 300,
-  },
-  gridContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  fieldBlock: {
-    width: blockSize,
-    height: blockSize,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F0F0F0',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
+    textAlign: 'center',
   },
   selectedFieldBlock: {
     backgroundColor: '#E74C3C',
     borderColor: '#C0392B',
   },
-  disabledFieldBlock: {
-    backgroundColor: '#D0D0D0',
-    borderColor: '#B0B0B0',
-    opacity: 0.5,
-  },
-  fieldBlockText: {
-    ...typography.labelBold,
-    textAlign: 'center',
-  },
   selectedFieldText: {
     color: '#fff',
   },
-  disabledFieldText: {
-    color: '#999',
-  },
   selectionInfo: {
-    marginTop: 10,
-    padding: 10,
     backgroundColor: '#F9F9F9',
+    borderColor: '#E0E0E0',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    marginTop: 10,
+    padding: 10,
   },
   selectionText: {
     ...typography.text,
     textAlign: 'center',
-  },
-  disabledNoteContainer: {
-    marginVertical: 10,
-    padding: 10,
-    backgroundColor: '#FFEBEE',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#FFCDD2',
-  },
-  disabledNote: {
-    ...typography.label,
-    textAlign: 'center',
-    color: '#E74C3C',
   },
 });

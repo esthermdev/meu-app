@@ -41,37 +41,37 @@ const AdminBottomActionButtons: React.FC<AdminBottomActionButtonsProps> = ({
 
 const styles = StyleSheet.create({
   buttonContainer: {
+    alignItems: 'center',
+    backgroundColor: '#242424',
     borderTopColor: '#B3B3B38D',
     borderTopWidth: 1,
     flexDirection: 'row',
-    paddingTop: 15,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
-    backgroundColor: '#242424',
     gap: 12,
     justifyContent: 'center',
-    alignItems: 'center',
-  },
-  leftButton: {
-    flex: 1,
-    backgroundColor: '#ED8C22',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  rightButton: {
-    flex: 1,
-    backgroundColor: '#DDCF9B',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    height: 62,
-    justifyContent: 'center',
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    paddingTop: 15,
   },
   buttonText: {
     color: '#242424',
     ...typography.textSemiBold,
     textAlign: 'center',
+  },
+  leftButton: {
+    alignItems: 'center',
+    backgroundColor: '#ED8C22',
+    borderRadius: 8,
+    flex: 1,
+    paddingVertical: 12,
+  },
+  rightButton: {
+    alignItems: 'center',
+    backgroundColor: '#DDCF9B',
+    borderRadius: 8,
+    flex: 1,
+    height: 62,
+    justifyContent: 'center',
+    paddingVertical: 12,
   },
 });
 

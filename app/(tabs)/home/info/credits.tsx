@@ -51,19 +51,8 @@ const CreditsScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
-  },
-  scrollView: {
     flex: 1,
-  },
-  contentContainer: {
-    padding: 20,
-  },
-  title: {
-    ...typography.heading3,
-    color: '#333',
-    marginBottom: 16,
   },
   content: {
     ...typography.text,
@@ -71,25 +60,36 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     marginBottom: 16,
   },
+  contentContainer: {
+    padding: 20,
+  },
+  linkStyle: {
+    color: '#2871FF',
+    textDecorationLine: 'underline',
+    ...typography.textMedium,
+  },
+  scrollView: {
+    flex: 1,
+  },
   section: {
-    marginTop: 16,
     marginBottom: 16,
+    marginTop: 16,
   },
   sectionTitle: {
     ...typography.textBold,
     color: '#333',
     marginBottom: 8,
   },
-  linkStyle: {
-    textDecorationLine: 'underline',
-    color: '#2871FF',
-    ...typography.textMedium,
+  title: {
+    ...typography.heading3,
+    color: '#333',
+    marginBottom: 16,
   },
   version: {
     ...typography.text,
     color: '#888',
-    textAlign: 'center',
     marginTop: 40,
+    textAlign: 'center',
   },
 });
 

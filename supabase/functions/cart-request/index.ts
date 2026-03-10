@@ -1,4 +1,4 @@
-// Edge function for cart requests
+// deno-lint-ignore no-import-prefix
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 interface CartRequest {
@@ -36,9 +36,6 @@ const supabase = createClient(
 Deno.serve(async (req) => {
   const payload: WebhookPayload = await req.json();
   const cartRequest = payload.record;
-
-  // Log the received payload for debugging
-  console.log("Received webhook payload:", JSON.stringify(payload));
 
   // Handle INSERT operation (new request -> notify drivers)
   if (payload.type === "INSERT") {
@@ -81,15 +78,11 @@ async function handleNewCartRequest(cartRequest: CartRequest) {
       });
     }
 
-    console.log(`Found ${drivers?.length || 0} available drivers`);
-
     // Filter out drivers without valid push tokens
     const validDrivers = (drivers as DriverRecipient[] | null)?.filter((driver: DriverRecipient) => 
       driver.expo_push_token && 
       driver.expo_push_token.startsWith('ExponentPushToken[')
     ) || [];
-
-    console.log(`Found ${validDrivers.length} drivers with valid push tokens`);
 
     if (validDrivers.length > 0) {
       // Format from location with field name if applicable
@@ -138,7 +131,6 @@ async function handleNewCartRequest(cartRequest: CartRequest) {
 
       // Wait for all notification sends to complete
       const results = await Promise.all(sendPromises);
-      console.log("Push notification results:", JSON.stringify(results));
 
       return new Response(JSON.stringify({ 
         message: "Notifications sent", 
@@ -148,7 +140,6 @@ async function handleNewCartRequest(cartRequest: CartRequest) {
         headers: { "Content-Type": "application/json" },
       });
     } else {
-      console.log("No available drivers with valid push tokens found");
       return new Response(JSON.stringify({ 
         message: "No available drivers with valid push tokens found" 
       }), {
@@ -167,8 +158,6 @@ async function handleNewCartRequest(cartRequest: CartRequest) {
 // New function to handle accepted requests - notify the requester
 async function handleRequestAccepted(cartRequest: CartRequest) {
   try {
-    console.log("Handling request accepted for ID:", cartRequest.id);
-    
     // Fetch field names for any field numbers in the request
     const fieldNames = await getFieldNames([
       cartRequest.from_field_number, 
@@ -181,7 +170,6 @@ async function handleRequestAccepted(cartRequest: CartRequest) {
     // Check if there's a direct requester_token (authenticated user)
     if (cartRequest.requester_token) {
       pushToken = cartRequest.requester_token;
-      console.log("Using authenticated user token:", pushToken);
     } 
     // If no direct token, check for anonymous token using anon_device_id
     else if (cartRequest.anon_device_id) {
@@ -195,7 +183,6 @@ async function handleRequestAccepted(cartRequest: CartRequest) {
         console.error("Error fetching anonymous token:", error);
       } else if (data && data.token) {
         pushToken = data.token;
-        console.log("Using anonymous token:", pushToken);
       }
     }
     
@@ -240,9 +227,7 @@ async function handleRequestAccepted(cartRequest: CartRequest) {
         },
         priority: "high",
       };
-      
-      console.log("Sending notification with message:", JSON.stringify(message));
-      
+
       const response = await fetch("https://exp.host/--/api/v2/push/send", {
         method: "POST",
         headers: {
@@ -252,10 +237,9 @@ async function handleRequestAccepted(cartRequest: CartRequest) {
         },
         body: JSON.stringify(message),
       });
-      
+
       const result = await response.json();
-      console.log("Requester notification result:", JSON.stringify(result));
-      
+
       return new Response(JSON.stringify({ 
         message: "Requester notification sent", 
         result 
@@ -263,7 +247,6 @@ async function handleRequestAccepted(cartRequest: CartRequest) {
         headers: { "Content-Type": "application/json" },
       });
     } else {
-      console.log("No valid push token found for the requester");
       return new Response(JSON.stringify({ 
         message: "No valid push token found for the requester" 
       }), {

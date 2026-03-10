@@ -204,65 +204,46 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 25,
   },
-  form: {
-    flex: 1,
-  },
-  image: {
-    height: 90,
-    width: 90,
-    marginTop: 50,
-    marginBottom: 25,
-  },
-  title: {
-    ...typography.heading1,
-    color: '#EA1D25',
-    marginTop: 10,
-  },
-  subtitle: {
-    marginTop: 10,
-    marginBottom: 20,
-    ...typography.heading5,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderColor: '#000',
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-    marginBottom: 15,
-  },
-  inputWithIcon: {
-    flex: 1,
-    marginLeft: 8,
-    ...typography.textSemiBold,
-  },
   errorContainer: {
     backgroundColor: '#FEE2E2',
+    borderLeftColor: '#EF4444',
+    borderLeftWidth: 4,
     borderRadius: 8,
     padding: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: '#EF4444',
   },
   errorText: {
     ...typography.textSmall,
     color: '#B91C1C',
   },
-  signUpLink: {
-    ...typography.textSemiBold,
-    color: '#EA1D25',
-    marginTop: 5,
-    textDecorationLine: 'underline',
-  },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 16,
     marginBottom: 20,
+    marginTop: 16,
   },
-  text: {
-    ...typography.text,
+  form: {
+    flex: 1,
+  },
+  image: {
+    height: 90,
+    marginBottom: 25,
+    marginTop: 50,
+    width: 90,
+  },
+  inputContainer: {
+    alignItems: 'center',
+    borderColor: '#000',
+    borderRadius: 12,
+    borderWidth: 1,
+    flexDirection: 'row',
+    marginBottom: 15,
+    paddingHorizontal: 16,
+    paddingVertical: 20,
+  },
+  inputWithIcon: {
+    flex: 1,
+    marginLeft: 8,
+    ...typography.textSemiBold,
   },
   link: {
     ...typography.text,
@@ -270,14 +251,33 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   reviewerButton: {
-    backgroundColor: '#E5E5E5',
-    padding: 16,
-    borderRadius: 12,
     alignItems: 'center',
+    backgroundColor: '#E5E5E5',
+    borderRadius: 12,
     marginTop: 16,
+    padding: 16,
   },
   reviewerButtonText: {
     ...typography.textSemiBold,
     color: '#333333',
+  },
+  signUpLink: {
+    ...typography.textSemiBold,
+    color: '#EA1D25',
+    marginTop: 5,
+    textDecorationLine: 'underline',
+  },
+  subtitle: {
+    marginBottom: 20,
+    marginTop: 10,
+    ...typography.heading5,
+  },
+  text: {
+    ...typography.text,
+  },
+  title: {
+    ...typography.heading1,
+    color: '#EA1D25',
+    marginTop: 10,
   },
 });

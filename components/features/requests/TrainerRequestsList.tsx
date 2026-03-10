@@ -45,7 +45,6 @@ const TrainerRequestsList = () => {
         setRefreshing(true);
       }
 
-      console.log('Fetching trainer requests...');
       const { data, error } = await supabase
         .from('medical_requests')
         .select('*, trainer:profiles(full_name), fields:fields(name)')
@@ -54,7 +53,7 @@ const TrainerRequestsList = () => {
 
       if (error) throw error;
       setRequests(data as MedicalRequest[]);
-      console.log(`Loaded ${data?.length || 0} pending trainer requests`);
+      console.log(`Loaded ${data?.length || 0} trainer requests`);
     } catch (error) {
       console.error('Error fetching requests:', error);
     } finally {
@@ -258,25 +257,25 @@ const TrainerRequestsList = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#000',
+    flex: 1,
   },
   // Loading and empty
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000',
-  },
   emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
   },
   emptyText: {
     ...typography.textMedium,
     color: '#B0B0B0',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
   },
   loadingText: {
     ...typography.textBold,
@@ -284,28 +283,28 @@ const styles = StyleSheet.create({
   },
   // Request card styles
   listContainer: {
+    paddingBottom: 15,
     paddingHorizontal: 15,
     paddingTop: 3,
-    paddingBottom: 15,
   },
   cardContainer: {
-    borderRadius: 12,
-    padding: 10,
-    marginTop: 12,
     backgroundColor: '#262626',
+    borderRadius: 12,
     borderWidth: 0,
+    marginTop: 12,
+    padding: 10,
   },
   cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: 8,
     borderBottomWidth: 1,
     borderColor: '#CCCCCC66',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: 8,
   },
   priorityBadge: {
-    paddingHorizontal: 7,
     borderRadius: 20,
+    paddingHorizontal: 7,
     paddingVertical: 2,
   },
   priorityText: {
@@ -314,9 +313,9 @@ const styles = StyleSheet.create({
   },
   requestIdBadge: {
     backgroundColor: '#EA1D25',
+    borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 12,
   },
   requestIdText: {
     ...typography.textSmall,
@@ -324,10 +323,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   fieldBadge: {
-    flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#DDCF9B',
     borderRadius: 3,
+    flexDirection: 'row',
     paddingLeft: 2,
     paddingRight: 3,
     paddingVertical: 2,
@@ -341,9 +340,9 @@ const styles = StyleSheet.create({
     marginVertical: 15,
   },
   infoRow: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
   labelText: {
     ...typography.text,
@@ -358,29 +357,29 @@ const styles = StyleSheet.create({
     color: '#CCCCCCBF',
   },
   timeContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
   },
   timeIndicator: {
-    width: 8,
-    height: 8,
     borderRadius: 4,
+    height: 8,
     marginRight: 5,
+    width: 8,
   },
   timeText: {
     ...typography.textSemiBold,
     color: '#fff',
   },
   descriptionContainer: {
-    paddingVertical: 7,
-    paddingHorizontal: 10,
-    marginBottom: 8,
-    borderRadius: 5,
-    borderLeftWidth: 4,
-    borderWidth: 0.5,
+    backgroundColor: '#262626',
     borderColor: '#EA1D25',
     borderLeftColor: '#EA1D25',
-    backgroundColor: '#262626',
+    borderLeftWidth: 4,
+    borderRadius: 5,
+    borderWidth: 0.5,
+    marginBottom: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
   },
   descriptionLabel: {
     ...typography.text,
@@ -391,19 +390,19 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   buttonContainer: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
   resolveButton: {
-    flex: 1,
-    backgroundColor: '#73BF44',
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 8,
     alignItems: 'center',
+    backgroundColor: '#73BF44',
+    borderRadius: 8,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
   },
   buttonText: {
     ...typography.textBold,

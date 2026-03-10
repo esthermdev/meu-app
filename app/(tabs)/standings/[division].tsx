@@ -183,82 +183,82 @@ export default function DivisionStandings() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
   centerContainer: {
+    alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
+  },
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
+  },
+  itemContainer: {
     alignItems: 'center',
+    backgroundColor: '#fff',
+    borderBottomColor: '#E5E5E5',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    padding: 12,
   },
   listContent: {
     paddingBottom: 20,
-  },
-  sectionHeader: {
-    backgroundColor: '#EA1D25', // Red background for pool headers
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 9,
-    paddingHorizontal: 12,
-  },
-  poolLabelContainer: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 6,
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   poolLabel: {
     ...typography.textLargeBold,
     color: '#EA1D25',
   },
-  recordHeaderContainer: {
-    flexDirection: 'row',
+  poolLabelContainer: {
     alignItems: 'center',
-  },
-  recordHeaderText: {
-    ...typography.textLargeBold,
-    textAlign: 'center',
-    width: 30,
-    color: '#fff',
-  },
-  recordDivider: {
-    ...typography.text,
-    color: '#fff',
-  },
-  itemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
     backgroundColor: '#fff',
+    borderRadius: 6,
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   rankNumber: {
     ...typography.textSmall,
     color: '#9E9E9E',
     width: 20,
   },
-  teamLogo: {
-    width: 25,
-    height: 25,
-    borderRadius: 20,
-    marginHorizontal: 7,
-  },
-  teamName: {
-    flex: 1,
-    ...typography.textSemiBold,
-  },
   recordContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
+  },
+  recordDivider: {
+    ...typography.text,
+    color: '#fff',
+  },
+  recordHeaderContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  recordHeaderText: {
+    ...typography.textLargeBold,
+    color: '#fff',
+    textAlign: 'center',
+    width: 30,
   },
   recordText: {
     ...typography.text,
     textAlign: 'center',
     width: 30,
+  },
+  sectionHeader: {
+    alignItems: 'center',
+    backgroundColor: '#EA1D25', // Red background for pool headers
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+  },
+  teamLogo: {
+    borderRadius: 20,
+    height: 25,
+    marginHorizontal: 7,
+    width: 25,
+  },
+  teamName: {
+    flex: 1,
+    ...typography.textSemiBold,
   },
 });

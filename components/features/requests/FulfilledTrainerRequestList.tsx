@@ -31,7 +31,6 @@ const FulfilledTrainerRequestList = () => {
 
   const fetchFulfilledRequests = useCallback(async () => {
     try {
-      console.log('Fetching fulfilled trainer requests...');
       const { data, error } = await supabase
         .from('medical_requests')
         .select('*, trainer:profiles(full_name), fields:fields(name)')
@@ -40,7 +39,6 @@ const FulfilledTrainerRequestList = () => {
 
       if (error) throw error;
       setRequests(data as MedicalRequest[]);
-      console.log(`Loaded ${data?.length || 0} fulfilled trainer requests`);
     } catch (error) {
       console.error('Error fetching fulfilled requests:', error);
     } finally {
@@ -244,7 +242,7 @@ const FulfilledTrainerRequestList = () => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#EA1D25" />
-        <CustomText style={styles.loadingText}>Loading fulfilled requests...</CustomText>
+        <CustomText style={styles.loadingText}>Loading all trainer requests...</CustomText>
       </View>
     );
   }
@@ -253,7 +251,7 @@ const FulfilledTrainerRequestList = () => {
     <View style={styles.container}>
       {requests.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <CustomText style={styles.emptyText}>No fulfilled requests found</CustomText>
+          <CustomText style={styles.emptyText}>No trainer requests found</CustomText>
         </View>
       ) : (
         <>
@@ -276,25 +274,25 @@ const FulfilledTrainerRequestList = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#000',
+    flex: 1,
   },
   // Loading and empty
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000',
-  },
   emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
   },
   emptyText: {
     ...typography.textMedium,
     color: '#B0B0B0',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
   },
   loadingText: {
     ...typography.textBold,
@@ -302,27 +300,27 @@ const styles = StyleSheet.create({
   },
   // Card styles
   listContainer: {
+    paddingBottom: 15,
     paddingHorizontal: 15,
     paddingTop: 3,
-    paddingBottom: 15,
   },
   cardContainer: {
-    borderRadius: 12,
-    padding: 10,
-    marginTop: 12,
     backgroundColor: '#262626',
+    borderRadius: 12,
     borderWidth: 0,
+    marginTop: 12,
+    padding: 10,
   },
   cardHeader: {
-    flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 8,
     borderBottomWidth: 1,
     borderColor: '#CCCCCC66',
+    flexDirection: 'row',
+    paddingBottom: 8,
   },
   priorityBadge: {
-    paddingHorizontal: 7,
     borderRadius: 20,
+    paddingHorizontal: 7,
     paddingVertical: 2,
   },
   priorityText: {
@@ -330,10 +328,10 @@ const styles = StyleSheet.create({
     ...typography.text,
   },
   fieldBadge: {
-    flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#DDCF9B',
     borderRadius: 3,
+    flexDirection: 'row',
     paddingLeft: 2,
     paddingRight: 3,
     paddingVertical: 2,
@@ -343,16 +341,16 @@ const styles = StyleSheet.create({
     ...typography.textBold,
   },
   infoSection: {
+    borderBottomColor: '#CCCCCC66',
+    borderBottomWidth: 1,
     gap: 8,
     marginVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC66',
     paddingBottom: 8,
   },
   infoRow: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
   labelText: {
     ...typography.text,
@@ -367,15 +365,15 @@ const styles = StyleSheet.create({
     color: '#CCCCCCBF',
   },
   descriptionContainer: {
-    paddingVertical: 7,
-    paddingHorizontal: 10,
-    marginBottom: 8,
-    borderRadius: 5,
-    borderLeftWidth: 4,
-    borderWidth: 0.5,
+    backgroundColor: '#262626',
     borderColor: '#EA1D25',
     borderLeftColor: '#EA1D25',
-    backgroundColor: '#262626',
+    borderLeftWidth: 4,
+    borderRadius: 5,
+    borderWidth: 0.5,
+    marginBottom: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
   },
   descriptionLabel: {
     ...typography.text,
@@ -386,43 +384,43 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   statusBadge: {
+    borderRadius: 20,
+    marginLeft: 5,
+    marginRight: 'auto',
     paddingHorizontal: 7,
     paddingVertical: 2,
-    borderRadius: 20,
-    marginRight: 'auto',
-    marginLeft: 5,
   },
   statusText: {
     ...typography.text,
     color: '#fff',
   },
   deleteButton: {
-    backgroundColor: '#EA1D25',
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 8,
     alignItems: 'center',
+    backgroundColor: '#EA1D25',
+    borderRadius: 8,
     flexDirection: 'row',
     justifyContent: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
   },
   deleteButtonText: {
     ...typography.textBold,
     color: '#fff',
   },
   clearAllContainer: {
-    paddingHorizontal: 15,
-    paddingBottom: 35,
-    paddingVertical: 20,
-    marginBottom: 0,
-    backgroundColor: '#242424',
     alignItems: 'center',
+    backgroundColor: '#242424',
+    marginBottom: 0,
+    paddingBottom: 35,
+    paddingHorizontal: 15,
+    paddingVertical: 20,
   },
   clearAllButton: {
-    backgroundColor: '#ea8e1dff',
-    paddingVertical: 12,
-    borderRadius: 8,
-    width: 200,
     alignItems: 'center',
+    backgroundColor: '#ea8e1dff',
+    borderRadius: 8,
+    paddingVertical: 12,
+    width: 200,
   },
   clearAllButtonText: {
     ...typography.textBold,

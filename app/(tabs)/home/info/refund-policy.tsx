@@ -32,11 +32,12 @@ const RefundPolicyScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
-  },
-  scrollview: {
     flex: 1,
+  },
+  content: {
+    ...typography.textSmall,
+    color: '#333',
   },
   contentContainer: {
     padding: 20,
@@ -44,9 +45,8 @@ const styles = StyleSheet.create({
   contentHeader: {
     ...typography.heading4,
   },
-  content: {
-    ...typography.textSmall,
-    color: '#333',
+  scrollview: {
+    flex: 1,
   },
 });
 

@@ -42,22 +42,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 20,
   },
-  cancelButton: {
-    padding: 12,
-    borderRadius: 6,
-    width: '48%',
-    justifyContent: 'center',
-  },
-  confirmButton: {
-    padding: 12,
-    borderRadius: 6,
-    width: '48%',
-    justifyContent: 'center',
-  },
   buttonText: {
     color: 'white',
     textAlign: 'center',
     ...typography.textSemiBold,
+  },
+  cancelButton: {
+    borderRadius: 6,
+    justifyContent: 'center',
+    padding: 12,
+    width: '48%',
+  },
+  confirmButton: {
+    borderRadius: 6,
+    justifyContent: 'center',
+    padding: 12,
+    width: '48%',
   },
 });
 

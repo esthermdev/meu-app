@@ -34,26 +34,26 @@ const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
+    justifyContent: 'center',
+    padding: 20,
   },
   fullscreen: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
     bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
     zIndex: 10,
-  },
-  transparent: {
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
   },
   text: {
     marginTop: 10,
     ...typography.heading4,
     color: '#000',
+  },
+  transparent: {
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
   },
 });
 

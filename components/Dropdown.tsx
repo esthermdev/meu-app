@@ -64,53 +64,53 @@ export const Dropdown: React.FC<DropdownProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 8,
-  },
   button: {
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 15,
-    borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
+    borderWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 15,
   },
   buttonText: {
     fontFamily: fonts.medium,
     fontSize: ms(16),
   },
-  overlay: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  container: {
+    marginBottom: 8,
   },
   dropdown: {
     backgroundColor: 'white',
-    width: '60%',
-    maxHeight: '40%',
-    margin: 'auto',
     borderRadius: 12,
+    elevation: 5,
+    margin: 'auto',
+    maxHeight: '40%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5,
+    width: '60%',
+  },
+  inputError: {
+    borderColor: '#DD3333',
+    borderWidth: 1,
   },
   item: {
-    paddingVertical: 15,
+    alignItems: 'center',
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
     marginHorizontal: 10,
-    alignItems: 'center',
+    paddingVertical: 15,
   },
   listItem: {
     fontFamily: fonts.regular,
     fontSize: ms(16),
   },
-  inputError: {
-    borderColor: '#DD3333',
-    borderWidth: 1,
+  overlay: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flex: 1,
   },
 });
 

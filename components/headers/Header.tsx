@@ -34,14 +34,14 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     height: 50,
-    width: '100%',
     paddingHorizontal: 20,
+    width: '100%',
   },
   content: {
+    alignItems: 'center',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
 });
 

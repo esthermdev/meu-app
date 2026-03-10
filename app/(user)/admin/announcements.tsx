@@ -96,43 +96,43 @@ const AnnouncementScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#000000',
+    flex: 1,
+  },
+  input: {
+    backgroundColor: '#fff',
+    borderColor: '#fff',
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    ...typography.text,
   },
   keyboardAvoidView: {
     flex: 1,
   },
+  label: {
+    ...typography.textLargeBold,
+    color: '#fff',
+    marginBottom: 8,
+  },
+  messageInput: {
+    height: 120,
+    textAlignVertical: 'top',
+  },
   scrollContent: {
     flexGrow: 1,
     padding: 20,
-  },
-  title: {
-    color: '#fff',
-    ...typography.heading3,
   },
   subtitle: {
     color: '#fff',
     ...typography.textMedium,
     marginVertical: 15,
   },
-  label: {
-    ...typography.textLargeBold,
-    marginBottom: 8,
+  title: {
     color: '#fff',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#fff',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    marginBottom: 20,
-    ...typography.text,
-  },
-  messageInput: {
-    height: 120,
-    textAlignVertical: 'top',
+    ...typography.heading3,
   },
 });
 

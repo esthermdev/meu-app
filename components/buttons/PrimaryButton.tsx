@@ -43,9 +43,9 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    padding: 20,
     backgroundColor: '#EA1D25',
     borderRadius: 12,
+    padding: 20,
   },
   buttonDisabled: {
     backgroundColor: '#EA1D25',

@@ -24,16 +24,16 @@ export const ScreenTitle: React.FC<ScreenTitleProps> = ({ title, showBackButton 
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    height: 60,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-  },
   backButton: {
     marginRight: 15,
+  },
+  container: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    height: 60,
+    paddingHorizontal: 20,
   },
   title: {
     ...typography.heading3,

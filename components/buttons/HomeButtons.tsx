@@ -39,17 +39,17 @@ export default HomeButtons;
 
 const styles = StyleSheet.create({
   buttonStyle: {
-    flex: 1,
-    padding: 20,
     alignItems: 'flex-start',
-    justifyContent: 'space-between',
     borderRadius: 22,
-    minWidth: buttonWidth,
+    flex: 1,
+    justifyContent: 'space-between',
     minHeight: 120,
+    minWidth: buttonWidth,
+    padding: 20,
   },
   buttonText: {
-    fontSize: 18,
-    fontFamily: 'OutfitBold',
     color: '#fff',
+    fontFamily: 'OutfitBold',
+    fontSize: 18,
   },
 });

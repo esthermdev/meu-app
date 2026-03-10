@@ -84,62 +84,62 @@ const NotificationPrompt = () => {
 };
 
 const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
+  button: {
     alignItems: 'center',
-    padding: 20,
-  },
-  promptContainer: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 24,
-    width: '100%',
-    maxWidth: 400,
-  },
-  title: {
-    fontFamily: fonts.bold,
-    fontSize: 22,
-    marginBottom: 16,
-    textAlign: 'center',
-    color: '#FE0000',
-  },
-  description: {
-    fontFamily: fonts.regular,
-    fontSize: 16,
-    lineHeight: 24,
-    marginBottom: 24,
-    textAlign: 'center',
-    color: '#333',
+    borderRadius: 8,
+    flex: 1,
+    justifyContent: 'center',
+    marginHorizontal: 8,
+    paddingVertical: 12,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  button: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 8,
-  },
-  skipButton: {
-    backgroundColor: '#F5F5F5',
+  description: {
+    color: '#333',
+    fontFamily: fonts.regular,
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: 24,
+    textAlign: 'center',
   },
   enableButton: {
     backgroundColor: '#FE0000',
   },
-  skipButtonText: {
-    fontFamily: fonts.medium,
-    fontSize: 16,
-    color: '#333',
-  },
   enableButtonText: {
+    color: 'white',
     fontFamily: fonts.medium,
     fontSize: 16,
-    color: 'white',
+  },
+  modalOverlay: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
+  promptContainer: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    maxWidth: 400,
+    padding: 24,
+    width: '100%',
+  },
+  skipButton: {
+    backgroundColor: '#F5F5F5',
+  },
+  skipButtonText: {
+    color: '#333',
+    fontFamily: fonts.medium,
+    fontSize: 16,
+  },
+  title: {
+    color: '#FE0000',
+    fontFamily: fonts.bold,
+    fontSize: 22,
+    marginBottom: 16,
+    textAlign: 'center',
   },
 });
 

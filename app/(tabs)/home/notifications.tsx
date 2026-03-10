@@ -228,46 +228,53 @@ const NotificationScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#e0e0e0',
-    width: '100%',
-  },
-  loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  listContainer: {
-    paddingHorizontal: 20,
-  },
-  notificationItem: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-    alignItems: 'center',
-    paddingVertical: 15,
-  },
-  iconContainer: {
-    marginRight: 15,
-  },
-  iconCircle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#F2F2F2',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   contentContainer: {
     flex: 1,
   },
-  notificationTitle: {
-    ...typography.textBold,
-    color: '#333',
+  divider: {
+    backgroundColor: '#e0e0e0',
+    height: 1,
+    width: '100%',
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
+  emptyText: {
+    color: '#888',
+    marginTop: 16,
+    ...typography.textMedium,
+  },
+  iconCircle: {
+    alignItems: 'center',
+    backgroundColor: '#F2F2F2',
+    borderRadius: 25,
+    height: 50,
+    justifyContent: 'center',
+    width: 50,
+  },
+  iconContainer: {
+    marginRight: 15,
+  },
+  listContainer: {
+    paddingHorizontal: 20,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  notificationItem: {
+    alignItems: 'center',
+    borderBottomColor: '#e0e0e0',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    paddingVertical: 15,
   },
   notificationMessage: {
     ...typography.text,
@@ -277,23 +284,16 @@ const styles = StyleSheet.create({
     color: '#969696',
     marginTop: 4,
   },
+  notificationTitle: {
+    ...typography.textBold,
+    color: '#333',
+  },
   unreadIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
     backgroundColor: '#f5a623',
+    borderRadius: 4,
+    height: 8,
     marginLeft: 10,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  emptyText: {
-    color: '#888',
-    marginTop: 16,
-    ...typography.textMedium,
+    width: 8,
   },
 });
 

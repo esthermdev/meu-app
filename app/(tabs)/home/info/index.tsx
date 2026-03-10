@@ -59,20 +59,20 @@ export default function InfoScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
+    flex: 1,
     paddingHorizontal: 20,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 23,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
   },
   menuContent: {
     flex: 1,
+  },
+  menuItem: {
+    alignItems: 'center',
+    borderBottomColor: '#eee',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 23,
   },
   menuText: {
     ...typography.heading5,

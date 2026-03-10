@@ -125,35 +125,35 @@ const AdminScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#000',
+    flex: 1,
+  },
+  contentContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    justifyContent: 'center',
   },
   headerText: {
     ...typography.heading3,
     color: '#fff',
-    paddingLeft: 20,
     marginBottom: 12,
     marginTop: 20,
-  },
-  contentContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 12,
+    paddingLeft: 20,
   },
   optionButton: {
-    width: buttonWidth / 2 - 6,
-    maxHeight: 150,
+    alignItems: 'center',
     aspectRatio: 1,
     backgroundColor: '#262626',
     borderRadius: 15,
     justifyContent: 'center',
-    alignItems: 'center',
+    maxHeight: 150,
+    width: buttonWidth / 2 - 6,
   },
   optionText: {
-    marginTop: 5,
     color: '#FFFFFF',
+    marginTop: 5,
     ...typography.textSemiBold,
     textAlign: 'center',
   },

@@ -84,33 +84,33 @@ const Volunteers = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  listContainer: {
-    paddingTop: 10,
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-  },
-  itemContainer: {
-    flex: 1,
-    width: 100,
-    alignItems: 'center',
-    margin: 10,
-  },
   avatar: {
     marginBottom: 5,
   },
   badgeText: {
-    textAlign: 'center',
     marginBottom: 2,
+    textAlign: 'center',
     ...typography.textSmallBold,
+  },
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
+  },
+  itemContainer: {
+    alignItems: 'center',
+    flex: 1,
+    margin: 10,
+    width: 100,
+  },
+  listContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    paddingTop: 10,
   },
   roleText: {
     ...typography.textSmall,
-    textAlign: 'center',
     color: '#666',
+    textAlign: 'center',
   },
 });
 

@@ -67,34 +67,34 @@ const LargeCardButton: React.FC<LargeCardButtonProps> = ({
 };
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    height: '100%',
+    width: '100%',
+  },
   button: {
     borderRadius: 12,
-    overflow: 'hidden',
     height: 120,
+    overflow: 'hidden',
+  },
+  contentContainer: {
+    alignContent: 'space-between',
+    flex: 1,
+    justifyContent: 'space-between',
+    padding: 14,
   },
   halfWidth: {
     flex: 1,
     minWidth: '45%',
   },
-  backgroundImage: {
-    width: '100%',
-    height: '100%',
-  },
-  contentContainer: {
-    flex: 1,
-    padding: 14,
-    justifyContent: 'space-between',
-    alignContent: 'space-between',
-  },
-  watchLiveContainer: {
-    padding: 15,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    flex: 1,
-    justifyContent: 'space-between',
-  },
   text: {
     color: '#fff',
     ...typography.textLargeBold,
+  },
+  watchLiveContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    flex: 1,
+    justifyContent: 'space-between',
+    padding: 15,
   },
 });
 

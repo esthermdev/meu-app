@@ -130,85 +130,85 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  listContent: {
-    paddingBottom: 10,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
+  discountContainer: {
     alignItems: 'center',
-    backgroundColor: '#f8f8f8',
+    flexDirection: 'row',
+    marginTop: 6,
   },
   errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f8f8f8',
+    flex: 1,
+    justifyContent: 'center',
     padding: 20,
   },
   errorText: {
     ...typography.textMedium,
     color: '#333',
-    textAlign: 'center',
-    marginTop: 10,
     marginBottom: 20,
-  },
-  retryButton: {
-    backgroundColor: '#EA1D25',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  retryButtonText: {
-    ...typography.textSemiBold,
-    color: 'white',
+    marginTop: 10,
+    textAlign: 'center',
   },
   item: {
-    padding: 10,
-    marginBottom: 10,
+    alignItems: 'center',
     backgroundColor: 'white',
-    marginHorizontal: 20,
     borderRadius: 10,
     elevation: 2,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+    marginHorizontal: 20,
+    padding: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
   },
   itemContent: {
     flex: 1,
-  },
-  itemName: {
-    ...typography.textBold,
-    color: '#333',
-  },
-  discountContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 6,
   },
   itemDiscount: {
     ...typography.textSmall,
     color: '#EA1D25',
     marginLeft: 6,
   },
-  websiteContainer: {
-    justifyContent: 'center',
+  itemName: {
+    ...typography.textBold,
+    color: '#333',
+  },
+  listContent: {
+    paddingBottom: 10,
+  },
+  loadingContainer: {
     alignItems: 'center',
-    paddingLeft: 12,
+    backgroundColor: '#f8f8f8',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  retryButton: {
+    backgroundColor: '#EA1D25',
+    borderRadius: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  retryButtonText: {
+    ...typography.textSemiBold,
+    color: 'white',
   },
   sectionHeader: {
     backgroundColor: '#EA1D25',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
     marginBottom: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
   },
   sectionHeaderText: {
     ...typography.textLargeBold,
     color: '#fff',
+  },
+  websiteContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingLeft: 12,
   },
 });
 

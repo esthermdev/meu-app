@@ -200,16 +200,53 @@ const CoachesCorner = () => {
 export default CoachesCorner;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+  avatar: {
+    height: 100,
+    position: 'absolute',
+    width: '100%',
   },
-  scrollContent: {
-    padding: 20,
+  avatarContainer: {
+    borderColor: '#D4A520',
+    borderRadius: 25,
+    borderWidth: 4,
+    height: 100,
+    marginBottom: 5,
+    overflow: 'hidden',
+    width: 100,
   },
-  title: {
+  avatarInitial: {
+    ...typography.textLargeBold,
+    color: '#666',
+  },
+  avatarPlaceholder: {
+    alignItems: 'center',
+    backgroundColor: '#EEE',
+    height: '100%',
+    justifyContent: 'center',
+    marginBottom: 12,
+    width: '100%',
+  },
+  closeButton: {
+    alignItems: 'center',
+    backgroundColor: '#D4A520',
+    borderRadius: 10,
+    paddingHorizontal: 30,
+    paddingVertical: 12,
+  },
+  closeButtonText: {
+    color: '#fff',
+    ...typography.textMedium,
+    fontWeight: '600',
+  },
+  coachCard: {
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  coachName: {
     color: '#000',
-    marginBottom: 30,
+    marginBottom: 4,
+    textAlign: 'center',
+    ...typography.textSmallBold,
   },
   coachesGrid: {
     flexDirection: 'row',
@@ -217,64 +254,50 @@ const styles = StyleSheet.create({
     gap: 15,
     justifyContent: 'center',
   },
-  coachCard: {
-    alignItems: 'center',
-    marginBottom: 10,
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
   },
-  avatarContainer: {
-    marginBottom: 5,
-    width: 100,
-    height: 100,
-    overflow: 'hidden',
-    borderRadius: 25,
-    borderWidth: 4,
-    borderColor: '#D4A520',
-  },
-  avatar: {
-    width: '100%',
-    height: 100,
+  modalAvatar: {
+    height: 120,
     position: 'absolute',
-  },
-  avatarPlaceholder: {
-    marginBottom: 12,
-    height: '100%',
     width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#EEE',
   },
-  avatarInitial: {
+  modalAvatarContainer: {
+    backgroundColor: '#fff',
+    borderColor: '#D4A520',
+    borderRadius: 60,
+    borderWidth: 2,
+    height: 120,
+    overflow: 'hidden',
+    position: 'absolute',
+    top: -60,
+    width: 120,
+    zIndex: 100,
+  },
+  modalAvatarInitial: {
     ...typography.textLargeBold,
     color: '#666',
+    fontSize: 36,
   },
-  coachName: {
-    color: '#000',
-    textAlign: 'center',
-    marginBottom: 4,
-    ...typography.textSmallBold,
-  },
-  organization: {
-    color: '#000',
-    textAlign: 'center',
-    ...typography.textXSmall,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalWrapper: {
+  modalAvatarPlaceholder: {
     alignItems: 'center',
-    position: 'relative',
+    backgroundColor: '#EEE',
+    height: '100%',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  modalBody: {
+    marginBottom: 25,
   },
   modalContent: {
     backgroundColor: '#fff',
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    paddingTop: 70,
-    paddingHorizontal: 25,
+    elevation: 10,
     paddingBottom: 25,
-    width: '100%',
+    paddingHorizontal: 25,
+    paddingTop: 70,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -282,72 +305,49 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 8,
-    elevation: 10,
-  },
-  modalHeader: {
-    alignItems: 'center',
-    marginBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-    paddingBottom: 20,
-  },
-  modalAvatarContainer: {
-    position: 'absolute',
-    top: -60,
-    zIndex: 100,
-    width: 120,
-    height: 120,
-    overflow: 'hidden',
-    borderRadius: 60,
-    borderWidth: 2,
-    borderColor: '#D4A520',
-    backgroundColor: '#fff',
-  },
-  modalAvatar: {
     width: '100%',
-    height: 120,
-    position: 'absolute',
-  },
-  modalAvatarPlaceholder: {
-    height: '100%',
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#EEE',
-  },
-  modalAvatarInitial: {
-    ...typography.textLargeBold,
-    fontSize: 36,
-    color: '#666',
-  },
-  modalName: {
-    color: '#000',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  modalOrganization: {
-    color: '#D4A520',
-    textAlign: 'center',
-    ...typography.textMedium,
-  },
-  modalBody: {
-    marginBottom: 25,
   },
   modalDescription: {
     color: '#333',
     lineHeight: 24,
     textAlign: 'left',
   },
-  closeButton: {
-    backgroundColor: '#D4A520',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 10,
+  modalHeader: {
     alignItems: 'center',
+    borderBottomColor: '#E0E0E0',
+    borderBottomWidth: 1,
+    marginBottom: 20,
+    paddingBottom: 20,
   },
-  closeButtonText: {
-    color: '#fff',
+  modalName: {
+    color: '#000',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  modalOrganization: {
+    color: '#D4A520',
+    textAlign: 'center',
     ...typography.textMedium,
-    fontWeight: '600',
+  },
+  modalOverlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  modalWrapper: {
+    alignItems: 'center',
+    position: 'relative',
+  },
+  organization: {
+    color: '#000',
+    textAlign: 'center',
+    ...typography.textXSmall,
+  },
+  scrollContent: {
+    padding: 20,
+  },
+  title: {
+    color: '#000',
+    marginBottom: 30,
   },
 });

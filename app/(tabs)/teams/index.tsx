@@ -272,21 +272,72 @@ const Teams = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#FFFFFF',
+    flex: 1,
+  },
+  divisionLabel: {
+    alignSelf: 'flex-start',
+    borderRadius: 100,
+    paddingHorizontal: 7,
+  },
+  divisionText: {
+    ...typography.textXSmall,
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
+  emptyText: {
+    ...typography.textMedium,
+    color: '#8F8DAA',
+    textAlign: 'center',
+  },
+  filterButton: {
+    borderRadius: 100,
+    paddingHorizontal: 7,
+  },
+  filterButtonText: {
+    ...typography.textSmallMedium,
+  },
+  filterButtonsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 5,
+  },
+  filterLabel: {
+    ...typography.textBold,
+    color: '#808080',
+    marginRight: 5,
+  },
+  filtersSection: {
+    marginBottom: 15,
+    paddingHorizontal: 20,
+  },
+  listContainer: {
+    borderTopColor: '#EFEFEF',
+    borderTopWidth: 1,
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
   },
   searchBarContainer: {
-    marginVertical: 15,
-    marginHorizontal: 20,
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#fff',
+    borderColor: '#000',
     borderRadius: 100,
+    borderWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginHorizontal: 20,
+    marginVertical: 15,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: '#000',
   },
   searchIcon: {
     marginRight: 10,
@@ -296,98 +347,47 @@ const styles = StyleSheet.create({
     ...typography.text,
     color: '#000',
   },
-  filtersSection: {
-    paddingHorizontal: 20,
-    marginBottom: 15,
-  },
-  filterLabel: {
-    ...typography.textBold,
-    color: '#808080',
-    marginRight: 5,
-  },
-  filterButtonsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 5,
-  },
-  filterButton: {
-    paddingHorizontal: 7,
-    borderRadius: 100,
-  },
-  filterButtonText: {
-    ...typography.textSmallMedium,
-  },
-  listContainer: {
-    flex: 1,
-    borderTopWidth: 1,
-    borderTopColor: '#EFEFEF',
-    paddingHorizontal: 20,
-  },
-  loadingContainer: {
-    flex: 1,
+  teamAvatar: {
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    borderColor: '#000',
+    borderRadius: 25,
+    borderWidth: 0.5,
+    height: 50,
     justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  emptyText: {
-    ...typography.textMedium,
-    color: '#8F8DAA',
-    textAlign: 'center',
-  },
-  teamItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EFEFEF',
-  },
-  teamContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    width: 50,
   },
   teamAvatarContainer: {
     marginRight: 15,
   },
-  teamAvatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#f5f5f5',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 0.5,
-    borderColor: '#000',
-  },
   teamAvatarImage: {
-    width: 50,
-    height: 50,
     borderRadius: 25,
+    height: 50,
+    width: 50,
   },
   teamAvatarText: {
     ...typography.textBold,
     color: '#333',
   },
+  teamContent: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
   teamInfo: {
     flex: 1,
+  },
+  teamItem: {
+    alignItems: 'center',
+    borderBottomColor: '#EFEFEF',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 15,
   },
   teamName: {
     ...typography.textBold,
     color: '#333243',
     marginBottom: 5,
-  },
-  divisionLabel: {
-    alignSelf: 'flex-start',
-    borderRadius: 100,
-    paddingHorizontal: 7,
-  },
-  divisionText: {
-    ...typography.textXSmall,
   },
 });
 

@@ -37,7 +37,6 @@ export function useGameSubscription(divisionId: number, roundId: number, onUpdat
           filter: `division_id=eq.${divisionId}`,
         },
         (payload: RealtimePostgresChangesPayload<GamesRow>) => {
-          console.log('Received game update:', payload);
           // Check if this game belongs to our round
           const updatedGame = payload.new as GamesRow;
           if (updatedGame && updatedGame.round_id === roundId) {
@@ -60,7 +59,6 @@ export function useGameSubscription(divisionId: number, roundId: number, onUpdat
       .subscribe();
 
     return () => {
-      console.log('Cleaning up game and score subscriptions');
       if (debounceTimeoutRef.current) {
         clearTimeout(debounceTimeoutRef.current);
       }

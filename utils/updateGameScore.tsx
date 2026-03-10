@@ -28,18 +28,6 @@ export const updateGameScore = async ({
   onSuccess,
 }: UpdateScoreParams): Promise<boolean> => {
   try {
-    console.log('updateGameScore called with:', {
-      gameId,
-      team1Score,
-      team2Score,
-      scoreId,
-      roundId,
-      datetimeId,
-      fieldId,
-      team1Id,
-      team2Id,
-    });
-
     // Convert scores to numbers if they're strings
     const team1ScoreNum = typeof team1Score === 'string' ? parseInt(team1Score) : team1Score;
     const team2ScoreNum = typeof team2Score === 'string' ? parseInt(team2Score) : team2Score;
@@ -60,8 +48,6 @@ export const updateGameScore = async ({
     if (team2Id !== undefined && team2Id !== null) {
       gameUpdateData.team2_id = team2Id === -1 ? null : team2Id;
     }
-
-    console.log('Game update data:', gameUpdateData);
 
     if (Object.keys(gameUpdateData).length > 0) {
       console.log('Updating game', gameId, 'with data:', gameUpdateData);

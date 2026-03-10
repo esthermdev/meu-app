@@ -57,17 +57,11 @@ export function useTrainerRequestsSubscription(onUpdate: () => void) {
           schema: 'public',
           table: 'medical_requests',
         },
-        (payload) => {
-          console.log('Trainer requests real-time update:', payload);
-          scheduleRealtimeRefresh();
-        },
+        scheduleRealtimeRefresh,
       )
-      .subscribe((status) => {
-        console.log('Trainer requests subscription status:', status);
-      });
+      .subscribe();
 
     return () => {
-      console.log('Unsubscribing from trainer_requests_channel');
       subscription.unsubscribe();
       if (realtimeRefreshTimeoutRef.current) {
         clearTimeout(realtimeRefreshTimeoutRef.current);

@@ -368,78 +368,78 @@ export default function UpdateScoresScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
+  bottomActions: {
+    backgroundColor: '#151515',
+    flexDirection: 'row',
+    padding: 16,
   },
   centerContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  gamesList: {
-    paddingHorizontal: 15,
-    paddingBottom: 15,
-  },
-  sectionHeader: {
-    backgroundColor: '#1a0000',
-    borderWidth: 1,
-    borderColor: '#EA1D25',
-    borderRadius: 8,
-    padding: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 15,
-  },
-  sectionHeaderText: {
-    color: '#fff',
-    ...typography.textLargeSemiBold,
-  },
-  expandIcon: {
-    width: 24,
-    height: 24,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  expandIconText: {
-    color: '#fff',
-    fontSize: 12,
+  container: {
+    backgroundColor: '#000',
+    flex: 1,
   },
   emptyContainer: {
-    padding: 40,
     alignItems: 'center',
+    padding: 40,
   },
   emptyText: {
     color: '#888',
     ...typography.textMedium,
     textAlign: 'center',
   },
-  bottomActions: {
-    flexDirection: 'row',
-    padding: 16,
-    backgroundColor: '#151515',
-  },
-  resetButton: {
-    flex: 1,
-    backgroundColor: '#E5D9B6',
-    paddingVertical: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginRight: 8,
-  },
   errorText: {
     color: '#EA1D25',
     ...typography.textMedium,
   },
-  loadingOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
+  expandIcon: {
     alignItems: 'center',
+    height: 24,
+    justifyContent: 'center',
+    width: 24,
+  },
+  expandIconText: {
+    color: '#fff',
+    fontSize: 12,
+  },
+  gamesList: {
+    paddingBottom: 15,
+    paddingHorizontal: 15,
+  },
+  loadingOverlay: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    bottom: 0,
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
     zIndex: 1000,
+  },
+  resetButton: {
+    alignItems: 'center',
+    backgroundColor: '#E5D9B6',
+    borderRadius: 8,
+    flex: 1,
+    marginRight: 8,
+    paddingVertical: 16,
+  },
+  sectionHeader: {
+    alignItems: 'center',
+    backgroundColor: '#1a0000',
+    borderColor: '#EA1D25',
+    borderRadius: 8,
+    borderWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 15,
+    padding: 10,
+  },
+  sectionHeaderText: {
+    color: '#fff',
+    ...typography.textLargeSemiBold,
   },
 });

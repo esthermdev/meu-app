@@ -144,51 +144,15 @@ const FavoritesScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  headerContainer: {
-    borderBottomColor: '#EFEFEF',
-    borderBottomWidth: 1,
-    paddingBottom: 15,
-  },
-  title: {
-    ...typography.heading4,
-    paddingHorizontal: 20,
-    marginTop: 15,
-  },
-  subtitle: {
-    ...typography.text,
-    paddingHorizontal: 20,
-    marginBottom: 15,
-  },
-  searchBarContainer: {
-    marginHorizontal: 20,
-    flexDirection: 'row',
+  centeredContainer: {
     alignItems: 'center',
+    flex: 1,
     justifyContent: 'center',
+    padding: 20,
+  },
+  container: {
     backgroundColor: '#fff',
-    borderRadius: 100,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#000',
-  },
-  searchIcon: {
-    marginRight: 10,
-  },
-  searchInput: {
     flex: 1,
-    ...typography.text,
-    color: '#000',
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
   },
   favoritesCount: {
     ...typography.text,
@@ -198,6 +162,20 @@ const styles = StyleSheet.create({
     ...typography.textBold,
     color: '#EA1D25',
   },
+  headerContainer: {
+    borderBottomColor: '#EFEFEF',
+    borderBottomWidth: 1,
+    paddingBottom: 15,
+  },
+  link: {
+    color: '#4357AD',
+    textDecorationLine: 'underline',
+  },
+  messageText: {
+    ...typography.text,
+    color: '#8F8DAA',
+    textAlign: 'center',
+  },
   remainingSlots: {
     ...typography.text,
     color: '#666',
@@ -205,31 +183,53 @@ const styles = StyleSheet.create({
   remainingSlotsNumber: {
     ...typography.textBold,
   },
-  messageText: {
-    ...typography.text,
-    color: '#8F8DAA',
-    textAlign: 'center',
-  },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: 'center',
+  searchBarContainer: {
     alignItems: 'center',
-    padding: 20,
+    backgroundColor: '#fff',
+    borderColor: '#000',
+    borderRadius: 100,
+    borderWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 15,
+    marginHorizontal: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  searchInput: {
+    flex: 1,
+    ...typography.text,
+    color: '#000',
   },
   sectionHeader: {
     backgroundColor: '#f8f8f8',
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
     borderBottomColor: '#EFEFEF',
+    borderBottomWidth: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
   },
   sectionHeaderText: {
     ...typography.textBold,
     color: '#555',
   },
-  link: {
-    color: '#4357AD',
-    textDecorationLine: 'underline',
+  statsContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+  },
+  subtitle: {
+    ...typography.text,
+    marginBottom: 15,
+    paddingHorizontal: 20,
+  },
+  title: {
+    ...typography.heading4,
+    marginTop: 15,
+    paddingHorizontal: 20,
   },
 });
 

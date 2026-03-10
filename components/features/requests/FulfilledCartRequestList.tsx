@@ -51,9 +51,6 @@ const FulfilledCartRequestsList = ({
 
   const fetchAllRequests = useCallback(async () => {
     try {
-      console.log('Fetching all cart requests...');
-
-      // Fetch both cart requests and fields data in parallel
       const [requestsResult, fieldsResult] = await Promise.all([
         supabase
           .from('cart_requests')
@@ -413,7 +410,7 @@ const FulfilledCartRequestsList = ({
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#EA1D25" />
-        <CustomText style={styles.loadingText}>Loading fulfilled requests...</CustomText>
+        <CustomText style={styles.loadingText}>Loading all cart requests...</CustomText>
       </View>
     );
   }
@@ -496,25 +493,25 @@ const FulfilledCartRequestsList = ({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#000',
+    flex: 1,
   },
   // Loading and empty
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000',
-  },
   emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
   },
   emptyText: {
     ...typography.textMedium,
     color: '#B0B0B0',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
   },
   loadingText: {
     ...typography.textBold,
@@ -522,30 +519,30 @@ const styles = StyleSheet.create({
   },
   // Card styles
   listContainer: {
+    paddingBottom: 15,
     paddingHorizontal: 15,
     paddingTop: 3,
-    paddingBottom: 15,
   },
   cardContainer: {
-    borderRadius: 12,
-    padding: 10,
-    marginTop: 15,
     backgroundColor: '#262626',
+    borderRadius: 12,
     borderWidth: 0,
+    marginTop: 15,
+    padding: 10,
   },
   cardHeader: {
-    flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 8,
     borderBottomWidth: 1,
     borderColor: '#CCCCCC66',
+    flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingBottom: 8,
   },
   requestIdBadge: {
     backgroundColor: '#EA1D25',
+    borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 12,
   },
   requestIdText: {
     ...typography.textSmall,
@@ -553,29 +550,29 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   statusBadge: {
+    borderRadius: 20,
     paddingHorizontal: 7,
     paddingVertical: 2,
-    borderRadius: 20,
   },
   statusText: {
     ...typography.text,
     color: '#fff',
   },
   locationsContainer: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC66',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
   },
   routeVisualization: {
     alignItems: 'center',
-    paddingHorizontal: 8,
     height: '60%',
     marginVertical: 'auto',
+    paddingHorizontal: 8,
   },
   routeInfo: {
     flex: 1,
-    justifyContent: 'space-between',
     gap: 10,
+    justifyContent: 'space-between',
     marginVertical: 10,
   },
   locationInfo: {
@@ -590,27 +587,27 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   routePoint: {
-    width: 10,
-    height: 10,
-    borderRadius: 6,
     backgroundColor: '#EA1D25',
+    borderRadius: 6,
+    height: 10,
+    width: 10,
   },
   routeLine: {
-    width: 2,
-    flex: 1, // Makes the line fill the space between the points
     backgroundColor: '#EA1D25',
+    flex: 1, // Makes the line fill the space between the points
+    width: 2,
   },
   infoSection: {
+    borderBottomColor: '#CCCCCC66',
+    borderBottomWidth: 1,
     gap: 8,
     marginVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC66',
     paddingBottom: 8,
   },
   infoRow: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
   labelText: {
     ...typography.text,
@@ -625,12 +622,12 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   specialRequestContainer: {
-    borderWidth: 1,
-    borderLeftWidth: 3,
     borderColor: '#EA1D25',
+    borderLeftWidth: 3,
     borderRadius: 5,
-    padding: 7,
+    borderWidth: 1,
     marginVertical: 8,
+    padding: 7,
   },
   specialRequestLabel: {
     ...typography.text,
@@ -641,24 +638,24 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   deleteButton: {
-    backgroundColor: '#EA1D25',
-    paddingVertical: 8,
-    borderRadius: 5,
-    paddingHorizontal: 15,
     alignItems: 'center',
+    backgroundColor: '#EA1D25',
+    borderRadius: 5,
     marginTop: 5,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
   },
   deleteButtonText: {
     ...typography.textBold,
     color: '#fff',
   },
   unarchiveButton: {
-    backgroundColor: '#2196F3',
-    paddingVertical: 8,
-    borderRadius: 5,
-    paddingHorizontal: 15,
     alignItems: 'center',
+    backgroundColor: '#2196F3',
+    borderRadius: 5,
     marginTop: 5,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
   },
   buttonDisabled: {
     opacity: 0.6,
@@ -667,11 +664,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   sectionHeader: {
+    alignItems: 'center',
+    borderRadius: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     marginTop: 15,
-    borderRadius: 8,
   },
   sectionTitle: {
     ...typography.textLargeBold,

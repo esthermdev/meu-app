@@ -46,7 +46,6 @@ const CartManagementScreen = () => {
         },
       )
       .subscribe((status) => {
-        console.log('Cart management subscription status:', status);
         // Trigger initial refresh when subscription is established
         if (status === 'SUBSCRIBED') {
           scheduleRealtimeRefresh();
@@ -54,7 +53,6 @@ const CartManagementScreen = () => {
       });
 
     return () => {
-      console.log('Unsubscribing from cart_management_channel');
       subscription.unsubscribe();
       if (realtimeRefreshTimeoutRef.current) {
         clearTimeout(realtimeRefreshTimeoutRef.current);

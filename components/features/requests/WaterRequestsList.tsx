@@ -149,95 +149,95 @@ const WaterRequestsList = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
+  cardContainer: {
+    backgroundColor: '#262626',
+    borderRadius: 12,
+    borderWidth: 0,
+    marginTop: 12,
+    padding: 10,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  container: {
     backgroundColor: '#000',
+    flex: 1,
+  },
+  divider: {
+    backgroundColor: '#444',
+    height: 1,
+    marginVertical: 8,
   },
   emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
   },
   emptyText: {
     ...typography.textMedium,
     color: '#B0B0B0',
   },
-  loadingText: {
-    ...typography.textBold,
-    color: '#fff',
-  },
-  listContainer: {
-    paddingHorizontal: 15,
-    paddingTop: 3,
-    paddingBottom: 15,
-  },
-  cardContainer: {
-    borderRadius: 12,
-    padding: 10,
-    marginTop: 12,
-    backgroundColor: '#262626',
-    borderWidth: 0,
+  fieldLink: {
+    color: '#4A9EFF',
+    textDecorationLine: 'underline',
   },
   headerContainer: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    ...typography.textLargeBold,
-    color: '#fff',
   },
   headerDate: {
     ...typography.textLarge,
     color: '#aaa',
   },
-  divider: {
-    height: 1,
-    backgroundColor: '#444',
-    marginVertical: 8,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
+  headerTitle: {
+    ...typography.textLargeBold,
+    color: '#fff',
   },
   infoLabel: {
     ...typography.text,
     color: '#CCCCCC',
   },
+  infoRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
   infoValue: {
     ...typography.textSemiBold,
     color: '#fff',
   },
-  fieldLink: {
-    color: '#4A9EFF',
-    textDecorationLine: 'underline',
+  listContainer: {
+    paddingBottom: 15,
+    paddingHorizontal: 15,
+    paddingTop: 3,
   },
-  statusPending: {
-    color: '#FFD600',
-    ...typography.textSemiBold,
+  loadingContainer: {
+    alignItems: 'center',
+    backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  loadingText: {
+    ...typography.textBold,
+    color: '#fff',
   },
   resolveButton: {
-    backgroundColor: '#73BF44',
-    paddingVertical: 8,
-    borderRadius: 5,
-    paddingHorizontal: 15,
     alignItems: 'center',
+    backgroundColor: '#73BF44',
+    borderRadius: 5,
     flexDirection: 'row',
     justifyContent: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
   },
   resolveButtonText: {
     ...typography.textBold,
     color: '#fff',
     marginRight: 5,
+  },
+  statusPending: {
+    color: '#FFD600',
+    ...typography.textSemiBold,
   },
 });
 

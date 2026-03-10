@@ -82,57 +82,57 @@ const FeedbackScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
-  },
-  scrollViewContent: {
-    flexGrow: 1,
+    flex: 1,
   },
   content: {
     padding: 20,
+  },
+  disabledButton: {
+    backgroundColor: '#ccc',
+  },
+  input: {
+    borderColor: '#ccc',
+    borderRadius: 5,
+    borderWidth: 1,
+    marginBottom: 15,
+    padding: 10,
+    ...typography.text,
   },
   label: {
     ...typography.textLargeBold,
     marginBottom: 5,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 15,
-    ...typography.text,
-  },
   messageInput: {
     height: 150,
     textAlignVertical: 'top',
   },
-  submitButton: {
-    backgroundColor: '#EA1D25',
-    padding: 15,
-    borderRadius: 100,
-    alignItems: 'center',
-    marginBottom: 20,
+  noteHeader: {
+    fontFamily: fonts.bold,
+    fontSize: 16,
+    marginBottom: 10,
+    marginTop: 20,
   },
-  disabledButton: {
-    backgroundColor: '#ccc',
+  noteText: {
+    color: 'gray',
+    fontFamily: fonts.regular,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+  },
+  submitButton: {
+    alignItems: 'center',
+    backgroundColor: '#EA1D25',
+    borderRadius: 100,
+    marginBottom: 20,
+    padding: 15,
   },
   submitButtonText: {
     color: '#fff',
     fontFamily: fonts.bold,
     fontSize: 16,
-  },
-  noteHeader: {
-    fontFamily: fonts.bold,
-    fontSize: 16,
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  noteText: {
-    fontFamily: fonts.regular,
-    fontSize: 14,
-    lineHeight: 20,
-    color: 'gray',
   },
 });
 

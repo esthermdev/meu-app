@@ -496,45 +496,45 @@ export default function GameTypesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
   centerContent: {
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  container: {
+    backgroundColor: '#000',
+    flex: 1,
+  },
+  content: {
+    gap: 12,
+    padding: 20,
   },
   header: {
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: '#EA1D25',
-    paddingVertical: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
+    paddingVertical: 16,
   },
   headerTitle: {
     color: '#fff',
-    fontSize: 18,
     fontFamily: fonts.semiBold,
-  },
-  content: {
-    padding: 20,
-    gap: 12,
+    fontSize: 18,
   },
   gameTypeItem: {
+    alignItems: 'center',
     backgroundColor: '#222',
-    padding: 16,
     borderRadius: 12,
     flexDirection: 'row',
-    alignItems: 'center',
+    padding: 16,
   },
   icon: {
     marginRight: 15,
   },
   gameTypeText: {
     ...typography.textLargeBold,
-    flex: 1,
     color: '#fff',
+    flex: 1,
   },
   errorText: {
     color: '#EA1D25',
@@ -542,11 +542,11 @@ const styles = StyleSheet.create({
   },
   // Filter styles
   filterContainer: {
-    marginTop: 15,
-    paddingHorizontal: 15,
-    flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#000',
+    flexDirection: 'row',
+    marginTop: 15,
+    paddingHorizontal: 15,
   },
   filterLabel: {
     ...typography.textBold,
@@ -554,15 +554,15 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   filterScroll: {
-    flexDirection: 'row',
     backgroundColor: '#222',
     borderRadius: 12,
+    flexDirection: 'row',
     padding: 7,
   },
   filterButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 20,
     borderRadius: 6,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
   },
   filterButtonText: {
     ...typography.textMedium,
@@ -576,27 +576,27 @@ const styles = StyleSheet.create({
   },
   // Game list styles
   gamesList: {
-    paddingHorizontal: 15,
     paddingBottom: 15,
+    paddingHorizontal: 15,
   },
   sectionHeader: {
+    alignItems: 'center',
     backgroundColor: '#1a0000',
-    borderWidth: 1,
     borderColor: '#EA1D25',
     borderRadius: 8,
-    padding: 10,
+    borderWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     marginTop: 15,
+    padding: 10,
   },
   sectionHeaderText: {
     color: '#fff',
     ...typography.textLargeSemiBold,
   },
   emptyContainer: {
-    padding: 40,
     alignItems: 'center',
+    padding: 40,
   },
   emptyText: {
     color: '#888',
@@ -604,14 +604,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   loadingOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    bottom: 0,
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
     zIndex: 1000,
   },
 });

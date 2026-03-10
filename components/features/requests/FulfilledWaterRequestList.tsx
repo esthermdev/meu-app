@@ -147,7 +147,7 @@ const FulfilledWaterRequestsList = () => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#EA1D25" />
-        <CustomText style={styles.loadingText}>Loading fulfilled water requests...</CustomText>
+        <CustomText style={styles.loadingText}>Loading all water requests...</CustomText>
       </View>
     );
   }
@@ -156,7 +156,7 @@ const FulfilledWaterRequestsList = () => {
     <View style={styles.container}>
       {requests.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <CustomText style={styles.emptyText}>No fulfilled water requests found</CustomText>
+          <CustomText style={styles.emptyText}>No water requests found</CustomText>
         </View>
       ) : (
         <>
@@ -181,25 +181,25 @@ const FulfilledWaterRequestsList = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#000',
+    flex: 1,
   },
   // Loading and empty
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000',
-  },
   emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
   },
   emptyText: {
     ...typography.textMedium,
     color: '#B0B0B0',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
   },
   loadingText: {
     ...typography.textBold,
@@ -207,23 +207,23 @@ const styles = StyleSheet.create({
   },
   // Card styles
   listContainer: {
+    paddingBottom: 15,
     paddingHorizontal: 15,
     paddingTop: 3,
-    paddingBottom: 15,
   },
   cardContainer: {
-    borderRadius: 12,
-    padding: 10,
-    marginVertical: 12,
     backgroundColor: '#262626',
+    borderRadius: 12,
     borderWidth: 0,
+    marginVertical: 12,
+    padding: 10,
   },
   cardHeader: {
-    flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 8,
     borderBottomWidth: 1,
     borderColor: '#CCCCCC66',
+    flexDirection: 'row',
+    paddingBottom: 8,
   },
   waterTitle: {
     ...typography.textLargeBold,
@@ -231,11 +231,11 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
   },
   requestIdBadge: {
-    marginRight: 5,
     backgroundColor: '#EA1D25',
+    borderRadius: 12,
+    marginRight: 5,
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 12,
   },
   requestIdText: {
     ...typography.textSmall,
@@ -243,25 +243,25 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   statusBadge: {
+    borderRadius: 20,
     paddingHorizontal: 7,
     paddingVertical: 2,
-    borderRadius: 20,
   },
   statusText: {
     ...typography.text,
     color: '#fff',
   },
   infoSection: {
+    borderBottomColor: '#CCCCCC66',
+    borderBottomWidth: 1,
     gap: 8,
     marginVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC66',
     paddingBottom: 8,
   },
   infoRow: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
   labelText: {
     ...typography.text,
@@ -272,45 +272,45 @@ const styles = StyleSheet.create({
     color: '#CCCCCCBF',
   },
   timeContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
   },
   timeIndicator: {
-    width: 8,
-    height: 8,
     borderRadius: 4,
+    height: 8,
     marginRight: 5,
+    width: 8,
   },
   timeText: {
     ...typography.textSemiBold,
     color: '#fff',
   },
   deleteButton: {
-    backgroundColor: '#EA1D25',
-    paddingVertical: 8,
-    borderRadius: 5,
-    paddingHorizontal: 15,
     alignItems: 'center',
+    backgroundColor: '#EA1D25',
+    borderRadius: 5,
     marginTop: 5,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
   },
   deleteButtonText: {
     ...typography.textBold,
     color: '#fff',
   },
   clearAllContainer: {
-    paddingHorizontal: 15,
-    paddingBottom: 35,
-    paddingVertical: 20,
-    marginBottom: 0,
-    backgroundColor: '#242424',
     alignItems: 'center',
+    backgroundColor: '#242424',
+    marginBottom: 0,
+    paddingBottom: 35,
+    paddingHorizontal: 15,
+    paddingVertical: 20,
   },
   clearAllButton: {
-    backgroundColor: '#ea8e1dff',
-    paddingVertical: 12,
-    borderRadius: 8,
-    width: 200,
     alignItems: 'center',
+    backgroundColor: '#ea8e1dff',
+    borderRadius: 8,
+    paddingVertical: 12,
+    width: 200,
   },
   clearAllButtonText: {
     ...typography.textBold,

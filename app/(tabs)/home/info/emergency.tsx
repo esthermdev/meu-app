@@ -103,11 +103,12 @@ const EmergencyScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
-  },
-  scrollview: {
     flex: 1,
+  },
+  content: {
+    ...typography.text,
+    color: '#333',
   },
   contentContainer: {
     padding: 20,
@@ -118,9 +119,8 @@ const styles = StyleSheet.create({
   contentSubHeader: {
     ...typography.textLargeBold,
   },
-  content: {
-    ...typography.text,
-    color: '#333',
+  scrollview: {
+    flex: 1,
   },
 });
 

@@ -150,34 +150,16 @@ export default function ScheduleScreen() {
 }
 
 const styles = StyleSheet.create({
+  centerContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
   },
-  centerContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  gamesList: {
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 20,
-  },
-  sectionHeader: {
-    backgroundColor: '#EA1D25',
-    borderRadius: 8,
-    padding: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  sectionHeaderText: {
-    color: '#fff',
-    ...typography.textLargeSemiBold,
-  },
   emptyContainer: {
-    padding: 40,
     alignItems: 'center',
+    padding: 40,
   },
   emptyText: {
     color: '#888',
@@ -187,5 +169,23 @@ const styles = StyleSheet.create({
   errorText: {
     color: '#EA1D25',
     ...typography.textMedium,
+  },
+  gamesList: {
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+  },
+  sectionHeader: {
+    alignItems: 'center',
+    backgroundColor: '#EA1D25',
+    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+    padding: 10,
+  },
+  sectionHeaderText: {
+    color: '#fff',
+    ...typography.textLargeSemiBold,
   },
 });

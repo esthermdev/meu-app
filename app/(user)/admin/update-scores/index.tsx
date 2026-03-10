@@ -57,20 +57,20 @@ export default function UpdateScoresIndex() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-    padding: 20,
-    gap: 12,
-  },
   centerContent: {
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  container: {
+    backgroundColor: '#000',
+    flex: 1,
+    gap: 12,
+    padding: 20,
   },
   divisionItem: {
     backgroundColor: '#262626',
-    padding: 16,
     borderRadius: 12,
+    padding: 16,
     ...Platform.select({
       ios: {
         shadowOpacity: 1,

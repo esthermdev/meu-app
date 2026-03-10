@@ -64,7 +64,7 @@ export function useRoundIds(divisionId: number, roundId: number) {
 
   // Set up real-time subscription for both games and scores
   useGameSubscription(divisionId, roundId, () => {
-    console.log('Game or score updated, refreshing data');
+    console.log(`Game or score updated in division ${divisionId}, round ${roundId}`);
     setRefreshTrigger((prev) => prev + 1);
   });
 
@@ -156,8 +156,6 @@ export function usePoolIds(divisionId: number) {
           console.error('Supabase error:', error);
           throw error;
         }
-
-        console.log('Fetched pools:', data);
 
         if (isMounted) {
           setPools(data || []);

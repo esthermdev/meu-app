@@ -42,17 +42,17 @@ const FullWidthButton: React.FC<FullWidthButtonProps> = ({
 const styles = StyleSheet.create({
   button: {
     borderRadius: 10,
-    paddingVertical: 9,
-    paddingHorizontal: 12,
     borderWidth: 1,
-    width: '100%',
     height: 40,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    width: '100%',
   },
   content: {
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'row',
     gap: 5,
+    justifyContent: 'center',
   },
   text: {
     ...typography.textBold,

@@ -29,12 +29,23 @@ const RulesAndSOTG = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+  bold: {
+    ...typography.textBold,
   },
-  scrollview: {
+  bulletPoint: {
+    ...typography.text,
+    color: '#333',
+  },
+  bulletPoints: {
+    marginBottom: 15,
+    marginLeft: 15,
+  },
+  container: {
+    backgroundColor: '#fff',
     flex: 1,
+  },
+  content: {
+    ...typography.text,
   },
   contentContainer: {
     padding: 20,
@@ -48,23 +59,12 @@ const styles = StyleSheet.create({
     color: '#EA1D25',
     textDecorationLine: 'underline',
   },
-  content: {
-    ...typography.text,
-  },
   link: {
     ...typography.textMedium,
     color: 'blue',
   },
-  bulletPoints: {
-    marginLeft: 15,
-    marginBottom: 15,
-  },
-  bulletPoint: {
-    ...typography.text,
-    color: '#333',
-  },
-  bold: {
-    ...typography.textBold,
+  scrollview: {
+    flex: 1,
   },
 });
 

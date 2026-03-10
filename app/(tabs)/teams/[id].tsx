@@ -232,27 +232,16 @@ const TeamDetails = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#FFFFFF',
+    flex: 1,
   },
   content: {
     flex: 1,
   },
-  teamInfoContainer: {
-    padding: 20,
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#EFEFEF',
-  },
-  teamBadge: {
-    width: 70,
-    height: 70,
-    borderRadius: 100,
-  },
   divisionContainer: {
+    borderRadius: 100,
     marginTop: 10,
     paddingHorizontal: 10,
-    borderRadius: 100,
   },
   divisionText: {
     ...typography.textMedium,
@@ -260,10 +249,21 @@ const styles = StyleSheet.create({
   gamesSection: {
     padding: 20,
   },
+  teamBadge: {
+    borderRadius: 100,
+    height: 70,
+    width: 70,
+  },
+  teamInfoContainer: {
+    alignItems: 'center',
+    borderBottomColor: '#EFEFEF',
+    borderBottomWidth: 1,
+    padding: 20,
+  },
   sectionHeader: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: 15,
   },
   sectionTitle: {
@@ -277,20 +277,20 @@ const styles = StyleSheet.create({
   // Game Card Styles - Adapted from GameComponent
   gameCard: {
     backgroundColor: 'white',
-    padding: 10,
     borderRadius: 12,
-    marginBottom: 10,
-    gap: 15,
     elevation: 2,
+    gap: 15,
+    marginBottom: 10,
+    padding: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   gameHeader: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
   dateText: {
     ...typography.textBold,
@@ -299,8 +299,8 @@ const styles = StyleSheet.create({
   },
   timeContainer: {
     backgroundColor: '#999',
-    paddingHorizontal: 8,
     borderRadius: 20,
+    paddingHorizontal: 8,
   },
   timeText: {
     ...typography.text,
@@ -309,28 +309,28 @@ const styles = StyleSheet.create({
   fieldText: {
     ...typography.textBold,
     color: '#276B5D',
-    width: 100,
     textAlign: 'right',
+    width: 100,
   },
   matchupContainer: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
   teamsSection: {
     flex: 3,
-    justifyContent: 'space-between',
     gap: 8,
+    justifyContent: 'space-between',
   },
   teamRow: {
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
     gap: 8,
   },
   teamLogo: {
-    width: 27,
-    height: 27,
     borderRadius: 18,
+    height: 27,
+    width: 27,
   },
   teamText: {
     ...typography.textSemiBold,
@@ -340,10 +340,10 @@ const styles = StyleSheet.create({
     color: '#EA1D25',
   },
   scoresSection: {
-    flex: 1,
     alignItems: 'flex-end',
-    justifyContent: 'space-between',
+    flex: 1,
     gap: 10,
+    justifyContent: 'space-between',
   },
   scoreText: {
     ...typography.textLargeBold,
@@ -351,17 +351,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   noGamesContainer: {
-    padding: 30,
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 30,
   },
   noGamesText: {
     ...typography.text,
     color: '#999',
   },
   errorContainer: {
-    flex: 1,
     alignItems: 'center',
+    flex: 1,
     justifyContent: 'center',
     padding: 20,
   },

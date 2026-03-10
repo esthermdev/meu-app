@@ -91,34 +91,34 @@ export default function GameTypesScreen() {
 }
 
 const styles = StyleSheet.create({
+  centerContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
   },
-  centerContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   content: {
-    padding: 20,
     gap: 10,
-  },
-  gameTypeItem: {
-    backgroundColor: '#fff',
     padding: 20,
-    borderRadius: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  icon: {
-    marginRight: 15,
-  },
-  gameTypeText: {
-    ...typography.textLargeBold,
-    flex: 1,
-    color: '#000',
   },
   errorText: {
     color: '#EA1D25',
     ...typography.textMedium,
+  },
+  gameTypeItem: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    flexDirection: 'row',
+    padding: 20,
+  },
+  gameTypeText: {
+    ...typography.textLargeBold,
+    color: '#000',
+    flex: 1,
+  },
+  icon: {
+    marginRight: 15,
   },
 });

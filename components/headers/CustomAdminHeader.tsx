@@ -39,23 +39,23 @@ export const CustomAdminHeader: React.FC<CustomAdminHeaderProps> = ({
 };
 
 const styles = StyleSheet.create({
+  header: {
+    color: '#fff',
+    fontFamily: fonts.semiBold,
+    fontSize: 18,
+    textAlign: 'center',
+  },
   headerContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#EA1D25',
+    flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor: '#EA1D25',
-  },
-  header: {
-    fontFamily: fonts.semiBold,
-    fontSize: 18,
-    color: '#fff',
-    textAlign: 'center',
   },
   titleContainer: {
-    flex: 1,
     alignItems: 'center',
+    flex: 1,
     justifyContent: 'center',
   },
 });

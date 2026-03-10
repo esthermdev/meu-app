@@ -67,8 +67,6 @@ const CartRequestsList = ({
           setRefreshing(true);
         }
 
-        console.log('Fetching cart requests...');
-
         const [fieldMap, pendingResult, currentResult] = await Promise.all([
           getFieldMap(),
           supabase
@@ -502,157 +500,202 @@ const CartRequestsList = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
+  acceptButton: {
+    alignItems: 'center',
+    backgroundColor: '#73BF44',
+    borderRadius: 5,
     flex: 1,
+    marginRight: 4,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+  },
+  acceptButtonText: {
+    ...typography.textBold,
+    color: '#fff',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  cardContainer: {
+    backgroundColor: '#262626',
+    borderRadius: 12,
+    borderWidth: 0,
+    marginTop: 15,
+    padding: 10,
+  },
+  cardHeader: {
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: '#CCCCCC66',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: 8,
+  },
+  completeButton: {
+    alignItems: 'center',
+    backgroundColor: '#2E7D32',
+    borderRadius: 5,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+  },
+  completeButtonText: {
+    ...typography.textBold,
+    color: '#fff',
+  },
+  container: {
     backgroundColor: '#000',
+    flex: 1,
     paddingTop: 10,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000',
+  currentRideCard: {
+    borderColor: '#73BF44',
+    borderWidth: 2,
   },
   emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
   },
   emptyText: {
     ...typography.textMedium,
     color: '#B0B0B0',
   },
+  infoLabel: {
+    ...typography.text,
+    color: '#CCCCCCB2',
+  },
+  infoRow: {
+    alignItems: 'center',
+    borderBottomColor: '#CCCCCC66',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+    paddingBottom: 8,
+  },
+  infoValue: {
+    ...typography.textSemiBold,
+    color: '#CCCCCCBF',
+  },
+  linkText: {
+    color: '#81afe4ff',
+    textDecorationLine: 'underline',
+  },
+  listContainer: {
+    paddingBottom: 15,
+    paddingHorizontal: 15,
+    paddingTop: 3,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
+  },
   loadingText: {
     ...typography.textBold,
     color: '#fff',
   },
-  listContainer: {
-    paddingHorizontal: 15,
-    paddingTop: 3,
-    paddingBottom: 15,
+  locationInfo: {
+    flexDirection: 'row',
   },
-  cardContainer: {
-    borderRadius: 12,
-    padding: 10,
-    backgroundColor: '#262626',
-    borderWidth: 0,
-    marginTop: 15,
+  locationText: {
+    ...typography.textLargeBold,
+    color: '#fff',
   },
-  cardHeader: {
+  locationsContainer: {
+    borderBottomColor: '#CCCCCC66',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+  },
+  passengerCount: {
+    ...typography.textSemiBold,
+    color: '#fff',
+  },
+  passengerLabel: {
+    ...typography.text,
+    color: '#CCCCCCB2',
+  },
+  passengerRow: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingVertical: 8,
+  },
+  removeButton: {
     alignItems: 'center',
-    paddingBottom: 8,
-    borderBottomWidth: 1,
-    borderColor: '#CCCCCC66',
+    backgroundColor: '#EA1D25',
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 4,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+  },
+  removeButtonText: {
+    ...typography.textBold,
+    color: '#fff',
   },
   requestIdBadge: {
     backgroundColor: '#EA1D25',
+    borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 12,
   },
   requestIdText: {
     ...typography.textSmall,
     color: '#fff',
     fontWeight: 'bold',
   },
-  locationsContainer: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC66',
-  },
-  routeVisualization: {
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    height: '60%',
-    marginVertical: 'auto',
-  },
   routeInfo: {
     flex: 1,
-    justifyContent: 'space-between',
     gap: 10,
+    justifyContent: 'space-between',
     marginVertical: 10,
-  },
-  locationInfo: {
-    flexDirection: 'row',
   },
   routeLabel: {
     ...typography.textLarge,
     color: '#CCCCCC',
   },
-  locationText: {
+  routeLine: {
+    backgroundColor: '#EA1D25',
+    flex: 1,
+    width: 2,
+  },
+  routePoint: {
+    backgroundColor: '#EA1D25',
+    borderRadius: 6,
+    height: 10,
+    width: 10,
+  },
+  routeVisualization: {
+    alignItems: 'center',
+    height: '60%',
+    marginVertical: 'auto',
+    paddingHorizontal: 8,
+  },
+  sectionContainer: {
+    marginBottom: 10,
+  },
+  sectionHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 15,
+  },
+  sectionTitle: {
     ...typography.textLargeBold,
     color: '#fff',
   },
-  linkText: {
-    textDecorationLine: 'underline',
-    color: '#81afe4ff',
-  },
-  routePoint: {
-    width: 10,
-    height: 10,
-    borderRadius: 6,
-    backgroundColor: '#EA1D25',
-  },
-  routeLine: {
-    width: 2,
-    flex: 1,
-    backgroundColor: '#EA1D25',
-  },
-  passengerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  passengerLabel: {
-    ...typography.text,
-    color: '#CCCCCCB2',
-  },
-  passengerCount: {
-    ...typography.textSemiBold,
-    color: '#fff',
-  },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC66',
-    paddingBottom: 8,
-    marginBottom: 8,
-  },
-  infoLabel: {
-    ...typography.text,
-    color: '#CCCCCCB2',
-  },
-  infoValue: {
-    ...typography.textSemiBold,
-    color: '#CCCCCCBF',
-  },
-  timeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  timeIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginRight: 5,
-  },
-  waitingTime: {
-    ...typography.textMedium,
-    color: '#CCCCCC',
-  },
   specialRequestContainer: {
-    borderWidth: 1,
-    borderLeftWidth: 3,
     borderColor: '#EA1D25',
+    borderLeftWidth: 3,
     borderRadius: 5,
-    padding: 7,
+    borderWidth: 1,
     marginBottom: 8,
+    padding: 7,
   },
   specialRequestLabel: {
     ...typography.text,
@@ -662,74 +705,29 @@ const styles = StyleSheet.create({
     ...typography.textMedium,
     color: '#fff',
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 8,
-  },
-  acceptButton: {
-    backgroundColor: '#73BF44',
-    paddingVertical: 8,
-    borderRadius: 5,
-    paddingHorizontal: 15,
-    alignItems: 'center',
-    flex: 1,
-    marginRight: 4,
-  },
-  acceptButtonText: {
-    ...typography.textBold,
-    color: '#fff',
-  },
-  removeButton: {
-    backgroundColor: '#EA1D25',
-    paddingVertical: 8,
-    borderRadius: 5,
-    paddingHorizontal: 15,
-    alignItems: 'center',
-    flex: 1,
-    marginLeft: 4,
-  },
-  removeButtonText: {
-    ...typography.textBold,
-    color: '#fff',
-  },
-  completeButton: {
-    backgroundColor: '#2E7D32',
-    paddingVertical: 8,
-    borderRadius: 5,
-    paddingHorizontal: 15,
-    alignItems: 'center',
-  },
-  completeButtonText: {
-    ...typography.textBold,
-    color: '#fff',
-  },
-  currentRideCard: {
-    borderColor: '#73BF44',
-    borderWidth: 2,
-  },
   statusBadge: {
+    borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 12,
   },
   statusText: {
     ...typography.textSmall,
     color: '#fff',
     fontWeight: 'bold',
   },
-  sectionContainer: {
-    marginBottom: 10,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  timeContainer: {
     alignItems: 'center',
-    marginTop: 15,
+    flexDirection: 'row',
   },
-  sectionTitle: {
-    ...typography.textLargeBold,
-    color: '#fff',
+  timeIndicator: {
+    borderRadius: 4,
+    height: 8,
+    marginRight: 5,
+    width: 8,
+  },
+  waitingTime: {
+    ...typography.textMedium,
+    color: '#CCCCCC',
   },
 });
 

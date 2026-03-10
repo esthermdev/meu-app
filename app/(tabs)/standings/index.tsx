@@ -68,33 +68,33 @@ export default function StandingsIndex() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  centerContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  content: {
-    padding: 20,
-    gap: 12,
-  },
   card: {
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
     backgroundColor: '#ffffff',
     borderRadius: 12,
     borderWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    padding: 16,
   },
-  title: {
-    ...typography.heading4,
-    textDecorationLine: 'underline',
+  centerContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
+  },
+  content: {
+    gap: 12,
+    padding: 20,
   },
   errorText: {
     color: '#EA1D25',
     ...typography.textMedium,
+  },
+  title: {
+    ...typography.heading4,
+    textDecorationLine: 'underline',
   },
 });

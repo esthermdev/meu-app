@@ -1,3 +1,4 @@
+// deno-lint-ignore no-import-prefix
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const supabase = createClient(
@@ -33,7 +34,6 @@ interface ExpoPushResponse {
 async function sendNotifications(
   notifications: Notification[],
 ): Promise<ExpoPushResponse> {
-  console.log(`Sending batch of ${notifications.length} notifications`);
   const response = await fetch("https://exp.host/--/api/v2/push/send", {
     method: "POST",
     headers: {
@@ -55,12 +55,10 @@ async function sendNotifications(
 Deno.serve(async (req: Request) => {
   if (req.method === "POST") {
     try {
-      console.log("Received POST request");
       const { title, message } = await req.json() as {
         title: string;
         message: string;
       };
-      console.log("Parsed request body:", { title, message });
 
       // First, save the announcement to the notifications table
       const { error: insertError } = await supabase
@@ -77,8 +75,6 @@ Deno.serve(async (req: Request) => {
         console.error("Error saving announcement to database:", insertError);
         throw insertError;
       }
-
-      console.log("Announcement saved to database");
 
       // Collect tokens from both authenticated users and anonymous users
       const [authUserResponse, anonymousResponse] = await Promise.all([
@@ -100,8 +96,6 @@ Deno.serve(async (req: Request) => {
       
       // Combine and remove duplicates
       const allTokens = [...new Set([...authTokens, ...anonymousTokens])];
-      
-      console.log(`Fetched total unique tokens: ${allTokens.length} (${authTokens.length} auth, ${anonymousTokens.length} anon)`);
 
       // Send notifications in batches
       const results: ExpoPushResponse[] = [];
@@ -114,17 +108,9 @@ Deno.serve(async (req: Request) => {
           body: message,
           data: { type: "announcement" },
         }));
-
-        console.log(
-          `Preparing batch ${Math.floor(i / BATCH_SIZE) + 1} of ${
-            Math.ceil(allTokens.length / BATCH_SIZE)
-          }`,
-        );
         const result = await sendNotifications(batchNotifications);
         results.push(result);
       }
-
-      console.log("All notifications sent successfully");
 
       return new Response(JSON.stringify({ success: true, data: results }), {
         headers: { "Content-Type": "application/json" },

@@ -106,39 +106,39 @@ const AvailabilityList = ({ roleKey, fallbackName }: AvailabilityListProps) => {
 };
 
 const styles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    backgroundColor: '#000',
+  availabilityText: {
+    ...typography.text,
+    marginTop: 5,
   },
-  list: {
-    paddingHorizontal: 15,
-    paddingTop: 15,
-    paddingBottom: 15,
+  info: {
+    flex: 1,
   },
   item: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#262626',
-    padding: 15,
     borderRadius: 10,
+    elevation: 3,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 10,
+    padding: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
   },
-  info: {
-    flex: 1,
+  list: {
+    paddingBottom: 15,
+    paddingHorizontal: 15,
+    paddingTop: 15,
   },
   name: {
     ...typography.textLargeBold,
     color: '#fff',
   },
-  availabilityText: {
-    ...typography.text,
-    marginTop: 5,
+  screenContainer: {
+    backgroundColor: '#000',
+    flex: 1,
   },
 });
 

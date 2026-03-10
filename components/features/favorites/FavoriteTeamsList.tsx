@@ -93,23 +93,20 @@ FavoriteTeamsList.displayName = 'FavoriteTeamsList';
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
     backgroundColor: '#fff',
-    borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
+    borderBottomWidth: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   content: {
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
     gap: 10,
   },
-  name: {
-    ...typography.textSemiBold,
-  },
   divisionContainer: {
-    borderRadius: 100,
     alignSelf: 'flex-start',
+    borderRadius: 100,
     paddingHorizontal: 7,
   },
   divisionText: {
@@ -117,5 +114,8 @@ const styles = StyleSheet.create({
   },
   favoriteIcon: {
     marginLeft: 'auto',
+  },
+  name: {
+    ...typography.textSemiBold,
   },
 });

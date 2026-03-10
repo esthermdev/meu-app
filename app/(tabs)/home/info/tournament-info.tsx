@@ -117,14 +117,14 @@ const TournamentInfo = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
-  },
-  contentContainer: {
-    padding: 20,
+    flex: 1,
   },
   content: {
     ...typography.text,
+  },
+  contentContainer: {
+    padding: 20,
   },
   contentHeader: {
     ...typography.heading5,

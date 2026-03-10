@@ -34,20 +34,20 @@ const CircleIconButton: React.FC<CircleIconButtonProps> = ({
 };
 
 const styles = StyleSheet.create({
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#edebebff',
+    borderRadius: 35,
+    height: 70,
+    justifyContent: 'center',
+    width: 70,
+  },
   container: {
     alignItems: 'center',
   },
-  button: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: '#edebebff',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   label: {
-    textAlign: 'center',
     marginTop: 5,
+    textAlign: 'center',
     ...typography.textSmallBold,
   },
 });

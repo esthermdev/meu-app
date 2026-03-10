@@ -46,10 +46,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           is_logged_in: isLoggedIn,
         })
         .eq('id', userId);
-
-      console.log(
-        `Updated login status for user ${userId} to ${isLoggedIn ? 'online' : 'offline'}`,
-      );
     } catch (error) {
       // Just log the error, don't disrupt the flow
       console.error('Error updating login status:', error);
@@ -69,8 +65,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .eq('id', userId);
 
         if (updateError) throw updateError;
-
-        console.log('Successfully migrated anonymous push token to user profile');
       }
     } catch (error) {
       console.error('Error migrating push token:', error);
@@ -112,12 +106,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const handleDeepLink = async (url: string) => {
     try {
       setIsProcessingDeepLink(true);
-      console.log('Processing deep link:', url);
-
       // Check if this URL is coming from an auth flow
       if (url.includes('access_token=') || url.includes('refresh_token=')) {
-        console.log('Auth parameters detected in URL');
-
         // Extract the fragment from the URL (everything after #)
         const hashIndex = url.indexOf('#');
         if (hashIndex !== -1) {
@@ -125,8 +115,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const tokens = extractTokensFromHash(fragment);
 
           if (tokens) {
-            console.log('Extracted tokens, setting session');
-
             // Set the session with the extracted tokens
             const { data, error } = await supabase.auth.setSession({
               access_token: tokens.accessToken,
@@ -136,7 +124,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             if (error) {
               console.error('Error setting session:', error);
             } else if (data?.session) {
-              console.log('Session successfully established');
+              console.log('Session successfully established. Navigating to profile...');
               setSession(data.session);
               setUser(data.session.user);
 
@@ -214,7 +202,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const initialURL = await Linking.getInitialURL();
         if (initialURL) {
-          console.log('Found initial URL:', initialURL);
           await handleDeepLinkRef.current(initialURL);
         }
       } catch (error) {
@@ -245,11 +232,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const deviceId = await AsyncStorage.getItem('device_id');
 
       if (!token || !deviceId) {
-        console.log('No push token or device ID to register');
+        console.error('No push token or device ID to register');
         return;
       }
-
-      console.log('Handling anonymous push token');
 
       // Call a custom SQL function to handle this safely
       const { error } = await supabase.rpc('handle_anonymous_token', {
@@ -346,18 +331,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const currentUserId = user?.id;
 
       if (currentUserId) {
-        console.log(
-          `Attempting to update login status to offline for user ${currentUserId} before sign-out`,
-        );
-
         // Update login status to false with explicit await
-        await supabase.from('profiles').update({ is_logged_in: false }).eq('id', currentUserId);
-
-        console.log(
-          `Successfully updated login status to offline for user ${currentUserId} before sign-out`,
-        );
+        const { error } = await supabase
+          .from('profiles')
+          .update({ is_logged_in: false })
+          .eq('id', currentUserId);
+        if (error) {
+          console.error('Error updating login status during sign-out:', error);
+        }
       } else {
-        console.log('No user ID available for updating login status during sign-out');
+        console.error('No user ID available for updating login status during sign-out');
       }
 
       // Proceed with sign out
