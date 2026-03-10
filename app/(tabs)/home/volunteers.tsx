@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Database } from '@/database.types';
-import { View, StyleSheet, FlatList } from 'react-native';
-import { Avatar } from '@rneui/base';
+import { View, StyleSheet, FlatList, Image } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { typography } from '@/constants/Typography';
 import LoadingIndicator from '@/components/LoadingIndicator';
@@ -47,16 +46,13 @@ const Volunteers = () => {
 
   const renderItem = ({ item }: { item: VolunteersRow }) => (
     <View style={styles.itemContainer}>
-      <Avatar
-        containerStyle={styles.avatar}
-        size={60}
-        rounded
+      <Image
+        style={styles.avatar}
         source={
           item.avatar_uri
             ? { uri: item.avatar_uri }
             : require('../../../assets/icons/placeholder_user.png')
         }
-        placeholderStyle={{ backgroundColor: 'transparent' }}
       />
       <CustomText style={styles.badgeText} allowFontScaling maxFontSizeMultiplier={1.1}>
         {item.badge}
@@ -85,7 +81,10 @@ const Volunteers = () => {
 
 const styles = StyleSheet.create({
   avatar: {
+    borderRadius: 30,
+    height: 60,
     marginBottom: 5,
+    width: 60,
   },
   badgeText: {
     marginBottom: 2,

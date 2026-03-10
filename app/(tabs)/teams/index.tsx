@@ -248,7 +248,6 @@ const Teams = () => {
             <FlashList
               data={filteredTeams}
               renderItem={renderTeamItem}
-              estimatedItemSize={80}
               keyExtractor={(item) => item.id.toString()}
               refreshControl={
                 <RefreshControl

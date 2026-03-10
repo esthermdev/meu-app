@@ -6,7 +6,7 @@ import Header from '@/components/headers/Header';
 import { typography } from '@/constants/Typography';
 
 export default function TabLayout() {
-  const notificationResponseListener = useRef<Notifications.Subscription>();
+  const notificationResponseListener = useRef<Notifications.Subscription | null>(null);
 
   useEffect(() => {
     // Set up notification response listener for navigation
@@ -14,15 +14,16 @@ export default function TabLayout() {
       (response) => {
         // Extract notification data
         const data = response.notification.request.content.data;
+        const type = typeof data?.type === 'string' ? data.type : null;
 
         // Handle notification navigation
-        if (data.type === 'new_water_request') {
+        if (type === 'new_water_request') {
           router.push('/(user)/admin/water-requests');
-        } else if (data.type === 'new_medic_request') {
+        } else if (type === 'new_medic_request') {
           router.push('/(user)/admin/trainers-list');
-        } else if (data.type === 'new_cart_request') {
+        } else if (type === 'new_cart_request') {
           router.push('/(user)/admin/cart-requests');
-        } else if (data.type === 'announcement') {
+        } else if (type === 'announcement') {
           router.push('/(tabs)/home/notifications');
         }
       },
@@ -30,7 +31,7 @@ export default function TabLayout() {
 
     return () => {
       if (notificationResponseListener.current) {
-        Notifications.removeNotificationSubscription(notificationResponseListener.current);
+        notificationResponseListener.current.remove();
       }
     };
   }, []);

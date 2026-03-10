@@ -65,6 +65,7 @@ const MyGames = () => {
 
   // Set up real-time subscription for favorite games
   const gameIds = games.map((game) => game.id);
+
   useFavoriteGamesSubscription(gameIds, () => {
     if (session) {
       fetchFavoriteGames(session.user.id);

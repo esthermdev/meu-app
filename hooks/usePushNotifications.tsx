@@ -11,6 +11,8 @@ import { useAuth } from '@/context/AuthProvider';
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
   }),
@@ -19,17 +21,23 @@ Notifications.setNotificationHandler({
 // Key for storing if we've already initialized notifications
 const NOTIFICATIONS_INITIALIZED = 'notifications_initialized';
 
+// Module-level flag to ensure registration/logging only happens once per app session
+let pushRegistrationDone = false;
+
 const usePushNotifications = () => {
   const [expoPushToken, setExpoPushToken] = useState<string | undefined>(undefined);
   const [notificationPermission, setNotificationPermission] = useState<boolean | null>(null);
-  const notificationListener = useRef<Notifications.Subscription>();
-  const responseListener = useRef<Notifications.Subscription>();
+  const notificationListener = useRef<Notifications.Subscription | null>(null);
+  const responseListener = useRef<Notifications.Subscription | null>(null);
   const isInitialized = useRef(false);
   const { user } = useAuth();
 
   // Save token function - handles both authenticated and anonymous users
   const saveTokenToStorage = useCallback(
     async (token: string) => {
+      // Only perform registration/logging once per app session
+      if (pushRegistrationDone) return;
+      pushRegistrationDone = true;
       try {
         // If user is authenticated, save to their profile
         if (user) {
@@ -39,7 +47,7 @@ const usePushNotifications = () => {
             .eq('id', user.id);
 
           if (error) throw error;
-          console.log('Expo push token saved to user profile');
+          console.log('Expo push token saved to user profile:', token);
         }
 
         // Always save token to local storage (for anonymous users or backup)
@@ -185,10 +193,10 @@ const usePushNotifications = () => {
     // Cleanup on unmount
     return () => {
       if (notificationListener.current) {
-        Notifications.removeNotificationSubscription(notificationListener.current);
+        notificationListener.current.remove();
       }
       if (responseListener.current) {
-        Notifications.removeNotificationSubscription(responseListener.current);
+        responseListener.current.remove();
       }
     };
   }, [checkPermissions]);

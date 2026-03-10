@@ -28,11 +28,7 @@
       },
       "package": "com.esmdev.TourneyAppMEU",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 44,
-      "compileSdkVersion": 35,
-      "targetSdkVersion": 35,
-      "minSdkVersion": 24,
-      "buildToolsVersion": "35.0.0"
+      "versionCode": 44
     },
     "web": {
       "bundler": "metro",
@@ -42,6 +38,7 @@
     "plugins": [
       "expo-router",
       "expo-font",
+      "expo-image",
       "expo-splash-screen",
       "expo-secure-store",
       "expo-notifications",
@@ -49,9 +46,8 @@
         "expo-build-properties",
         {
           "android": {
-            "compileSdkVersion": 35,
-            "targetSdkVersion": 35,
-            "buildToolsVersion": "35.0.0"
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36
           }
         }
       ]

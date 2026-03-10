@@ -128,7 +128,6 @@ const FavoritesScreen = () => {
             </>
           );
         }}
-        estimatedItemSize={80}
         keyExtractor={(item) => item.id.toString()}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#EA1D25']} />

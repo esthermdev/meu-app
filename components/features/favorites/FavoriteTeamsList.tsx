@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
-import { ListItem, Avatar } from '@rneui/themed';
+import { StyleSheet, View, ActivityIndicator, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { TeamWithDetails } from '@/hooks/useFavorites';
 import { typography } from '@/constants/Typography';
@@ -41,22 +40,23 @@ export const FavoriteTeamsList = React.memo(
       }
     };
 
+    const avatarUri = item?.avatar_uri || undefined;
+    const avatarInitial = item.name?.[0]?.toUpperCase() || '?';
+
     return (
-      <ListItem containerStyle={styles.container}>
-        <Avatar
-          size={50}
-          rounded
-          title={item.name[0]}
-          titleStyle={{ color: '#000' }}
-          source={{ uri: item?.avatar_uri || undefined }}
-          avatarStyle={{ borderColor: '#000', borderWidth: 0.5 }}
-          containerStyle={{ backgroundColor: '#fff' }}
-        />
-        <ListItem.Content style={styles.content}>
+      <View style={styles.container}>
+        {avatarUri ? (
+          <Image source={{ uri: avatarUri }} style={styles.avatarImage} />
+        ) : (
+          <View style={styles.avatarFallback}>
+            <CustomText style={styles.avatarFallbackText}>{avatarInitial}</CustomText>
+          </View>
+        )}
+        <View style={styles.content}>
           <View style={{ flex: 1, gap: 5 }}>
-            <ListItem.Title style={styles.name} maxFontSizeMultiplier={1.2}>
+            <CustomText style={styles.name} maxFontSizeMultiplier={1.2}>
               {item.name}
-            </ListItem.Title>
+            </CustomText>
             <View
               style={[
                 styles.divisionContainer,
@@ -83,8 +83,8 @@ export const FavoriteTeamsList = React.memo(
               disabled={isLoading}
             />
           )}
-        </ListItem.Content>
-      </ListItem>
+        </View>
+      </View>
     );
   },
 );
@@ -93,16 +93,41 @@ FavoriteTeamsList.displayName = 'FavoriteTeamsList';
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: 'center',
     backgroundColor: '#fff',
     borderBottomColor: '#f0f0f0',
     borderBottomWidth: 1,
+    flexDirection: 'row',
     paddingHorizontal: 16,
     paddingVertical: 12,
+  },
+  avatarFallback: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderColor: '#000',
+    borderRadius: 25,
+    borderWidth: 0.5,
+    height: 50,
+    justifyContent: 'center',
+    width: 50,
+  },
+  avatarFallbackText: {
+    ...typography.textSemiBold,
+    color: '#000',
+  },
+  avatarImage: {
+    borderColor: '#000',
+    borderRadius: 25,
+    borderWidth: 0.5,
+    height: 50,
+    width: 50,
   },
   content: {
     alignItems: 'center',
     flexDirection: 'row',
+    flex: 1,
     gap: 10,
+    marginLeft: 12,
   },
   divisionContainer: {
     alignSelf: 'flex-start',

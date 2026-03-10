@@ -7,7 +7,7 @@ type GamesRow = Database['public']['Tables']['games']['Row'];
 type ScoresRow = Database['public']['Tables']['scores']['Row'];
 
 export function useGameSubscription(divisionId: number, roundId: number, onUpdate: () => void) {
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const debouncedUpdate = useCallback(() => {
     if (debounceTimeoutRef.current) {
@@ -73,7 +73,7 @@ export function useScheduleSubscription(
   gameIds: number[],
   onUpdate: () => void,
 ) {
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const gameIdsRef = useRef<number[]>([]);
 
   // Update the ref when gameIds change
@@ -145,7 +145,7 @@ export function useScoreSubscription(
   const previousGameIdsRef = useRef<number[]>([]);
 
   // We'll use a debounce mechanism to avoid too frequent updates
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const debouncedUpdate = useCallback(
     (gameId?: number) => {
@@ -211,8 +211,9 @@ export function useScoreSubscription(
 }
 
 export function useFavoriteGamesSubscription(gameIds: number[], onUpdate: () => void) {
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const gameIdsRef = useRef<number[]>([]);
+  const lastLoggedGameIdsRef = useRef<string>('');
 
   // Update the ref when gameIds change
   useEffect(() => {
@@ -233,7 +234,12 @@ export function useFavoriteGamesSubscription(gameIds: number[], onUpdate: () => 
   useEffect(() => {
     if (!gameIds || gameIds.length === 0) return;
 
-    console.log('Setting up real-time subscription for favorite games:', gameIds);
+    // Only log if the set of gameIds has actually changed
+    const currentIdsString = JSON.stringify([...gameIds].sort());
+    if (lastLoggedGameIdsRef.current !== currentIdsString) {
+      console.log('Setting up real-time subscription for favorite games:', gameIds);
+      lastLoggedGameIdsRef.current = currentIdsString;
+    }
 
     // Subscribe to score changes for favorite games
     const subscription = supabase
@@ -255,7 +261,7 @@ export function useFavoriteGamesSubscription(gameIds: number[], onUpdate: () => 
             updatedScore.game_id &&
             currentGameIds.includes(updatedScore.game_id)
           ) {
-            console.log('Score updated for favorite game:', updatedScore.game_id);
+            console.log('Score updated for favorite game:', updatedScore.game_id, updatedScore);
             debouncedUpdate();
           }
         },

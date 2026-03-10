@@ -91,7 +91,6 @@ const PoolGameView: React.FC<Props> = ({ poolId, divisionId }) => {
     <View style={styles.container}>
       <FlashList
         data={poolGames}
-        estimatedItemSize={50}
         renderItem={renderGame}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.gameList}

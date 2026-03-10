@@ -61,8 +61,6 @@ export const updateGameScore = async ({
         throw gameError;
       }
       console.log('Game updated successfully');
-    } else {
-      console.log('No game updates needed');
     }
 
     // First, check if we already know if the score exists (via scoreId)

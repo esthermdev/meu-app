@@ -144,8 +144,6 @@ export function usePoolIds(divisionId: number) {
 
     async function fetchPools() {
       try {
-        console.log('Fetching pools for division ID:', divisionId);
-
         const { data, error } = await supabase
           .from('pools')
           .select('*') // Just select all fields from pools
@@ -160,6 +158,11 @@ export function usePoolIds(divisionId: number) {
         if (isMounted) {
           setPools(data || []);
         }
+
+        console.log(
+          `Fetched pools for division ID ${divisionId}:`,
+          (data || []).map((pool) => ({ id: pool.id, name: pool.name })),
+        );
       } catch (e) {
         console.error('Error in usePoolIds:', e);
         if (isMounted) {
