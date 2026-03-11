@@ -118,7 +118,9 @@ export const DateTimeFilteredDropdown: React.FC<DateTimeFilteredDropdownProps> =
               </TouchableOpacity>
             )}
 
-            <Text style={styles.headerText}>{showingDates ? 'Select Date' : `Times for ${selectedDate}`}</Text>
+            <Text style={styles.headerText} maxFontSizeMultiplier={1.2}>
+              {showingDates ? 'Select Date' : `${selectedDate}`}
+            </Text>
 
             {showingDates ? (
               <FlatList data={uniqueDates} renderItem={renderDateItem} keyExtractor={(item) => item.toString()} />
@@ -185,7 +187,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     fontFamily: fonts.medium,
     fontSize: ms(16),
-    marginBottom: 5,
     paddingVertical: 10,
     textAlign: 'center',
   },

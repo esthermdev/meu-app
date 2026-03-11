@@ -64,7 +64,7 @@ export default function RootLayout() {
                 animation: 'none',
               }}
             />
-            <Stack.Screen name="sign-up" options={{ headerShown: false, gestureEnabled: false }} />
+            <Stack.Screen name="sign-up" options={{ headerShown: false, gestureEnabled: false, animation: 'none' }} />
             <Stack.Screen name="+not-found" />
             <Stack.Screen name="index" options={{ headerShown: false }} />
           </Stack>

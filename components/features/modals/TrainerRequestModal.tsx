@@ -7,11 +7,11 @@ import {
   Modal,
   TouchableOpacity,
   Dimensions,
-  TouchableWithoutFeedback,
   Platform,
   KeyboardAvoidingView,
   Keyboard,
   TextInput,
+  Pressable,
 } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -179,9 +179,11 @@ const TrainerRequestButton = () => {
   };
 
   const handleDescriptionFocus = () => {
+    // Delay until keyboard animation completes. Android takes longer, so use a longer delay.
+    const delay = Platform.OS === 'android' ? 300 : 150;
     setTimeout(() => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, 100);
+    }, delay);
   };
 
   const renderPriorityButton = (level: PriorityLevel, color: string) => (
@@ -205,101 +207,99 @@ const TrainerRequestButton = () => {
 
       <Modal visible={isModalVisible} transparent={true} animationType="fade" onRequestClose={handleCloseModal}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          enabled={Platform.OS === 'ios'}
-          style={[styles.modalContainer, isKeyboardVisible && styles.modalContainerKeyboardOpen]}>
-          <TouchableWithoutFeedback onPress={handleCloseModal}>
-            <View style={[styles.modalOverlay, isKeyboardVisible && styles.modalOverlayKeyboardOpen]}>
-              <TouchableWithoutFeedback>
-                <View style={styles.modalContent}>
-                  <ScrollView
-                    ref={scrollViewRef}
-                    showsVerticalScrollIndicator={false}
-                    keyboardShouldPersistTaps="handled"
-                    keyboardDismissMode="none">
-                    <TouchableOpacity
-                      style={styles.noteToggleButton}
-                      onPress={() => setIsNoteVisible((prev) => !prev)}
-                      activeOpacity={0.8}>
-                      <Ionicons name="information-circle-outline" size={18} color="#4F628E" />
-                      <CustomText style={styles.noteToggleText} allowFontScaling maxFontSizeMultiplier={1.2}>
-                        {isNoteVisible ? 'Hide' : 'View'}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          enabled={true}
+          keyboardVerticalOffset={Platform.OS === 'android' ? 1 : 0}
+          style={styles.modalContainer}>
+          <Pressable style={styles.backdropPressArea} onPress={handleCloseModal} />
+          <View style={[styles.modalOverlay, isKeyboardVisible && styles.modalOverlayKeyboardOpen]}>
+            <View style={styles.modalContent}>
+              <ScrollView
+                ref={scrollViewRef}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="none">
+                <TouchableOpacity
+                  style={styles.noteToggleButton}
+                  onPress={() => setIsNoteVisible((prev) => !prev)}
+                  activeOpacity={0.8}>
+                  <Ionicons name="information-circle-outline" size={18} color="#4F628E" />
+                  <CustomText style={styles.noteToggleText} allowFontScaling maxFontSizeMultiplier={1.2}>
+                    {isNoteVisible ? 'Hide' : 'View'}
+                  </CustomText>
+                </TouchableOpacity>
+
+                {isNoteVisible && (
+                  <View style={styles.noteContainer}>
+                    <View style={styles.noteHeaderRow}>
+                      <CustomText style={styles.noteTitle} allowFontScaling maxFontSizeMultiplier={1.2}>
+                        Important
                       </CustomText>
-                    </TouchableOpacity>
-
-                    {isNoteVisible && (
-                      <View style={styles.noteContainer}>
-                        <View style={styles.noteHeaderRow}>
-                          <CustomText style={styles.noteTitle} allowFontScaling maxFontSizeMultiplier={1.2}>
-                            Important
-                          </CustomText>
-                          <TouchableOpacity onPress={() => setIsNoteVisible(false)} hitSlop={8}>
-                            <Ionicons name="close" size={16} color="#4F628E" />
-                          </TouchableOpacity>
-                        </View>
-                        <CustomText style={styles.noteText} allowFontScaling maxFontSizeMultiplier={1.3}>
-                          {TRAINER_REQUEST_NOTE}
-                        </CustomText>
-                      </View>
-                    )}
-
-                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
-                      Team Name:
-                    </CustomText>
-                    <TextInput
-                      style={styles.textInput}
-                      placeholder="Enter team name"
-                      placeholderTextColor={'#0000004D'}
-                      value={teamName}
-                      onChangeText={setTeamName}
-                      maxFontSizeMultiplier={1.2}
-                    />
-                    {errors.teamName && <ErrorMessage message={errors.teamName} />}
-
-                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
-                      Level of Medical Emergency:
-                    </CustomText>
-                    <View style={styles.priorityButtonContainer}>
-                      {renderPriorityButton('High', '#FE310D')}
-                      {renderPriorityButton('Medium', '#ED8C22')}
-                      {renderPriorityButton('Low', '#276B5D')}
+                      <TouchableOpacity onPress={() => setIsNoteVisible(false)} hitSlop={8}>
+                        <Ionicons name="close" size={16} color="#4F628E" />
+                      </TouchableOpacity>
                     </View>
-
-                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
-                      Describe your emergency:
+                    <CustomText style={styles.noteText} allowFontScaling maxFontSizeMultiplier={1.3}>
+                      {TRAINER_REQUEST_NOTE}
                     </CustomText>
-                    <TextInput
-                      style={styles.descriptionInput}
-                      placeholder="e.g., Head injury, ACL tear, minor sprain, cramping..."
-                      placeholderTextColor={'#0000004D'}
-                      value={description}
-                      onChangeText={(text) => setDescription(text)}
-                      onFocus={handleDescriptionFocus}
-                      multiline
-                      numberOfLines={3}
-                      maxLength={200}
-                      maxFontSizeMultiplier={1.2}
-                    />
-                    <ErrorMessage message={errors.description} />
+                  </View>
+                )}
 
-                    <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
-                      Select Field Location:
-                    </CustomText>
-                    <Dropdown
-                      label="Select Field"
-                      data={[FIELD_PLACEHOLDER, ...fieldLabels]}
-                      onSelect={handleFieldSelect}
-                      selectedValue={selectedFieldLabel}
-                      error={!!errors.field}
-                    />
-                    <ErrorMessage message={errors.field} />
+                <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
+                  Team Name:
+                </CustomText>
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Enter team name"
+                  placeholderTextColor={'#0000004D'}
+                  value={teamName}
+                  onChangeText={setTeamName}
+                  maxFontSizeMultiplier={1.2}
+                />
+                {errors.teamName && <ErrorMessage message={errors.teamName} />}
 
-                    <ModalButton onCancel={handleCloseModal} onConfirm={requestTrainer} confirmText="Request Trainer" />
-                  </ScrollView>
+                <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
+                  Level of Medical Emergency:
+                </CustomText>
+                <View style={styles.priorityButtonContainer}>
+                  {renderPriorityButton('High', '#FE310D')}
+                  {renderPriorityButton('Medium', '#ED8C22')}
+                  {renderPriorityButton('Low', '#276B5D')}
                 </View>
-              </TouchableWithoutFeedback>
+
+                <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
+                  Describe your emergency:
+                </CustomText>
+                <TextInput
+                  style={styles.descriptionInput}
+                  placeholder="e.g., Head injury, ACL tear, minor sprain, cramping..."
+                  placeholderTextColor={'#0000004D'}
+                  value={description}
+                  onChangeText={(text) => setDescription(text)}
+                  onFocus={handleDescriptionFocus}
+                  multiline
+                  numberOfLines={3}
+                  maxLength={200}
+                  maxFontSizeMultiplier={1.2}
+                />
+                <ErrorMessage message={errors.description} />
+
+                <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
+                  Select Field Location:
+                </CustomText>
+                <Dropdown
+                  label="Select Field"
+                  data={[FIELD_PLACEHOLDER, ...fieldLabels]}
+                  onSelect={handleFieldSelect}
+                  selectedValue={selectedFieldLabel}
+                  error={!!errors.field}
+                />
+                <ErrorMessage message={errors.field} />
+
+                <ModalButton onCancel={handleCloseModal} onConfirm={requestTrainer} confirmText="Request Trainer" />
+              </ScrollView>
             </View>
-          </TouchableWithoutFeedback>
+          </View>
         </KeyboardAvoidingView>
       </Modal>
     </View>
@@ -307,6 +307,9 @@ const TrainerRequestButton = () => {
 };
 
 const styles = StyleSheet.create({
+  backdropPressArea: {
+    ...StyleSheet.absoluteFill,
+  },
   circleButton: {
     alignItems: 'center',
     backgroundColor: '#edebebff',
@@ -349,6 +352,13 @@ const styles = StyleSheet.create({
   modalContainerKeyboardOpen: {
     justifyContent: 'flex-end',
   },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    maxHeight: modalHeight,
+    padding: 20,
+    width: '90%',
+  },
   modalOverlay: {
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -358,17 +368,6 @@ const styles = StyleSheet.create({
   },
   modalOverlayKeyboardOpen: {
     justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    maxHeight: modalHeight,
-    padding: 20,
-    width: '90%',
-  },
-  noteText: {
-    ...typography.textXSmall,
-    color: '#666',
   },
   noteContainer: {
     backgroundColor: '#F5F8FF',
@@ -383,6 +382,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 4,
+  },
+  noteText: {
+    ...typography.textXSmall,
+    color: '#666',
   },
   noteTitle: {
     ...typography.textSmallBold,

@@ -19,7 +19,7 @@ import { typography } from '@/constants/Typography';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { router } from 'expo-router';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
-import UpdateScoreModal from '@/components/features/modals/UpdateScoreModal';
+import UpdateGameScoreModal from '@/components/features/modals/UpdateGameScoreModal';
 import { updateGameScore } from '@/utils/updateGameScore';
 import CustomText from '@/components/CustomText';
 import { useFavoriteGamesSubscription } from '@/hooks/realtime/useGameSubscriptions';
@@ -286,12 +286,7 @@ const MyGames = () => {
   };
 
   // This function processes the score update with optimistic UI
-  const submitScore = async (
-    team1ScoreStr: string,
-    team2ScoreStr: string,
-    _datetimeId: number | null,
-    _fieldId: number | null,
-  ) => {
+  const submitScore = async (team1ScoreStr: string, team2ScoreStr: string) => {
     if (!currentGame) return;
 
     const team1ScoreNum = parseInt(team1ScoreStr);
@@ -440,7 +435,7 @@ const MyGames = () => {
 
           {/* Using the reusable modal component */}
           {currentGame && (
-            <UpdateScoreModal
+            <UpdateGameScoreModal
               visible={modalVisible}
               onClose={() => setModalVisible(false)}
               onSubmit={submitScore}
@@ -450,11 +445,6 @@ const MyGames = () => {
               team2Score={team2Score}
               setTeam1Score={setTeam1Score}
               setTeam2Score={setTeam2Score}
-              datetimeId={currentGame.datetime?.id || null}
-              fieldId={currentGame.field?.id || null}
-              setDatetimeId={() => {}} // Read-only for users
-              setFieldId={() => {}} // Read-only for users
-              readOnlyDateTimeField={true}
             />
           )}
         </>

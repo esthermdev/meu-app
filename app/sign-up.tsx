@@ -14,7 +14,7 @@ import {
 import { Link } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FontAwesome6, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome6, Foundation, MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { images } from '@/constants';
 import { typography } from '@/constants/Typography';
@@ -74,7 +74,7 @@ export default function SignUp() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
           <TouchableOpacity onPress={() => router.navigate('/(tabs)/home')} style={{ marginTop: 20 }}>
-            <MaterialCommunityIcons name="home-outline" size={30} color="#000" />
+            <Foundation name="home" size={25} color="#000" />
           </TouchableOpacity>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.form}>

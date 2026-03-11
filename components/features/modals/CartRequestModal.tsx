@@ -197,10 +197,11 @@ const CartRequestButton = () => {
   };
 
   const handleSpecialRequestFocus = () => {
-    // Delay until keyboard animation starts so the input is scrolled into view.
+    // Delay until keyboard animation completes. Android takes longer, so use a longer delay.
+    const delay = Platform.OS === 'android' ? 300 : 150;
     setTimeout(() => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, 100);
+    }, delay);
   };
 
   return (
@@ -214,8 +215,9 @@ const CartRequestButton = () => {
 
       <Modal visible={isModalVisible} transparent={true} animationType="fade" onRequestClose={handleCloseModal}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          enabled={Platform.OS === 'ios'}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          enabled={true}
+          keyboardVerticalOffset={Platform.OS === 'android' ? 1 : 0}
           style={styles.modalContainer}>
           <View style={styles.modalOverlay}>
             <Pressable style={styles.backdropPressArea} onPress={handleCloseModal} />
@@ -401,6 +403,9 @@ const CartRequestButton = () => {
 };
 
 const styles = StyleSheet.create({
+  backdropPressArea: {
+    ...StyleSheet.absoluteFill,
+  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -446,9 +451,6 @@ const styles = StyleSheet.create({
   inputError: {
     borderColor: '#DD3333',
   },
-  backdropPressArea: {
-    ...StyleSheet.absoluteFill,
-  },
   label: {
     marginTop: 5,
     textAlign: 'center',
@@ -463,19 +465,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  modalOverlay: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    flex: 1,
-    justifyContent: 'center',
-    width: '100%',
-  },
   modalContent: {
     backgroundColor: 'white',
     borderRadius: 12,
     maxHeight: modalHeight,
     padding: 20,
     width: '90%',
+  },
+  modalOverlay: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flex: 1,
+    justifyContent: 'center',
+    width: '100%',
   },
   nameInput: {
     borderColor: '#ccc',
@@ -484,10 +486,6 @@ const styles = StyleSheet.create({
     padding: 12,
     ...typography.textSmall,
     marginBottom: 10,
-  },
-  noteText: {
-    ...typography.textXSmall,
-    color: '#666',
   },
   noteContainer: {
     backgroundColor: '#F5F8FF',
@@ -502,6 +500,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 4,
+  },
+  noteText: {
+    ...typography.textXSmall,
+    color: '#666',
   },
   noteTitle: {
     ...typography.textSmallBold,

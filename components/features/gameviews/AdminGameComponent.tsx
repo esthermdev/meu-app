@@ -1,16 +1,17 @@
 // components/AdminGameComponent.tsx
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, TextInput, Alert, Platform } from 'react-native';
 import { Database } from '@/database.types';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
 import { typography } from '@/constants/Typography';
 import { supabase } from '@/lib/supabase';
-import UpdateScoreModal from '../modals/UpdateScoreModal';
+import UpdateGameDetailsModal from '../modals/UpdateGameDetailsModal';
 import { updateGameScore } from '@/utils/updateGameScore';
 import CustomText from '@/components/CustomText';
 import { useAuth } from '@/context/AuthProvider';
 import { hasPermission } from '@/context/profileRoles';
+import { Feather } from '@expo/vector-icons';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
@@ -42,6 +43,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
   const [fieldId, setFieldId] = useState<number | null>(null);
   const [team1Id, setTeam1Id] = useState<number | null>(null);
   const [team2Id, setTeam2Id] = useState<number | null>(null);
+  const [isEditingScores, setIsEditingScores] = useState<boolean>(false);
 
   // Update the local state when the game prop changes
   useEffect(() => {
@@ -66,9 +68,38 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
     setModalVisible(true);
   };
 
-  const submitScore = async (
-    team1ScoreStr: string,
-    team2ScoreStr: string,
+  const handleStartScoreEdit = () => {
+    if (isLoading) return;
+    setIsEditingScores(true);
+  };
+
+  const handleSaveInlineScores = async () => {
+    setIsLoading(true);
+
+    const success = await updateGameScore({
+      gameId: game.id,
+      team1Score,
+      team2Score,
+      scoreId: game.scores && game.scores.length > 0 ? game.scores[0].id : null,
+      roundId: game.round_id,
+      datetimeId,
+      fieldId,
+      team1Id,
+      team2Id,
+      onSuccess: () => {
+        setIsEditingScores(false);
+        onGameStatusChange();
+      },
+    });
+
+    setIsLoading(false);
+
+    if (!success) {
+      return;
+    }
+  };
+
+  const submitDetails = async (
     selectedDatetimeId: number | null,
     selectedFieldId: number | null,
     selectedTeam1Id?: number | null,
@@ -76,9 +107,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
   ) => {
     setIsLoading(true);
 
-    // Update local state immediately for UI feedback
-    setTeam1Score(team1ScoreStr);
-    setTeam2Score(team2ScoreStr);
+    // Update local state immediately for UI feedback for non-score fields.
     setDatetimeId(selectedDatetimeId);
     setFieldId(selectedFieldId);
     if (selectedTeam1Id !== undefined) setTeam1Id(selectedTeam1Id);
@@ -86,8 +115,8 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
 
     const success = await updateGameScore({
       gameId: game.id,
-      team1Score: team1ScoreStr,
-      team2Score: team2ScoreStr,
+      team1Score,
+      team2Score,
       scoreId: game.scores && game.scores.length > 0 ? game.scores[0].id : null,
       roundId: game.round_id,
       datetimeId: selectedDatetimeId,
@@ -139,6 +168,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
 
         // Update local state
         setIsCompleted(true);
+        setIsEditingScores(false);
 
         // Notify parent component to refresh
         onGameStatusChange();
@@ -177,14 +207,20 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
             />
             <CustomText style={styles.teamText}>{game.team1?.name || 'TBD'}</CustomText>
             <View style={styles.scoresSection}>
-              <TextInput
-                style={styles.scoreInput}
-                value={team1Score}
-                onChangeText={setTeam1Score}
-                keyboardType="number-pad"
-                editable={!isCompleted}
-                allowFontScaling={false}
-              />
+              <View style={styles.scoreSlot}>
+                {isEditingScores ? (
+                  <TextInput
+                    style={[styles.scoreInput, styles.scoreInputEditing]}
+                    value={team1Score}
+                    onChangeText={setTeam1Score}
+                    keyboardType="number-pad"
+                    allowFontScaling={false}
+                    maxLength={3}
+                  />
+                ) : (
+                  <CustomText style={styles.scoreInput}>{team1Score}</CustomText>
+                )}
+              </View>
             </View>
           </View>
 
@@ -200,14 +236,20 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
             />
             <CustomText style={styles.teamText}>{game.team2?.name || 'TBD'}</CustomText>
             <View style={styles.scoresSection}>
-              <TextInput
-                style={styles.scoreInput}
-                value={team2Score}
-                onChangeText={setTeam2Score}
-                keyboardType="number-pad"
-                editable={!isCompleted}
-                allowFontScaling={false}
-              />
+              <View style={styles.scoreSlot}>
+                {isEditingScores ? (
+                  <TextInput
+                    style={[styles.scoreInput, styles.scoreInputEditing]}
+                    value={team2Score}
+                    onChangeText={setTeam2Score}
+                    keyboardType="number-pad"
+                    allowFontScaling={false}
+                    maxLength={3}
+                  />
+                ) : (
+                  <CustomText style={styles.scoreInput}>{team2Score}</CustomText>
+                )}
+              </View>
             </View>
           </View>
         </View>
@@ -220,26 +262,27 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
           onPress={handleMarkCompleted}
           disabled={isCompleted || isLoading}>
           <CustomText style={[styles.buttonText, isCompleted ? { color: '#ED8C22' } : { color: '#242424' }]}>
-            {isCompleted ? 'COMPLETED' : 'Mark Completed'}
+            {isCompleted ? 'Game Ended' : 'End Game'}
           </CustomText>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.actionButton, styles.updateScoreButton]} onPress={openScoreModal}>
-          <CustomText style={styles.buttonText}>Update Game</CustomText>
+          <CustomText style={styles.buttonText}>Edit Details</CustomText>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.editActionButton, styles.editScoresButton, isEditingScores && styles.saveScoresButton]}
+          onPress={isEditingScores ? handleSaveInlineScores : handleStartScoreEdit}
+          disabled={isLoading}
+          accessibilityLabel={isEditingScores ? 'Save scores' : 'Edit scores'}>
+          <Feather name={isEditingScores ? 'check' : 'edit'} size={20} color="#242424" />
         </TouchableOpacity>
       </View>
 
-      {/* Reusable Score Update Modal */}
-      <UpdateScoreModal
+      <UpdateGameDetailsModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        onSubmit={submitScore}
-        team1Name={game.team1?.name || 'TBD'}
-        team2Name={game.team2?.name || 'TBD'}
-        team1Score={team1Score}
-        team2Score={team2Score}
-        setTeam1Score={setTeam1Score}
-        setTeam2Score={setTeam2Score}
+        onSubmit={submitDetails}
         datetimeId={datetimeId}
         fieldId={fieldId}
         setDatetimeId={setDatetimeId}
@@ -264,9 +307,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 10,
   },
+  editActionButton: {
+    alignItems: 'center',
+    borderRadius: 8,
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+  },
   actionContainer: {
     flexDirection: 'row',
-    gap: 10,
+    gap: 8,
     justifyContent: 'space-between',
   },
   buttonText: {
@@ -282,6 +331,11 @@ const styles = StyleSheet.create({
     ...typography.textBold,
     color: '#CCCCCC',
     width: 100,
+  },
+  editScoresButton: {
+    backgroundColor: '#BFBFBF',
+    borderColor: '#BFBFBF',
+    borderWidth: 1,
   },
   fieldText: {
     ...typography.textBold,
@@ -313,8 +367,28 @@ const styles = StyleSheet.create({
   },
   scoreInput: {
     color: '#FFF',
+    height: 32,
+    lineHeight: 28,
+    minWidth: 32,
+    paddingVertical: 0,
     ...typography.heading3,
     textAlign: 'right',
+    ...(Platform.OS === 'android'
+      ? { includeFontPadding: false as const, textAlignVertical: 'center' as const }
+      : null),
+  },
+  scoreInputEditing: {
+    color: '#ED8C22',
+  },
+  scoreSlot: {
+    alignItems: 'flex-end',
+    height: 32,
+    justifyContent: 'center',
+  },
+  saveScoresButton: {
+    backgroundColor: '#ED8C22',
+    borderColor: '#ED8C22',
+    borderWidth: 1,
   },
   scoresSection: {
     alignItems: 'flex-end',
@@ -332,6 +406,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   teamText: {
+    height: 32,
     ...typography.textLargeSemiBold,
     color: '#FFF',
   },
