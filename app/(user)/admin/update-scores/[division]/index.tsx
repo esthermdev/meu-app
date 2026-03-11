@@ -3,7 +3,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   StatusBar,
-  SafeAreaView,
   ActivityIndicator,
   Platform,
   ScrollView,
@@ -16,7 +15,7 @@ import {
 import { useLocalSearchParams } from 'expo-router';
 import { useGameTypesByDivision } from '@/hooks/useScheduleConfig';
 import { fonts, typography } from '@/constants/Typography';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
 import CustomText from '@/components/CustomText';
 import { useState, useEffect, useMemo, useCallback } from 'react';

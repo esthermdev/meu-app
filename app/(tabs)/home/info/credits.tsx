@@ -1,4 +1,5 @@
-import { View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link } from 'expo-router';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';

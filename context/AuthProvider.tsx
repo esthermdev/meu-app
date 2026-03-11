@@ -232,7 +232,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const deviceId = await AsyncStorage.getItem('device_id');
 
       if (!token || !deviceId) {
-        console.error('No push token or device ID to register');
+        // This is expected before notifications are initialized or permissions are granted.
+        console.log('Skipping anonymous push token registration: missing token or device ID');
         return;
       }
 

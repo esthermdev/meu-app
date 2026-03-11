@@ -5,12 +5,12 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
   SectionList,
   LayoutAnimation,
   Platform,
   UIManager,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 import { typography } from '@/constants/Typography';
 import { useGamesBySchedule } from '@/hooks/useGamesData';

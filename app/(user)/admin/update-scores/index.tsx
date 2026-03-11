@@ -1,4 +1,5 @@
-import { View, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator, Platform } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 import { typography } from '@/constants/Typography';

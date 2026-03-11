@@ -1,4 +1,5 @@
-import { StyleSheet, View, SafeAreaView, ScrollView, Image, Modal, TouchableOpacity, Pressable } from 'react-native';
+import { StyleSheet, View, ScrollView, Image, Modal, TouchableOpacity, Pressable } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import CustomText from '@/components/CustomText';
 import CustomHeader from '@/components/headers/CustomHeader';

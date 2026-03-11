@@ -1,18 +1,23 @@
 import { useState } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
 import { Href, router } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
 import { Card } from '@/components/Card';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { typography } from '@/constants/Typography';
 import NotificationPermission from '@/components/features/notifications/NotificationPermission';
 import CustomText from '@/components/CustomText';
 import { hasPermission } from '@/context/profileRoles';
+import SignIn from '../../sign-in';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function UserDashboard() {
-  const { profile, signOut } = useAuth();
+  const { session, profile, signOut } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
+
+  if (!session) {
+    return <SignIn />;
+  }
 
   const handleOpenExternalDeleteAccount = () => {
     // Use your new Render URL here
@@ -33,63 +38,65 @@ export default function UserDashboard() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <CustomText style={styles.welcomeText}>
-          Welcome, <CustomText style={styles.username}>{profile?.full_name}!</CustomText>
-        </CustomText>
-      </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <ScrollView style={styles.container}>
+        <View style={styles.header}>
+          <CustomText style={styles.welcomeText}>
+            Welcome, <CustomText style={styles.username}>{profile?.full_name}!</CustomText>
+          </CustomText>
+        </View>
 
-      {/* Cards */}
-      <View>
-        <TouchableOpacity onPress={() => router.push('/(user)/account')}>
-          <Card style={styles.card}>
-            <MaterialIcons name="account-box" size={24} color="#FE0000" style={styles.cardIcon} />
-            <CustomText style={styles.cardLabel}>My Profile</CustomText>
-            <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
-          </Card>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => router.push('/(user)/favorites')}>
-          <Card style={styles.card}>
-            <Ionicons name="heart" size={24} color="#FE0000" style={styles.cardIcon} />
-            <CustomText style={styles.cardLabel}>Favorites</CustomText>
-            <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
-          </Card>
-        </TouchableOpacity>
-
-        {hasPermission(profile, 'view_admin_dashboard') ? (
-          <TouchableOpacity onPress={() => router.push('/(user)/admin' as Href)}>
+        {/* Cards */}
+        <View>
+          <TouchableOpacity onPress={() => router.push('/(user)/account')}>
             <Card style={styles.card}>
-              <Ionicons name="settings" size={24} color="#FE0000" style={styles.cardIcon} />
-              <CustomText style={styles.cardLabel}>Admin</CustomText>
+              <MaterialIcons name="account-box" size={24} color="#FE0000" style={styles.cardIcon} />
+              <CustomText style={styles.cardLabel}>My Profile</CustomText>
               <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
             </Card>
           </TouchableOpacity>
-        ) : null}
-      </View>
 
-      {/* Quick Actions */}
-      <CustomText style={styles.sectionTitle}>Quick Actions</CustomText>
-      <TouchableOpacity onPress={() => router.navigate('/(user)/feedback')} style={styles.actionButton}>
-        <MaterialIcons name="feedback" size={24} color="##000" style={styles.cardIcon} />
-        <CustomText style={styles.quickActionLabels}>Feedback</CustomText>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => handleSignOut()}
-        style={[styles.actionButton, isSigningOut && styles.disabledButton]}
-        disabled={isSigningOut}>
-        <Ionicons name="arrow-back-circle" size={24} color="##000" style={styles.cardIcon} />
-        <CustomText style={styles.quickActionLabels}>{isSigningOut ? 'Signing out...' : 'Sign Out'}</CustomText>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleOpenExternalDeleteAccount} style={styles.actionButton}>
-        <MaterialIcons name="delete-sweep" size={24} color="##000" style={styles.cardIcon} />
-        <CustomText style={styles.quickActionLabels}>Delete Account</CustomText>
-      </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/(user)/favorites')}>
+            <Card style={styles.card}>
+              <Ionicons name="heart" size={24} color="#FE0000" style={styles.cardIcon} />
+              <CustomText style={styles.cardLabel}>Favorites</CustomText>
+              <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
+            </Card>
+          </TouchableOpacity>
 
-      {/* Notifications Section */}
-      <NotificationPermission />
-    </ScrollView>
+          {hasPermission(profile, 'view_admin_dashboard') ? (
+            <TouchableOpacity onPress={() => router.push('/(user)/admin' as Href)}>
+              <Card style={styles.card}>
+                <Ionicons name="settings" size={24} color="#FE0000" style={styles.cardIcon} />
+                <CustomText style={styles.cardLabel}>Admin</CustomText>
+                <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
+              </Card>
+            </TouchableOpacity>
+          ) : null}
+        </View>
+
+        {/* Quick Actions */}
+        <CustomText style={styles.sectionTitle}>Quick Actions</CustomText>
+        <TouchableOpacity onPress={() => router.navigate('/(user)/feedback')} style={styles.actionButton}>
+          <MaterialIcons name="feedback" size={24} color="##000" style={styles.cardIcon} />
+          <CustomText style={styles.quickActionLabels}>Feedback</CustomText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => handleSignOut()}
+          style={[styles.actionButton, isSigningOut && styles.disabledButton]}
+          disabled={isSigningOut}>
+          <Ionicons name="arrow-back-circle" size={24} color="##000" style={styles.cardIcon} />
+          <CustomText style={styles.quickActionLabels}>{isSigningOut ? 'Signing out...' : 'Sign Out'}</CustomText>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleOpenExternalDeleteAccount} style={styles.actionButton}>
+          <MaterialIcons name="delete-sweep" size={24} color="##000" style={styles.cardIcon} />
+          <CustomText style={styles.quickActionLabels}>Delete Account</CustomText>
+        </TouchableOpacity>
+
+        {/* Notifications Section */}
+        <NotificationPermission />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

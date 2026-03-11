@@ -199,6 +199,8 @@ const styles = StyleSheet.create({
     borderLeftColor: '#EF4444',
     borderLeftWidth: 4,
     borderRadius: 8,
+    marginBottom: 15,
+    marginTop: -12,
     padding: 12,
   },
   errorText: {
@@ -226,14 +228,20 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     flexDirection: 'row',
+    height: 56,
     marginBottom: 15,
     paddingHorizontal: 16,
-    paddingVertical: 20,
   },
+
   inputWithIcon: {
     flex: 1,
+    fontSize: 16,
+    lineHeight: 20,
     marginLeft: 8,
-    ...typography.textSemiBold,
+    paddingVertical: 0,
+    ...(Platform.OS === 'android'
+      ? { includeFontPadding: false as const, textAlignVertical: 'center' as const }
+      : null),
   },
   link: {
     ...typography.text,

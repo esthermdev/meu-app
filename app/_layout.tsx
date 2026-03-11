@@ -4,6 +4,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { AuthProvider } from '@/context/AuthProvider';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import 'expo-dev-client';
 import 'react-native-gesture-handler';
 import { useCheckForAppUpdates } from '@/hooks/useCheckForAppUpdates';
@@ -50,23 +51,25 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'fade' }} />
-          <Stack.Screen name="(user)" options={{ headerShown: false, gestureEnabled: false }} />
-          <Stack.Screen
-            name="sign-in"
-            options={{
-              headerShown: false,
-              gestureEnabled: false,
-              animation: 'none',
-            }}
-          />
-          <Stack.Screen name="sign-up" options={{ headerShown: false, gestureEnabled: false }} />
-          <Stack.Screen name="+not-found" />
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-        </Stack>
-      </GestureHandlerRootView>
+      <SafeAreaProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'fade' }} />
+            <Stack.Screen name="(user)" options={{ headerShown: false, gestureEnabled: false }} />
+            <Stack.Screen
+              name="sign-in"
+              options={{
+                headerShown: false,
+                gestureEnabled: false,
+                animation: 'none',
+              }}
+            />
+            <Stack.Screen name="sign-up" options={{ headerShown: false, gestureEnabled: false }} />
+            <Stack.Screen name="+not-found" />
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+          </Stack>
+        </GestureHandlerRootView>
+      </SafeAreaProvider>
     </AuthProvider>
   );
 }

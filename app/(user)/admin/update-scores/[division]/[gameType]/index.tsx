@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   StatusBar,
-  SafeAreaView,
   SectionList,
   Alert,
   LayoutAnimation,
@@ -21,7 +20,7 @@ import { typography } from '@/constants/Typography';
 import AdminGameComponent from '@/components/features/gameviews/AdminGameComponent';
 import { MaterialIcons } from '@expo/vector-icons';
 import AdminBottomActionButtons from '@/components/buttons/AdminBottomActionButtons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
 import CustomText from '@/components/CustomText';
 

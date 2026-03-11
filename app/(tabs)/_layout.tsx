@@ -6,7 +6,7 @@ import Header from '@/components/headers/Header';
 import { typography } from '@/constants/Typography';
 
 export default function TabLayout() {
-  const notificationResponseListener = useRef<Notifications.Subscription | null>(null);
+  const notificationResponseListener = useRef<Notifications.EventSubscription | null>(null);
 
   useEffect(() => {
     // Set up notification response listener for navigation
@@ -79,6 +79,7 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: 'Profile',
+          headerShown: false,
           tabBarIcon: ({ color, focused }) => <TabBarIcon name="circle-user" color={focused ? color : '#00000066'} />,
         }}
       />

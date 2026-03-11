@@ -3,7 +3,8 @@ import CustomText from '@/components/CustomText';
 import { icons, images } from '@/constants';
 import { typography } from '@/constants/Typography';
 import { router } from 'expo-router';
-import { View, StyleSheet, Image, SafeAreaView, Dimensions, StatusBar } from 'react-native';
+import { View, StyleSheet, Image, Dimensions, StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 const centerContainerWidth = width - 40;

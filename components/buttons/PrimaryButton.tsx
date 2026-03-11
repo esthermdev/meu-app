@@ -39,7 +39,9 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#EA1D25',
     borderRadius: 12,
-    padding: 20,
+    height: 56,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
   },
   buttonDisabled: {
     backgroundColor: '#EA1D25',

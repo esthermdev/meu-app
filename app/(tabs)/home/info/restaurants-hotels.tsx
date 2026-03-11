@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { View, StyleSheet, SectionList, Linking, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, StyleSheet, SectionList, Linking, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '@/lib/supabase';
 import { FontAwesome } from '@expo/vector-icons';
 import { Tables } from '@/database.types';
