@@ -1,14 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  ActivityIndicator,
-  TouchableOpacity,
-  Linking,
-  Image,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Linking, Image } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Tables } from '@/database.types';
@@ -98,7 +89,7 @@ const SponsorScreen = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <FlatList
         data={vendors}
         renderItem={renderVendorItem}
@@ -106,7 +97,7 @@ const SponsorScreen = () => {
         contentContainerStyle={styles.listContainer}
         ListEmptyComponent={<CustomText style={styles.emptyText}>No vendors available at the moment.</CustomText>}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

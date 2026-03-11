@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Database } from '@/database.types';
 import {
   StyleSheet,
@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   Platform,
   KeyboardAvoidingView,
+  Keyboard,
   TextInput,
 } from 'react-native';
 import { supabase } from '@/lib/supabase';
@@ -23,7 +24,7 @@ import ErrorMessage from '../../ErrorMessage';
 import CustomText from '../../CustomText';
 
 const { height } = Dimensions.get('window');
-const modalHeight = height * 0.8; // 80% of screen height
+const modalHeight = height * 0.8;
 
 // Define types from your database schema
 type RequestStatus = Database['public']['Enums']['request_status'];
@@ -33,8 +34,15 @@ type PriorityLevel = 'High' | 'Medium' | 'Low';
 
 const FIELD_PLACEHOLDER = 'Select Field';
 
+const TRAINER_REQUEST_NOTE =
+  'Note: Medical staff will respond as quickly as possible based on priority level and availability.\n\n' +
+  'Please ensure the field number is correct so trainers can locate you efficiently.';
+
 const TrainerRequestButton = () => {
+  const scrollViewRef = useRef<ScrollView | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isNoteVisible, setIsNoteVisible] = useState(false);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [priorityLevel, setPriorityLevel] = useState<PriorityLevel>('Medium');
   const [description, setDescription] = useState<string | undefined>('');
   const [fields, setFields] = useState<{ id: number; name: string }[]>([]);
@@ -51,6 +59,19 @@ const TrainerRequestButton = () => {
 
   useEffect(() => {
     fetchFields();
+  }, []);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSubscription = Keyboard.addListener(showEvent, () => setIsKeyboardVisible(true));
+    const hideSubscription = Keyboard.addListener(hideEvent, () => setIsKeyboardVisible(false));
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
   }, []);
 
   const fetchFields = async () => {
@@ -148,12 +169,19 @@ const TrainerRequestButton = () => {
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
+    setIsNoteVisible(false);
     setDescription('');
     setPriorityLevel('Medium');
     setTeamName('');
     setSelectedField(undefined);
     setSelectedFieldLabel(FIELD_PLACEHOLDER);
     setErrors({});
+  };
+
+  const handleDescriptionFocus = () => {
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 100);
   };
 
   const renderPriorityButton = (level: PriorityLevel, color: string) => (
@@ -176,20 +204,44 @@ const TrainerRequestButton = () => {
       <CustomText style={styles.label}>Trainer</CustomText>
 
       <Modal visible={isModalVisible} transparent={true} animationType="fade" onRequestClose={handleCloseModal}>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalContainer}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          enabled={Platform.OS === 'ios'}
+          style={[styles.modalContainer, isKeyboardVisible && styles.modalContainerKeyboardOpen]}>
           <TouchableWithoutFeedback onPress={handleCloseModal}>
-            <View style={styles.modalOverlay}>
+            <View style={[styles.modalOverlay, isKeyboardVisible && styles.modalOverlayKeyboardOpen]}>
               <TouchableWithoutFeedback>
                 <View style={styles.modalContent}>
-                  <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
-                    <Ionicons name="close" size={20} color="#8F8DAA" />
-                  </TouchableOpacity>
+                  <ScrollView
+                    ref={scrollViewRef}
+                    showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
+                    keyboardDismissMode="none">
+                    <TouchableOpacity
+                      style={styles.noteToggleButton}
+                      onPress={() => setIsNoteVisible((prev) => !prev)}
+                      activeOpacity={0.8}>
+                      <Ionicons name="information-circle-outline" size={18} color="#4F628E" />
+                      <CustomText style={styles.noteToggleText} allowFontScaling maxFontSizeMultiplier={1.2}>
+                        {isNoteVisible ? 'Hide' : 'View'}
+                      </CustomText>
+                    </TouchableOpacity>
 
-                  <ScrollView showsVerticalScrollIndicator={false}>
-                    <CustomText style={styles.noteText} allowFontScaling maxFontSizeMultiplier={1.3}>
-                      Note: Medical staff will respond as quickly as possible based on priority level and availability.
-                      Please ensure the field number is correct so trainers can locate you efficiently.
-                    </CustomText>
+                    {isNoteVisible && (
+                      <View style={styles.noteContainer}>
+                        <View style={styles.noteHeaderRow}>
+                          <CustomText style={styles.noteTitle} allowFontScaling maxFontSizeMultiplier={1.2}>
+                            Important
+                          </CustomText>
+                          <TouchableOpacity onPress={() => setIsNoteVisible(false)} hitSlop={8}>
+                            <Ionicons name="close" size={16} color="#4F628E" />
+                          </TouchableOpacity>
+                        </View>
+                        <CustomText style={styles.noteText} allowFontScaling maxFontSizeMultiplier={1.3}>
+                          {TRAINER_REQUEST_NOTE}
+                        </CustomText>
+                      </View>
+                    )}
 
                     <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
                       Team Name:
@@ -222,6 +274,7 @@ const TrainerRequestButton = () => {
                       placeholderTextColor={'#0000004D'}
                       value={description}
                       onChangeText={(text) => setDescription(text)}
+                      onFocus={handleDescriptionFocus}
                       multiline
                       numberOfLines={3}
                       maxLength={200}
@@ -262,10 +315,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 70,
   },
-  closeButton: {
-    alignSelf: 'flex-end',
-    zIndex: 1,
-  },
   descriptionInput: {
     borderColor: '#ccc',
     borderRadius: 5,
@@ -297,12 +346,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    maxHeight: modalHeight,
-    padding: 20,
-    width: '90%',
+  modalContainerKeyboardOpen: {
+    justifyContent: 'flex-end',
   },
   modalOverlay: {
     alignItems: 'center',
@@ -311,10 +356,48 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
   },
+  modalOverlayKeyboardOpen: {
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    maxHeight: modalHeight,
+    padding: 20,
+    width: '90%',
+  },
   noteText: {
     ...typography.textXSmall,
     color: '#666',
-    marginBottom: 5,
+  },
+  noteContainer: {
+    backgroundColor: '#F5F8FF',
+    borderColor: '#D8E3FF',
+    borderRadius: 10,
+    borderWidth: 1,
+    marginBottom: 8,
+    padding: 10,
+  },
+  noteHeaderRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  noteTitle: {
+    ...typography.textSmallBold,
+    color: '#4F628E',
+  },
+  noteToggleButton: {
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    gap: 4,
+    marginBottom: 8,
+  },
+  noteToggleText: {
+    ...typography.textSmallBold,
+    color: '#4F628E',
   },
   priorityButton: {
     borderRadius: 8,

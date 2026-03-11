@@ -1,6 +1,6 @@
 // components/NotificationPrompt.tsx
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { fonts } from '@/constants/Typography';
 import usePushNotifications from '@/hooks/usePushNotifications';
@@ -61,24 +61,28 @@ const NotificationPrompt = () => {
 
   return (
     <Modal transparent={true} animationType="fade" visible={visible} onRequestClose={handleSkip}>
-      <View style={styles.modalOverlay}>
-        <View style={styles.promptContainer}>
-          <Text style={styles.title}>Stay Updated</Text>
-          <Text style={styles.description}>
-            Would you like to receive notifications on important tournament updates?
-          </Text>
+      <TouchableWithoutFeedback onPress={handleSkip}>
+        <View style={styles.modalOverlay}>
+          <TouchableWithoutFeedback>
+            <View style={styles.promptContainer}>
+              <Text style={styles.title}>Stay Updated</Text>
+              <Text style={styles.description}>
+                Would you like to receive notifications on important tournament updates?
+              </Text>
 
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={[styles.button, styles.skipButton]} onPress={handleSkip}>
-              <Text style={styles.skipButtonText}>Not Now</Text>
-            </TouchableOpacity>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity style={[styles.button, styles.skipButton]} onPress={handleSkip}>
+                  <Text style={styles.skipButtonText}>Not Now</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.button, styles.enableButton]} onPress={handleEnable}>
-              <Text style={styles.enableButtonText}>Enable</Text>
-            </TouchableOpacity>
-          </View>
+                <TouchableOpacity style={[styles.button, styles.enableButton]} onPress={handleEnable}>
+                  <Text style={styles.enableButtonText}>Enable</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };

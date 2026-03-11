@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     fontSize: ms(16),
   },
   container: {
+    flex: 1,
     marginBottom: 8,
   },
   dropdown: {

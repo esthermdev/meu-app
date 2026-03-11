@@ -1,22 +1,18 @@
 // app/(user)/favorites.tsx
-import { useState, useMemo } from 'react';
-import {
-  StyleSheet,
-  View,
-  RefreshControl,
-  TextInput,
-  TouchableWithoutFeedback,
-  KeyboardAvoidingView,
-  Keyboard,
-} from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { StyleSheet, View, RefreshControl, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { useAuth } from '@/context/AuthProvider';
-import { useFavoriteTeams } from '@/hooks/useFavoriteTeams';
-import { FavoriteTeamsList } from '@/components/features/favorites/FavoriteTeamsList';
+import { TeamWithDetails, useFavoriteTeams } from '@/hooks/useFavoriteTeams';
+import { FavoriteTeamsListItem } from '@/components/features/favorites/FavoriteTeamsListItem';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
 import { Link } from 'expo-router';
+
+type FavoriteTeamsListItemData =
+  | { type: 'header'; id: string; title: 'Favorite Teams' | 'All Teams' }
+  | { type: 'team'; id: string; team: TeamWithDetails };
 
 // Section header component
 const SectionHeader = ({ title }: { title: string }) => (
@@ -26,6 +22,7 @@ const SectionHeader = ({ title }: { title: string }) => (
 );
 
 const FavoritesScreen = () => {
+  const listRef = useRef<any>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -44,82 +41,117 @@ const FavoritesScreen = () => {
     });
   }, [teams, searchQuery, favorites]);
 
+  const listData = useMemo<FavoriteTeamsListItemData[]>(() => {
+    const favoriteTeams = filteredTeams.filter((team) => favorites.has(team.id));
+    const nonFavoriteTeams = filteredTeams.filter((team) => !favorites.has(team.id));
+
+    const data: FavoriteTeamsListItemData[] = [];
+
+    if (favoriteTeams.length > 0) {
+      data.push({ type: 'header', id: 'header-favorites', title: 'Favorite Teams' });
+      favoriteTeams.forEach((team) => data.push({ type: 'team', id: `team-${team.id}`, team }));
+    }
+
+    if (nonFavoriteTeams.length > 0) {
+      data.push({ type: 'header', id: 'header-all', title: 'All Teams' });
+      nonFavoriteTeams.forEach((team) => data.push({ type: 'team', id: `team-${team.id}`, team }));
+    }
+
+    return data;
+  }, [filteredTeams, favorites]);
+
   const onRefresh = async () => {
     setRefreshing(true);
     await loadData();
     setRefreshing(false);
   };
 
-  const handleRefreshAfterToggle = async () => {
-    await loadData();
+  const handleToggleFavorite = async (teamId: number) => {
+    const result = await toggleFavorite(teamId);
+
+    if (result.success) {
+      listRef.current?.scrollToOffset({ offset: 0, animated: false });
+
+      // FlashList may apply one more layout pass after data mutation.
+      requestAnimationFrame(() => {
+        listRef.current?.scrollToOffset({ offset: 0, animated: false });
+      });
+    }
+
+    return result;
   };
+
+  const scrollToTop = () => {
+    listRef.current?.scrollToOffset({ offset: 0, animated: true });
+  };
+
+  useEffect(() => {
+    if (favorites.size === 0) {
+      listRef.current?.scrollToOffset({ offset: 0, animated: false });
+    }
+  }, [favorites.size]);
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView behavior="padding">
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-          <View style={styles.headerContainer}>
-            <CustomText style={styles.title}>Select your favorite teams!</CustomText>
-            <CustomText style={styles.subtitle}>
-              Follow their games on the{' '}
-              <Link href="/(tabs)/home/mygames" style={styles.link}>
-                My Games
-              </Link>{' '}
-              screen.
-            </CustomText>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          Keyboard.dismiss();
+          scrollToTop();
+        }}>
+        <View style={styles.headerContainer}>
+          <CustomText style={styles.title}>Select your favorite teams!</CustomText>
+          <CustomText style={styles.subtitle}>
+            Follow their games on the{' '}
+            <Link href="/(tabs)/home/mygames" style={styles.link}>
+              My Games
+            </Link>{' '}
+            screen.
+          </CustomText>
 
-            {/* Custom Search Bar */}
-            <View style={styles.searchBarContainer}>
-              <MaterialIcons name="search" size={20} color="#86939e" style={styles.searchIcon} />
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Search teams..."
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-                placeholderTextColor="#86939e"
-                allowFontScaling={false}
-              />
-              <MaterialIcons name="close" size={15} color="#86939e" onPress={() => setSearchQuery('')} />
-            </View>
-
-            {/* Status Bar */}
-            <View style={styles.statsContainer}>
-              <CustomText style={styles.favoritesCount}>
-                <CustomText style={styles.favoritesCountNumber}>{favorites.size} teams </CustomText>
-                selected
-              </CustomText>
-              <CustomText style={styles.remainingSlots}>
-                <CustomText style={styles.remainingSlotsNumber}>{remainingFavorites} slots </CustomText>
-                remaining
-              </CustomText>
-            </View>
+          {/* Custom Search Bar */}
+          <View style={styles.searchBarContainer}>
+            <MaterialIcons name="search" size={20} color="#86939e" style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search teams..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              placeholderTextColor="#86939e"
+              allowFontScaling={false}
+            />
+            <MaterialIcons name="close" size={15} color="#86939e" onPress={() => setSearchQuery('')} />
           </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+
+          {/* Status Bar */}
+          <View style={styles.statsContainer}>
+            <CustomText style={styles.favoritesCount}>
+              <CustomText style={styles.favoritesCountNumber}>{favorites.size} teams </CustomText>
+              selected
+            </CustomText>
+            <CustomText style={styles.remainingSlots}>
+              <CustomText style={styles.remainingSlotsNumber}>{remainingFavorites} slots </CustomText>
+              remaining
+            </CustomText>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
 
       <FlashList
-        data={filteredTeams}
-        renderItem={({ item, index }) => {
-          // Check if we should display a section header above this item
-          const currentItemFavorited = favorites.has(item.id);
-          const prevItemFavorited = index > 0 ? favorites.has(filteredTeams[index - 1].id) : false;
+        ref={listRef}
+        data={listData}
+        extraData={favorites}
+        renderItem={({ item }) => {
+          if (item.type === 'header') {
+            return <SectionHeader title={item.title} />;
+          }
 
-          // If this is the first item OR we're transitioning from favorited to non-favorited
-          const shouldShowHeader = index === 0 || (prevItemFavorited && !currentItemFavorited);
-
+          const isFavorited = favorites.has(item.team.id);
           return (
-            <>
-              {shouldShowHeader && <SectionHeader title={currentItemFavorited ? 'Favorite Teams' : 'All Teams'} />}
-              <FavoriteTeamsList
-                item={item}
-                isFavorited={currentItemFavorited}
-                onToggleFavorite={toggleFavorite}
-                onRefreshData={handleRefreshAfterToggle}
-              />
-            </>
+            <FavoriteTeamsListItem item={item.team} isFavorited={isFavorited} onToggleFavorite={handleToggleFavorite} />
           );
         }}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id}
+        getItemType={(item) => item.type}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#EA1D25']} />}
         ListEmptyComponent={
           <View style={styles.centeredContainer}>

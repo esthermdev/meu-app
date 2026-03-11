@@ -39,7 +39,7 @@ export const CustomHeader: React.FC<CustomHeaderProps> = ({ title, refreshInfo }
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}>
         <Pressable style={styles.modalOverlay} onPress={() => setModalVisible(false)}>
-          <View style={styles.modalContainer}>
+          <Pressable style={styles.modalContainer} onPress={(e) => e.stopPropagation()}>
             <View style={styles.modalContent}>
               <View style={styles.modalHeader}>
                 <CustomText style={styles.modalTitle}>Refresh Feature</CustomText>
@@ -73,7 +73,7 @@ export const CustomHeader: React.FC<CustomHeaderProps> = ({ title, refreshInfo }
                 <CustomText style={styles.gotItButtonText}>Got it</CustomText>
               </TouchableOpacity>
             </View>
-          </View>
+          </Pressable>
         </Pressable>
       </Modal>
     </>

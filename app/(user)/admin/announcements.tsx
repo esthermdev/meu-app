@@ -46,7 +46,10 @@ const AnnouncementScreen = () => {
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardAvoidView}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        enabled={Platform.OS === 'ios'}
+        style={styles.keyboardAvoidView}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <CustomText style={styles.title}>Send Announcement</CustomText>
           <CustomText style={styles.subtitle}>

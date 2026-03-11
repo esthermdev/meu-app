@@ -183,32 +183,34 @@ const WaterRequestButton = () => {
       <Modal visible={isModalVisible} transparent={true} animationType="fade" onRequestClose={hideModal}>
         <TouchableWithoutFeedback onPress={hideModal}>
           <View style={styles.modalContainer}>
-            <View style={styles.pickerContainer}>
-              <CustomText style={styles.pickerTitle}>Select Field</CustomText>
-              {selectedField && fields.find((f) => f.id === selectedField)?.isDisabled && (
-                <View style={styles.disabledNoteContainer}>
-                  <CustomText style={styles.disabledNote}>
-                    Water has already been requested for this field. Try again in 2 minutes.
-                  </CustomText>
+            <TouchableWithoutFeedback>
+              <View style={styles.pickerContainer}>
+                <CustomText style={styles.pickerTitle}>Select Field</CustomText>
+                {selectedField && fields.find((f) => f.id === selectedField)?.isDisabled && (
+                  <View style={styles.disabledNoteContainer}>
+                    <CustomText style={styles.disabledNote}>
+                      Water has already been requested for this field. Try again in 2 minutes.
+                    </CustomText>
+                  </View>
+                )}
+                <View style={styles.fieldGridContainer}>
+                  <FlatList
+                    data={fields}
+                    numColumns={numColumns}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={renderFieldBlock}
+                    contentContainerStyle={styles.gridContent}
+                    showsVerticalScrollIndicator={false}
+                  />
                 </View>
-              )}
-              <View style={styles.fieldGridContainer}>
-                <FlatList
-                  data={fields}
-                  numColumns={numColumns}
-                  keyExtractor={(item) => item.id.toString()}
-                  renderItem={renderFieldBlock}
-                  contentContainerStyle={styles.gridContent}
-                  showsVerticalScrollIndicator={false}
-                />
-              </View>
 
-              <View style={styles.selectionInfo}>
-                <CustomText style={styles.selectionText}>Selected: Field {selectedFieldName}</CustomText>
-              </View>
+                <View style={styles.selectionInfo}>
+                  <CustomText style={styles.selectionText}>Selected: Field {selectedFieldName}</CustomText>
+                </View>
 
-              <ModalButton onCancel={hideModal} onConfirm={requestWater} confirmText="Confirm" />
-            </View>
+                <ModalButton onCancel={hideModal} onConfirm={requestWater} confirmText="Confirm" />
+              </View>
+            </TouchableWithoutFeedback>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
