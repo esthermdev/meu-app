@@ -36,6 +36,7 @@ const FeedbackScreen = () => {
       Alert.alert('Success', 'Your feedback has been submitted. Thank you!');
       setSubject('');
       setMessage('');
+      console.log('Feedback submitted successfully:', { subject, message });
     } catch (error) {
       console.error('Error submitting feedback:', error);
       Alert.alert('Error', 'Failed to submit feedback. Please try again later.');

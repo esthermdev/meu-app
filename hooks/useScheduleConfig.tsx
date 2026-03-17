@@ -23,6 +23,7 @@ export function useDivisions() {
       if (error) throw error;
       setDivisions(data);
       setError(null);
+      console.log('Divisions fetched successfully:', data);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An error occurred');
     } finally {

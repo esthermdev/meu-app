@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { View, StyleSheet, SectionList, Linking, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '@/lib/supabase';
 import { FontAwesome } from '@expo/vector-icons';
 import { Tables } from '@/database.types';
@@ -105,7 +104,7 @@ const RestaurantsHotelsScreen = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <SectionList
         sections={data}
         keyExtractor={(item) => item.id.toString()}
@@ -114,7 +113,7 @@ const RestaurantsHotelsScreen = () => {
         stickySectionHeadersEnabled={true}
         contentContainerStyle={styles.listContent}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
