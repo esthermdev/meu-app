@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
+import { Alert, StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
 import { Href, router } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
 import { Card } from '@/components/Card';
@@ -19,9 +19,8 @@ export default function UserDashboard() {
     return <SignIn />;
   }
 
-  const handleOpenExternalDeleteAccount = () => {
-    // Use your new Render URL here
-    router.push('https://maine-ultimate-account-deletion.onrender.com');
+  const handleOpenDeleteAccount = () => {
+    router.push('/(user)/delete-account');
   };
 
   const handleSignOut = async () => {
@@ -31,7 +30,7 @@ export default function UserDashboard() {
       router.replace('/(tabs)/profile');
     } catch (error) {
       console.error('Error signing out:', error);
-      alert('Error signing out');
+      Alert.alert('Error', 'Error signing out');
     } finally {
       setIsSigningOut(false);
     }
@@ -88,7 +87,7 @@ export default function UserDashboard() {
           <Ionicons name="arrow-back-circle" size={24} color="##000" style={styles.cardIcon} />
           <CustomText style={styles.quickActionLabels}>{isSigningOut ? 'Signing out...' : 'Sign Out'}</CustomText>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleOpenExternalDeleteAccount} style={styles.actionButton}>
+        <TouchableOpacity onPress={handleOpenDeleteAccount} style={styles.actionButton}>
           <MaterialIcons name="delete-sweep" size={24} color="##000" style={styles.cardIcon} />
           <CustomText style={styles.quickActionLabels}>Delete Account</CustomText>
         </TouchableOpacity>

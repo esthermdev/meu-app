@@ -510,7 +510,6 @@ export type Database = {
         Row: {
           created_at: string | null;
           id: number;
-          is_read: boolean | null;
           message: string;
           title: string;
           type: string;
@@ -519,7 +518,6 @@ export type Database = {
         Insert: {
           created_at?: string | null;
           id?: number;
-          is_read?: boolean | null;
           message: string;
           title: string;
           type?: string;
@@ -528,7 +526,6 @@ export type Database = {
         Update: {
           created_at?: string | null;
           id?: number;
-          is_read?: boolean | null;
           message?: string;
           title?: string;
           type?: string;
@@ -1079,10 +1076,7 @@ export type Database = {
         Args: { round_id_param: number };
         Returns: undefined;
       };
-      reset_pool_scores: {
-        Args: { pool_id_param: number };
-        Returns: undefined;
-      };
+      reset_pool_scores: { Args: { pool_id_param: number }; Returns: undefined };
       update_pool_rankings: { Args: never; Returns: undefined };
     };
     Enums: {

@@ -79,6 +79,22 @@ export default function UserLayout() {
           }}
         />
         <Stack.Screen
+          name="delete-account"
+          options={{
+            title: 'Delete Account',
+            headerTitleAlign: 'center',
+            headerStyle: {
+              backgroundColor: '#EA1D25',
+            },
+            headerTintColor: '#fff',
+            headerLeft: () => (
+              <TouchableOpacity onPress={() => router.back()}>
+                <MaterialIcons name="arrow-back" size={24} color="#fff" />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
           name="admin"
           options={{
             headerShown: false,
