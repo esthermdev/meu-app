@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Database } from '@/database.types';
 import { View, StyleSheet, FlatList, Image } from 'react-native';
 import { supabase } from '@/lib/supabase';
@@ -23,12 +23,11 @@ const Volunteers = () => {
         .from('volunteers')
         .select(
           `
-					id,
-					badge,
-					role,
-					avatar_uri,
-					email
-				`,
+          id,
+          badge,
+          role,
+          avatar_uri
+        `,
         )
         .order('badge');
 

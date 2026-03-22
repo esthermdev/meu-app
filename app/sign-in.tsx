@@ -30,23 +30,6 @@ export default function SignIn() {
   const [error, setError] = useState<string | null>(null);
   const { signIn } = useAuth();
 
-  // Check if the email belongs to a volunteer
-  const checkIfVolunteer = async (email: string) => {
-    try {
-      const { error } = await supabase.from('volunteers').select('email').eq('email', email.toLowerCase()).single();
-
-      if (error) {
-        // Record not found or other error
-        return false;
-      }
-
-      return true; // Email exists in volunteers table
-    } catch (error) {
-      console.error('Error checking volunteer status:', error);
-      return false;
-    }
-  };
-
   const handleSignIn = async () => {
     if (!email || !email.includes('@')) {
       setError('Please enter a valid email address');
@@ -57,9 +40,7 @@ export default function SignIn() {
     setError(null);
 
     try {
-      const isVolunteer = await checkIfVolunteer(email);
-
-      if (email === 'esmd258@gmail.com' || isVolunteer) {
+      if (email === 'esmd258@gmail.com') {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password: email === 'esmd258@gmail.com' ? 'developer' : 'regionals2025',
@@ -80,7 +61,7 @@ export default function SignIn() {
       }
     } catch (error) {
       console.error(error);
-      if (email === 'esmd258@gmail.com' || (await checkIfVolunteer(email))) {
+      if (email === 'esmd258@gmail.com') {
         Alert.alert('Error', 'Could not sign in with developer account. Please try again.');
       } else {
         setError("Email doesn't exist. Please create an account to continue.");

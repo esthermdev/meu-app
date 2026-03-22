@@ -261,7 +261,6 @@ const MyGames = () => {
             game_id: gameId,
             id: 0, // Temporary ID, will be replaced on next fetch
             is_finished: false, // Default value
-            round_id: null, // Default value
           });
         }
 
@@ -366,14 +365,14 @@ const MyGames = () => {
             <View style={styles.teamRow}>
               <Image
                 source={
-                  item.team2.avatar_uri
-                    ? { uri: item.team2.avatar_uri }
+                  item?.team2?.avatar_uri
+                    ? { uri: item?.team2?.avatar_uri }
                     : require('@/assets/images/avatar-placeholder.png')
                 }
                 style={styles.teamLogo}
               />
-              <CustomText style={[styles.teamText, favoriteTeamIds.includes(item.team2.id) && styles.highlightedTeam]}>
-                {item.team2.name}
+              <CustomText style={[styles.teamText, favoriteTeamIds.includes(item.team2?.id) && styles.highlightedTeam]}>
+                {item.team2?.name || 'TBD'}
               </CustomText>
             </View>
           </View>

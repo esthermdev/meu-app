@@ -7,7 +7,6 @@ interface UpdateScoreParams {
   team1Score: string | number;
   team2Score: string | number;
   scoreId?: number | null; // Optional, used if we're updating an existing score
-  roundId?: number | null; // Optional, for creating new scores
   datetimeId?: number | null; // Optional, datetime ID to assign to the game
   fieldId?: number | null; // Optional, field ID to assign to the game
   team1Id?: number | null; // Optional, team1 ID to assign to the game
@@ -20,7 +19,6 @@ export const updateGameScore = async ({
   team1Score,
   team2Score,
   scoreId,
-  roundId,
   datetimeId,
   fieldId,
   team1Id,
@@ -96,7 +94,6 @@ export const updateGameScore = async ({
           team1_score: team1ScoreNum,
           team2_score: team2ScoreNum,
           is_finished: false,
-          round_id: roundId,
         });
 
         if (error) throw error;
