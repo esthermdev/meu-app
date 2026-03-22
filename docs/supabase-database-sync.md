@@ -40,6 +40,17 @@ This links your local repo to remote project `opleqymigooimduhlvym`.
 
 ---
 
+## Current baseline
+
+This repo now starts from a rebased migration baseline.
+
+- The previous local migration history was intentionally archived and replaced with a single fresh remote snapshot.
+- The current baseline file is `supabase/migrations/20260322150530_remote_schema.sql`.
+- Treat that file as the starting point for all future schema changes.
+- Do not expect older deleted migration files to exist locally anymore.
+
+---
+
 ## Scripts in this repo
 
 - `npm run migration:new -- <name>` → create a timestamped migration file in `supabase/migrations/`
