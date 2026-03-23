@@ -65,11 +65,11 @@ export default function SignUp() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 0}>
+        keyboardVerticalOffset={0}>
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
@@ -147,7 +147,7 @@ export default function SignUp() {
               </View>
             </TouchableWithoutFeedback>
           </View>
-          <SignUpPlayerSvg />
+          <SignUpPlayerSvg style={[styles.signUpPlayer, Platform.OS === 'android' && styles.signUpPlayerAndroidFix]} />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -167,7 +167,6 @@ const styles = StyleSheet.create({
     borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 15,
-    marginTop: -12,
     padding: 12,
   },
   errorText: {
@@ -219,6 +218,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 10,
     ...typography.heading5,
+  },
+  signUpPlayer: {
+    alignSelf: 'flex-end',
+  },
+  signUpPlayerAndroidFix: {
+    transform: [{ scaleX: -1 }],
   },
   text: {
     ...typography.text,

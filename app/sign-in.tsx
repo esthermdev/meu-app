@@ -97,11 +97,11 @@ export default function SignIn() {
   // };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 0}>
+        keyboardVerticalOffset={0}>
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
@@ -171,7 +171,7 @@ export default function SignIn() {
               </View>
             </TouchableWithoutFeedback>
           </View>
-          <SignInPlayerSvg style={{ alignSelf: 'flex-end' }} />
+          <SignInPlayerSvg style={[styles.signInPlayer, Platform.OS === 'android' && styles.signInPlayerAndroidFix]} />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -191,7 +191,6 @@ const styles = StyleSheet.create({
     borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 15,
-    marginTop: -12,
     padding: 12,
   },
   errorText: {
@@ -249,6 +248,12 @@ const styles = StyleSheet.create({
   reviewerButtonText: {
     ...typography.textSemiBold,
     color: '#333333',
+  },
+  signInPlayer: {
+    alignSelf: 'flex-start',
+  },
+  signInPlayerAndroidFix: {
+    transform: [{ scaleX: -1 }],
   },
   signUpLink: {
     ...typography.textSemiBold,
