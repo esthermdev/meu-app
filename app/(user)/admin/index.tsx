@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ViewStyle, Dimensions, Alert } from 'react-native';
+import { Alert, Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Href, router } from 'expo-router';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
+import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
 import { supabase } from '@/lib/supabase';
-import CustomText from '@/components/CustomText';
+
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 const { width } = Dimensions.get('window');
 const buttonWidth = width - 40;

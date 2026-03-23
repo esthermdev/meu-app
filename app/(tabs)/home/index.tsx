@@ -1,14 +1,16 @@
 // app/(tabs)/home/index.tsx
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import LargeCardButton from '@/components/buttons/LargeCardButton';
-import FullWidthButton from '@/components/buttons/FullWidthButton';
-import WaterRequestModal from '@/components/features/modals/WaterRequestModal';
-import MyGamesButtonBackground from '@/components/MyGamesButtonBackground';
-import CartRequestModal from '@/components/features/modals/CartRequestModal';
+import { ScrollView, StyleSheet, View } from 'react-native';
+
 import CircleIconButton from '@/components/buttons/CircleIconButton';
+import FullWidthButton from '@/components/buttons/FullWidthButton';
+import LargeCardButton from '@/components/buttons/LargeCardButton';
+import CartRequestModal from '@/components/features/modals/CartRequestModal';
 import TrainerRequestModal from '@/components/features/modals/TrainerRequestModal';
+import WaterRequestModal from '@/components/features/modals/WaterRequestModal';
 import NotificationPrompt from '@/components/features/notifications/NotificationPrompt';
+import MyGamesButtonBackground from '@/components/MyGamesButtonBackground';
+
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
   return (

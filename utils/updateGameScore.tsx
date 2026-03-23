@@ -1,5 +1,6 @@
 // utils/gameScoreUtils.ts
 import { Alert } from 'react-native';
+
 import { supabase } from '@/lib/supabase';
 
 interface UpdateScoreParams {

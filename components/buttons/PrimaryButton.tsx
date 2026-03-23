@@ -1,6 +1,8 @@
-import { typography } from '@/constants/Typography';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
+import { ActivityIndicator, StyleSheet, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
+
+import { typography } from '@/constants/Typography';
+
 import CustomText from '../CustomText';
 
 interface PrimaryButtonProps {

@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet, TouchableOpacity, RefreshControl, ScrollView } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
-import { useDivisions } from '@/hooks/useScheduleConfig';
+
+import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
+import CustomText from '@/components/CustomText';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { typography } from '@/constants/Typography';
-import CustomText from '@/components/CustomText';
-import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
+import { useDivisions } from '@/hooks/useScheduleConfig';
 
 export default function ScheduleIndex() {
   const { divisions, loading, error, refreshing, refreshDivisions } = useDivisions();

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, FlatList, StyleSheet } from 'react-native';
+import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+import { fonts } from '@/constants/Typography';
+
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ms } from 'react-native-size-matters';
-import { fonts } from '@/constants/Typography';
 
 interface DropdownProps {
   label: string;

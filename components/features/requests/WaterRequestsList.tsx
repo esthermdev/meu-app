@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Link } from 'expo-router';
-import { MaterialIcons } from '@expo/vector-icons';
-import { supabase } from '@/lib/supabase';
+
 import { Card } from '@/components/Card';
 import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
 import { Database } from '@/database.types';
-import { typography } from '@/constants/Typography';
-import { getTimeSince } from '@/utils/getTimeSince';
 import { useWaterRequestsSubscription } from '@/hooks/realtime/useRequestSubscriptions';
+import { supabase } from '@/lib/supabase';
+import { getTimeSince } from '@/utils/getTimeSince';
+
+import { MaterialIcons } from '@expo/vector-icons';
 
 type WaterRequests = Database['public']['Tables']['water_requests']['Row'] & {
   fields?: {

@@ -1,25 +1,27 @@
 // app/(tabs)/teams/index.tsx
 
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  Image,
+  Keyboard,
+  RefreshControl,
   StyleSheet,
   Text,
-  View,
-  RefreshControl,
-  Keyboard,
   TextInput,
-  TouchableWithoutFeedback,
   TouchableOpacity,
-  Image,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { supabase } from '@/lib/supabase';
 import { router } from 'expo-router';
-import { Database } from '@/database.types';
-import { typography } from '@/constants/Typography';
-import LoadingIndicator from '@/components/LoadingIndicator';
+
 import CustomText from '@/components/CustomText';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import { typography } from '@/constants/Typography';
+import { Database } from '@/database.types';
+import { supabase } from '@/lib/supabase';
+
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { FlashList } from '@shopify/flash-list';
 
 type TeamRow = Database['public']['Tables']['teams']['Row'];
 type PoolRow = Database['public']['Tables']['pools']['Row'];

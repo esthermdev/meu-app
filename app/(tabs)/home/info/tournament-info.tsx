@@ -1,7 +1,8 @@
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { Link } from 'expo-router';
-import { typography } from '@/constants/Typography';
+
 import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
 
 const TournamentInfo = () => {
   return (

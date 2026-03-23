@@ -1,28 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  RefreshControl,
   Alert,
-  TouchableOpacity,
+  FlatList,
   Image,
+  RefreshControl,
   ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { supabase } from '@/lib/supabase';
-import { Database } from '@/database.types';
+import { router } from 'expo-router';
+
+import PrimaryButton from '@/components/buttons/PrimaryButton';
+import CustomText from '@/components/CustomText';
+import UpdateGameScoreModal from '@/components/features/modals/UpdateGameScoreModal';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
+import { Database } from '@/database.types';
+import { useFavoriteGamesSubscription } from '@/hooks/realtime/useGameSubscriptions';
+import { supabase } from '@/lib/supabase';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
-import { typography } from '@/constants/Typography';
-import LoadingIndicator from '@/components/LoadingIndicator';
-import { router } from 'expo-router';
-import PrimaryButton from '@/components/buttons/PrimaryButton';
-import UpdateGameScoreModal from '@/components/features/modals/UpdateGameScoreModal';
 import { updateGameScore } from '@/utils/updateGameScore';
-import CustomText from '@/components/CustomText';
-import { useFavoriteGamesSubscription } from '@/hooks/realtime/useGameSubscriptions';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];

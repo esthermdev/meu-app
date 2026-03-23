@@ -1,5 +1,7 @@
-import { View, StyleSheet, ScrollView, Linking, TouchableOpacity } from 'react-native';
+import { Linking, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+
 import CustomText from '@/components/CustomText';
+
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function SpiritPage() {

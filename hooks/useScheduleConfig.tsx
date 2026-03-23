@@ -1,7 +1,8 @@
-import { useEffect, useState, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
-import { Database } from '@/database.types';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
+
+import { Database } from '@/database.types';
+import { supabase } from '@/lib/supabase';
 
 type Division = Database['public']['Tables']['divisions']['Row'];
 type GameTypes = Database['public']['Tables']['gametypes']['Row'];

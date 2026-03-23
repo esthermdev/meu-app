@@ -1,25 +1,27 @@
 // app/(user)/admin/update-scores/[division]/[gameType]/index.tsx
-import { useState, useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  SectionList,
   LayoutAnimation,
   Platform,
+  SectionList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
   UIManager,
+  View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
-import { typography } from '@/constants/Typography';
-import { useGamesBySchedule } from '@/hooks/useGamesData';
-import LoadingIndicator from '@/components/LoadingIndicator';
-import { MaterialIcons } from '@expo/vector-icons';
+
+import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
+import CustomText from '@/components/CustomText';
 import GameComponent from '@/components/features/gameviews/GameComponent';
 import { CustomHeader } from '@/components/headers/CustomHeader';
-import CustomText from '@/components/CustomText';
-import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import { typography } from '@/constants/Typography';
+import { useGamesBySchedule } from '@/hooks/useGamesData';
+
+import { MaterialIcons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {

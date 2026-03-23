@@ -1,7 +1,9 @@
 import { Platform, StatusBar, View } from 'react-native';
 import { Stack } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
+
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function GameTypeLayout() {
   const insets = useSafeAreaInsets();

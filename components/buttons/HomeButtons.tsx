@@ -1,6 +1,7 @@
+import { Dimensions, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Href, router } from 'expo-router';
+
 import { FontAwesome } from '@expo/vector-icons';
-import { router, Href } from 'expo-router';
-import { StyleSheet, Text, Dimensions, TouchableOpacity } from 'react-native';
 
 const { width } = Dimensions.get('window');
 const buttonWidth = (width - 80) / 2;

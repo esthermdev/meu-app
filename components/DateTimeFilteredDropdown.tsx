@@ -1,9 +1,11 @@
-import React, { useState, useMemo } from 'react';
-import { View, Text, TouchableOpacity, Modal, FlatList, StyleSheet } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { ms } from 'react-native-size-matters';
+import React, { useMemo, useState } from 'react';
+import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
 import { fonts } from '@/constants/Typography';
 import { formatDate } from '@/utils/formatDate';
+
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { ms } from 'react-native-size-matters';
 
 interface DatetimeOption {
   id: number;

@@ -1,10 +1,12 @@
-import { View, ActivityIndicator } from 'react-native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { usePoolsByDivision } from '@/hooks/useGamesData';
+import { ActivityIndicator, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { typography } from '@/constants/Typography';
-import PoolGameView from '@/components/features/gameviews/PoolGameView';
+
 import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
+import PoolGameView from '@/components/features/gameviews/PoolGameView';
+import { typography } from '@/constants/Typography';
+import { usePoolsByDivision } from '@/hooks/useGamesData';
+
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 const Tab = createMaterialTopTabNavigator();
 

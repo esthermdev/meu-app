@@ -1,7 +1,9 @@
-import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Href, router } from 'expo-router';
+
 import { images } from '@/constants';
-import { router, Href } from 'expo-router';
+
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Header = () => {

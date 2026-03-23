@@ -1,6 +1,7 @@
-import { useAuth } from '@/context/AuthProvider';
-import Account from '@/components/Account';
 import { View } from 'react-native';
+
+import Account from '@/components/Account';
+import { useAuth } from '@/context/AuthProvider';
 
 export default function AccountPage() {
   const { session } = useAuth();

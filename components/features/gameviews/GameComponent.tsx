@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
+
+import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
 import { Database } from '@/database.types';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
-import { typography } from '@/constants/Typography';
-import CustomText from '@/components/CustomText';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];

@@ -1,7 +1,9 @@
 // components/LoadingIndicator.tsx
-import { typography } from '@/constants/Typography';
 import React from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+
+import { typography } from '@/constants/Typography';
+
 import CustomText from './CustomText';
 
 type LoadingIndicatorProps = {

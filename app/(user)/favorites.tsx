@@ -1,14 +1,16 @@
 // app/(user)/favorites.tsx
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, View, RefreshControl, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
-import { FlashList } from '@shopify/flash-list';
-import { useAuth } from '@/context/AuthProvider';
-import { TeamWithDetails, useFavoriteTeams } from '@/hooks/useFavoriteTeams';
+import { Keyboard, RefreshControl, StyleSheet, TextInput, TouchableWithoutFeedback, View } from 'react-native';
+import { Link } from 'expo-router';
+
+import CustomText from '@/components/CustomText';
 import { FavoriteTeamsListItem } from '@/components/features/favorites/FavoriteTeamsListItem';
 import { typography } from '@/constants/Typography';
-import CustomText from '@/components/CustomText';
-import { Link } from 'expo-router';
+import { useAuth } from '@/context/AuthProvider';
+import { TeamWithDetails, useFavoriteTeams } from '@/hooks/useFavoriteTeams';
+
+import { MaterialIcons } from '@expo/vector-icons';
+import { FlashList } from '@shopify/flash-list';
 
 type FavoriteTeamsListItemData =
   | { type: 'header'; id: string; title: 'Favorite Teams' | 'All Teams' }

@@ -1,27 +1,29 @@
-import { useState, useEffect, useRef } from 'react';
-import { Database } from '@/database.types';
+import { useEffect, useRef, useState } from 'react';
 import {
-  StyleSheet,
-  Text,
   Alert,
-  View,
-  Modal,
-  TouchableOpacity,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
   Dimensions,
   Keyboard,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { supabase } from '@/lib/supabase';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { Dropdown } from '../../Dropdown';
-import usePushNotifications from '@/hooks/usePushNotifications';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 import { typography } from '@/constants/Typography';
+import { Database } from '@/database.types';
+import usePushNotifications from '@/hooks/usePushNotifications';
+import { supabase } from '@/lib/supabase';
+
 import ModalButton from '../../buttons/ModalButtons';
-import ErrorMessage from '../../ErrorMessage';
 import CustomText from '../../CustomText';
+import { Dropdown } from '../../Dropdown';
+import ErrorMessage from '../../ErrorMessage';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { ScrollView } from 'react-native-gesture-handler';
 
 const { height } = Dimensions.get('window');

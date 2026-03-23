@@ -1,28 +1,30 @@
 // app/(user)/admin/update-scores/[division]/[gameType]/index.tsx
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  StatusBar,
-  SectionList,
+  ActivityIndicator,
   Alert,
   LayoutAnimation,
   Platform,
-  UIManager,
-  ActivityIndicator,
   RefreshControl,
+  SectionList,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  UIManager,
+  View,
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { supabase } from '@/lib/supabase';
-import { typography } from '@/constants/Typography';
-import AdminGameComponent from '@/components/features/gameviews/AdminGameComponent';
-import { MaterialIcons } from '@expo/vector-icons';
+
 import AdminBottomActionButtons from '@/components/buttons/AdminBottomActionButtons';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
 import CustomText from '@/components/CustomText';
+import AdminGameComponent from '@/components/features/gameviews/AdminGameComponent';
+import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
+import { typography } from '@/constants/Typography';
+import { supabase } from '@/lib/supabase';
+
+import { MaterialIcons } from '@expo/vector-icons';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {

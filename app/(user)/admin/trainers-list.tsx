@@ -1,9 +1,10 @@
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import FulfilledTrainerRequestList from '@/components/features/requests/FulfilledTrainerRequestList';
-import TrainerRequestsList from '@/components/features/requests/TrainerRequestsList';
 import TrainerAvailabilityList from '@/components/features/requests/TrainerAvailabilityList';
+import TrainerRequestsList from '@/components/features/requests/TrainerRequestsList';
 import { typography } from '@/constants/Typography';
 import { RequestsProvider } from '@/context/RequestsContext';
+
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 const Tab = createMaterialTopTabNavigator();
 

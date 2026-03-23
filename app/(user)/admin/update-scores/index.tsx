@@ -1,9 +1,11 @@
-import { View, StyleSheet, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ActivityIndicator, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
-import { useDivisions } from '@/hooks/useScheduleConfig';
-import { typography } from '@/constants/Typography';
+
 import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
+import { useDivisions } from '@/hooks/useScheduleConfig';
+
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function UpdateScoresIndex() {
   const { divisions, loading, error } = useDivisions();

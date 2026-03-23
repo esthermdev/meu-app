@@ -1,6 +1,7 @@
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { typography } from '@/constants/Typography';
+import { ScrollView, StyleSheet, View } from 'react-native';
+
 import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
 
 const EmergencyScreen = () => {
   return (

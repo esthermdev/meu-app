@@ -12,11 +12,12 @@ import {
   View,
 } from 'react-native';
 import { router } from 'expo-router';
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/context/AuthProvider';
-import { typography } from '@/constants/Typography';
-import CustomText from '@/components/CustomText';
+
 import PrimaryButton from '@/components/buttons/PrimaryButton';
+import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
+import { useAuth } from '@/context/AuthProvider';
+import { supabase } from '@/lib/supabase';
 
 export default function DeleteAccountScreen() {
   const { user } = useAuth();

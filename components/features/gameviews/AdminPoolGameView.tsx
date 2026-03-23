@@ -1,10 +1,12 @@
 // components/PoolAdminView.tsx
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, FlatList, Alert, RefreshControl } from 'react-native';
-import { supabase } from '@/lib/supabase';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
+
 import { typography } from '@/constants/Typography';
-import AdminGameComponent from './AdminGameComponent';
+import { supabase } from '@/lib/supabase';
+
 import AdminBottomActionButtons from '../../buttons/AdminBottomActionButtons';
+import AdminGameComponent from './AdminGameComponent';
 
 interface PoolAdminViewProps {
   poolId: number;

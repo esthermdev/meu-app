@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import * as SplashScreen from 'expo-splash-screen';
-import { AuthProvider } from '@/context/AuthProvider';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import 'expo-dev-client';
+import * as SplashScreen from 'expo-splash-screen';
+
+import { AuthProvider } from '@/context/AuthProvider';
 import { useCheckForAppUpdates } from '@/hooks/useCheckForAppUpdates';
+
+import 'expo-dev-client';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync().catch((error) => {

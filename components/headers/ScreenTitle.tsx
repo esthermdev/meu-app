@@ -1,7 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+
 import { typography } from '@/constants/Typography';
+
+import { Ionicons } from '@expo/vector-icons';
 
 interface ScreenTitleProps {
   title: string;

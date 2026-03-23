@@ -1,7 +1,9 @@
-import { View, StyleSheet } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { StyleSheet, View } from 'react-native';
+
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
+
+import { MaterialIcons } from '@expo/vector-icons';
 
 interface ComingSoonPlaceholderProps {
   message?: string;

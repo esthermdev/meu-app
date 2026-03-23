@@ -1,11 +1,13 @@
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useGameTypesByDivision } from '@/hooks/useScheduleConfig';
-import { typography } from '@/constants/Typography';
-import CustomText from '@/components/CustomText';
+
 import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
+import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
+import { useGameTypesByDivision } from '@/hooks/useScheduleConfig';
+
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function GameTypesScreen() {
   const params = useLocalSearchParams();

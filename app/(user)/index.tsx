@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import { Alert, StyleSheet, View, ScrollView, Pressable } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Href, router } from 'expo-router';
-import { useAuth } from '@/context/AuthProvider';
+
 import { Card } from '@/components/Card';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { typography } from '@/constants/Typography';
-import NotificationPermission from '@/components/features/notifications/NotificationPermission';
 import CustomText from '@/components/CustomText';
+import NotificationPermission from '@/components/features/notifications/NotificationPermission';
+import { typography } from '@/constants/Typography';
+import { useAuth } from '@/context/AuthProvider';
 import { hasPermission } from '@/context/profileRoles';
+
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 export default function UserDashboard() {
   const { profile, signOut } = useAuth();

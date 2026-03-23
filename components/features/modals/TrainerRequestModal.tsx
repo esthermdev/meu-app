@@ -1,26 +1,28 @@
-import { useState, useEffect, useRef } from 'react';
-import { Database } from '@/database.types';
+import { useEffect, useRef, useState } from 'react';
 import {
-  StyleSheet,
   Alert,
-  View,
-  Modal,
-  TouchableOpacity,
   Dimensions,
-  Platform,
-  KeyboardAvoidingView,
   Keyboard,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  StyleSheet,
   TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { supabase } from '@/lib/supabase';
-import { ScrollView } from 'react-native-gesture-handler';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 import { typography } from '@/constants/Typography';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Database } from '@/database.types';
+import { supabase } from '@/lib/supabase';
+
 import ModalButton from '../../buttons/ModalButtons';
+import CustomText from '../../CustomText';
 import { Dropdown } from '../../Dropdown';
 import ErrorMessage from '../../ErrorMessage';
-import CustomText from '../../CustomText';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const { height } = Dimensions.get('window');
 const modalHeight = height * 0.8;

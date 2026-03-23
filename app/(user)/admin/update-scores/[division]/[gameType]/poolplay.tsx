@@ -1,10 +1,12 @@
 // app/(user)/admin/update-scores/[division]/[gameType]/poolplay.tsx
-import { View, ActivityIndicator, Text } from 'react-native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { usePoolsByDivision } from '@/hooks/useGamesData';
+import { ActivityIndicator, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+
 import PoolAdminView from '@/components/features/gameviews/AdminPoolGameView';
 import { typography } from '@/constants/Typography';
+import { usePoolsByDivision } from '@/hooks/useGamesData';
+
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 const Tab = createMaterialTopTabNavigator();
 

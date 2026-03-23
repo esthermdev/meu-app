@@ -1,11 +1,13 @@
 // lib/auth/AuthProvider.tsx
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { Session, User } from '@supabase/supabase-js';
 import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { supabase } from '@/lib/supabase';
+
 import { fetchProfileWithRole, ProfileWithRole } from './profileRoles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Session, User } from '@supabase/supabase-js';
 
 type AuthContextType = {
   session: Session | null;

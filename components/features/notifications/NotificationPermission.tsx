@@ -1,11 +1,13 @@
 // components/NotificationPermission.tsx
-import React, { useState, useCallback } from 'react';
-import { View, StyleSheet, TouchableOpacity, Linking, Platform, Alert } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import React, { useCallback, useState } from 'react';
+import { Alert, Linking, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import * as Notifications from 'expo-notifications';
-import usePushNotifications from '@/hooks/usePushNotifications';
-import { typography } from '@/constants/Typography';
+
 import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
+import usePushNotifications from '@/hooks/usePushNotifications';
+
+import { FontAwesome5 } from '@expo/vector-icons';
 
 interface NotificationPermissionProps {
   compact?: boolean;

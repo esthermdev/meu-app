@@ -1,10 +1,12 @@
 // components/buttons/LargeCardButton.tsx
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, ImageBackground } from 'react-native';
-import { router, Href } from 'expo-router';
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { ImageBackground, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Href, router } from 'expo-router';
+
 import { typography } from '@/constants/Typography';
+
 import CustomText from '../CustomText';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 
 type FontAwesomeNames = keyof typeof FontAwesome.glyphMap;
 

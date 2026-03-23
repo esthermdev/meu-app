@@ -1,16 +1,18 @@
 // components/medical/RequestsList.tsx
 import { useCallback, useEffect, useState } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ActivityIndicator, Alert, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+
 import { Card } from '@/components/Card';
-import { MaterialIcons } from '@expo/vector-icons';
-import { supabase } from '@/lib/supabase';
+import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
 import { Database } from '@/database.types';
-import { typography } from '@/constants/Typography';
-import CustomText from '@/components/CustomText';
-import { getTimeSince } from '@/utils/getTimeSince';
 import { useTrainerRequestsSubscription } from '@/hooks/realtime/useRequestSubscriptions';
+import { supabase } from '@/lib/supabase';
+import { getTimeSince } from '@/utils/getTimeSince';
+
+import { MaterialIcons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Define types based on your Supabase schema
 type MedicalRequest = Database['public']['Tables']['medical_requests']['Row'] & {

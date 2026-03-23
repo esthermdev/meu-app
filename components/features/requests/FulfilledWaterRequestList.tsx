@@ -1,14 +1,16 @@
 // components/features/requests/FulfilledWaterRequestList.tsx
 
-import { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
-import { useIsFocused } from '@react-navigation/native';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+
 import { Card } from '@/components/Card';
-import { supabase } from '@/lib/supabase';
-import { Database } from '@/database.types';
-import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
+import { Database } from '@/database.types';
 import { useWaterRequestsSubscription } from '@/hooks/realtime/useRequestSubscriptions';
+import { supabase } from '@/lib/supabase';
+
+import { useIsFocused } from '@react-navigation/native';
 
 // Define types based on your Supabase schema
 type WaterRequest = Database['public']['Tables']['water_requests']['Row'];

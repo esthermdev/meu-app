@@ -1,10 +1,12 @@
+import { Dimensions, Image, StatusBar, StyleSheet, View } from 'react-native';
+import { router } from 'expo-router';
+
 import { AppLandingPlayerSvg } from '@/assets/svg';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import CustomText from '@/components/CustomText';
 import { images } from '@/constants';
 import { typography } from '@/constants/Typography';
-import { router } from 'expo-router';
-import { View, StyleSheet, Image, Dimensions, StatusBar } from 'react-native';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');

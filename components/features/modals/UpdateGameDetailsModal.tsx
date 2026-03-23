@@ -1,18 +1,19 @@
 import React, { useMemo } from 'react';
 import {
-  View,
-  StyleSheet,
-  Modal,
-  TextInput,
-  TouchableOpacity,
-  Platform,
   Dimensions,
   KeyboardAvoidingView,
+  Modal,
+  Platform,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { typography } from '@/constants/Typography';
+
 import CustomText from '@/components/CustomText';
-import { Dropdown } from '@/components/Dropdown';
 import { DateTimeFilteredDropdown } from '@/components/DateTimeFilteredDropdown';
+import { Dropdown } from '@/components/Dropdown';
+import { typography } from '@/constants/Typography';
 import { useDatetimeOptions } from '@/hooks/useDatetimeOptions';
 import { useFieldOptions } from '@/hooks/useFieldOptions';
 import { useTeamOptionsByDivision } from '@/hooks/useTeamOptionsByDivision';

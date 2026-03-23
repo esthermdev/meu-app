@@ -1,6 +1,8 @@
-import { useEffect, useRef, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
+import { useCallback, useEffect, useRef } from 'react';
+
 import { Database } from '@/database.types';
+import { supabase } from '@/lib/supabase';
+
 import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+
 import { Card } from '@/components/Card';
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
@@ -10,6 +10,8 @@ import { Database } from '@/database.types';
 import { supabase } from '@/lib/supabase';
 import { getTimeColor } from '@/utils/getTimeColor';
 import { getTimeSince } from '@/utils/getTimeSince';
+
+import { Ionicons } from '@expo/vector-icons';
 
 type CartRequest = Database['public']['Tables']['cart_requests']['Row'] & {
   from_field_name?: string | null;

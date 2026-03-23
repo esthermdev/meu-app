@@ -1,16 +1,17 @@
 // app/(tabs)/teams/[id].tsx
-import { useEffect, useState, useCallback } from 'react';
-import { StyleSheet, View, ScrollView, Image, RefreshControl } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { Image, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { supabase } from '@/lib/supabase';
+
+import CustomText from '@/components/CustomText';
+import { CustomHeader } from '@/components/headers/CustomHeader';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import { typography } from '@/constants/Typography';
 import { Database } from '@/database.types';
+import { useTeamGamesSubscription } from '@/hooks/realtime/useTeamSubscriptions';
+import { supabase } from '@/lib/supabase';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
-import { typography } from '@/constants/Typography';
-import LoadingIndicator from '@/components/LoadingIndicator';
-import { CustomHeader } from '@/components/headers/CustomHeader';
-import CustomText from '@/components/CustomText';
-import { useTeamGamesSubscription } from '@/hooks/realtime/useTeamSubscriptions';
 
 type TeamRow = Database['public']['Tables']['teams']['Row'];
 type GameRow = Database['public']['Tables']['games']['Row'];

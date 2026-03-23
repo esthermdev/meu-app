@@ -1,8 +1,10 @@
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { Link } from 'expo-router';
-import { typography } from '@/constants/Typography';
+
 import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
+
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const CreditsScreen = () => {
   return (

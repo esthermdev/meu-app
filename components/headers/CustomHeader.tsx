@@ -1,11 +1,13 @@
 // components/CustomHeader.js
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Modal, Pressable } from 'react-native';
-import CustomText from '../CustomText';
+import { Modal, Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
-import Ionicons from '@expo/vector-icons/Ionicons';
+
 import { fonts } from '@/constants/Typography';
+
+import CustomText from '../CustomText';
 import { MaterialIcons } from '@expo/vector-icons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 interface CustomHeaderProps {
   title: string | string[];

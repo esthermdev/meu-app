@@ -1,9 +1,11 @@
-import { StyleSheet, View, ScrollView, Image, Modal, TouchableOpacity, Pressable } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
+import { Image, Modal, Pressable, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+
 import CustomText from '@/components/CustomText';
 import { CustomHeader } from '@/components/headers/CustomHeader';
 import { typography } from '@/constants/Typography';
+
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Coach {
   name: string;

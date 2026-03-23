@@ -1,6 +1,7 @@
 // components/CustomText.tsx
 import React from 'react';
 import { Text as RNText, TextProps } from 'react-native';
+
 import { typography } from '@/constants/Typography';
 
 type TypographyKey = keyof typeof typography;

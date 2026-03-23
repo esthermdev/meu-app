@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, ActivityIndicator, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { TeamWithDetails } from '@/hooks/useFavoriteTeams';
-import { typography } from '@/constants/Typography';
+import { ActivityIndicator, Image, StyleSheet, View } from 'react-native';
+
 import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
+import { TeamWithDetails } from '@/hooks/useFavoriteTeams';
+
+import { Ionicons } from '@expo/vector-icons';
 
 interface TeamListItemProps {
   item: TeamWithDetails;

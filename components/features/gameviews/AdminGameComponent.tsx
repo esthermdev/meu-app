@@ -1,16 +1,18 @@
 // components/AdminGameComponent.tsx
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, TextInput, Alert, Platform } from 'react-native';
-import { Database } from '@/database.types';
-import { formatDate } from '@/utils/formatDate';
-import { formatTime } from '@/utils/formatTime';
-import { typography } from '@/constants/Typography';
-import { supabase } from '@/lib/supabase';
-import UpdateGameDetailsModal from '../modals/UpdateGameDetailsModal';
-import { updateGameScore } from '@/utils/updateGameScore';
+import React, { useEffect, useState } from 'react';
+import { Alert, Image, Platform, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+
 import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
 import { hasPermission } from '@/context/profileRoles';
+import { Database } from '@/database.types';
+import { supabase } from '@/lib/supabase';
+import { formatDate } from '@/utils/formatDate';
+import { formatTime } from '@/utils/formatTime';
+import { updateGameScore } from '@/utils/updateGameScore';
+
+import UpdateGameDetailsModal from '../modals/UpdateGameDetailsModal';
 import { Feather } from '@expo/vector-icons';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];

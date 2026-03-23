@@ -1,8 +1,10 @@
 // components/backgrounds/MyGamesBackground.tsx
-import { View, StyleSheet } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { StyleSheet, View } from 'react-native';
+
 import { typography } from '@/constants/Typography';
+
 import CustomText from './CustomText';
+import { Feather } from '@expo/vector-icons';
 
 const MyGamesButtonBackground = ({ title }: { title: string }) => {
   return (

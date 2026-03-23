@@ -1,11 +1,13 @@
 // app/(tabs)/home/notifications.tsx
-import { useState, useEffect, useCallback } from 'react';
-import { View, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/context/AuthProvider';
-import { typography } from '@/constants/Typography';
+import { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+
 import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
+import { useAuth } from '@/context/AuthProvider';
+import { supabase } from '@/lib/supabase';
+
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
 interface Notification {
   id: number;

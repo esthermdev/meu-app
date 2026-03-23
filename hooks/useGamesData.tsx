@@ -1,6 +1,8 @@
-import { useEffect, useState, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
+import { useCallback, useEffect, useState } from 'react';
+
 import { Database } from '@/database.types';
+import { supabase } from '@/lib/supabase';
+
 import { useGameSubscription, useScheduleSubscription } from './realtime/useGameSubscriptions';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];

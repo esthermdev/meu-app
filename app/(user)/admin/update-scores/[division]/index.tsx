@@ -1,29 +1,31 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  StatusBar,
   ActivityIndicator,
-  Platform,
-  ScrollView,
-  SectionList,
   Alert,
   LayoutAnimation,
-  UIManager,
+  Platform,
   RefreshControl,
+  ScrollView,
+  SectionList,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  UIManager,
+  View,
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { useGameTypesByDivision } from '@/hooks/useScheduleConfig';
-import { fonts, typography } from '@/constants/Typography';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
-import CustomText from '@/components/CustomText';
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
-import { Database } from '@/database.types';
-import AdminGameComponent from '@/components/features/gameviews/AdminGameComponent';
-import { MaterialIcons } from '@expo/vector-icons';
+
 import AdminBottomActionButtons from '@/components/buttons/AdminBottomActionButtons';
+import CustomText from '@/components/CustomText';
+import AdminGameComponent from '@/components/features/gameviews/AdminGameComponent';
+import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
+import { fonts, typography } from '@/constants/Typography';
+import { Database } from '@/database.types';
+import { useGameTypesByDivision } from '@/hooks/useScheduleConfig';
+import { supabase } from '@/lib/supabase';
+
+import { MaterialIcons } from '@expo/vector-icons';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {

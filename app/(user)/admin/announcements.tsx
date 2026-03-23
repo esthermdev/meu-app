@@ -1,10 +1,11 @@
 // announcements.tsx
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { supabase } from '@/lib/supabase';
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+
 import PrimaryButton from '@/components/buttons/PrimaryButton';
-import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
+import { supabase } from '@/lib/supabase';
 
 const AnnouncementScreen = () => {
   const [title, setTitle] = useState('');

@@ -1,16 +1,17 @@
 import React, { useRef } from 'react';
 import {
-  View,
-  StyleSheet,
-  Modal,
-  TextInput,
-  TouchableOpacity,
-  Platform,
   Dimensions,
   KeyboardAvoidingView,
+  Modal,
+  Platform,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { typography } from '@/constants/Typography';
+
 import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
 
 interface UpdateGameScoreModalProps {
   visible: boolean;

@@ -2,28 +2,30 @@
 
 import { useState } from 'react';
 import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  TextInput,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Platform,
-  Keyboard,
-  Image,
-  ScrollView,
   Alert,
+  Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import { Link, router } from 'expo-router';
-import { useAuth } from '@/context/AuthProvider';
-import { MaterialIcons, Foundation } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { SignInPlayerSvg } from '@/assets/svg';
+import PrimaryButton from '@/components/buttons/PrimaryButton';
+import CustomText from '@/components/CustomText';
 import { images } from '@/constants';
 import { typography } from '@/constants/Typography';
-import PrimaryButton from '@/components/buttons/PrimaryButton';
+import { useAuth } from '@/context/AuthProvider';
 import { supabase } from '@/lib/supabase';
-import CustomText from '@/components/CustomText';
-import { SignInPlayerSvg } from '@/assets/svg';
+
+import { Foundation, MaterialIcons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');

@@ -1,19 +1,20 @@
 import { useState } from 'react';
 import {
-  View,
-  StyleSheet,
-  TextInput,
   Alert,
-  ScrollView,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
+  StyleSheet,
+  TextInput,
   TouchableWithoutFeedback,
-  Keyboard,
+  View,
 } from 'react-native';
-import { supabase } from '@/lib/supabase';
-import { fonts, typography } from '@/constants/Typography';
-import CustomText from '@/components/CustomText';
+
 import PrimaryButton from '@/components/buttons/PrimaryButton';
+import CustomText from '@/components/CustomText';
+import { fonts, typography } from '@/constants/Typography';
+import { supabase } from '@/lib/supabase';
 
 const FeedbackScreen = () => {
   const [subject, setSubject] = useState<string>('');

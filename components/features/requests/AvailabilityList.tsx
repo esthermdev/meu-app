@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { FlatList, RefreshControl, StyleSheet, Switch, View } from 'react-native';
-import { supabase } from '@/lib/supabase';
-import { Database } from '@/database.types';
-import { typography } from '@/constants/Typography';
+
 import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
+import { Database } from '@/database.types';
+import { supabase } from '@/lib/supabase';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 

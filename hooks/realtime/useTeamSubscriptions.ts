@@ -1,4 +1,5 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+
 import { supabase } from '@/lib/supabase';
 
 export function useTeamGamesSubscription(gameIds: number[], onUpdate: () => void) {

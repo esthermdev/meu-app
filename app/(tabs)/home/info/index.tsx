@@ -1,7 +1,8 @@
-import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Link } from 'expo-router';
-import { typography } from '@/constants/Typography';
+
 import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
 
 // Define menu items with their exact paths
 const menuItems = [

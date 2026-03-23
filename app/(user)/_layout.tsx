@@ -1,7 +1,9 @@
 import { StatusBar, Text, TouchableOpacity } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
 import { Redirect, router, Stack } from 'expo-router';
+
 import { useAuth } from '@/context/AuthProvider';
+
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function UserLayout() {
   const { session, loading } = useAuth();

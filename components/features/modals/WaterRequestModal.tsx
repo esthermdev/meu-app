@@ -1,20 +1,22 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { useEffect, useState } from 'react';
 import {
-  StyleSheet,
   Alert,
-  View,
-  Modal,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
   Dimensions,
   FlatList,
+  Modal,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Tables } from '@/database.types';
+
 import { typography } from '@/constants/Typography';
+import { Tables } from '@/database.types';
+import { supabase } from '@/lib/supabase';
+
 import ModalButton from '../../buttons/ModalButtons';
 import CustomText from '../../CustomText';
+import { MaterialIcons } from '@expo/vector-icons';
 
 type Field = Tables<'fields'>;
 

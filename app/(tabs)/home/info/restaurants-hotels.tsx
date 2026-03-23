@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
-import { View, StyleSheet, SectionList, Linking, TouchableOpacity } from 'react-native';
-import { supabase } from '@/lib/supabase';
-import { FontAwesome } from '@expo/vector-icons';
-import { Tables } from '@/database.types';
+import { useEffect, useState } from 'react';
+import { Linking, SectionList, StyleSheet, TouchableOpacity, View } from 'react-native';
+
+import CustomText from '@/components/CustomText';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { typography } from '@/constants/Typography';
-import CustomText from '@/components/CustomText';
+import { Tables } from '@/database.types';
+import { supabase } from '@/lib/supabase';
+
+import { FontAwesome } from '@expo/vector-icons';
 
 // Define types for our data structure
 type Restaurant = Tables<'restaurants'>;

@@ -1,6 +1,7 @@
+import { ScrollView, StyleSheet, View } from 'react-native';
+
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
-import { View, StyleSheet, ScrollView } from 'react-native';
 
 const RefundPolicyScreen = () => {
   return (

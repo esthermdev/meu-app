@@ -1,12 +1,14 @@
-import { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+
 import { Card } from '@/components/Card';
-import { MaterialIcons } from '@expo/vector-icons';
-import { supabase } from '@/lib/supabase';
-import { Database } from '@/database.types';
-import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
+import { Database } from '@/database.types';
 import { useTrainerRequestsSubscription } from '@/hooks/realtime/useRequestSubscriptions';
+import { supabase } from '@/lib/supabase';
+
+import { MaterialIcons } from '@expo/vector-icons';
 
 // Define types based on your Supabase schema
 type MedicalRequest = Database['public']['Tables']['medical_requests']['Row'] & {

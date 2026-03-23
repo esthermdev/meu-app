@@ -1,13 +1,14 @@
-import { useState, useEffect, useCallback } from 'react';
-import { View, ActivityIndicator, SectionList, StyleSheet, Image } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, Image, SectionList, StyleSheet, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { usePoolsByDivision } from '@/hooks/useGamesData';
-import { supabase } from '@/lib/supabase';
-import { Database } from '@/database.types';
+
+import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
+import CustomText from '@/components/CustomText';
 import { CustomHeader } from '@/components/headers/CustomHeader';
 import { typography } from '@/constants/Typography';
-import CustomText from '@/components/CustomText';
-import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
+import { Database } from '@/database.types';
+import { usePoolsByDivision } from '@/hooks/useGamesData';
+import { supabase } from '@/lib/supabase';
 
 type StandingsRow = Database['public']['Tables']['rankings']['Row'];
 type TeamsRow = Database['public']['Tables']['teams']['Row'];

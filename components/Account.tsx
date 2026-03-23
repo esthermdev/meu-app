@@ -1,23 +1,25 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
-  StyleSheet,
-  View,
   Alert,
-  TouchableWithoutFeedback,
-  KeyboardAvoidingView,
   Keyboard,
-  TextInput,
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
-import { supabase } from '@/lib/supabase';
-import { Session } from '@supabase/supabase-js';
-import { Database } from '@/database.types';
-import { MaterialIcons, FontAwesome6 } from '@expo/vector-icons';
-import { typography } from '@/constants/Typography';
+
 import PrimaryButton from '@/components/buttons/PrimaryButton';
+import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
+import { Database } from '@/database.types';
+import { supabase } from '@/lib/supabase';
+
 import CustomText from './CustomText';
+import { FontAwesome6, MaterialIcons } from '@expo/vector-icons';
+import { Session } from '@supabase/supabase-js';
 
 type ProfileUpdate = Database['public']['Tables']['profiles']['Update'];
 

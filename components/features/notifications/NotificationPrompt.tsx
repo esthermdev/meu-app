@@ -1,9 +1,11 @@
 // components/NotificationPrompt.tsx
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from 'react';
+import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+
 import { fonts } from '@/constants/Typography';
 import usePushNotifications from '@/hooks/usePushNotifications';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PROMPT_SHOWN_KEY = 'notification_prompt_shown';
 

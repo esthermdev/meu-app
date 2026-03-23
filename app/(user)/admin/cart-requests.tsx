@@ -1,10 +1,12 @@
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import React, { useCallback, useRef } from 'react';
+
+import CartRequestsList from '@/components/features/requests/CartRequestsList';
+import DriversAvailabilityList from '@/components/features/requests/DriversAvailabilityList';
+import FulfilledCartRequestsList from '@/components/features/requests/FulfilledCartRequestList';
 import { typography } from '@/constants/Typography';
 import { supabase } from '@/lib/supabase';
-import CartRequestsList from '@/components/features/requests/CartRequestsList';
-import FulfilledCartRequestsList from '@/components/features/requests/FulfilledCartRequestList';
-import DriversAvailabilityList from '@/components/features/requests/DriversAvailabilityList';
+
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 const Tab = createMaterialTopTabNavigator();
 

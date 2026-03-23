@@ -1,11 +1,13 @@
 // hooks/usePushNotifications.tsx
-import { useState, useEffect, useRef, useCallback } from 'react';
-import * as Notifications from 'expo-notifications';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { supabase } from '@/lib/supabase';
+import * as Notifications from 'expo-notifications';
+
 import { useAuth } from '@/context/AuthProvider';
+import { supabase } from '@/lib/supabase';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Define notification behavior
 Notifications.setNotificationHandler({

@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { supabase } from '@/lib/supabase';
-import { Tables } from '@/database.types';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
+
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
+import { Tables } from '@/database.types';
+import { supabase } from '@/lib/supabase';
+
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type FAQ = Tables<'faq'>;
 

@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router';
+
 import { CustomHeader } from '@/components/headers/CustomHeader';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 

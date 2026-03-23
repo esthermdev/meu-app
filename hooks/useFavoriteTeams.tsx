@@ -1,8 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
-import { Session } from '@supabase/supabase-js';
+import { useCallback, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
+
 import { Database } from '@/database.types';
+import { supabase } from '@/lib/supabase';
+
+import { Session } from '@supabase/supabase-js';
 
 type TeamRow = Database['public']['Tables']['teams']['Row'];
 type PoolRow = Database['public']['Tables']['pools']['Row'];

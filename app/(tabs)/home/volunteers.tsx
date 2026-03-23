@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Database } from '@/database.types';
-import { View, StyleSheet, FlatList, Image } from 'react-native';
-import { supabase } from '@/lib/supabase';
-import { typography } from '@/constants/Typography';
-import LoadingIndicator from '@/components/LoadingIndicator';
+import { FlatList, Image, StyleSheet, View } from 'react-native';
+
 import CustomText from '@/components/CustomText';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import { typography } from '@/constants/Typography';
+import { Database } from '@/database.types';
+import { supabase } from '@/lib/supabase';
 
 type VolunteersRow = Database['public']['Tables']['volunteers']['Row'];
 

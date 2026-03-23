@@ -1,26 +1,28 @@
 import { useState } from 'react';
 import {
+  Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
-  View,
+  Text,
+  TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  TextInput,
-  Text,
-  Image,
-  KeyboardAvoidingView,
-  Keyboard,
-  Platform,
+  View,
 } from 'react-native';
 import { Link, router } from 'expo-router';
-import { useAuth } from '@/context/AuthProvider';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { FontAwesome6, Foundation, MaterialIcons } from '@expo/vector-icons';
+
+import { SignUpPlayerSvg } from '@/assets/svg';
+import PrimaryButton from '@/components/buttons/PrimaryButton';
+import CustomText from '@/components/CustomText';
 import { images } from '@/constants';
 import { typography } from '@/constants/Typography';
-import PrimaryButton from '@/components/buttons/PrimaryButton';
+import { useAuth } from '@/context/AuthProvider';
+
+import { FontAwesome6, Foundation, MaterialIcons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
-import CustomText from '@/components/CustomText';
-import { SignUpPlayerSvg } from '@/assets/svg';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');

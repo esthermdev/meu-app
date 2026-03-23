@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react';
 import * as Notifications from 'expo-notifications';
-import { Tabs, router } from 'expo-router';
-import { TabBarIcon } from '@/components/TabBarIcon';
+import { router, Tabs } from 'expo-router';
+
 import Header from '@/components/headers/Header';
+import { TabBarIcon } from '@/components/TabBarIcon';
 import { typography } from '@/constants/Typography';
 
 export default function TabLayout() {

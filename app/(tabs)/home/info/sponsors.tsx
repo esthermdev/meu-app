@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Linking, Image } from 'react-native';
-import { supabase } from '@/lib/supabase';
-import { FontAwesome5 } from '@expo/vector-icons';
-import { Tables } from '@/database.types';
-import { typography } from '@/constants/Typography';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, Image, Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
+
 import CustomText from '@/components/CustomText';
+import { typography } from '@/constants/Typography';
+import { Tables } from '@/database.types';
+import { supabase } from '@/lib/supabase';
+
+import { FontAwesome5 } from '@expo/vector-icons';
 
 type Vendor = Tables<'vendors'>;
 

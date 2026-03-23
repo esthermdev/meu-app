@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router';
+
 import { CustomHeader } from '@/components/headers/CustomHeader';
 
 export default function InfoLayout() {

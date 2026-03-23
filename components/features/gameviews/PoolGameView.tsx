@@ -1,12 +1,14 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
-import { useGamesByRound } from '@/hooks/useGamesData';
+import { Image, StyleSheet, View } from 'react-native';
+
+import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
+import { Database } from '@/database.types';
+import { useGamesByRound } from '@/hooks/useGamesData';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
-import { Database } from '@/database.types';
-import CustomText from '@/components/CustomText';
+
+import { FlashList } from '@shopify/flash-list';
 
 type GamesRow = Database['public']['Tables']['games']['Row'];
 type DatetimeRow = Database['public']['Tables']['datetime']['Row'];

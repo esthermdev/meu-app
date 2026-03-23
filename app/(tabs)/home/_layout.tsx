@@ -1,5 +1,6 @@
-import { CustomHeader } from '@/components/headers/CustomHeader';
 import { Stack } from 'expo-router';
+
+import { CustomHeader } from '@/components/headers/CustomHeader';
 
 export default function HomeLayout() {
   return (
