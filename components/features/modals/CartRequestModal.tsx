@@ -470,7 +470,7 @@ const styles = StyleSheet.create({
   },
   labelHeader: {
     ...typography.textBold,
-    marginVertical: 5,
+    marginBottom: 5,
   },
   modalContainer: {
     flex: 1,
