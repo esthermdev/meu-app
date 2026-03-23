@@ -31,7 +31,7 @@ export default function HomeScreen() {
               title="Spirit"
               subtitle=""
               icon={<MaterialCommunityIcons name="handshake-outline" size={28} color="#fff" />}
-              backgroundColor="#E0AE43"
+              backgroundColor="#F7941D"
               route="/(tabs)/home/spirit"
             />
 
@@ -47,7 +47,7 @@ export default function HomeScreen() {
 
         {/* Circular icon buttons */}
         <View style={styles.utilsContainer}>
-          <CircleIconButton icon="map" label="Field Map" route="/(tabs)/home/fieldmap" />
+          <CircleIconButton icon="map" iconColor="#276B5D" label="Field Map" route="/(tabs)/home/fieldmap" />
           <TrainerRequestModal />
           <CartRequestModal />
           <WaterRequestModal />

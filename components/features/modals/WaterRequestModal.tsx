@@ -178,7 +178,7 @@ const WaterRequestButton = () => {
   return (
     <View>
       <TouchableOpacity style={styles.circleButton} onPress={showModal}>
-        <MaterialIcons name="water-drop" size={28} color="#52B0BA" />
+        <MaterialIcons name="water-drop" size={28} color="#4357AD" />
       </TouchableOpacity>
       <CustomText style={styles.label}>Water</CustomText>
 

@@ -202,7 +202,7 @@ const TrainerRequestButton = () => {
   return (
     <View>
       <TouchableOpacity style={styles.circleButton} onPress={() => setIsModalVisible(true)}>
-        <MaterialCommunityIcons name="medical-bag" size={28} color="#DF4646" />
+        <MaterialCommunityIcons name="medical-bag" size={28} color="#E44C52" />
       </TouchableOpacity>
       <CustomText style={styles.label}>Trainer</CustomText>
 
