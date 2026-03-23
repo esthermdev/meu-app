@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 15,
+    padding: 10,
   },
   buttonText: {
     fontFamily: fonts.medium,

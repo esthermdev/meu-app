@@ -6,12 +6,12 @@ import {
   Alert,
   View,
   Modal,
-  Pressable,
   TouchableOpacity,
   TextInput,
   KeyboardAvoidingView,
   Platform,
   Dimensions,
+  Keyboard,
 } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -45,6 +45,7 @@ const CartRequestButton = () => {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isNoteVisible, setIsNoteVisible] = useState(false);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [fromLocation, setFromLocation] = useState<LocationType>('Field');
   const [toLocation, setToLocation] = useState<LocationType>('Field');
   const [fromFieldNumber, setFromFieldNumber] = useState<string>('');
@@ -69,6 +70,19 @@ const CartRequestButton = () => {
 
   useEffect(() => {
     fetchFields();
+  }, []);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSubscription = Keyboard.addListener(showEvent, () => setIsKeyboardVisible(true));
+    const hideSubscription = Keyboard.addListener(hideEvent, () => setIsKeyboardVisible(false));
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
   }, []);
 
   const fetchFields = async () => {
@@ -215,12 +229,10 @@ const CartRequestButton = () => {
 
       <Modal visible={isModalVisible} transparent={true} animationType="fade" onRequestClose={handleCloseModal}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          enabled={true}
+          behavior={'padding'}
           keyboardVerticalOffset={Platform.OS === 'android' ? 1 : 0}
           style={styles.modalContainer}>
-          <View style={styles.modalOverlay}>
-            <Pressable style={styles.backdropPressArea} onPress={handleCloseModal} />
+          <View style={[styles.modalOverlay, isKeyboardVisible && styles.modalOverlayKeyboardOpen]}>
             <View style={styles.modalContent}>
               {errors.general && (
                 <View style={styles.generalErrorContainer}>
@@ -461,9 +473,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   modalContainer: {
-    alignItems: 'center',
     flex: 1,
-    justifyContent: 'center',
   },
   modalContent: {
     backgroundColor: 'white',
@@ -479,9 +489,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
   },
+  modalOverlayKeyboardOpen: {
+    justifyContent: Platform.OS === 'android' ? 'flex-start' : 'flex-end',
+    paddingTop: 52,
+  },
   nameInput: {
     borderColor: '#ccc',
-    borderRadius: 5,
+    borderRadius: 8,
     borderWidth: 1,
     padding: 12,
     ...typography.textSmall,
@@ -539,7 +553,7 @@ const styles = StyleSheet.create({
   },
   specialRequestInput: {
     borderColor: '#ccc',
-    borderRadius: 5,
+    borderRadius: 8,
     borderWidth: 1,
     padding: 10,
     ...typography.textSmall,

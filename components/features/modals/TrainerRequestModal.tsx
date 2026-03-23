@@ -11,7 +11,6 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TextInput,
-  Pressable,
 } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -207,11 +206,9 @@ const TrainerRequestButton = () => {
 
       <Modal visible={isModalVisible} transparent={true} animationType="fade" onRequestClose={handleCloseModal}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          enabled={true}
+          behavior={'padding'}
           keyboardVerticalOffset={Platform.OS === 'android' ? 1 : 0}
           style={styles.modalContainer}>
-          <Pressable style={styles.backdropPressArea} onPress={handleCloseModal} />
           <View style={[styles.modalOverlay, isKeyboardVisible && styles.modalOverlayKeyboardOpen]}>
             <View style={styles.modalContent}>
               <ScrollView
@@ -289,7 +286,7 @@ const TrainerRequestButton = () => {
                 </CustomText>
                 <Dropdown
                   label="Select Field"
-                  data={[FIELD_PLACEHOLDER, ...fieldLabels]}
+                  data={fieldLabels}
                   onSelect={handleFieldSelect}
                   selectedValue={selectedFieldLabel}
                   error={!!errors.field}
@@ -320,7 +317,7 @@ const styles = StyleSheet.create({
   },
   descriptionInput: {
     borderColor: '#ccc',
-    borderRadius: 5,
+    borderRadius: 8,
     borderWidth: 1,
     padding: 10,
     ...typography.textSmall,
@@ -345,9 +342,7 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   modalContainer: {
-    alignItems: 'center',
     flex: 1,
-    justifyContent: 'center',
   },
   modalContainerKeyboardOpen: {
     justifyContent: 'flex-end',
@@ -367,7 +362,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   modalOverlayKeyboardOpen: {
-    justifyContent: 'flex-end',
+    justifyContent: Platform.OS === 'android' ? 'flex-start' : 'flex-end',
+    paddingTop: 52,
   },
   noteContainer: {
     backgroundColor: '#F5F8FF',
@@ -425,7 +421,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderColor: '#ccc',
-    borderRadius: 5,
+    borderRadius: 8,
     borderWidth: 1,
     padding: 10,
     ...typography.textSmall,
