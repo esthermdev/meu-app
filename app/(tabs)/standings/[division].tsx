@@ -4,7 +4,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { usePoolsByDivision } from '@/hooks/useGamesData';
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/database.types';
-import CustomHeader from '@/components/headers/CustomHeader';
+import { CustomHeader } from '@/components/headers/CustomHeader';
 import { typography } from '@/constants/Typography';
 import CustomText from '@/components/CustomText';
 import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';

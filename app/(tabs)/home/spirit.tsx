@@ -23,7 +23,7 @@ export default function SpiritPage() {
             <CustomText variant="textBold" style={styles.name}>
               Lucas Brown
             </CustomText>{' '}
-            as our Spirit Coordinator! He'll be showing teams fun sideline and timeout games, running some Spirit
+            as our Spirit Coordinator! He&apos;ll be showing teams fun sideline and timeout games, running some Spirit
             points, and answering any questions teams have about Spirit of the Game!
           </CustomText>
         </View>
@@ -36,7 +36,7 @@ export default function SpiritPage() {
               Submit Spirit Scores
             </CustomText>
             <CustomText variant="textXSmall" style={styles.buttonSubtext}>
-              Share your team's spirit scores
+              Share your team&apos;s spirit scores
             </CustomText>
           </View>
           <MaterialCommunityIcons name="open-in-new" size={20} color="#fff" />

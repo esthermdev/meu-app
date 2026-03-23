@@ -6,7 +6,6 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import 'expo-dev-client';
-import 'react-native-gesture-handler';
 import { useCheckForAppUpdates } from '@/hooks/useCheckForAppUpdates';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.

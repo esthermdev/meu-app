@@ -18,7 +18,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { typography } from '@/constants/Typography';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import ModalButton from '../../buttons/ModalButtons';
-import Dropdown from '../../Dropdown';
+import { Dropdown } from '../../Dropdown';
 import ErrorMessage from '../../ErrorMessage';
 import CustomText from '../../CustomText';
 

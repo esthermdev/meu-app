@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import CustomHeader from '@/components/headers/CustomHeader';
+import { CustomHeader } from '@/components/headers/CustomHeader';
 
 export default function GameTypeLayout() {
   return (

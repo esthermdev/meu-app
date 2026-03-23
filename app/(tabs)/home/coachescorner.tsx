@@ -2,7 +2,7 @@ import { StyleSheet, View, ScrollView, Image, Modal, TouchableOpacity, Pressable
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import CustomText from '@/components/CustomText';
-import CustomHeader from '@/components/headers/CustomHeader';
+import { CustomHeader } from '@/components/headers/CustomHeader';
 import { typography } from '@/constants/Typography';
 
 interface Coach {

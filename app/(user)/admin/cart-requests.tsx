@@ -77,26 +77,24 @@ const CartManagementScreen = () => {
         },
         tabBarAllowFontScaling: false,
       }}>
-      <Tab.Screen
-        name="MY REQUESTS"
-        children={() => (
+      <Tab.Screen name="MY REQUESTS">
+        {() => (
           <CartRequestsList
             registerRefreshCallback={(callback) => {
               refreshCallbacksRef.cartRequests = callback;
             }}
           />
         )}
-      />
-      <Tab.Screen
-        name="ALL RIDES"
-        children={() => (
+      </Tab.Screen>
+      <Tab.Screen name="ALL RIDES">
+        {() => (
           <FulfilledCartRequestsList
             registerRefreshCallback={(callback) => {
               refreshCallbacksRef.fulfilledRequests = callback;
             }}
           />
         )}
-      />
+      </Tab.Screen>
       <Tab.Screen name="DRIVERS" component={DriversAvailabilityList} />
     </Tab.Navigator>
   );

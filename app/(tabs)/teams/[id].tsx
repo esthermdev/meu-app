@@ -8,7 +8,7 @@ import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
 import { typography } from '@/constants/Typography';
 import LoadingIndicator from '@/components/LoadingIndicator';
-import CustomHeader from '@/components/headers/CustomHeader';
+import { CustomHeader } from '@/components/headers/CustomHeader';
 import CustomText from '@/components/CustomText';
 import { useTeamGamesSubscription } from '@/hooks/realtime/useTeamSubscriptions';
 
@@ -33,13 +33,18 @@ interface GameWithDetails extends GameRow {
 
 const TeamDetails = () => {
   const { id } = useLocalSearchParams();
+  const teamId = Number(Array.isArray(id) ? id[0] : id);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [team, setTeam] = useState<TeamDetail | null>(null);
   const [games, setGames] = useState<GameWithDetails[]>([]);
 
   const fetchTeamDetails = useCallback(async () => {
-    if (!id) return;
+    if (!Number.isFinite(teamId)) {
+      setLoading(false);
+      setRefreshing(false);
+      return;
+    }
 
     try {
       // First fetch the team with division details
@@ -51,7 +56,7 @@ const TeamDetails = () => {
           division_details:division_id(*)
         `,
         )
-        .eq('id', id)
+        .eq('id', teamId)
         .single();
 
       if (teamError) throw teamError;
@@ -70,7 +75,7 @@ const TeamDetails = () => {
           scores(*)
         `,
         )
-        .or(`team1_id.eq.${id},team2_id.eq.${id}`)
+        .or(`team1_id.eq.${teamId},team2_id.eq.${teamId}`)
         .order('datetime_id', { ascending: true });
 
       if (gamesError) throw gamesError;
@@ -81,7 +86,7 @@ const TeamDetails = () => {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [id]);
+  }, [teamId]);
 
   // Set up real-time subscription for score updates
   useEffect(() => {
@@ -120,7 +125,7 @@ const TeamDetails = () => {
               }
               style={styles.teamLogo}
             />
-            <CustomText style={[styles.teamText, game.team1?.id.toString() === id ? styles.highlightedTeam : null]}>
+            <CustomText style={[styles.teamText, game.team1?.id === teamId ? styles.highlightedTeam : null]}>
               {game.team1?.name || 'TBD'}
             </CustomText>
           </View>
@@ -135,7 +140,7 @@ const TeamDetails = () => {
               }
               style={styles.teamLogo}
             />
-            <CustomText style={[styles.teamText, game.team2?.id.toString() === id ? styles.highlightedTeam : null]}>
+            <CustomText style={[styles.teamText, game.team2?.id === teamId ? styles.highlightedTeam : null]}>
               {game.team2?.name || 'TBD'}
             </CustomText>
           </View>

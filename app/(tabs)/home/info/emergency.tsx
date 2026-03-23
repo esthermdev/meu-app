@@ -7,7 +7,7 @@ const EmergencyScreen = () => {
     <View style={styles.container}>
       <ScrollView style={styles.scrollview} contentContainerStyle={styles.contentContainer}>
         <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentHeader}>
-          Maine Ultimate's Emergency Preparedness Plan: Wainwright{'\n'}
+          Maine Ultimate&apos;s Emergency Preparedness Plan: Wainwright{'\n'}
         </CustomText>
 
         <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentSubHeader}>
@@ -73,9 +73,9 @@ const EmergencyScreen = () => {
           Roles of Maine Ultimate Staff:
         </CustomText>
         <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>
-          Ensure Wainwright's field access route is clear and accessible to emergency personnel. Ensure a Wainwright
-          Staff member has unlocked and opened any necessary gates on the field access route. Aid in crowd control if
-          necessary.{'\n'}
+          Ensure Wainwright&apos;s field access route is clear and accessible to emergency personnel. Ensure a
+          Wainwright Staff member has unlocked and opened any necessary gates on the field access route. Aid in crowd
+          control if necessary.{'\n'}
         </CustomText>
 
         <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentSubHeader}>

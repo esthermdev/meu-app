@@ -161,7 +161,7 @@ export default function SignIn() {
                 </TouchableOpacity> */}
 
                 <View style={styles.footer}>
-                  <CustomText style={styles.text}>Don't have an account? </CustomText>
+                  <CustomText style={styles.text}>Don&apos;t have an account? </CustomText>
                   <Link href={'/sign-up'} asChild>
                     <TouchableOpacity>
                       <CustomText style={styles.link}>Sign Up</CustomText>
@@ -266,12 +266,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     ...typography.heading5,
   },
-  text: {
-    ...typography.text,
-  },
   title: {
     ...typography.heading1,
     color: '#EA1D25',
     marginTop: 10,
+  },
+  text: {
+    ...typography.text,
   },
 });

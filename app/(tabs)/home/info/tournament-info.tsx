@@ -52,7 +52,8 @@ const TournamentInfo = () => {
             Food & Wine
           </Link>{' '}
           top 10 destinations for food and drinks! From Pizza to a 5 course dinner, ask us for a recommendation. For the
-          Ultimate Shopper, drive north for about 20 minutes and you'll find yourself in Freeport. Freeport is home to{' '}
+          Ultimate Shopper, drive north for about 20 minutes and you&apos;ll find yourself in Freeport. Freeport is home
+          to{' '}
           <Link
             style={styles.link}
             href={
@@ -81,7 +82,7 @@ const TournamentInfo = () => {
         <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentSubHeader}>
           Pronouns: he, him, his{' '}
           <Link style={styles.link} href="https://pronouns.org/">
-            What's this?
+            What&apos;s this?
           </Link>
         </CustomText>
         <Link href="https://www.maineultimate.org/">

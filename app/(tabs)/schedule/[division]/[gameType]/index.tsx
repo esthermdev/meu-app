@@ -17,7 +17,7 @@ import { useGamesBySchedule } from '@/hooks/useGamesData';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { MaterialIcons } from '@expo/vector-icons';
 import GameComponent from '@/components/features/gameviews/GameComponent';
-import CustomHeader from '@/components/headers/CustomHeader';
+import { CustomHeader } from '@/components/headers/CustomHeader';
 import CustomText from '@/components/CustomText';
 import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
 

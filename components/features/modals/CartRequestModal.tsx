@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import Dropdown from '../../Dropdown';
+import { Dropdown } from '../../Dropdown';
 import usePushNotifications from '@/hooks/usePushNotifications';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { typography } from '@/constants/Typography';

@@ -11,11 +11,10 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { useAuth } from '@/context/AuthProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome6, Foundation, MaterialIcons } from '@expo/vector-icons';
-import { router } from 'expo-router';
 import { images } from '@/constants';
 import { typography } from '@/constants/Typography';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
