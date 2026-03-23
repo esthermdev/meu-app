@@ -21,6 +21,7 @@ import { typography } from '@/constants/Typography';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import { ScrollView } from 'react-native-gesture-handler';
 import CustomText from '@/components/CustomText';
+import { SignUpPlayerSvg } from '@/assets/svg';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
@@ -73,77 +74,80 @@ export default function SignUp() {
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
-          <TouchableOpacity onPress={() => router.navigate('/(tabs)/home')} style={{ marginTop: 20 }}>
-            <Foundation name="home" size={25} color="#000" />
-          </TouchableOpacity>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.form}>
-              <Image source={images.logoW} style={styles.image} />
+          <View style={styles.contentContainer}>
+            <TouchableOpacity onPress={() => router.navigate('/(tabs)/home')} style={{ marginTop: 20 }}>
+              <Foundation name="home" size={25} color="#000" />
+            </TouchableOpacity>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <View style={styles.form}>
+                <Image source={images.logoW} style={styles.image} />
 
-              <CustomText style={styles.title}>Sign Up</CustomText>
-              <CustomText style={styles.subtitle}>Get started with a new account</CustomText>
+                <CustomText style={styles.title}>Sign Up</CustomText>
+                <CustomText style={styles.subtitle}>Get started with a new account</CustomText>
 
-              <View style={styles.inputContainer}>
-                <FontAwesome6 name="signature" size={20} color="#000" />
-                <TextInput
-                  placeholder="Full Name"
-                  value={fullName}
-                  onChangeText={(text) => {
-                    setFullName(text);
-                    setNameError(null);
-                  }}
-                  allowFontScaling={false}
-                  autoCapitalize="words"
-                  style={styles.inputWithIcon}
-                  placeholderTextColor={'lightgrey'}
-                />
-              </View>
-
-              {nameError && (
-                <View style={styles.errorContainer}>
-                  <Text style={styles.errorText}>{nameError}</Text>
+                <View style={styles.inputContainer}>
+                  <FontAwesome6 name="signature" size={20} color="#000" />
+                  <TextInput
+                    placeholder="Full Name"
+                    value={fullName}
+                    onChangeText={(text) => {
+                      setFullName(text);
+                      setNameError(null);
+                    }}
+                    allowFontScaling={false}
+                    autoCapitalize="words"
+                    style={styles.inputWithIcon}
+                    placeholderTextColor={'lightgrey'}
+                  />
                 </View>
-              )}
 
-              <View style={styles.inputContainer}>
-                <MaterialIcons name="email" size={20} color="#000" />
-                <TextInput
-                  placeholder="Email"
-                  value={email}
-                  onChangeText={(text) => {
-                    setEmail(text);
-                    setEmailError(null);
-                  }}
-                  allowFontScaling={false}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  style={styles.inputWithIcon}
-                  placeholderTextColor={'lightgrey'}
-                />
-              </View>
+                {nameError && (
+                  <View style={styles.errorContainer}>
+                    <Text style={styles.errorText}>{nameError}</Text>
+                  </View>
+                )}
 
-              {emailError && (
-                <View style={styles.errorContainer}>
-                  <Text style={styles.errorText}>{emailError}</Text>
+                <View style={styles.inputContainer}>
+                  <MaterialIcons name="email" size={20} color="#000" />
+                  <TextInput
+                    placeholder="Email"
+                    value={email}
+                    onChangeText={(text) => {
+                      setEmail(text);
+                      setEmailError(null);
+                    }}
+                    allowFontScaling={false}
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    style={styles.inputWithIcon}
+                    placeholderTextColor={'lightgrey'}
+                  />
                 </View>
-              )}
 
-              <PrimaryButton
-                onPress={handleSignUp}
-                title={loading ? 'Creating account...' : 'Sign Up'}
-                disabled={loading}
-              />
+                {emailError && (
+                  <View style={styles.errorContainer}>
+                    <Text style={styles.errorText}>{emailError}</Text>
+                  </View>
+                )}
 
-              <View style={styles.footer}>
-                <CustomText style={styles.text}>Already have an account? </CustomText>
-                <Link href={'../sign-in'} asChild>
-                  <TouchableOpacity>
-                    <CustomText style={styles.link}>Sign In</CustomText>
-                  </TouchableOpacity>
-                </Link>
+                <PrimaryButton
+                  onPress={handleSignUp}
+                  title={loading ? 'Creating account...' : 'Sign Up'}
+                  disabled={loading}
+                />
+
+                <View style={styles.footer}>
+                  <CustomText style={styles.text}>Already have an account? </CustomText>
+                  <Link href={'../sign-in'} asChild>
+                    <TouchableOpacity>
+                      <CustomText style={styles.link}>Sign In</CustomText>
+                    </TouchableOpacity>
+                  </Link>
+                </View>
               </View>
-            </View>
-          </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback>
+          </View>
+          <SignUpPlayerSvg />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -153,6 +157,8 @@ export default function SignUp() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  contentContainer: {
     paddingHorizontal: 25,
   },
   errorContainer: {
@@ -171,8 +177,8 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 20,
-    marginTop: 16,
+    marginBottom: 40,
+    marginTop: 20,
   },
   form: {
     flex: 1,
@@ -190,7 +196,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     flexDirection: 'row',
     height: 56,
-    marginBottom: 15,
+    marginBottom: 10,
     paddingHorizontal: 16,
   },
 

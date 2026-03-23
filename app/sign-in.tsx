@@ -23,6 +23,7 @@ import { typography } from '@/constants/Typography';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import { supabase } from '@/lib/supabase';
 import CustomText from '@/components/CustomText';
+import { SignInPlayerSvg } from '@/assets/svg';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -105,65 +106,72 @@ export default function SignIn() {
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
-          <TouchableOpacity onPress={() => router.replace('/(tabs)/home')} style={{ marginTop: 20 }}>
-            <Foundation name="home" size={25} color="#000" />
-          </TouchableOpacity>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.form}>
-              <Image source={images.logoW} style={styles.image} />
+          <View style={styles.contentContainer}>
+            <TouchableOpacity onPress={() => router.replace('/(tabs)/home')} style={{ marginTop: 20 }}>
+              <Foundation name="home" size={25} color="#000" />
+            </TouchableOpacity>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <View style={styles.form}>
+                <Image source={images.logoW} style={styles.image} />
 
-              <CustomText style={styles.title}>Sign In</CustomText>
-              <CustomText style={styles.subtitle}>Sign in to continue</CustomText>
+                <CustomText style={styles.title}>Sign In</CustomText>
+                <CustomText style={styles.subtitle}>Sign in to continue</CustomText>
 
-              <View style={styles.inputContainer}>
-                <MaterialIcons name="email" size={20} color="#000" />
-                <TextInput
-                  placeholder="Email"
-                  placeholderTextColor={'lightgrey'}
-                  value={email}
-                  onChangeText={(text) => {
-                    setEmail(text);
-                    setError(null);
-                  }}
-                  allowFontScaling={false}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  style={styles.inputWithIcon}
+                <View style={styles.inputContainer}>
+                  <MaterialIcons name="email" size={20} color="#000" />
+                  <TextInput
+                    placeholder="Email"
+                    placeholderTextColor={'lightgrey'}
+                    value={email}
+                    onChangeText={(text) => {
+                      setEmail(text);
+                      setError(null);
+                    }}
+                    allowFontScaling={false}
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    style={styles.inputWithIcon}
+                  />
+                </View>
+
+                {error && (
+                  <View style={styles.errorContainer}>
+                    <CustomText style={styles.errorText}>{error}</CustomText>
+                    <Link href="/sign-up" asChild>
+                      <TouchableOpacity>
+                        <CustomText style={styles.signUpLink}>Create an account</CustomText>
+                      </TouchableOpacity>
+                    </Link>
+                  </View>
+                )}
+
+                <PrimaryButton
+                  onPress={handleSignIn}
+                  title={loading ? 'Signing in...' : 'Sign In'}
+                  disabled={loading}
                 />
-              </View>
 
-              {error && (
-                <View style={styles.errorContainer}>
-                  <CustomText style={styles.errorText}>{error}</CustomText>
-                  <Link href="/sign-up" asChild>
+                {/* Add the App Store Reviewer button */}
+                {/* <TouchableOpacity 
+                  style={styles.reviewerButton} 
+                  onPress={handleReviewerSignIn}
+                  disabled={loading}
+                >
+                  <CustomText style={styles.reviewerButtonText}>App Store Reviewer Sign In</CustomText>
+                </TouchableOpacity> */}
+
+                <View style={styles.footer}>
+                  <CustomText style={styles.text}>Don't have an account? </CustomText>
+                  <Link href={'/sign-up'} asChild>
                     <TouchableOpacity>
-                      <CustomText style={styles.signUpLink}>Create an account</CustomText>
+                      <CustomText style={styles.link}>Sign Up</CustomText>
                     </TouchableOpacity>
                   </Link>
                 </View>
-              )}
-
-              <PrimaryButton onPress={handleSignIn} title={loading ? 'Signing in...' : 'Sign In'} disabled={loading} />
-
-              {/* Add the App Store Reviewer button */}
-              {/* <TouchableOpacity 
-                style={styles.reviewerButton} 
-                onPress={handleReviewerSignIn}
-                disabled={loading}
-              >
-                <CustomText style={styles.reviewerButtonText}>App Store Reviewer Sign In</CustomText>
-              </TouchableOpacity> */}
-
-              <View style={styles.footer}>
-                <CustomText style={styles.text}>Don't have an account? </CustomText>
-                <Link href={'/sign-up'} asChild>
-                  <TouchableOpacity>
-                    <CustomText style={styles.link}>Sign Up</CustomText>
-                  </TouchableOpacity>
-                </Link>
               </View>
-            </View>
-          </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback>
+          </View>
+          <SignInPlayerSvg style={{ alignSelf: 'flex-end' }} />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -173,6 +181,8 @@ export default function SignIn() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  contentContainer: {
     paddingHorizontal: 25,
   },
   errorContainer: {
@@ -191,8 +201,8 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 20,
-    marginTop: 16,
+    marginBottom: 40,
+    marginTop: 20,
   },
   form: {
     flex: 1,
@@ -210,7 +220,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     flexDirection: 'row',
     height: 56,
-    marginBottom: 15,
+    marginBottom: 10,
     paddingHorizontal: 16,
   },
 
