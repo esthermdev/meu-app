@@ -1,4 +1,4 @@
-import { StatusBar, Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import { Redirect, router, Stack } from 'expo-router';
 
 import { useAuth } from '@/context/AuthProvider';
@@ -23,86 +23,83 @@ export default function UserLayout() {
 
   // This layout can be deferred because it's not the root layout.
   return (
-    <>
-      <StatusBar barStyle="default" backgroundColor="#EA1D25" translucent />
-      <Stack>
-        <Stack.Screen
-          name="index"
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="account"
-          options={{
-            title: 'My Profile',
-            headerTitleAlign: 'center',
-            headerStyle: {
-              backgroundColor: '#EA1D25',
-            },
-            headerTintColor: '#fff',
-            headerLeft: () => (
-              <TouchableOpacity onPress={() => router.back()}>
-                <MaterialIcons name="arrow-back" size={24} color="#fff" />
-              </TouchableOpacity>
-            ),
-          }}
-        />
-        <Stack.Screen
-          name="favorites"
-          options={{
-            title: 'Favorites',
-            headerTitleAlign: 'center',
-            headerStyle: {
-              backgroundColor: '#EA1D25',
-            },
-            headerTintColor: '#fff',
-            headerLeft: () => (
-              <TouchableOpacity onPress={() => router.back()}>
-                <MaterialIcons name="arrow-back" size={24} color="#fff" />
-              </TouchableOpacity>
-            ),
-          }}
-        />
-        <Stack.Screen
-          name="feedback"
-          options={{
-            title: 'Feedback',
-            headerTitleAlign: 'center',
-            headerStyle: {
-              backgroundColor: '#EA1D25',
-            },
-            headerTintColor: '#fff',
-            headerLeft: () => (
-              <TouchableOpacity onPress={() => router.back()}>
-                <MaterialIcons name="arrow-back" size={24} color="#fff" />
-              </TouchableOpacity>
-            ),
-          }}
-        />
-        <Stack.Screen
-          name="delete-account"
-          options={{
-            title: 'Delete Account',
-            headerTitleAlign: 'center',
-            headerStyle: {
-              backgroundColor: '#EA1D25',
-            },
-            headerTintColor: '#fff',
-            headerLeft: () => (
-              <TouchableOpacity onPress={() => router.back()}>
-                <MaterialIcons name="arrow-back" size={24} color="#fff" />
-              </TouchableOpacity>
-            ),
-          }}
-        />
-        <Stack.Screen
-          name="admin"
-          options={{
-            headerShown: false,
-          }}
-        />
-      </Stack>
-    </>
+    <Stack>
+      <Stack.Screen
+        name="index"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="account"
+        options={{
+          title: 'My Profile',
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: '#EA1D25',
+          },
+          headerTintColor: '#fff',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <MaterialIcons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="favorites"
+        options={{
+          title: 'Favorites',
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: '#EA1D25',
+          },
+          headerTintColor: '#fff',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <MaterialIcons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="feedback"
+        options={{
+          title: 'Feedback',
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: '#EA1D25',
+          },
+          headerTintColor: '#fff',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <MaterialIcons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="delete-account"
+        options={{
+          title: 'Delete Account',
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: '#EA1D25',
+          },
+          headerTintColor: '#fff',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <MaterialIcons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="admin"
+        options={{
+          headerShown: false,
+        }}
+      />
+    </Stack>
   );
 }

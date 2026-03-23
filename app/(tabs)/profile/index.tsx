@@ -39,7 +39,7 @@ export default function UserDashboard() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }} edges={['top']}>
       <ScrollView style={styles.container}>
         <View style={styles.header}>
           <CustomText style={styles.welcomeText}>

@@ -407,7 +407,7 @@ const MyGames = () => {
       <View style={styles.centerContainer}>
         <Text style={styles.messageText}>
           Please{' '}
-          <Text style={styles.linkText} onPress={() => router.push('/(user)')}>
+          <Text style={styles.linkText} onPress={() => router.push('/(tabs)/profile')}>
             log in
           </Text>{' '}
           to view your favorite games
