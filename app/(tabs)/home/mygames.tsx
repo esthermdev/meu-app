@@ -457,17 +457,13 @@ const MyGames = () => {
         </>
       ) : (
         <View style={styles.centerContainer}>
-          <Text style={styles.messageText}>
-            No games found. Add some teams to your favorites list{' '}
-            <Text onPress={() => router.push('/(tabs)/profile')} style={styles.linkText}>
-              here
-            </Text>
-            !
-          </Text>
+          <Text style={styles.mainMessageText}>No games to show.</Text>
+          <Text style={styles.messageText}>Select your favorite teams to see their matches here.</Text>
           <PrimaryButton
-            title="Go back"
-            onPress={() => router.back()}
-            style={{ backgroundColor: '#000', padding: 12, width: 125 }}
+            title="Find Teams +"
+            onPress={() => router.push('/favorites')}
+            style={{ height: 35, paddingHorizontal: 15 }}
+            textStyle={{ ...typography.buttonLarge }}
           />
         </View>
       )}
