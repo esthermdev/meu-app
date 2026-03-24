@@ -460,8 +460,8 @@ const MyGames = () => {
           <Text style={styles.mainMessageText}>No games to show.</Text>
           <Text style={styles.messageText}>Select your favorite teams to see their matches here.</Text>
           <PrimaryButton
-            title="Find Teams +"
-            onPress={() => router.push('/favorites')}
+            title="Find Teams   +"
+            onPress={() => router.push('/teams')}
             style={{ height: 35, paddingHorizontal: 15 }}
             textStyle={{ ...typography.buttonLarge }}
           />
