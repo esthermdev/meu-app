@@ -82,16 +82,13 @@ const GameComponent: React.FC<GameComponentProps> = ({ game }) => {
   );
 
   return (
-    <View style={styles.container}>
+    <>
       <View key={game.id.toString()}>{renderGame({ item: game as FetchedGame })}</View>
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   dateText: {
     ...typography.textBold,
     color: '#999',
@@ -103,7 +100,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     elevation: 2,
     gap: 15,
-    marginTop: 10,
     padding: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

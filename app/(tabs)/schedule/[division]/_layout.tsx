@@ -14,7 +14,6 @@ export default function DivisionLayout() {
           header: () => <CustomHeader title={divisionName} />,
         }}
       />
-      <Stack.Screen name="[gameType]" options={{ headerShown: false }} />
     </Stack>
   );
 }
