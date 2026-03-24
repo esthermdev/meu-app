@@ -4,13 +4,11 @@ import { FlatList, Image, StyleSheet, View } from 'react-native';
 import CustomText from '@/components/CustomText';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { typography } from '@/constants/Typography';
-import { Database } from '@/database.types';
 import { supabase } from '@/lib/supabase';
-
-type VolunteersRow = Database['public']['Tables']['volunteers']['Row'];
+import { VolunteerRow } from '@/types/database';
 
 const Volunteers = () => {
-  const [volunteers, setVolunteers] = useState<VolunteersRow[]>([]);
+  const [volunteers, setVolunteers] = useState<VolunteerRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -44,7 +42,7 @@ const Volunteers = () => {
     }
   };
 
-  const renderItem = ({ item }: { item: VolunteersRow }) => (
+  const renderItem = ({ item }: { item: VolunteerRow }) => (
     <View style={styles.itemContainer}>
       <Image
         style={styles.avatar}

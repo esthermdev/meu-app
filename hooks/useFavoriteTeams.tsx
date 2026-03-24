@@ -1,20 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 
-import { Database } from '@/database.types';
 import { supabase } from '@/lib/supabase';
+import { TeamWithDetails } from '@/types/teams';
 
 import { Session } from '@supabase/supabase-js';
-
-type TeamRow = Database['public']['Tables']['teams']['Row'];
-type PoolRow = Database['public']['Tables']['pools']['Row'];
-type DivisionRow = Database['public']['Tables']['divisions']['Row'];
-
-export interface TeamWithDetails extends TeamRow {
-  pool: PoolRow | null;
-  division_details: DivisionRow | null;
-  is_favorited?: boolean;
-}
 
 const MAX_FAVORITES = 5;
 

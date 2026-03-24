@@ -6,31 +6,19 @@ import { Card } from '@/components/Card';
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
-import { Database } from '@/database.types';
 import { useTrainerRequestsSubscription } from '@/hooks/realtime/useRequestSubscriptions';
 import { supabase } from '@/lib/supabase';
+import { MedicalRequestWithRelations, ProfileRow, RequestStatus } from '@/types/requests';
 import { getTimeSince } from '@/utils/getTimeSince';
 
 import { MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-// Define types based on your Supabase schema
-type MedicalRequest = Database['public']['Tables']['medical_requests']['Row'] & {
-  trainer: {
-    full_name: string | null;
-  } | null;
-  fields: {
-    name: string;
-  } | null;
-};
-
-type Profile = Database['public']['Tables']['profiles']['Row'];
-
 const TrainerRequestsList = () => {
-  const [requests, setRequests] = useState<MedicalRequest[]>([]);
+  const [requests, setRequests] = useState<MedicalRequestWithRelations[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const { profile } = useAuth() as { profile: Profile };
+  const { profile } = useAuth() as { profile: ProfileRow };
 
   const fetchRequests = useCallback(async (isInitialLoad: boolean = false) => {
     try {
@@ -47,7 +35,7 @@ const TrainerRequestsList = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setRequests(data as MedicalRequest[]);
+      setRequests(data as MedicalRequestWithRelations[]);
       console.log(`Loaded ${data?.length || 0} trainer requests`);
     } catch (error) {
       console.error('Error fetching requests:', error);
@@ -72,7 +60,7 @@ const TrainerRequestsList = () => {
       const { data, error } = await supabase
         .from('medical_requests')
         .update({
-          status: 'resolved' as Database['public']['Enums']['request_status'],
+          status: 'resolved' as RequestStatus,
           assigned_to: profile.id,
           trainer: profile.id,
           updated_at: new Date().toISOString(),
@@ -153,7 +141,7 @@ const TrainerRequestsList = () => {
     }
   };
 
-  const renderItem = ({ item }: { item: MedicalRequest }) => {
+  const renderItem = ({ item }: { item: MedicalRequestWithRelations }) => {
     const timeColor = getTimeColor(item.created_at);
 
     return (

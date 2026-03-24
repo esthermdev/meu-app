@@ -3,39 +3,24 @@ import { Image, StyleSheet, View } from 'react-native';
 
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
-import { Database } from '@/database.types';
 import { useGamesByRound } from '@/hooks/useGamesData';
+import { GameWithRelations } from '@/types/games';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
 
 import { FlashList } from '@shopify/flash-list';
 
-type GamesRow = Database['public']['Tables']['games']['Row'];
-type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
-type TeamRow = Database['public']['Tables']['teams']['Row'];
-type ScoresRow = Database['public']['Tables']['scores']['Row'];
-type FieldsRow = Database['public']['Tables']['fields']['Row'];
-
-// Define the interface that matches what useGamesByRound returns
-interface FetchedGame extends GamesRow {
-  team1: TeamRow | null;
-  team2: TeamRow | null;
-  datetime: DatetimeRow | null;
-  scores: ScoresRow[] | null;
-  field: FieldsRow | null;
-}
-
-type Props = {
+type PoolProps = {
   poolId: number;
   divisionId: number;
 };
 
-const PoolGameView: React.FC<Props> = ({ poolId, divisionId }) => {
+const PoolGameView: React.FC<PoolProps> = ({ poolId, divisionId }) => {
   const { games, refreshData } = useGamesByRound(divisionId, 1);
 
-  const poolGames = games.filter((game) => game.pool_id === poolId) as FetchedGame[];
+  const poolGames = games.filter((game) => game.pool_id === poolId) as GameWithRelations[];
 
-  const renderGame = ({ item }: { item: FetchedGame }) => (
+  const renderGame = ({ item }: { item: GameWithRelations }) => (
     <View style={styles.gameCard}>
       <View style={styles.gameHeader}>
         <CustomText style={styles.dateText}>{formatDate(item.datetime?.date, 'short')}</CustomText>

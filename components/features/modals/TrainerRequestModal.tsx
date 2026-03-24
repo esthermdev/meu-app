@@ -13,8 +13,8 @@ import {
 } from 'react-native';
 
 import { typography } from '@/constants/Typography';
-import { Database } from '@/database.types';
 import { supabase } from '@/lib/supabase';
+import { MedicalRequestInsert, RequestStatus } from '@/types/requests';
 
 import ModalButton from '../../buttons/ModalButtons';
 import CustomText from '../../CustomText';
@@ -26,9 +26,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 const { height } = Dimensions.get('window');
 const modalHeight = height * 0.8;
-
-// Define types from your database schema
-type RequestStatus = Database['public']['Enums']['request_status'];
 
 // Define priority level type
 type PriorityLevel = 'High' | 'Medium' | 'Low';
@@ -115,7 +112,7 @@ const TrainerRequestButton = () => {
       }
 
       // Create medical request with proper types
-      const insertData: Database['public']['Tables']['medical_requests']['Insert'] = {
+      const insertData: MedicalRequestInsert = {
         field_number: selectedField,
         status: 'pending' as RequestStatus,
         priority_level: priorityLevel,

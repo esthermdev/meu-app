@@ -1,12 +1,9 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import { Database } from '@/database.types';
 import { supabase } from '@/lib/supabase';
+import { GameRow, ScoreRow } from '@/types/games';
 
 import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
-
-type GamesRow = Database['public']['Tables']['games']['Row'];
-type ScoresRow = Database['public']['Tables']['scores']['Row'];
 
 export function useGameSubscription(divisionId: number, roundId: number, onUpdate: () => void) {
   const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -38,9 +35,9 @@ export function useGameSubscription(divisionId: number, roundId: number, onUpdat
           table: 'games',
           filter: `division_id=eq.${divisionId}`,
         },
-        (payload: RealtimePostgresChangesPayload<GamesRow>) => {
+        (payload: RealtimePostgresChangesPayload<GameRow>) => {
           // Check if this game belongs to our round
-          const updatedGame = payload.new as GamesRow;
+          const updatedGame = payload.new as GameRow;
           if (updatedGame && updatedGame.round_id === roundId) {
             debouncedUpdate();
           }
@@ -53,7 +50,7 @@ export function useGameSubscription(divisionId: number, roundId: number, onUpdat
           schema: 'public',
           table: 'scores',
         },
-        (payload: RealtimePostgresChangesPayload<ScoresRow>) => {
+        (payload: RealtimePostgresChangesPayload<ScoreRow>) => {
           console.log('Received score update:', payload);
           debouncedUpdate();
         },
@@ -109,8 +106,8 @@ export function useScheduleSubscription(
           schema: 'public',
           table: 'scores',
         },
-        (payload: RealtimePostgresChangesPayload<ScoresRow>) => {
-          const updatedScore = payload.new as ScoresRow;
+        (payload: RealtimePostgresChangesPayload<ScoreRow>) => {
+          const updatedScore = payload.new as ScoreRow;
           const currentGameIds = gameIdsRef.current;
 
           // Check if this score update is relevant to our current schedule
@@ -177,7 +174,7 @@ export function useScoreSubscription(gameIds: number[], onUpdate: (updatedGameId
           schema: 'public',
           table: 'scores',
         },
-        (payload: RealtimePostgresChangesPayload<ScoresRow>) => {
+        (payload: RealtimePostgresChangesPayload<ScoreRow>) => {
           console.log('Received score update:', payload);
 
           // Check if this update is relevant to our games
@@ -240,8 +237,8 @@ export function useFavoriteGamesSubscription(gameIds: number[], onUpdate: () => 
           schema: 'public',
           table: 'scores',
         },
-        (payload: RealtimePostgresChangesPayload<ScoresRow>) => {
-          const updatedScore = payload.new as ScoresRow;
+        (payload: RealtimePostgresChangesPayload<ScoreRow>) => {
+          const updatedScore = payload.new as ScoreRow;
           const currentGameIds = gameIdsRef.current;
 
           // Check if this score update is relevant to favorite games

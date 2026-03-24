@@ -18,30 +18,16 @@ import UpdateGameScoreModal from '@/components/features/modals/UpdateGameScoreMo
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
-import { Database } from '@/database.types';
 import { useFavoriteGamesSubscription } from '@/hooks/realtime/useGameSubscriptions';
 import { supabase } from '@/lib/supabase';
+import { GameWithRelations } from '@/types/games';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
 import { updateGameScore } from '@/utils/updateGameScore';
 
-type GamesRow = Database['public']['Tables']['games']['Row'];
-type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
-type TeamRow = Database['public']['Tables']['teams']['Row'];
-type ScoresRow = Database['public']['Tables']['scores']['Row'];
-type FieldsRow = Database['public']['Tables']['fields']['Row'];
-
-interface Games extends GamesRow {
-  datetime: DatetimeRow | null;
-  team1: TeamRow;
-  team2: TeamRow;
-  scores?: ScoresRow[];
-  field: FieldsRow | null;
-}
-
 const MyGames = () => {
-  const [games, setGames] = useState<Games[]>([]);
-  const [filteredGames, setFilteredGames] = useState<Games[]>([]);
+  const [games, setGames] = useState<GameWithRelations[]>([]);
+  const [filteredGames, setFilteredGames] = useState<GameWithRelations[]>([]);
   const [favoriteTeamIds, setFavoriteTeamIds] = useState<number[]>([]);
 
   const [loading, setLoading] = useState(true);
@@ -52,7 +38,7 @@ const MyGames = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [currentGame, setCurrentGame] = useState<Games | null>(null);
+  const [currentGame, setCurrentGame] = useState<GameWithRelations | null>(null);
   const [team1Score, setTeam1Score] = useState('0');
   const [team2Score, setTeam2Score] = useState('0');
 
@@ -204,7 +190,7 @@ const MyGames = () => {
 
       if (gamesError) throw gamesError;
 
-      setGames(data as unknown as Games[]);
+      setGames(data as unknown as GameWithRelations[]);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch favorite games');
       console.error('Error fetching favorite games:', error);
@@ -223,7 +209,7 @@ const MyGames = () => {
   }, [session]);
 
   // This function prepares the modal with game data and shows it
-  const openScoreModal = (game: Games) => {
+  const openScoreModal = (game: GameWithRelations) => {
     setCurrentGame(game);
     // Set initial scores from existing data if available
     if (game.scores && game.scores[0]) {
@@ -330,8 +316,10 @@ const MyGames = () => {
     </View>
   );
 
-  const renderGame = ({ item }: { item: Games }) => {
+  const renderGame = ({ item }: { item: GameWithRelations }) => {
     const isGameFinished = item.scores && item.scores[0]?.is_finished;
+    const isTeam1Favorite = item.team1 ? favoriteTeamIds.includes(item.team1.id) : false;
+    const isTeam2Favorite = item.team2 ? favoriteTeamIds.includes(item.team2.id) : false;
 
     return (
       <View style={styles.gameCard}>
@@ -351,14 +339,14 @@ const MyGames = () => {
             <View style={styles.teamRow}>
               <Image
                 source={
-                  item.team1.avatar_uri
+                  item.team1?.avatar_uri
                     ? { uri: item.team1.avatar_uri }
                     : require('@/assets/images/avatar-placeholder.png')
                 }
                 style={styles.teamLogo}
               />
-              <CustomText style={[styles.teamText, favoriteTeamIds.includes(item.team1.id) && styles.highlightedTeam]}>
-                {item.team1.name}
+              <CustomText style={[styles.teamText, isTeam1Favorite && styles.highlightedTeam]}>
+                {item.team1?.name || 'TBD'}
               </CustomText>
             </View>
 
@@ -372,7 +360,7 @@ const MyGames = () => {
                 }
                 style={styles.teamLogo}
               />
-              <CustomText style={[styles.teamText, favoriteTeamIds.includes(item.team2?.id) && styles.highlightedTeam]}>
+              <CustomText style={[styles.teamText, isTeam2Favorite && styles.highlightedTeam]}>
                 {item.team2?.name || 'TBD'}
               </CustomText>
             </View>
@@ -446,8 +434,8 @@ const MyGames = () => {
               visible={modalVisible}
               onClose={() => setModalVisible(false)}
               onSubmit={submitScore}
-              team1Name={currentGame.team1.name}
-              team2Name={currentGame.team2.name}
+              team1Name={currentGame.team1?.name || 'TBD'}
+              team2Name={currentGame.team2?.name || 'TBD'}
               team1Score={team1Score}
               team2Score={team2Score}
               setTeam1Score={setTeam1Score}

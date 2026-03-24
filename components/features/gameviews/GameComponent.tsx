@@ -3,31 +3,16 @@ import { Image, StyleSheet, View } from 'react-native';
 
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
-import { Database } from '@/database.types';
+import { GameWithRelations } from '@/types/games';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
 
-type GamesRow = Database['public']['Tables']['games']['Row'];
-type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
-type TeamRow = Database['public']['Tables']['teams']['Row'];
-type ScoresRow = Database['public']['Tables']['scores']['Row'];
-type FieldsRow = Database['public']['Tables']['fields']['Row'];
-
-// Define the interface that matches what useRoundIds returns
-interface FetchedGame extends GamesRow {
-  team1: TeamRow | null;
-  team2: TeamRow | null;
-  datetime: DatetimeRow | null;
-  scores: ScoresRow[] | null;
-  field: FieldsRow | null;
-}
-
 interface GameComponentProps {
-  game: FetchedGame;
+  game: GameWithRelations;
 }
 
 const GameComponent: React.FC<GameComponentProps> = ({ game }) => {
-  const renderGame = ({ item }: { item: FetchedGame }) => (
+  const renderGame = ({ item }: { item: GameWithRelations }) => (
     <View style={styles.gameCard}>
       <View style={styles.gameHeader}>
         <CustomText style={styles.dateText}>{formatDate(item.datetime?.date, 'short')}</CustomText>
@@ -83,7 +68,7 @@ const GameComponent: React.FC<GameComponentProps> = ({ game }) => {
 
   return (
     <>
-      <View key={game.id.toString()}>{renderGame({ item: game as FetchedGame })}</View>
+      <View key={game.id.toString()}>{renderGame({ item: game })}</View>
     </>
   );
 };

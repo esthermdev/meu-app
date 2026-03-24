@@ -14,14 +14,12 @@ import {
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
-import { Database } from '@/database.types';
 import { supabase } from '@/lib/supabase';
+import { ProfileUpdate } from '@/types/database';
 
 import CustomText from './CustomText';
 import { FontAwesome6, MaterialIcons } from '@expo/vector-icons';
 import { Session } from '@supabase/supabase-js';
-
-type ProfileUpdate = Database['public']['Tables']['profiles']['Update'];
 
 export default function Account({ session }: { session: Session }) {
   const { refreshProfile } = useAuth();

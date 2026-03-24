@@ -17,32 +17,17 @@ import { router } from 'expo-router';
 import CustomText from '@/components/CustomText';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { typography } from '@/constants/Typography';
-import { Database } from '@/database.types';
 import { supabase } from '@/lib/supabase';
+import { DivisionRow } from '@/types/database';
+import { DivisionDetails } from '@/types/divisions';
+import { TeamWithDetails } from '@/types/teams';
 
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 
-type TeamRow = Database['public']['Tables']['teams']['Row'];
-type PoolRow = Database['public']['Tables']['pools']['Row'];
-type DivisionRow = Database['public']['Tables']['divisions']['Row'];
-
-interface TeamWithDetails extends TeamRow {
-  pool: PoolRow | null;
-  division_details: DivisionRow | null;
-}
-
-interface DivisionInfo {
-  title: string;
-  code: string;
-  color: string;
-  color_light: string;
-  id: number;
-}
-
 const Teams = () => {
   const [teams, setTeams] = useState<TeamWithDetails[]>([]);
-  const [divisions, setDivisions] = useState<DivisionInfo[]>([]);
+  const [divisions, setDivisions] = useState<DivisionDetails[]>([]);
   const [selectedDivision, setSelectedDivision] = useState<string>('All');
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -75,7 +60,7 @@ const Teams = () => {
       if (divisionsError) throw divisionsError;
 
       // Create "All" filter and add with fetched divisions
-      const allDivisions: DivisionInfo[] = [
+      const allDivisions: DivisionDetails[] = [
         {
           id: 0,
           title: 'All',

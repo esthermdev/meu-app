@@ -6,27 +6,18 @@ import { Card } from '@/components/Card';
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
-import { Database } from '@/database.types';
 import { useWaterRequestsSubscription } from '@/hooks/realtime/useRequestSubscriptions';
 import { supabase } from '@/lib/supabase';
+import { ProfileRow, RequestStatus, WaterRequestWithField } from '@/types/requests';
 import { getTimeSince } from '@/utils/getTimeSince';
 
 import { MaterialIcons } from '@expo/vector-icons';
 
-type WaterRequests = Database['public']['Tables']['water_requests']['Row'] & {
-  fields?: {
-    name: string;
-    location?: string;
-  };
-};
-
-type Volunteer = Database['public']['Tables']['profiles']['Row'];
-
 const WaterRequestsList = () => {
-  const [requests, setRequests] = useState<WaterRequests[]>([]);
+  const [requests, setRequests] = useState<WaterRequestWithField[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const { profile } = useAuth() as { profile: Volunteer };
+  const { profile } = useAuth() as { profile: ProfileRow };
 
   const fetchRequests = useCallback(async (isInitialLoad: boolean = false) => {
     try {
@@ -46,7 +37,7 @@ const WaterRequestsList = () => {
         throw error;
       }
 
-      setRequests(data as WaterRequests[]);
+      setRequests(data as WaterRequestWithField[]);
     } catch (error) {
       console.error('Error fetching requests:', error);
     } finally {
@@ -67,7 +58,7 @@ const WaterRequestsList = () => {
       const { error } = await supabase
         .from('water_requests')
         .update({
-          status: 'resolved' as Database['public']['Enums']['request_status'],
+          status: 'resolved' as RequestStatus,
           volunteer: profile?.full_name || null,
           updated_at: new Date().toISOString(),
         })
@@ -83,7 +74,7 @@ const WaterRequestsList = () => {
     }
   };
 
-  const renderItem = ({ item }: { item: WaterRequests }) => (
+  const renderItem = ({ item }: { item: WaterRequestWithField }) => (
     <Card style={styles.cardContainer}>
       <View style={styles.headerContainer}>
         <CustomText style={styles.headerTitle}>Water</CustomText>

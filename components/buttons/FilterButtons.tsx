@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-import { Database } from '@/database.types';
+import { DivisionEnum } from '@/types/database';
 
-type Division = Database['public']['Enums']['division'] | 'All';
+type Division = DivisionEnum | 'All';
 
 interface FilterButtonProps {
   title: string;

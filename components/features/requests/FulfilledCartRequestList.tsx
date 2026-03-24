@@ -5,35 +5,24 @@ import { Card } from '@/components/Card';
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
-import { Database } from '@/database.types';
 import { supabase } from '@/lib/supabase';
+import { CartRequestWithDriver, LocationType, ProfileRow, RequestStatus } from '@/types/requests';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-// Define types based on your Supabase schema
-type CartRequest = Database['public']['Tables']['cart_requests']['Row'] & {
-  driver: {
-    full_name: string | null;
-  } | null;
-  from_field_name?: string | null;
-  to_field_name?: string | null;
-};
-type Profile = Database['public']['Tables']['profiles']['Row'];
-type LocationType = Database['public']['Enums']['location_type'];
 
 const FulfilledCartRequestsList = ({
   registerRefreshCallback,
 }: {
   registerRefreshCallback: (callback: () => void) => void;
 }) => {
-  const [requests, setRequests] = useState<CartRequest[]>([]);
-  const [pendingRides, setPendingRides] = useState<CartRequest[]>([]);
-  const [confirmedRides, setConfirmedRides] = useState<CartRequest[]>([]);
-  const [completedRides, setCompletedRides] = useState<CartRequest[]>([]);
-  const [expiredRides, setExpiredRides] = useState<CartRequest[]>([]);
+  const [requests, setRequests] = useState<CartRequestWithDriver[]>([]);
+  const [pendingRides, setPendingRides] = useState<CartRequestWithDriver[]>([]);
+  const [confirmedRides, setConfirmedRides] = useState<CartRequestWithDriver[]>([]);
+  const [completedRides, setCompletedRides] = useState<CartRequestWithDriver[]>([]);
+  const [expiredRides, setExpiredRides] = useState<CartRequestWithDriver[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const { profile } = useAuth() as { profile: Profile };
+  const { profile } = useAuth() as { profile: ProfileRow };
 
   // Collapsible section states
   const [pendingCollapsed, setPendingCollapsed] = useState<boolean>(true);
@@ -68,11 +57,11 @@ const FulfilledCartRequestsList = ({
 
       // Process and categorize requests in a single pass
       const categorizedRequests = {
-        pending: [] as CartRequest[],
-        confirmed: [] as CartRequest[],
-        completed: [] as CartRequest[],
-        expired: [] as CartRequest[],
-        all: [] as CartRequest[],
+        pending: [] as CartRequestWithDriver[],
+        confirmed: [] as CartRequestWithDriver[],
+        completed: [] as CartRequestWithDriver[],
+        expired: [] as CartRequestWithDriver[],
+        all: [] as CartRequestWithDriver[],
       };
 
       requestsResult.data.forEach((request) => {
@@ -204,7 +193,7 @@ const FulfilledCartRequestsList = ({
       const { error } = await supabase
         .from('cart_requests')
         .update({
-          status: 'expired' as Database['public']['Enums']['request_status'],
+          status: 'expired' as RequestStatus,
         })
         .eq('id', requestId);
 
@@ -253,7 +242,7 @@ const FulfilledCartRequestsList = ({
       const { error } = await supabase
         .from('cart_requests')
         .update({
-          status: 'pending' as Database['public']['Enums']['request_status'],
+          status: 'pending' as RequestStatus,
         })
         .eq('id', requestId);
 
@@ -283,7 +272,7 @@ const FulfilledCartRequestsList = ({
     }
   };
 
-  const renderItem = ({ item }: { item: CartRequest }) => {
+  const renderItem = ({ item }: { item: CartRequestWithDriver }) => {
     const statusBadge = getStatusBadge(item.status);
     const isLoading = loadingRequests.has(item.id);
 

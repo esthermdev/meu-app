@@ -1,25 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { Database } from '@/database.types';
 import { supabase } from '@/lib/supabase';
+import { PoolRow } from '@/types/database';
+import { GameWithRelations } from '@/types/games';
 
 import { useGameSubscription, useScheduleSubscription } from './realtime/useGameSubscriptions';
 
-type GamesRow = Database['public']['Tables']['games']['Row'];
-type TeamsRow = Database['public']['Tables']['teams']['Row'];
-type PoolsRow = Database['public']['Tables']['pools']['Row'];
-type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
-type ScoresRow = Database['public']['Tables']['scores']['Row'];
-
-interface Games extends GamesRow {
-  team1: TeamsRow | null;
-  team2: TeamsRow | null;
-  datetime: DatetimeRow | null;
-  scores: ScoresRow[] | null;
-}
-
 export function useGamesByRound(divisionId: number, roundId: number) {
-  const [games, setGames] = useState<Games[]>([]);
+  const [games, setGames] = useState<GameWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -48,7 +36,7 @@ export function useGamesByRound(divisionId: number, roundId: number) {
         .order('datetime_id');
 
       if (error) throw error;
-      setGames(data as unknown as Games[]);
+      setGames(data as unknown as GameWithRelations[]);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An error occurred');
     } finally {
@@ -134,7 +122,7 @@ export function useGamesBySchedule(divisionId: number, scheduleId: number, refre
 }
 
 export function usePoolsByDivision(divisionId: number) {
-  const [pools, setPools] = useState<PoolsRow[]>([]);
+  const [pools, setPools] = useState<PoolRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

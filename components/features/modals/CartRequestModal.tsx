@@ -14,9 +14,9 @@ import {
 } from 'react-native';
 
 import { typography } from '@/constants/Typography';
-import { Database } from '@/database.types';
 import usePushNotifications from '@/hooks/usePushNotifications';
 import { supabase } from '@/lib/supabase';
+import { CartRequestInsert, LocationType, RequestStatus } from '@/types/requests';
 
 import ModalButton from '../../buttons/ModalButtons';
 import CustomText from '../../CustomText';
@@ -28,10 +28,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 const { height } = Dimensions.get('window');
 const modalHeight = height * 0.8;
-
-// Import the location_type enum directly from the database types
-type LocationType = Database['public']['Enums']['location_type'];
-type RequestStatus = Database['public']['Enums']['request_status'];
 
 // Define locations as a const array of valid LocationType values
 const LOCATIONS: LocationType[] = ['Field', 'Tourney Central', 'Lot 1 (Grass)', 'Lot 2 (Pavement)', 'Entrance'];
@@ -116,7 +112,7 @@ const CartRequestButton = () => {
 
     try {
       // Create insert object with proper types
-      const insertData: Database['public']['Tables']['cart_requests']['Insert'] = {
+      const insertData: CartRequestInsert = {
         from_location: fromLocation,
         to_location: toLocation,
         from_field_number: fromLocation === 'Field' ? parseInt(fromFieldNumber) : null,

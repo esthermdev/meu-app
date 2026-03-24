@@ -6,33 +6,26 @@ import { Card } from '@/components/Card';
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
-import { Database } from '@/database.types';
 import { supabase } from '@/lib/supabase';
+import { CartRequestRow, CartRequestWithFieldNames, LocationType, ProfileRow, RequestStatus } from '@/types/requests';
 import { getTimeColor } from '@/utils/getTimeColor';
 import { getTimeSince } from '@/utils/getTimeSince';
 
 import { Ionicons } from '@expo/vector-icons';
 
-type CartRequest = Database['public']['Tables']['cart_requests']['Row'] & {
-  from_field_name?: string | null;
-  to_field_name?: string | null;
-};
-
-type Profile = Database['public']['Tables']['profiles']['Row'];
-type LocationType = Database['public']['Enums']['location_type'];
 type CartListItem = {
   key: string;
   kind: 'current' | 'pending';
-  request: CartRequest;
+  request: CartRequestWithFieldNames;
 };
 
 const CartRequestsList = ({ registerRefreshCallback }: { registerRefreshCallback: (callback: () => void) => void }) => {
-  const [currentRides, setCurrentRides] = useState<CartRequest[]>([]);
-  const [pendingRides, setPendingRides] = useState<CartRequest[]>([]);
+  const [currentRides, setCurrentRides] = useState<CartRequestWithFieldNames[]>([]);
+  const [pendingRides, setPendingRides] = useState<CartRequestWithFieldNames[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [isPendingCollapsed, setIsPendingCollapsed] = useState<boolean>(false);
-  const { profile } = useAuth() as { profile: Profile };
+  const { profile } = useAuth() as { profile: ProfileRow };
   const fieldsMapRef = useRef<Record<number, string> | null>(null);
 
   const getFieldMap = useCallback(async () => {
@@ -81,7 +74,7 @@ const CartRequestsList = ({ registerRefreshCallback }: { registerRefreshCallback
           throw currentResult.error;
         }
 
-        const enhanceRequest = (request: Database['public']['Tables']['cart_requests']['Row']): CartRequest => ({
+        const enhanceRequest = (request: CartRequestRow): CartRequestWithFieldNames => ({
           ...request,
           from_field_name: request.from_field_number ? fieldMap[request.from_field_number] : null,
           to_field_name: request.to_field_number ? fieldMap[request.to_field_number] : null,
@@ -124,7 +117,7 @@ const CartRequestsList = ({ registerRefreshCallback }: { registerRefreshCallback
       const { data, error } = await supabase
         .from('cart_requests')
         .update({
-          status: 'confirmed' as Database['public']['Enums']['request_status'],
+          status: 'confirmed' as RequestStatus,
           driver: profile.id,
           updated_at: new Date().toISOString(),
         })
@@ -156,7 +149,7 @@ const CartRequestsList = ({ registerRefreshCallback }: { registerRefreshCallback
       const { error } = await supabase
         .from('cart_requests')
         .update({
-          status: 'expired' as Database['public']['Enums']['request_status'],
+          status: 'expired' as RequestStatus,
           updated_at: new Date().toISOString(),
         })
         .eq('id', requestId);
@@ -178,7 +171,7 @@ const CartRequestsList = ({ registerRefreshCallback }: { registerRefreshCallback
       const { error } = await supabase
         .from('cart_requests')
         .update({
-          status: 'resolved' as Database['public']['Enums']['request_status'],
+          status: 'resolved' as RequestStatus,
           updated_at: new Date().toISOString(),
         })
         .eq('id', requestId);
@@ -226,7 +219,7 @@ const CartRequestsList = ({ registerRefreshCallback }: { registerRefreshCallback
     router.push('/(tabs)/home/fieldmap');
   };
 
-  const renderCurrentRide = ({ item }: { item: CartRequest }) => {
+  const renderCurrentRide = ({ item }: { item: CartRequestWithFieldNames }) => {
     return (
       <Card style={[styles.cardContainer, styles.currentRideCard]}>
         <View style={styles.cardHeader}>
@@ -309,7 +302,7 @@ const CartRequestsList = ({ registerRefreshCallback }: { registerRefreshCallback
     );
   };
 
-  const renderPendingRide = ({ item }: { item: CartRequest }) => {
+  const renderPendingRide = ({ item }: { item: CartRequestWithFieldNames }) => {
     const timeColor = getTimeColor(item.created_at, {
       recent: 5,
       moderate: 15,

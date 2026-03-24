@@ -20,9 +20,9 @@ import CustomText from '@/components/CustomText';
 import AdminGameComponent from '@/components/features/gameviews/AdminGameComponent';
 import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
 import { fonts, typography } from '@/constants/Typography';
-import { Database } from '@/database.types';
 import { useGameTypesByDivision } from '@/hooks/useScheduleConfig';
 import { supabase } from '@/lib/supabase';
+import { GameWithRoundAndPool } from '@/types/games';
 
 import { MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -33,23 +33,6 @@ if (Platform.OS === 'android') {
   }
 }
 
-type GamesRow = Database['public']['Tables']['games']['Row'];
-type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
-type TeamRow = Database['public']['Tables']['teams']['Row'];
-type ScoresRow = Database['public']['Tables']['scores']['Row'];
-type FieldsRow = Database['public']['Tables']['fields']['Row'];
-type RoundsRow = Database['public']['Tables']['rounds']['Row'];
-type PoolsRow = Database['public']['Tables']['pools']['Row'];
-interface Games extends GamesRow {
-  datetime: DatetimeRow | null;
-  team1: TeamRow | null;
-  team2: TeamRow | null;
-  scores: ScoresRow[] | null;
-  field: FieldsRow | null;
-  rounds: RoundsRow | null;
-  pool: PoolsRow | null;
-}
-
 export default function GameTypesScreen() {
   const params = useLocalSearchParams();
   const divisionId = Number(params.division);
@@ -57,8 +40,8 @@ export default function GameTypesScreen() {
 
   const { gametypes, loading: gametypesLoading, error } = useGameTypesByDivision(divisionId);
   const [selectedGameType, setSelectedGameType] = useState<number | null>(null);
-  const [games, setGames] = useState<Games[]>([]);
-  const [filteredGames, setFilteredGames] = useState<Games[]>([]);
+  const [games, setGames] = useState<GameWithRoundAndPool[]>([]);
+  const [filteredGames, setFilteredGames] = useState<GameWithRoundAndPool[]>([]);
   const [gamesLoading, setGamesLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [collapsedSections, setCollapsedSections] = useState<{
@@ -100,7 +83,7 @@ export default function GameTypesScreen() {
         .order('round_id, id');
 
       if (fetchError) throw fetchError;
-      setGames(data as unknown as Games[]);
+      setGames(data as unknown as GameWithRoundAndPool[]);
     } catch (e) {
       console.error('Error fetching games:', e);
       Alert.alert('Error', 'Failed to load games');
@@ -168,14 +151,14 @@ export default function GameTypesScreen() {
           if (!acc[key]) {
             acc[key] = {
               title: game.pool?.name ? `Pool ${game.pool.name}` : (game.pool?.name ?? 'No Pool'),
-              data: [] as Games[],
+              data: [] as GameWithRoundAndPool[],
               poolId: poolId,
             };
           }
           acc[key].data.push(game);
           return acc;
         },
-        {} as Record<number, { title: string; data: Games[]; poolId: number | null }>,
+        {} as Record<number, { title: string; data: GameWithRoundAndPool[]; poolId: number | null }>,
       );
 
       return Object.keys(poolsMap)
@@ -208,7 +191,7 @@ export default function GameTypesScreen() {
         acc[roundId].data.push(game);
         return acc;
       },
-      {} as Record<number, { title: string; data: Games[] }>,
+      {} as Record<number, { title: string; data: GameWithRoundAndPool[] }>,
     );
 
     // Convert map to array sorted by round id

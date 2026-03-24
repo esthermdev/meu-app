@@ -3,7 +3,7 @@ import { ActivityIndicator, Image, StyleSheet, View } from 'react-native';
 
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
-import { TeamWithDetails } from '@/hooks/useFavoriteTeams';
+import { TeamWithDetails } from '@/types/teams';
 
 import { Ionicons } from '@expo/vector-icons';
 

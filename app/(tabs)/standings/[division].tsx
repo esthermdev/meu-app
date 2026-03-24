@@ -6,27 +6,14 @@ import ComingSoonPlaceholder from '@/components/ComingSoonPlaceholder';
 import CustomText from '@/components/CustomText';
 import { CustomHeader } from '@/components/headers/CustomHeader';
 import { typography } from '@/constants/Typography';
-import { Database } from '@/database.types';
 import { usePoolsByDivision } from '@/hooks/useGamesData';
 import { supabase } from '@/lib/supabase';
-
-type StandingsRow = Database['public']['Tables']['rankings']['Row'];
-type TeamsRow = Database['public']['Tables']['teams']['Row'];
-
-interface Standings extends StandingsRow {
-  teams: TeamsRow | null;
-}
-
-interface StandingsSection {
-  title: string;
-  poolId: number;
-  data: Standings[];
-}
+import { Standings, StandingWithTeam } from '@/types/standings';
 
 export default function DivisionStandings() {
   const { division, divisionName } = useLocalSearchParams();
   const { pools, loading, error } = usePoolsByDivision(Number(division));
-  const [standingsData, setStandingsData] = useState<StandingsSection[]>([]);
+  const [standingsData, setStandingsData] = useState<Standings[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasGamesStarted, setHasGamesStarted] = useState(false);
 
@@ -81,10 +68,10 @@ export default function DivisionStandings() {
       });
 
       // Format data into sections
-      const sectionData: StandingsSection[] = pools.map((pool) => ({
+      const sectionData: Standings[] = pools.map((pool) => ({
         title: pool.name,
         poolId: pool.id,
-        data: sortedData.filter((standing) => standing.teams?.pool_id === pool.id) as Standings[],
+        data: sortedData.filter((standing) => standing.teams?.pool_id === pool.id) as StandingWithTeam[],
       }));
 
       setStandingsData(sectionData);
@@ -103,7 +90,7 @@ export default function DivisionStandings() {
     }
   }, [fetchStandings, loading, pools.length]);
 
-  const renderSectionHeader = ({ section }: { section: StandingsSection }) => (
+  const renderSectionHeader = ({ section }: { section: Standings }) => (
     <View style={styles.sectionHeader}>
       <View style={styles.poolLabelContainer}>
         <CustomText style={styles.poolLabel}>{section.title}</CustomText>
@@ -116,7 +103,7 @@ export default function DivisionStandings() {
     </View>
   );
 
-  const renderItem = ({ item, index }: { item: Standings; index: number }) => (
+  const renderItem = ({ item, index }: { item: StandingWithTeam; index: number }) => (
     <View style={styles.itemContainer}>
       <CustomText style={styles.rankNumber}>{hasGamesStarted ? item.pool_rank : item.teams?.seed}</CustomText>
       <Image

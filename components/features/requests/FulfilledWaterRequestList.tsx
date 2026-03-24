@@ -6,17 +6,14 @@ import { ActivityIndicator, Alert, FlatList, StyleSheet, TouchableOpacity, View 
 import { Card } from '@/components/Card';
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
-import { Database } from '@/database.types';
 import { useWaterRequestsSubscription } from '@/hooks/realtime/useRequestSubscriptions';
 import { supabase } from '@/lib/supabase';
+import { WaterRequestWithField } from '@/types/requests';
 
 import { useIsFocused } from '@react-navigation/native';
 
-// Define types based on your Supabase schema
-type WaterRequest = Database['public']['Tables']['water_requests']['Row'];
-
 const FulfilledWaterRequestsList = () => {
-  const [requests, setRequests] = useState<WaterRequest[]>([]);
+  const [requests, setRequests] = useState<WaterRequestWithField[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const isFocused = useIsFocused();
 
@@ -36,7 +33,7 @@ const FulfilledWaterRequestsList = () => {
         .order('updated_at', { ascending: false });
 
       if (error) throw error;
-      setRequests(data as unknown as WaterRequest[]);
+      setRequests(data as unknown as WaterRequestWithField[]);
     } catch (error) {
       console.error('Error fetching fulfilled water requests:', error);
     } finally {
@@ -89,7 +86,7 @@ const FulfilledWaterRequestsList = () => {
     ]);
   };
 
-  const renderItem = ({ item }: { item: WaterRequest }) => {
+  const renderItem = ({ item }: { item: WaterRequestWithField }) => {
     return (
       <Card style={styles.cardContainer}>
         <View style={styles.cardHeader}>

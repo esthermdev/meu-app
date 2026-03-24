@@ -7,7 +7,8 @@ import CustomText from '@/components/CustomText';
 import { FavoriteTeamsListItem } from '@/components/features/favorites/FavoriteTeamsListItem';
 import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
-import { TeamWithDetails, useFavoriteTeams } from '@/hooks/useFavoriteTeams';
+import { useFavoriteTeams } from '@/hooks/useFavoriteTeams';
+import { TeamWithDetails } from '@/types/teams';
 
 import { MaterialIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';

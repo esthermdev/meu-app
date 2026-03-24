@@ -7,38 +7,20 @@ import CustomText from '@/components/CustomText';
 import { CustomHeader } from '@/components/headers/CustomHeader';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { typography } from '@/constants/Typography';
-import { Database } from '@/database.types';
 import { useTeamGamesSubscription } from '@/hooks/realtime/useTeamSubscriptions';
 import { supabase } from '@/lib/supabase';
+import { GameWithRelations } from '@/types/games';
+import { TeamWithDivisionDetails } from '@/types/teams';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
-
-type TeamRow = Database['public']['Tables']['teams']['Row'];
-type GameRow = Database['public']['Tables']['games']['Row'];
-type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
-type ScoresRow = Database['public']['Tables']['scores']['Row'];
-type FieldRow = Database['public']['Tables']['fields']['Row'];
-type DivisionRow = Database['public']['Tables']['divisions']['Row'];
-
-interface TeamDetail extends TeamRow {
-  division_details?: DivisionRow | null;
-}
-
-interface GameWithDetails extends GameRow {
-  team1: TeamRow | null;
-  team2: TeamRow | null;
-  datetime: DatetimeRow | null;
-  field: FieldRow | null;
-  scores: ScoresRow[];
-}
 
 const TeamDetails = () => {
   const { id } = useLocalSearchParams();
   const teamId = Number(Array.isArray(id) ? id[0] : id);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [team, setTeam] = useState<TeamDetail | null>(null);
-  const [games, setGames] = useState<GameWithDetails[]>([]);
+  const [team, setTeam] = useState<TeamWithDivisionDetails | null>(null);
+  const [games, setGames] = useState<GameWithRelations[]>([]);
 
   const fetchTeamDetails = useCallback(async () => {
     if (!Number.isFinite(teamId)) {
@@ -61,7 +43,7 @@ const TeamDetails = () => {
         .single();
 
       if (teamError) throw teamError;
-      setTeam(teamData as unknown as TeamDetail);
+      setTeam(teamData as unknown as TeamWithDivisionDetails);
 
       // Then fetch games where this team is playing
       const { data: gamesData, error: gamesError } = await supabase
@@ -80,7 +62,7 @@ const TeamDetails = () => {
         .order('datetime_id', { ascending: true });
 
       if (gamesError) throw gamesError;
-      setGames(gamesData as unknown as GameWithDetails[]);
+      setGames(gamesData as unknown as GameWithRelations[]);
     } catch (error) {
       console.error('Error fetching team details:', error);
     } finally {
@@ -102,7 +84,7 @@ const TeamDetails = () => {
     fetchTeamDetails();
   }, [fetchTeamDetails]);
 
-  const renderGameCard = (game: GameWithDetails) => (
+  const renderGameCard = (game: GameWithRelations) => (
     <View key={game.id} style={styles.gameCard}>
       <View style={styles.gameHeader}>
         <CustomText style={styles.dateText}>{formatDate(game.datetime?.date, 'short')}</CustomText>

@@ -1,14 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 
-import { Database } from '@/database.types';
 import { supabase } from '@/lib/supabase';
-
-type Division = Database['public']['Tables']['divisions']['Row'];
-type GameTypes = Database['public']['Tables']['gametypes']['Row'];
+import { DivisionRow, GameTypeRow } from '@/types/database';
 
 export function useDivisions() {
-  const [divisions, setDivisions] = useState<Division[]>([]);
+  const [divisions, setDivisions] = useState<DivisionRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,7 +51,7 @@ export function useDivisions() {
 }
 
 export function useGameTypesByDivision(divisionId: number) {
-  const [gametypes, setGametypes] = useState<GameTypes[]>([]);
+  const [gametypes, setGametypes] = useState<GameTypeRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

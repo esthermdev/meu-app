@@ -6,8 +6,8 @@ import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
 import { hasPermission } from '@/context/profileRoles';
-import { Database } from '@/database.types';
 import { supabase } from '@/lib/supabase';
+import { GameWithRelations } from '@/types/games';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
 import { updateGameScore } from '@/utils/updateGameScore';
@@ -15,22 +15,8 @@ import { updateGameScore } from '@/utils/updateGameScore';
 import UpdateGameDetailsModal from '../modals/UpdateGameDetailsModal';
 import { Feather } from '@expo/vector-icons';
 
-type GamesRow = Database['public']['Tables']['games']['Row'];
-type DatetimeRow = Database['public']['Tables']['datetime']['Row'];
-type TeamRow = Database['public']['Tables']['teams']['Row'];
-type ScoresRow = Database['public']['Tables']['scores']['Row'];
-type FieldsRow = Database['public']['Tables']['fields']['Row'];
-// Define the interface that matches what useRoundIds returns
-interface FetchedGame extends GamesRow {
-  team1: TeamRow | null;
-  team2: TeamRow | null;
-  datetime: DatetimeRow | null;
-  scores: ScoresRow[] | null;
-  field: FieldsRow | null;
-}
-
 interface AdminGameComponentProps {
-  game: FetchedGame;
+  game: GameWithRelations;
   onGameStatusChange: () => void;
 }
 

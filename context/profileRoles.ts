@@ -1,5 +1,5 @@
-import { Database } from '@/database.types';
 import { supabase } from '@/lib/supabase';
+import { ProfileRow } from '@/types/database';
 
 export type RoleKey = 'user' | 'admin' | 'medic' | 'driver' | 'volunteer';
 export type PermissionKey =
@@ -11,8 +11,6 @@ export type PermissionKey =
   | 'receive_cart_notifications'
   | 'receive_water_notifications'
   | 'receive_medic_notifications';
-
-type ProfileRow = Database['public']['Tables']['profiles']['Row'];
 
 type ProfileRoleJoin = {
   role?: {

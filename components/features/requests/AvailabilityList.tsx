@@ -3,10 +3,10 @@ import { FlatList, RefreshControl, StyleSheet, Switch, View } from 'react-native
 
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
-import { Database } from '@/database.types';
 import { supabase } from '@/lib/supabase';
+import { ProfileRow } from '@/types/requests';
 
-type Profile = Database['public']['Tables']['profiles']['Row'];
+type Profile = ProfileRow;
 
 type AvailabilityListProps = {
   roleKey: string;

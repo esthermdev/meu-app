@@ -4,24 +4,14 @@ import { ActivityIndicator, Alert, FlatList, StyleSheet, TouchableOpacity, View 
 import { Card } from '@/components/Card';
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
-import { Database } from '@/database.types';
 import { useTrainerRequestsSubscription } from '@/hooks/realtime/useRequestSubscriptions';
 import { supabase } from '@/lib/supabase';
+import { MedicalRequestWithRelations, RequestStatus } from '@/types/requests';
 
 import { MaterialIcons } from '@expo/vector-icons';
 
-// Define types based on your Supabase schema
-type MedicalRequest = Database['public']['Tables']['medical_requests']['Row'] & {
-  trainer: {
-    full_name: string | null;
-  } | null;
-  fields: {
-    name: string;
-  } | null;
-};
-
 const FulfilledTrainerRequestList = () => {
-  const [requests, setRequests] = useState<MedicalRequest[]>([]);
+  const [requests, setRequests] = useState<MedicalRequestWithRelations[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchFulfilledRequests = useCallback(async () => {
@@ -33,7 +23,7 @@ const FulfilledTrainerRequestList = () => {
         .order('updated_at', { ascending: false });
 
       if (error) throw error;
-      setRequests(data as MedicalRequest[]);
+      setRequests(data as MedicalRequestWithRelations[]);
     } catch (error) {
       console.error('Error fetching fulfilled requests:', error);
     } finally {
@@ -57,7 +47,7 @@ const FulfilledTrainerRequestList = () => {
       const { error } = await supabase
         .from('medical_requests')
         .update({
-          status: 'expired' as Database['public']['Enums']['request_status'],
+          status: 'expired' as RequestStatus,
         })
         .eq('id', requestId);
 
@@ -87,7 +77,7 @@ const FulfilledTrainerRequestList = () => {
             const { error } = await supabase
               .from('medical_requests')
               .update({
-                status: 'expired' as Database['public']['Enums']['request_status'],
+                status: 'expired' as RequestStatus,
               })
               .in('status', ['confirmed', 'resolved']);
 
@@ -160,7 +150,7 @@ const FulfilledTrainerRequestList = () => {
     }
   };
 
-  const renderItem = ({ item }: { item: MedicalRequest }) => {
+  const renderItem = ({ item }: { item: MedicalRequestWithRelations }) => {
     const statusBadge = getStatusBadge(item.status);
 
     return (
