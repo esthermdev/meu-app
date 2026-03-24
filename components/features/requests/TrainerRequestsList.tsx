@@ -12,7 +12,7 @@ import { MedicalRequestWithRelations, ProfileRow, RequestStatus } from '@/types/
 import { getTimeSince } from '@/utils/getTimeSince';
 
 import { MaterialIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 
 const TrainerRequestsList = () => {
   const [requests, setRequests] = useState<MedicalRequestWithRelations[]>([]);
@@ -49,8 +49,30 @@ const TrainerRequestsList = () => {
     fetchRequests(true);
   }, [fetchRequests]);
 
-  // Set up real-time subscription
-  useTrainerRequestsSubscription(() => fetchRequests(false));
+  const handleSubscriptionPayload = useCallback(
+    (payload: RealtimePostgresChangesPayload<{ id: number; status: string | null }>) => {
+      const requestId = payload.eventType === 'DELETE' ? payload.old.id : payload.new.id;
+
+      if (!requestId) {
+        return true;
+      }
+
+      if (payload.eventType === 'DELETE') {
+        setRequests((current) => current.filter((request) => request.id !== requestId));
+        return false;
+      }
+
+      if (payload.new.status !== 'pending') {
+        setRequests((current) => current.filter((request) => request.id !== requestId));
+        return false;
+      }
+
+      return true;
+    },
+    [],
+  );
+
+  useTrainerRequestsSubscription(fetchRequests, { onPayload: handleSubscriptionPayload });
 
   const resolveRequest = async (requestId: number) => {
     try {
@@ -141,7 +163,7 @@ const TrainerRequestsList = () => {
     }
   };
 
-  const renderItem = ({ item }: { item: MedicalRequestWithRelations }) => {
+  const renderListItem = ({ item }: { item: MedicalRequestWithRelations }) => {
     const timeColor = getTimeColor(item.created_at);
 
     return (
@@ -214,22 +236,23 @@ const TrainerRequestsList = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      {requests.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <CustomText style={styles.emptyText}>No pending requests</CustomText>
-        </View>
-      ) : (
-        <FlatList
-          data={requests}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.listContainer}
-          refreshing={refreshing}
-          onRefresh={() => fetchRequests(false)}
-        />
-      )}
-    </SafeAreaView>
+    <View style={styles.container}>
+      <FlatList
+        data={requests}
+        renderItem={renderListItem}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={
+          requests.length === 0 ? [styles.listContainer, styles.emptyListContainer] : styles.listContainer
+        }
+        refreshing={refreshing}
+        onRefresh={() => fetchRequests(false)}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <CustomText style={styles.emptyText}>No pending requests</CustomText>
+          </View>
+        }
+      />
+    </View>
   );
 };
 
@@ -244,6 +267,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     flex: 1,
     justifyContent: 'center',
+  },
+  emptyListContainer: {
+    flexGrow: 1,
   },
   emptyText: {
     ...typography.textMedium,
@@ -261,16 +287,14 @@ const styles = StyleSheet.create({
   },
   // Request card styles
   listContainer: {
-    paddingBottom: 15,
-    paddingHorizontal: 15,
-    paddingTop: 3,
+    padding: 15,
   },
   cardContainer: {
     backgroundColor: '#262626',
     borderRadius: 12,
     borderWidth: 0,
-    marginTop: 12,
     padding: 10,
+    marginBottom: 10,
   },
   cardHeader: {
     alignItems: 'center',

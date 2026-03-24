@@ -6,6 +6,7 @@ import { Card } from '@/components/Card';
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
+import { useCartRequestsSubscription } from '@/hooks/realtime/useRequestSubscriptions';
 import { supabase } from '@/lib/supabase';
 import { CartRequestRow, CartRequestWithFieldNames, LocationType, ProfileRow, RequestStatus } from '@/types/requests';
 import { getTimeColor } from '@/utils/getTimeColor';
@@ -13,13 +14,24 @@ import { getTimeSince } from '@/utils/getTimeSince';
 
 import { Ionicons } from '@expo/vector-icons';
 
-type CartListItem = {
+type CartSectionHeaderItem = {
+  key: string;
+  kind: 'section-header';
+  title: string;
+  count?: number;
+  collapsible?: boolean;
+  collapsed?: boolean;
+};
+
+type CartRideItem = {
   key: string;
   kind: 'current' | 'pending';
   request: CartRequestWithFieldNames;
 };
 
-const CartRequestsList = ({ registerRefreshCallback }: { registerRefreshCallback: (callback: () => void) => void }) => {
+type CartListItem = CartSectionHeaderItem | CartRideItem;
+
+const CartRequestsList = () => {
   const [currentRides, setCurrentRides] = useState<CartRequestWithFieldNames[]>([]);
   const [pendingRides, setPendingRides] = useState<CartRequestWithFieldNames[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -101,10 +113,7 @@ const CartRequestsList = ({ registerRefreshCallback }: { registerRefreshCallback
     fetchRequests(true);
   }, [fetchRequests]);
 
-  // Register the refresh callback with the parent
-  useEffect(() => {
-    registerRefreshCallback(() => fetchRequests(false));
-  }, [registerRefreshCallback, fetchRequests]);
+  useCartRequestsSubscription(fetchRequests);
 
   const acceptRequest = async (requestId: number) => {
     try {
@@ -398,9 +407,22 @@ const CartRequestsList = ({ registerRefreshCallback }: { registerRefreshCallback
 
   const listData = useMemo<CartListItem[]>(() => {
     const items: CartListItem[] = [];
+
     currentRides.forEach((request) => {
       items.push({ key: `current-${request.id}`, kind: 'current', request });
     });
+
+    if (pendingRides.length > 0) {
+      items.push({
+        key: 'section-pending',
+        kind: 'section-header',
+        title: 'Pending Rides',
+        count: pendingRides.length,
+        collapsible: true,
+        collapsed: isPendingCollapsed,
+      });
+    }
+
     if (!isPendingCollapsed) {
       pendingRides.forEach((request) => {
         items.push({ key: `pending-${request.id}`, kind: 'pending', request });
@@ -417,7 +439,22 @@ const CartRequestsList = ({ registerRefreshCallback }: { registerRefreshCallback
     );
   }
 
-  const renderListItem = ({ item }: { item: CartListItem }) => {
+  const renderSectionItem = ({ item }: { item: CartListItem }) => {
+    if (item.kind === 'section-header') {
+      if (item.collapsible) {
+        return (
+          <TouchableOpacity style={styles.sectionHeader} onPress={() => setIsPendingCollapsed(!isPendingCollapsed)}>
+            <CustomText style={styles.sectionTitle}>
+              {item.title} ({item.count})
+            </CustomText>
+            <Ionicons name={item.collapsed ? 'chevron-down' : 'chevron-up'} size={20} color="#fff" />
+          </TouchableOpacity>
+        );
+      }
+
+      return <CustomText style={styles.sectionTitle}>{item.title}</CustomText>;
+    }
+
     if (item.kind === 'current') {
       return renderCurrentRide({ item: item.request });
     }
@@ -426,44 +463,25 @@ const CartRequestsList = ({ registerRefreshCallback }: { registerRefreshCallback
 
   return (
     <View style={styles.container}>
-      {currentRides.length === 0 && pendingRides.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <CustomText style={styles.emptyText}>No cart requests available</CustomText>
-        </View>
-      ) : (
-        <FlatList
-          data={listData}
-          renderItem={renderListItem}
-          keyExtractor={(item) => item.key}
-          initialNumToRender={8}
-          maxToRenderPerBatch={8}
-          windowSize={8}
-          removeClippedSubviews
-          ListHeaderComponent={() => (
-            <View>
-              {currentRides.length > 0 && (
-                <View style={styles.sectionContainer}>
-                  <CustomText style={styles.sectionTitle}>Current Rides</CustomText>
-                </View>
-              )}
-
-              {pendingRides.length > 0 && (
-                <View style={styles.sectionContainer}>
-                  <TouchableOpacity
-                    style={styles.sectionHeader}
-                    onPress={() => setIsPendingCollapsed(!isPendingCollapsed)}>
-                    <CustomText style={styles.sectionTitle}>Pending Rides ({pendingRides.length})</CustomText>
-                    <Ionicons name={isPendingCollapsed ? 'chevron-down' : 'chevron-up'} size={20} color="#fff" />
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
-          )}
-          contentContainerStyle={styles.listContainer}
-          refreshing={refreshing}
-          onRefresh={() => fetchRequests(false)}
-        />
-      )}
+      <FlatList
+        data={listData}
+        renderItem={renderSectionItem}
+        keyExtractor={(item) => item.key}
+        initialNumToRender={8}
+        maxToRenderPerBatch={8}
+        windowSize={8}
+        removeClippedSubviews
+        contentContainerStyle={
+          listData.length === 0 ? [styles.listContainer, styles.emptyListContainer] : styles.listContainer
+        }
+        refreshing={refreshing}
+        onRefresh={() => fetchRequests(false)}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <CustomText style={styles.emptyText}>No cart requests available</CustomText>
+          </View>
+        }
+      />
     </View>
   );
 };
@@ -491,8 +509,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#262626',
     borderRadius: 12,
     borderWidth: 0,
-    marginTop: 15,
-    padding: 10,
+    marginBottom: 10,
   },
   cardHeader: {
     alignItems: 'center',
@@ -516,7 +533,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#000',
     flex: 1,
-    paddingTop: 10,
   },
   currentRideCard: {
     borderColor: '#73BF44',
@@ -527,6 +543,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     flex: 1,
     justifyContent: 'center',
+  },
+  emptyListContainer: {
+    flexGrow: 1,
   },
   emptyText: {
     ...typography.textMedium,
@@ -554,9 +573,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   listContainer: {
-    paddingBottom: 15,
-    paddingHorizontal: 15,
-    paddingTop: 3,
+    padding: 15,
   },
   loadingContainer: {
     alignItems: 'center',
@@ -645,14 +662,12 @@ const styles = StyleSheet.create({
     marginVertical: 'auto',
     paddingHorizontal: 8,
   },
-  sectionContainer: {
-    marginBottom: 10,
-  },
   sectionHeader: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 15,
+    marginTop: 5,
+    marginBottom: 15,
   },
   sectionTitle: {
     ...typography.textLargeBold,

@@ -1,46 +1,59 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { Card } from '@/components/Card';
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
+import { useCartRequestsSubscription } from '@/hooks/realtime/useRequestSubscriptions';
 import { supabase } from '@/lib/supabase';
 import { CartRequestWithDriver, LocationType, ProfileRow, RequestStatus } from '@/types/requests';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-const FulfilledCartRequestsList = ({
-  registerRefreshCallback,
-}: {
-  registerRefreshCallback: (callback: () => void) => void;
-}) => {
-  const [requests, setRequests] = useState<CartRequestWithDriver[]>([]);
-  const [pendingRides, setPendingRides] = useState<CartRequestWithDriver[]>([]);
+type FulfilledCartListItem =
+  | {
+      key: string;
+      kind: 'section-header';
+      title: string;
+      count: number;
+      collapsed: boolean;
+      onToggle: () => void;
+    }
+  | {
+      key: string;
+      kind: 'ride';
+      request: CartRequestWithDriver;
+    };
+
+const FulfilledCartRequestsList = () => {
   const [confirmedRides, setConfirmedRides] = useState<CartRequestWithDriver[]>([]);
   const [completedRides, setCompletedRides] = useState<CartRequestWithDriver[]>([]);
-  const [expiredRides, setExpiredRides] = useState<CartRequestWithDriver[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const { profile } = useAuth() as { profile: ProfileRow };
 
   // Collapsible section states
-  const [pendingCollapsed, setPendingCollapsed] = useState<boolean>(true);
   const [confirmedCollapsed, setConfirmedCollapsed] = useState<boolean>(true);
   const [completedCollapsed, setCompletedCollapsed] = useState<boolean>(true);
-  const [expiredCollapsed, setExpiredCollapsed] = useState<boolean>(true); // Default collapsed
   const [loadingRequests, setLoadingRequests] = useState<Set<number>>(new Set());
 
   const driverName = profile.full_name;
 
-  const fetchAllRequests = useCallback(async () => {
+  const fetchAllRequests = useCallback(async (isInitialLoad: boolean = false) => {
     try {
+      if (isInitialLoad) {
+        setLoading(true);
+      } else {
+        setRefreshing(true);
+      }
+
       const [requestsResult, fieldsResult] = await Promise.all([
         supabase
           .from('cart_requests')
           .select('*, driver:profiles!cart_requests_driver_fkey(full_name)')
-          .in('status', ['pending', 'confirmed', 'resolved', 'expired'])
-          .order('created_at', { ascending: false }),
+          .in('status', ['confirmed', 'resolved'])
+          .order('updated_at', { ascending: false }),
         supabase.from('fields').select('id, name'),
       ]);
 
@@ -57,11 +70,8 @@ const FulfilledCartRequestsList = ({
 
       // Process and categorize requests in a single pass
       const categorizedRequests = {
-        pending: [] as CartRequestWithDriver[],
         confirmed: [] as CartRequestWithDriver[],
         completed: [] as CartRequestWithDriver[],
-        expired: [] as CartRequestWithDriver[],
-        all: [] as CartRequestWithDriver[],
       };
 
       requestsResult.data.forEach((request) => {
@@ -71,60 +81,31 @@ const FulfilledCartRequestsList = ({
           to_field_name: request.to_field_number ? fieldMap[request.to_field_number] : null,
         };
 
-        categorizedRequests.all.push(enhancedRequest);
-
         switch (request.status) {
-          case 'pending':
-            categorizedRequests.pending.push(enhancedRequest);
-            break;
           case 'confirmed':
             categorizedRequests.confirmed.push(enhancedRequest);
             break;
           case 'resolved':
             categorizedRequests.completed.push(enhancedRequest);
             break;
-          case 'expired':
-            categorizedRequests.expired.push(enhancedRequest);
-            break;
         }
       });
 
-      setPendingRides(categorizedRequests.pending);
       setConfirmedRides(categorizedRequests.confirmed);
       setCompletedRides(categorizedRequests.completed);
-      setExpiredRides(categorizedRequests.expired);
-      setRequests(categorizedRequests.all);
     } catch (error) {
       console.error('Error fetching fulfilled requests:', error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   }, []);
 
-  // Collapsible section header component
-  const CollapsibleSectionHeader = ({
-    title,
-    count,
-    isCollapsed,
-    onToggle,
-  }: {
-    title: string;
-    count: number;
-    isCollapsed: boolean;
-    onToggle: () => void;
-  }) => (
-    <TouchableOpacity style={styles.sectionHeader} onPress={onToggle}>
-      <CustomText style={styles.sectionTitle}>
-        {title} ({count})
-      </CustomText>
-      <Ionicons name={isCollapsed ? 'chevron-down' : 'chevron-up'} size={20} color="#fff" />
-    </TouchableOpacity>
-  );
-
-  // Register the refresh callback with the parent
   useEffect(() => {
-    registerRefreshCallback(fetchAllRequests);
-  }, [registerRefreshCallback, fetchAllRequests]);
+    fetchAllRequests(true);
+  }, [fetchAllRequests]);
+
+  useCartRequestsSubscription(fetchAllRequests);
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'N/A';
@@ -189,7 +170,6 @@ const FulfilledCartRequestsList = ({
     try {
       setLoadingRequests((prev) => new Set(prev).add(requestId));
 
-      // We'll just update the status to 'archived' to keep the record but hide it from the list
       const { error } = await supabase
         .from('cart_requests')
         .update({
@@ -199,32 +179,11 @@ const FulfilledCartRequestsList = ({
 
       if (error) throw error;
 
-      // Find which category the request is in and update local state immediately
-      const requestToMove = requests.find((req) => req.id === requestId);
-      if (requestToMove) {
-        const updatedRequest = { ...requestToMove, status: 'expired' as const };
-
-        // Remove from current category based on original status
-        switch (requestToMove.status) {
-          case 'pending':
-            setPendingRides((prev) => prev.filter((req) => req.id !== requestId));
-            break;
-          case 'confirmed':
-            setConfirmedRides((prev) => prev.filter((req) => req.id !== requestId));
-            break;
-          case 'resolved':
-            setCompletedRides((prev) => prev.filter((req) => req.id !== requestId));
-            break;
-        }
-
-        // Add to expired rides
-        setExpiredRides((prev) => [updatedRequest, ...prev]);
-
-        // Update the main requests array
-        setRequests((prev) => prev.map((req) => (req.id === requestId ? updatedRequest : req)));
-      }
+      setConfirmedRides((prev) => prev.filter((req) => req.id !== requestId));
+      setCompletedRides((prev) => prev.filter((req) => req.id !== requestId));
     } catch (error) {
       console.error('Error removing request:', error);
+      fetchAllRequests(false);
       Alert.alert('Error', 'Failed to remove the request. Please try again.');
     } finally {
       setLoadingRequests((prev) => {
@@ -235,41 +194,35 @@ const FulfilledCartRequestsList = ({
     }
   };
 
-  const unarchiveRequest = async (requestId: number) => {
-    try {
-      setLoadingRequests((prev) => new Set(prev).add(requestId));
+  const clearAllRequests = async () => {
+    Alert.alert('Clear All Requests', 'Are you sure you want to remove all ongoing and completed rides?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Clear All',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            const { error } = await supabase
+              .from('cart_requests')
+              .update({
+                status: 'expired' as RequestStatus,
+              })
+              .in('status', ['confirmed', 'resolved']);
 
-      const { error } = await supabase
-        .from('cart_requests')
-        .update({
-          status: 'pending' as RequestStatus,
-        })
-        .eq('id', requestId);
+            if (error) throw error;
 
-      if (error) throw error;
-
-      // Update local state immediately without refetching
-      const requestToMove = expiredRides.find((req) => req.id === requestId);
-      if (requestToMove) {
-        const updatedRequest = { ...requestToMove, status: 'pending' as const };
-
-        // Remove from expired and add to pending
-        setExpiredRides((prev) => prev.filter((req) => req.id !== requestId));
-        setPendingRides((prev) => [updatedRequest, ...prev]);
-
-        // Update the main requests array
-        setRequests((prev) => prev.map((req) => (req.id === requestId ? updatedRequest : req)));
-      }
-    } catch (error) {
-      console.error('Error unarchiving request:', error);
-      Alert.alert('Error', 'Failed to unarchive the request. Please try again.');
-    } finally {
-      setLoadingRequests((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(requestId);
-        return newSet;
-      });
-    }
+            setConfirmedRides([]);
+            setCompletedRides([]);
+          } catch (error) {
+            console.error('Error clearing fulfilled cart requests:', error);
+            Alert.alert('Error', 'Failed to clear all requests. Please try again.');
+          }
+        },
+      },
+    ]);
   };
 
   const renderItem = ({ item }: { item: CartRequestWithDriver }) => {
@@ -358,30 +311,76 @@ const FulfilledCartRequestsList = ({
         )}
 
         <TouchableOpacity
-          style={[
-            item.status === 'expired' ? styles.unarchiveButton : styles.deleteButton,
-            isLoading && styles.buttonDisabled,
-          ]}
+          style={[styles.deleteButton, isLoading && styles.buttonDisabled]}
           onPress={() => {
             if (!isLoading) {
-              if (item.status === 'expired') {
-                unarchiveRequest(item.id);
-              } else {
-                deleteRequest(item.id);
-              }
+              deleteRequest(item.id);
             }
           }}
           disabled={isLoading}>
           {isLoading ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (
-            <CustomText style={styles.deleteButtonText}>
-              {item.status === 'expired' ? 'Unarchive' : 'Remove'}
-            </CustomText>
+            <CustomText style={styles.deleteButtonText}>Remove</CustomText>
           )}
         </TouchableOpacity>
       </Card>
     );
+  };
+
+  const listData = useMemo<FulfilledCartListItem[]>(() => {
+    const items: FulfilledCartListItem[] = [];
+
+    if (confirmedRides.length > 0) {
+      items.push({
+        key: 'section-ongoing',
+        kind: 'section-header',
+        title: 'Ongoing Rides',
+        count: confirmedRides.length,
+        collapsed: confirmedCollapsed,
+        onToggle: () => setConfirmedCollapsed((current) => !current),
+      });
+
+      if (!confirmedCollapsed) {
+        confirmedRides.forEach((request) => {
+          items.push({ key: `confirmed-${request.id}`, kind: 'ride', request });
+        });
+      }
+    }
+
+    if (completedRides.length > 0) {
+      items.push({
+        key: 'section-completed',
+        kind: 'section-header',
+        title: 'Completed Rides',
+        count: completedRides.length,
+        collapsed: completedCollapsed,
+        onToggle: () => setCompletedCollapsed((current) => !current),
+      });
+
+      if (!completedCollapsed) {
+        completedRides.forEach((request) => {
+          items.push({ key: `completed-${request.id}`, kind: 'ride', request });
+        });
+      }
+    }
+
+    return items;
+  }, [completedCollapsed, completedRides, confirmedCollapsed, confirmedRides]);
+
+  const renderListItem = ({ item }: { item: FulfilledCartListItem }) => {
+    if (item.kind === 'section-header') {
+      return (
+        <TouchableOpacity style={styles.sectionHeader} onPress={item.onToggle}>
+          <CustomText style={styles.sectionTitle}>
+            {item.title} ({item.count})
+          </CustomText>
+          <Ionicons name={item.collapsed ? 'chevron-down' : 'chevron-up'} size={20} color="#fff" />
+        </TouchableOpacity>
+      );
+    }
+
+    return renderItem({ item: item.request });
   };
 
   if (loading) {
@@ -394,76 +393,39 @@ const FulfilledCartRequestsList = ({
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      {requests.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <CustomText style={styles.emptyText}>No transport requests found</CustomText>
-        </View>
-      ) : (
+    <View style={styles.container}>
+      {listData.length === 0 ? (
         <FlatList
-          data={[]}
-          renderItem={() => null}
-          ListHeaderComponent={() => (
-            <View>
-              {/* Pending Rides Section */}
-              {pendingRides.length > 0 && (
-                <View style={styles.sectionContainer}>
-                  <CollapsibleSectionHeader
-                    title="Pending Rides"
-                    count={pendingRides.length}
-                    isCollapsed={pendingCollapsed}
-                    onToggle={() => setPendingCollapsed(!pendingCollapsed)}
-                  />
-                  {!pendingCollapsed && pendingRides.map((item) => <View key={item.id}>{renderItem({ item })}</View>)}
-                </View>
-              )}
-
-              {/* Confirmed Rides Section */}
-              {confirmedRides.length > 0 && (
-                <View style={styles.sectionContainer}>
-                  <CollapsibleSectionHeader
-                    title="Ongoing Rides"
-                    count={confirmedRides.length}
-                    isCollapsed={confirmedCollapsed}
-                    onToggle={() => setConfirmedCollapsed(!confirmedCollapsed)}
-                  />
-                  {!confirmedCollapsed &&
-                    confirmedRides.map((item) => <View key={item.id}>{renderItem({ item })}</View>)}
-                </View>
-              )}
-
-              {/* Completed Rides Section */}
-              {completedRides.length > 0 && (
-                <View style={styles.sectionContainer}>
-                  <CollapsibleSectionHeader
-                    title="Completed Rides"
-                    count={completedRides.length}
-                    isCollapsed={completedCollapsed}
-                    onToggle={() => setCompletedCollapsed(!completedCollapsed)}
-                  />
-                  {!completedCollapsed &&
-                    completedRides.map((item) => <View key={item.id}>{renderItem({ item })}</View>)}
-                </View>
-              )}
-
-              {/* Expired Rides Section */}
-              {expiredRides.length > 0 && (
-                <View style={styles.sectionContainer}>
-                  <CollapsibleSectionHeader
-                    title="Archived"
-                    count={expiredRides.length}
-                    isCollapsed={expiredCollapsed}
-                    onToggle={() => setExpiredCollapsed(!expiredCollapsed)}
-                  />
-                  {!expiredCollapsed && expiredRides.map((item) => <View key={item.id}>{renderItem({ item })}</View>)}
-                </View>
-              )}
+          data={listData}
+          renderItem={renderListItem}
+          keyExtractor={(item) => item.key}
+          contentContainerStyle={[styles.listContainer, styles.emptyListContainer]}
+          refreshing={refreshing}
+          onRefresh={() => fetchAllRequests(false)}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <CustomText style={styles.emptyText}>No transport requests found</CustomText>
             </View>
-          )}
-          contentContainerStyle={styles.listContainer}
+          }
         />
+      ) : (
+        <>
+          <FlatList
+            data={listData}
+            renderItem={renderListItem}
+            keyExtractor={(item) => item.key}
+            contentContainerStyle={styles.listContainer}
+            refreshing={refreshing}
+            onRefresh={() => fetchAllRequests(false)}
+          />
+          <View style={styles.clearAllContainer}>
+            <TouchableOpacity style={styles.clearAllButton} onPress={clearAllRequests}>
+              <CustomText style={styles.clearAllButtonText}>Clear All</CustomText>
+            </TouchableOpacity>
+          </View>
+        </>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -478,6 +440,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     flex: 1,
     justifyContent: 'center',
+  },
+  emptyListContainer: {
+    flexGrow: 1,
   },
   emptyText: {
     ...typography.textMedium,
@@ -495,16 +460,13 @@ const styles = StyleSheet.create({
   },
   // Card styles
   listContainer: {
-    paddingBottom: 15,
-    paddingHorizontal: 15,
-    paddingTop: 3,
+    padding: 15,
   },
   cardContainer: {
     backgroundColor: '#262626',
     borderRadius: 12,
     borderWidth: 0,
-    marginTop: 15,
-    padding: 10,
+    marginBottom: 10,
   },
   cardHeader: {
     alignItems: 'center',
@@ -625,26 +587,35 @@ const styles = StyleSheet.create({
     ...typography.textBold,
     color: '#fff',
   },
-  unarchiveButton: {
+  clearAllButton: {
     alignItems: 'center',
-    backgroundColor: '#2196F3',
-    borderRadius: 5,
-    marginTop: 5,
+    backgroundColor: '#ea8e1dff',
+    borderRadius: 8,
+    paddingVertical: 12,
+    width: 200,
+  },
+  clearAllButtonText: {
+    ...typography.textBold,
+    color: '#fff',
+    fontSize: 16,
+  },
+  clearAllContainer: {
+    alignItems: 'center',
+    backgroundColor: '#242424',
+    marginBottom: 0,
+    paddingBottom: 35,
     paddingHorizontal: 15,
-    paddingVertical: 8,
+    paddingVertical: 20,
   },
   buttonDisabled: {
     opacity: 0.6,
-  },
-  sectionContainer: {
-    marginBottom: 10,
   },
   sectionHeader: {
     alignItems: 'center',
     borderRadius: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 15,
+    marginBottom: 10,
   },
   sectionTitle: {
     ...typography.textLargeBold,

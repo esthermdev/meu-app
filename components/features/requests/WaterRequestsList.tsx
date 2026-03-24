@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Link } from 'expo-router';
 
 import { Card } from '@/components/Card';
@@ -12,6 +12,7 @@ import { ProfileRow, RequestStatus, WaterRequestWithField } from '@/types/reques
 import { getTimeSince } from '@/utils/getTimeSince';
 
 import { MaterialIcons } from '@expo/vector-icons';
+import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 
 const WaterRequestsList = () => {
   const [requests, setRequests] = useState<WaterRequestWithField[]>([]);
@@ -50,27 +51,60 @@ const WaterRequestsList = () => {
     fetchRequests(true);
   }, [fetchRequests]);
 
-  // Set up real-time subscription
-  useWaterRequestsSubscription(() => fetchRequests(false));
+  const handleSubscriptionPayload = useCallback(
+    (payload: RealtimePostgresChangesPayload<{ id: number; status: string | null }>) => {
+      const requestId = payload.eventType === 'DELETE' ? payload.old.id : payload.new.id;
 
-  const handleResolveRequest = async (requestId: number) => {
+      if (!requestId) {
+        return true;
+      }
+
+      if (payload.eventType === 'DELETE') {
+        setRequests((current) => current.filter((request) => request.id !== requestId));
+        return false;
+      }
+
+      if (payload.new.status !== 'pending') {
+        setRequests((current) => current.filter((request) => request.id !== requestId));
+        return false;
+      }
+
+      return true;
+    },
+    [],
+  );
+
+  useWaterRequestsSubscription(fetchRequests, { onPayload: handleSubscriptionPayload });
+
+  const resolveRequest = async (requestId: number) => {
     try {
-      const { error } = await supabase
+      setRequests((current) => current.filter((request) => request.id !== requestId));
+
+      const { data, error } = await supabase
         .from('water_requests')
         .update({
           status: 'resolved' as RequestStatus,
           volunteer: profile?.full_name || null,
           updated_at: new Date().toISOString(),
         })
-        .eq('id', requestId);
+        .eq('id', requestId)
+        .eq('status', 'pending')
+        .select()
+        .single();
 
       if (error) {
+        fetchRequests(false);
         throw error;
       }
 
-      setRequests((current) => current.filter((request) => request.id !== requestId));
+      if (!data) {
+        fetchRequests(false);
+        Alert.alert('Request Unavailable', 'This request has already been handled by another volunteer.');
+      }
     } catch (error) {
       console.error('Error resolving water request:', error);
+      fetchRequests(false);
+      Alert.alert('Error', 'Failed to resolve the request. Please try again.');
     }
   };
 
@@ -102,7 +136,7 @@ const WaterRequestsList = () => {
       </View>
 
       {item.status === 'pending' && (
-        <TouchableOpacity style={styles.resolveButton} onPress={() => handleResolveRequest(item.id)}>
+        <TouchableOpacity style={styles.resolveButton} onPress={() => resolveRequest(item.id)}>
           <CustomText style={styles.resolveButtonText}>Resolved</CustomText>
           <MaterialIcons name="check" size={14} color="white" />
         </TouchableOpacity>
@@ -121,20 +155,21 @@ const WaterRequestsList = () => {
 
   return (
     <View style={styles.container}>
-      {requests.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <CustomText style={styles.emptyText}>No water requests</CustomText>
-        </View>
-      ) : (
-        <FlatList
-          data={requests}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.listContainer}
-          refreshing={refreshing}
-          onRefresh={() => fetchRequests(false)}
-        />
-      )}
+      <FlatList
+        data={requests}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={
+          requests.length === 0 ? [styles.listContainer, styles.emptyListContainer] : styles.listContainer
+        }
+        refreshing={refreshing}
+        onRefresh={() => fetchRequests(false)}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <CustomText style={styles.emptyText}>No water requests</CustomText>
+          </View>
+        }
+      />
     </View>
   );
 };
@@ -144,8 +179,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#262626',
     borderRadius: 12,
     borderWidth: 0,
-    marginTop: 12,
     padding: 10,
+    marginBottom: 10,
   },
   container: {
     backgroundColor: '#000',
@@ -161,6 +196,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     flex: 1,
     justifyContent: 'center',
+  },
+  emptyListContainer: {
+    flexGrow: 1,
   },
   emptyText: {
     ...typography.textMedium,
@@ -198,9 +236,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   listContainer: {
-    paddingBottom: 15,
-    paddingHorizontal: 15,
-    paddingTop: 3,
+    padding: 15,
   },
   loadingContainer: {
     alignItems: 'center',

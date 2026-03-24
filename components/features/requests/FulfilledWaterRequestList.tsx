@@ -1,6 +1,6 @@
 // components/features/requests/FulfilledWaterRequestList.tsx
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { Card } from '@/components/Card';
@@ -11,21 +11,22 @@ import { supabase } from '@/lib/supabase';
 import { WaterRequestWithField } from '@/types/requests';
 
 import { useIsFocused } from '@react-navigation/native';
+import { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 
 const FulfilledWaterRequestsList = () => {
   const [requests, setRequests] = useState<WaterRequestWithField[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const isFocused = useIsFocused();
 
-  useEffect(() => {
-    if (isFocused) {
-      fetchFulfilledRequests();
-    }
-  }, [isFocused]);
-
-  const fetchFulfilledRequests = async () => {
+  const fetchFulfilledRequests = useCallback(async (isInitialLoad: boolean = false) => {
     try {
-      setLoading(true);
+      if (isInitialLoad) {
+        setLoading(true);
+      } else {
+        setRefreshing(true);
+      }
+
       const { data, error } = await supabase
         .from('water_requests')
         .select('*, fields(name, location)')
@@ -38,11 +39,40 @@ const FulfilledWaterRequestsList = () => {
       console.error('Error fetching fulfilled water requests:', error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
-  };
+  }, []);
 
-  // Set up real-time subscription
-  useWaterRequestsSubscription(fetchFulfilledRequests);
+  useEffect(() => {
+    if (isFocused) {
+      fetchFulfilledRequests(true);
+    }
+  }, [fetchFulfilledRequests, isFocused]);
+
+  const handleSubscriptionPayload = useCallback(
+    (payload: RealtimePostgresChangesPayload<{ id: number; status: string | null }>) => {
+      const requestId = payload.eventType === 'DELETE' ? payload.old.id : payload.new.id;
+
+      if (!requestId) {
+        return true;
+      }
+
+      if (payload.eventType === 'DELETE') {
+        setRequests((current) => current.filter((request) => request.id !== requestId));
+        return false;
+      }
+
+      if (payload.new.status !== 'resolved') {
+        setRequests((current) => current.filter((request) => request.id !== requestId));
+        return false;
+      }
+
+      return true;
+    },
+    [],
+  );
+
+  useWaterRequestsSubscription(fetchFulfilledRequests, { onPayload: handleSubscriptionPayload });
 
   const deleteRequest = async (requestId: number) => {
     try {
@@ -52,7 +82,7 @@ const FulfilledWaterRequestsList = () => {
       if (error) throw error;
 
       // Update the local state by removing the deleted request
-      setRequests(requests.filter((req) => req.id !== requestId));
+      setRequests((current) => current.filter((request) => request.id !== requestId));
     } catch (error) {
       console.error('Error removing water request:', error);
       Alert.alert('Error', 'Failed to remove the request. Please try again.');
@@ -140,9 +170,19 @@ const FulfilledWaterRequestsList = () => {
   return (
     <View style={styles.container}>
       {requests.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <CustomText style={styles.emptyText}>No water requests found</CustomText>
-        </View>
+        <FlatList
+          data={requests}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={[styles.listContainer, styles.emptyListContainer]}
+          refreshing={refreshing}
+          onRefresh={() => fetchFulfilledRequests(false)}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <CustomText style={styles.emptyText}>No water requests found</CustomText>
+            </View>
+          }
+        />
       ) : (
         <>
           <FlatList
@@ -150,8 +190,8 @@ const FulfilledWaterRequestsList = () => {
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={styles.listContainer}
-            refreshing={loading}
-            onRefresh={fetchFulfilledRequests}
+            refreshing={refreshing}
+            onRefresh={() => fetchFulfilledRequests(false)}
           />
           <View style={styles.clearAllContainer}>
             <TouchableOpacity style={styles.clearAllButton} onPress={clearAllRequests}>
@@ -176,6 +216,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  emptyListContainer: {
+    flexGrow: 1,
+  },
   emptyText: {
     ...typography.textMedium,
     color: '#B0B0B0',
@@ -192,15 +235,13 @@ const styles = StyleSheet.create({
   },
   // Card styles
   listContainer: {
-    paddingBottom: 15,
-    paddingHorizontal: 15,
-    paddingTop: 3,
+    padding: 15,
   },
   cardContainer: {
     backgroundColor: '#262626',
     borderRadius: 12,
     borderWidth: 0,
-    marginVertical: 12,
+    marginBottom: 10,
     padding: 10,
   },
   cardHeader: {
