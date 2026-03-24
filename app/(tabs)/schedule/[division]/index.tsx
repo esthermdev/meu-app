@@ -331,7 +331,7 @@ export default function DivisionScheduleScreen() {
               </ScrollView>
             </View>
           ) : null
-        ) : roundOptions.length > 0 ? (
+        ) : roundOptions.length > 1 ? (
           <View style={styles.filterRowViewport}>
             <ScrollView
               horizontal

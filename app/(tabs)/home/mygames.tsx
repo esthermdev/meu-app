@@ -405,12 +405,19 @@ const MyGames = () => {
   if (!session) {
     return (
       <View style={styles.centerContainer}>
+        <Text style={styles.mainMessageText}>Want to track your teams?</Text>
+        <Text style={styles.messageText}>Sign in to favorite teams and keep up with their upcoming games.</Text>
+        <PrimaryButton
+          title="Sign In"
+          onPress={() => router.push('/(tabs)/profile')}
+          style={{ height: 35, paddingHorizontal: 15 }}
+          textStyle={{ ...typography.buttonLarge }}
+        />
         <Text style={styles.messageText}>
-          Please{' '}
-          <Text style={styles.linkText} onPress={() => router.push('/(tabs)/profile')}>
-            log in
-          </Text>{' '}
-          to view your favorite games
+          Don&apos;t have an account?{' '}
+          <Text style={styles.linkText} onPress={() => router.push('/sign-up')}>
+            Sign Up
+          </Text>
         </Text>
       </View>
     );
@@ -472,9 +479,9 @@ const styles = StyleSheet.create({
   centerContainer: {
     alignItems: 'center',
     flex: 1,
-    gap: 15,
+    gap: 30,
     justifyContent: 'center',
-    padding: 20,
+    padding: 50,
   },
   container: {
     flex: 1,
@@ -509,8 +516,13 @@ const styles = StyleSheet.create({
     ...typography.heading5,
     textDecorationLine: 'underline',
   },
+  mainMessageText: {
+    ...typography.textLargeBold,
+    color: '#838383',
+    textAlign: 'center',
+  },
   messageText: {
-    ...typography.heading5,
+    ...typography.textLarge,
     color: '#00000066',
     textAlign: 'center',
   },
