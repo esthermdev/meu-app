@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2A2A2A',
     borderRadius: 12,
     gap: 12,
-    marginTop: 12,
+    marginTop: 10,
     padding: 15,
   },
   gameHeader: {

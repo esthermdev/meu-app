@@ -487,7 +487,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   gameItemContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingBottom: 10,
   },
   gameTypeChip: {

@@ -1,7 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import { typography } from '@/constants/Typography';
+
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface AdminBottomActionButtonsProps {
   leftButton: () => void;
@@ -21,7 +23,7 @@ const AdminBottomActionButtons: React.FC<AdminBottomActionButtonsProps> = ({
   leftColor = '#000000',
 }) => {
   return (
-    <View style={styles.buttonContainer}>
+    <SafeAreaView style={styles.buttonContainer} edges={['bottom']}>
       <TouchableOpacity style={[styles.leftButton, { backgroundColor: leftColor }]} onPress={leftButton}>
         <Text style={styles.buttonText} allowFontScaling={false}>
           {leftText}
@@ -32,7 +34,7 @@ const AdminBottomActionButtons: React.FC<AdminBottomActionButtonsProps> = ({
           {rightText}
         </Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -45,7 +47,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     justifyContent: 'center',
-    paddingBottom: 20,
     paddingHorizontal: 20,
     paddingTop: 15,
   },
@@ -66,7 +67,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#DDCF9B',
     borderRadius: 8,
     flex: 1,
-    height: 62,
     justifyContent: 'center',
     paddingVertical: 12,
   },

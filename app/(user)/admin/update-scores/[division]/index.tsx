@@ -19,12 +19,14 @@ import AdminBottomActionButtons from '@/components/buttons/AdminBottomActionButt
 import CustomText from '@/components/CustomText';
 import AdminGameComponent from '@/components/features/gameviews/AdminGameComponent';
 import { CustomAdminHeader } from '@/components/headers/CustomAdminHeader';
-import { fonts, typography } from '@/constants/Typography';
+import { typography } from '@/constants/Typography';
+import { usePoolsByDivision } from '@/hooks/useGamesData';
 import { useGameTypesByDivision } from '@/hooks/useScheduleConfig';
 import { supabase } from '@/lib/supabase';
 import { GameWithRoundAndPool } from '@/types/games';
 
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 if (Platform.OS === 'android') {
@@ -33,31 +35,184 @@ if (Platform.OS === 'android') {
   }
 }
 
-export default function GameTypesScreen() {
+type Section = {
+  id: string;
+  title: string;
+  data: GameWithRoundAndPool[];
+};
+
+type AdminUpdateScoresUiState = {
+  selectedGameTypeTitle?: string;
+  selectedPoolName?: string;
+};
+
+const adminUpdateScoresUiState = new Map<number, AdminUpdateScoresUiState>();
+const getAdminUpdateScoresUiStateStorageKey = (divisionId: number) => `admin-update-scores-ui-state:${divisionId}`;
+
+export default function UpdateScoresDivisionScreen() {
   const params = useLocalSearchParams();
   const divisionId = Number(params.division);
   const divisionName = params.divisionName as string;
+  const cachedUiState = adminUpdateScoresUiState.get(divisionId);
 
   const { gametypes, loading: gametypesLoading, error } = useGameTypesByDivision(divisionId);
-  const [selectedGameType, setSelectedGameType] = useState<number | null>(null);
+  const { pools, loading: poolsLoading } = usePoolsByDivision(divisionId);
+
+  const [selectedGameTypeTitle, setSelectedGameTypeTitle] = useState<string | undefined>(
+    cachedUiState?.selectedGameTypeTitle,
+  );
+  const [selectedPoolName, setSelectedPoolName] = useState<string | undefined>(cachedUiState?.selectedPoolName);
   const [games, setGames] = useState<GameWithRoundAndPool[]>([]);
-  const [filteredGames, setFilteredGames] = useState<GameWithRoundAndPool[]>([]);
   const [gamesLoading, setGamesLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
-  const [collapsedSections, setCollapsedSections] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
   const [refreshKey, setRefreshKey] = useState(0);
+  const [isUiStateHydrated, setIsUiStateHydrated] = useState(Boolean(cachedUiState) || !divisionId);
 
   const insets = useSafeAreaInsets();
   const statusBarHeight = Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0;
 
-  // Set first game type as selected when gametypes load
+  const persistUiState = useCallback(
+    async (partialState: AdminUpdateScoresUiState) => {
+      if (!divisionId) {
+        return;
+      }
+
+      const previousState = adminUpdateScoresUiState.get(divisionId) ?? {};
+      const nextState = {
+        ...previousState,
+        ...partialState,
+      };
+
+      adminUpdateScoresUiState.set(divisionId, nextState);
+
+      try {
+        await AsyncStorage.setItem(getAdminUpdateScoresUiStateStorageKey(divisionId), JSON.stringify(nextState));
+      } catch (persistError) {
+        console.error('Failed to persist admin update-scores UI state:', persistError);
+      }
+    },
+    [divisionId],
+  );
+
+  const updateCachedUiState = useCallback(
+    (partialState: AdminUpdateScoresUiState) => {
+      if (!divisionId) {
+        return;
+      }
+
+      const previousState = adminUpdateScoresUiState.get(divisionId) ?? {};
+      adminUpdateScoresUiState.set(divisionId, {
+        ...previousState,
+        ...partialState,
+      });
+    },
+    [divisionId],
+  );
+
   useEffect(() => {
-    if (gametypes && gametypes.length > 0 && !selectedGameType) {
-      setSelectedGameType(gametypes[0].id);
+    let isMounted = true;
+
+    async function hydrateUiState() {
+      if (!divisionId || cachedUiState) {
+        if (isMounted) {
+          setIsUiStateHydrated(true);
+        }
+        return;
+      }
+
+      try {
+        const storedValue = await AsyncStorage.getItem(getAdminUpdateScoresUiStateStorageKey(divisionId));
+
+        if (!isMounted) {
+          return;
+        }
+
+        if (storedValue) {
+          const parsedState = JSON.parse(storedValue) as AdminUpdateScoresUiState;
+          adminUpdateScoresUiState.set(divisionId, parsedState);
+          setSelectedGameTypeTitle(parsedState.selectedGameTypeTitle);
+          setSelectedPoolName(parsedState.selectedPoolName);
+        }
+      } catch (hydrateError) {
+        console.error('Failed to hydrate admin update-scores UI state:', hydrateError);
+      } finally {
+        if (isMounted) {
+          setIsUiStateHydrated(true);
+        }
+      }
     }
-  }, [gametypes, selectedGameType]);
+
+    hydrateUiState();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [cachedUiState, divisionId]);
+
+  const selectedGameType = useMemo(
+    () => gametypes.find((gametype) => gametype.title === selectedGameTypeTitle) ?? gametypes[0],
+    [gametypes, selectedGameTypeTitle],
+  );
+
+  const isPoolPlay = selectedGameType?.route === 'poolplay';
+
+  const selectedPool = useMemo(
+    () => pools.find((pool) => pool.name === selectedPoolName) ?? pools[0],
+    [pools, selectedPoolName],
+  );
+
+  useEffect(() => {
+    if (!isUiStateHydrated) {
+      return;
+    }
+
+    if (gametypes.length === 0) {
+      return;
+    }
+
+    const hasSelectedGameType = gametypes.some((gametype) => gametype.title === selectedGameTypeTitle);
+
+    if (!hasSelectedGameType) {
+      setSelectedGameTypeTitle(gametypes[0].title);
+    }
+  }, [gametypes, isUiStateHydrated, selectedGameTypeTitle]);
+
+  useEffect(() => {
+    if (!isUiStateHydrated) {
+      return;
+    }
+
+    if (!isPoolPlay) {
+      return;
+    }
+
+    if (pools.length > 0) {
+      const hasSelectedPool = pools.some((pool) => pool.name === selectedPoolName);
+
+      if (!hasSelectedPool) {
+        setSelectedPoolName(pools[0].name);
+      }
+    }
+  }, [isPoolPlay, isUiStateHydrated, pools, selectedPoolName]);
+
+  useEffect(() => {
+    if (!isUiStateHydrated) {
+      return;
+    }
+
+    updateCachedUiState({ selectedGameTypeTitle });
+    void persistUiState({ selectedGameTypeTitle });
+  }, [isUiStateHydrated, persistUiState, selectedGameTypeTitle, updateCachedUiState]);
+
+  useEffect(() => {
+    if (!isUiStateHydrated) {
+      return;
+    }
+
+    updateCachedUiState({ selectedPoolName });
+    void persistUiState({ selectedPoolName });
+  }, [isUiStateHydrated, persistUiState, selectedPoolName, updateCachedUiState]);
 
   // Fetch all games for the division
   const fetchGames = useCallback(async () => {
@@ -96,15 +251,19 @@ export default function GameTypesScreen() {
     fetchGames();
   }, [fetchGames, refreshKey]);
 
-  // Filter games by selected game type
-  useEffect(() => {
-    if (selectedGameType !== null) {
-      const filtered = games.filter((game) => game.gametype_id === selectedGameType);
-      setFilteredGames(filtered);
-    } else {
-      setFilteredGames(games);
+  const filteredGames = useMemo(() => {
+    if (!selectedGameType) {
+      return games;
     }
-  }, [selectedGameType, games]);
+
+    const gamesByGameType = games.filter((game) => game.gametype_id === selectedGameType.id);
+
+    if (!isPoolPlay || !selectedPool) {
+      return gamesByGameType;
+    }
+
+    return gamesByGameType.filter((game) => game.pool_id === selectedPool.id);
+  }, [games, isPoolPlay, selectedGameType, selectedPool]);
 
   const toggleSection = useCallback((sectionId: string) => {
     const animationConfig = {
@@ -133,88 +292,30 @@ export default function GameTypesScreen() {
     setRefreshKey((prev) => prev + 1);
   }, []);
 
-  // Group games by round_id
   const sections = useMemo(() => {
     if (!filteredGames || filteredGames.length === 0) return [];
 
-    // determine if selected gametype is poolplay
-    const selectedGametypes = gametypes || [];
-    const selectedGt = selectedGametypes.find((gt) => gt.id === selectedGameType);
-    const isPoolPlay = selectedGt?.route === 'poolplay';
+    const roundsMap = filteredGames.reduce<Record<number, Section>>((acc, game) => {
+      const roundId = game.round_id ?? -1;
 
-    if (isPoolPlay) {
-      // Group by pool_id
-      const poolsMap = filteredGames.reduce(
-        (acc, game) => {
-          const poolId = game.pool_id;
-          const key = poolId ?? -1;
-          if (!acc[key]) {
-            acc[key] = {
-              title: game.pool?.name ? `Pool ${game.pool.name}` : (game.pool?.name ?? 'No Pool'),
-              data: [] as GameWithRoundAndPool[],
-              poolId: poolId,
-            };
-          }
-          acc[key].data.push(game);
-          return acc;
-        },
-        {} as Record<number, { title: string; data: GameWithRoundAndPool[]; poolId: number | null }>,
-      );
+      if (!acc[roundId]) {
+        acc[roundId] = {
+          id: `round-${String(roundId)}`,
+          title: game.rounds?.stage || 'Games',
+          data: [],
+        };
+      }
 
-      return Object.keys(poolsMap)
-        .map((k) => ({
-          id: `pool-${String(poolsMap[Number(k)].poolId ?? 'none')}`,
-          title: poolsMap[Number(k)].title,
-          data: poolsMap[Number(k)].data,
-          poolId: poolsMap[Number(k)].poolId,
-          roundId: null,
-        }))
-        .sort((a, b) => {
-          const aId = a.poolId ?? 0;
-          const bId = b.poolId ?? 0;
-          return aId - bId;
-        });
-    }
+      acc[roundId].data.push(game);
+      return acc;
+    }, {});
 
-    // Fallback: Group by round_id
-    const roundsMap = filteredGames.reduce(
-      (acc, game) => {
-        const roundId = game.round_id;
-        if (roundId === null) return acc;
-
-        if (!acc[roundId]) {
-          acc[roundId] = {
-            title: game.rounds?.stage || '',
-            data: [],
-          };
-        }
-        acc[roundId].data.push(game);
-        return acc;
-      },
-      {} as Record<number, { title: string; data: GameWithRoundAndPool[] }>,
-    );
-
-    // Convert map to array sorted by round id
-    return Object.keys(roundsMap)
-      .map((roundId) => ({
-        id: `round-${String(roundId)}`,
-        title: roundsMap[Number(roundId)].title,
-        data: roundsMap[Number(roundId)].data,
-        roundId: Number(roundId),
-        poolId: null,
-      }))
-      .sort((a, b) => {
-        const roundIdA = a.roundId ?? 0;
-        const roundIdB = b.roundId ?? 0;
-        return roundIdA - roundIdB;
-      });
-  }, [filteredGames, gametypes, selectedGameType]);
-
-  // whether selected gametype is poolplay — used in renderers
-  const isPoolPlay = useMemo(() => {
-    const selectedGt = (gametypes || []).find((gt) => gt.id === selectedGameType);
-    return selectedGt?.route === 'poolplay';
-  }, [gametypes, selectedGameType]);
+    return Object.values(roundsMap).sort((sectionA, sectionB) => {
+      const roundIdA = sectionA.data[0]?.round_id ?? 0;
+      const roundIdB = sectionB.data[0]?.round_id ?? 0;
+      return roundIdA - roundIdB;
+    });
+  }, [filteredGames]);
 
   // Handle marking all games as completed
   const handleMarkAllCompleted = async () => {
@@ -329,23 +430,68 @@ export default function GameTypesScreen() {
     );
   };
 
-  const renderGameTypeFilter = () => (
-    <View style={styles.filterContainer}>
-      <CustomText style={styles.filterLabel}>Stage</CustomText>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
-        {gametypes.map((gametype) => (
-          <TouchableOpacity
-            key={gametype.id}
-            style={[styles.filterButton, selectedGameType === gametype.id && styles.selectedFilterButton]}
-            onPress={() => setSelectedGameType(gametype.id)}>
-            <CustomText
-              style={[styles.filterButtonText, selectedGameType === gametype.id && styles.selectedFilterText]}>
-              {gametype.title}
-            </CustomText>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    </View>
+  const filtersHeader = useMemo(
+    () => (
+      <View style={styles.filtersContainer}>
+        <CustomText style={styles.filterPrompt}>Stages</CustomText>
+
+        <View style={styles.filterRowViewport}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.gameTypeRow}
+            style={styles.filterScrollView}>
+            {gametypes.map((gametype) => {
+              const isSelected = gametype.id === selectedGameType?.id;
+
+              return (
+                <TouchableOpacity
+                  key={gametype.id}
+                  style={[styles.gameTypeChip, isSelected ? styles.gameTypeChipActive : styles.gameTypeChipInactive]}
+                  activeOpacity={0.85}
+                  onPress={() => setSelectedGameTypeTitle(gametype.title)}>
+                  {gametype.icon ? <MaterialCommunityIcons name={gametype.icon as any} size={24} color="#fff" /> : null}
+                  <CustomText style={styles.gameTypeChipText}>{gametype.title}</CustomText>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+
+        {isPoolPlay ? (
+          poolsLoading ? (
+            <View style={styles.poolLoadingContainer}>
+              <ActivityIndicator size="small" color="#EA1D25" />
+            </View>
+          ) : pools.length > 0 ? (
+            <View style={styles.filterRowViewport}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.filterChipRow}
+                style={styles.filterScrollView}>
+                {pools.map((pool) => {
+                  const isSelected = pool.id === selectedPool?.id;
+
+                  return (
+                    <TouchableOpacity
+                      key={pool.id}
+                      style={[styles.filterChip, isSelected ? styles.filterChipActive : styles.filterChipInactive]}
+                      activeOpacity={0.85}
+                      onPress={() => setSelectedPoolName(pool.name)}>
+                      <CustomText style={[styles.filterChipText, isSelected ? styles.filterChipTextActive : null]}>
+                        {`POOL ${pool.name}`}
+                      </CustomText>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          ) : null
+        ) : null}
+      </View>
+    ),
+    [gametypes, isPoolPlay, pools, poolsLoading, selectedGameType?.id, selectedPool?.id],
   );
 
   if (gametypesLoading) {
@@ -398,20 +544,27 @@ export default function GameTypesScreen() {
 
       {gametypes && gametypes.length > 0 ? (
         <>
-          {renderGameTypeFilter()}
           <SectionList
-            sections={sections as any}
+            sections={sections}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item, section }) => {
-              // section objects now include a stable `id` created in useMemo
-              const sectionId = (section as any).id ?? section.data[0]?.round_id?.toString() ?? '';
+              const sectionId = section.id;
               if (collapsedSections[sectionId]) {
                 return null;
               }
-              return <AdminGameComponent game={item} onGameStatusChange={refreshGames} />;
+
+              return (
+                <View style={styles.gameItemContainer}>
+                  <AdminGameComponent game={item} onGameStatusChange={refreshGames} />
+                </View>
+              );
             }}
             renderSectionHeader={({ section }) => {
-              const sectionId = (section as any).id ?? section.data[0]?.round_id?.toString() ?? '';
+              if (isPoolPlay) {
+                return null;
+              }
+
+              const sectionId = section.id;
               const isCollapsed = collapsedSections[sectionId];
 
               return (
@@ -419,7 +572,7 @@ export default function GameTypesScreen() {
                   style={styles.sectionHeader}
                   activeOpacity={0.7}
                   onPress={() => toggleSection(sectionId)}>
-                  <CustomText style={styles.sectionHeaderText}>{(section as any).title}</CustomText>
+                  <CustomText style={styles.sectionHeaderText}>{section.title}</CustomText>
                   {isCollapsed ? (
                     <MaterialIcons name="keyboard-arrow-down" size={24} color="#fff" />
                   ) : (
@@ -430,12 +583,13 @@ export default function GameTypesScreen() {
             }}
             contentContainerStyle={styles.gamesList}
             stickySectionHeadersEnabled={true}
+            ListHeaderComponent={filtersHeader}
             ListEmptyComponent={() => (
               <View style={styles.emptyContainer}>
                 <CustomText style={styles.emptyText}>No games found for this selection</CustomText>
               </View>
             )}
-            extraData={[games, collapsedSections, selectedGameType, isPoolPlay]}
+            extraData={[games, collapsedSections, selectedGameType?.id, selectedPool?.id]}
             refreshControl={
               <RefreshControl
                 refreshing={gamesLoading}
@@ -451,7 +605,7 @@ export default function GameTypesScreen() {
             leftButton={handleMarkAllCompleted}
             rightButton={handleResetAllGames}
             rightText="Reset All Games"
-            leftText="Mark All Games as Completed"
+            leftText="End All Games"
             rightColor="#DDCF9B"
             leftColor="#ED8C22"
           />
@@ -474,90 +628,97 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     flex: 1,
   },
-  content: {
-    gap: 12,
-    padding: 20,
-  },
-  header: {
-    alignItems: 'center',
-    backgroundColor: '#EA1D25',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-  },
-  headerTitle: {
-    color: '#fff',
-    fontFamily: fonts.semiBold,
-    fontSize: 18,
-  },
-  gameTypeItem: {
-    alignItems: 'center',
-    backgroundColor: '#222',
-    borderRadius: 12,
-    flexDirection: 'row',
-    padding: 16,
-  },
-  icon: {
-    marginRight: 15,
-  },
-  gameTypeText: {
-    ...typography.textLargeBold,
-    color: '#fff',
-    flex: 1,
-  },
   errorText: {
     color: '#EA1D25',
     ...typography.textMedium,
   },
-  // Filter styles
-  filterContainer: {
-    alignItems: 'center',
+  filterPrompt: {
+    color: '#fff',
+    ...typography.heading3,
+  },
+  filterRowViewport: {
+    marginHorizontal: -20,
+  },
+  filterScrollView: {
+    overflow: 'visible',
+  },
+  filtersContainer: {
     backgroundColor: '#000',
-    flexDirection: 'row',
-    marginTop: 15,
-    paddingHorizontal: 15,
+    gap: 15,
+    padding: 20,
+    borderColor: '#EA1D25',
+    borderBottomWidth: 1,
   },
-  filterLabel: {
-    ...typography.textBold,
-    color: '#fff',
-    marginRight: 12,
-  },
-  filterScroll: {
-    backgroundColor: '#222',
-    borderRadius: 12,
-    flexDirection: 'row',
-    padding: 7,
-  },
-  filterButton: {
-    borderRadius: 6,
-    paddingHorizontal: 20,
+  filterChip: {
+    borderRadius: 100,
+    borderWidth: 1,
+    paddingHorizontal: 12,
     paddingVertical: 8,
+    marginRight: -3,
   },
-  filterButtonText: {
-    ...typography.textMedium,
-    color: '#999999',
-  },
-  selectedFilterButton: {
+  filterChipActive: {
     backgroundColor: '#EA1D25',
+    borderColor: '#EA1D25',
   },
-  selectedFilterText: {
+  filterChipInactive: {
+    backgroundColor: '#4D0000',
+    borderColor: '#EA1D25',
+  },
+  filterChipRow: {
+    gap: 10,
+    paddingHorizontal: 20,
+  },
+  filterChipText: {
+    ...typography.heading5,
     color: '#fff',
   },
-  // Game list styles
+  filterChipTextActive: {
+    color: '#fff',
+  },
+  gameItemContainer: {
+    paddingHorizontal: 10,
+  },
+  gameTypeChip: {
+    borderRadius: 18,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingTop: 10,
+    paddingBottom: 6,
+    marginRight: -3,
+    gap: 3,
+    boxShadow: '0px 2px 0px 0px #EA1D25',
+  },
+  gameTypeChipActive: {
+    backgroundColor: '#F71622',
+    borderColor: '#F71622',
+  },
+  gameTypeChipInactive: {
+    backgroundColor: '#660000',
+    borderColor: '#F71622',
+  },
+  gameTypeChipText: {
+    ...typography.heading5,
+    color: '#fff',
+  },
+  gameTypeRow: {
+    gap: 14,
+    paddingHorizontal: 20,
+  },
   gamesList: {
     paddingBottom: 15,
-    paddingHorizontal: 15,
+  },
+  poolLoadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 56,
   },
   sectionHeader: {
     alignItems: 'center',
     backgroundColor: '#1a0000',
     borderColor: '#EA1D25',
-    borderRadius: 8,
-    borderWidth: 1,
+    borderBottomWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 15,
     padding: 10,
   },
   sectionHeaderText: {
