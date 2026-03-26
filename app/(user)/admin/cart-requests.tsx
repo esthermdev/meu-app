@@ -27,7 +27,7 @@ const CartManagementScreen = () => {
         },
         tabBarAllowFontScaling: false,
       }}>
-      <Tab.Screen name="MY REQUESTS" component={CartRequestsList} />
+      <Tab.Screen name="REQUESTS" component={CartRequestsList} />
       <Tab.Screen name="ALL RIDES" component={FulfilledCartRequestsList} />
       <Tab.Screen name="DRIVERS" component={DriversAvailabilityList} />
     </Tab.Navigator>

@@ -107,18 +107,6 @@ const FulfilledCartRequestsList = () => {
 
   useCartRequestsSubscription(fetchAllRequests);
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
   const getLocationLabel = (locationType: LocationType) => {
     switch (locationType) {
       case 'Field':
@@ -295,12 +283,6 @@ const FulfilledCartRequestsList = () => {
               <CustomText style={styles.driverText}>{item.driver ? item.driver.full_name : driverName}</CustomText>
             </View>
           )}
-          <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>{item.status === 'pending' ? 'Created:' : 'Completed:'}</CustomText>
-            <CustomText style={styles.valueText}>
-              {item.status === 'pending' ? formatDate(item.created_at) : formatDate(item.updated_at)}
-            </CustomText>
-          </View>
         </View>
 
         {item.special_request && (
@@ -368,7 +350,7 @@ const FulfilledCartRequestsList = () => {
     return items;
   }, [completedCollapsed, completedRides, confirmedCollapsed, confirmedRides]);
 
-  const renderListItem = ({ item }: { item: FulfilledCartListItem }) => {
+  const renderSection = ({ item }: { item: FulfilledCartListItem }) => {
     if (item.kind === 'section-header') {
       return (
         <TouchableOpacity style={styles.sectionHeader} onPress={item.onToggle}>
@@ -397,7 +379,7 @@ const FulfilledCartRequestsList = () => {
       {listData.length === 0 ? (
         <FlatList
           data={listData}
-          renderItem={renderListItem}
+          renderItem={renderSection}
           keyExtractor={(item) => item.key}
           contentContainerStyle={[styles.listContainer, styles.emptyListContainer]}
           refreshing={refreshing}
@@ -412,7 +394,7 @@ const FulfilledCartRequestsList = () => {
         <>
           <FlatList
             data={listData}
-            renderItem={renderListItem}
+            renderItem={renderSection}
             keyExtractor={(item) => item.key}
             contentContainerStyle={styles.listContainer}
             refreshing={refreshing}
@@ -507,21 +489,21 @@ const styles = StyleSheet.create({
     marginVertical: 'auto',
     paddingHorizontal: 8,
   },
-  routeInfo: {
-    flex: 1,
-    gap: 10,
-    justifyContent: 'space-between',
-    marginVertical: 10,
-  },
   locationInfo: {
     flexDirection: 'row',
   },
+  routeInfo: {
+    flex: 1,
+    gap: 5,
+    justifyContent: 'space-between',
+    marginVertical: 8,
+  },
   routeLabel: {
-    ...typography.textLarge,
+    ...typography.textMedium,
     color: '#CCCCCC',
   },
   locationText: {
-    ...typography.textLargeBold,
+    ...typography.textBold,
     color: '#fff',
   },
   routePoint: {
@@ -538,12 +520,11 @@ const styles = StyleSheet.create({
   infoSection: {
     borderBottomColor: '#CCCCCC66',
     borderBottomWidth: 1,
-    gap: 8,
-    marginVertical: 8,
-    paddingBottom: 8,
+    gap: 5,
+    paddingVertical: 5,
   },
   infoRow: {
-    alignItems: 'center',
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -564,8 +545,8 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
     borderRadius: 5,
     borderWidth: 1,
-    marginVertical: 8,
     padding: 7,
+    marginTop: 8,
   },
   specialRequestLabel: {
     ...typography.text,
@@ -579,9 +560,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#EA1D25',
     borderRadius: 5,
-    marginTop: 5,
     paddingHorizontal: 15,
     paddingVertical: 8,
+    marginTop: 8,
   },
   deleteButtonText: {
     ...typography.textBold,
@@ -612,9 +593,11 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     alignItems: 'center',
-    borderRadius: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    borderBottomColor: '#fff',
+    borderBottomWidth: 1,
+    paddingVertical: 8,
     marginBottom: 10,
   },
   sectionTitle: {

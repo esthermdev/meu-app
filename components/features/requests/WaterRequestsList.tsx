@@ -117,22 +117,24 @@ const WaterRequestsList = () => {
 
       <View style={styles.divider} />
 
-      <View style={styles.infoRow}>
-        <CustomText style={styles.infoLabel}>Field:</CustomText>
-        <Link href="/(tabs)/home/fieldmap" asChild>
-          <TouchableOpacity>
-            <CustomText style={[styles.infoValue, styles.fieldLink]}>
-              {item.fields?.name || `Field ${item.field_number}`}
-            </CustomText>
-          </TouchableOpacity>
-        </Link>
-      </View>
+      <View style={styles.infoSection}>
+        <View style={styles.infoRow}>
+          <CustomText style={styles.infoLabel}>Field:</CustomText>
+          <Link href="/(tabs)/home/fieldmap" asChild>
+            <TouchableOpacity>
+              <CustomText style={[styles.infoValue, styles.fieldLink]}>
+                {item.fields?.name || `Field ${item.field_number}`}
+              </CustomText>
+            </TouchableOpacity>
+          </Link>
+        </View>
 
-      <View style={styles.infoRow}>
-        <CustomText style={styles.infoLabel}>Status:</CustomText>
-        <CustomText style={[styles.infoValue, styles.statusPending]}>
-          {item.status === 'pending' ? 'Pending' : item.status}
-        </CustomText>
+        <View style={styles.infoRow}>
+          <CustomText style={styles.infoLabel}>Status:</CustomText>
+          <CustomText style={[styles.infoValue, styles.statusPending]}>
+            {item.status === 'pending' ? 'Pending' : item.status}
+          </CustomText>
+        </View>
       </View>
 
       {item.status === 'pending' && (
@@ -189,7 +191,7 @@ const styles = StyleSheet.create({
   divider: {
     backgroundColor: '#444',
     height: 1,
-    marginVertical: 8,
+    marginVertical: 5,
   },
   emptyContainer: {
     alignItems: 'center',
@@ -214,22 +216,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerDate: {
-    ...typography.textLarge,
+    ...typography.textMedium,
     color: '#aaa',
   },
   headerTitle: {
-    ...typography.textLargeBold,
+    ...typography.textSemiBold,
     color: '#fff',
   },
   infoLabel: {
     ...typography.text,
     color: '#CCCCCC',
   },
+  infoSection: {
+    borderBottomColor: '#CCCCCC66',
+    borderBottomWidth: 1,
+    gap: 5,
+    paddingBottom: 5,
+  },
   infoRow: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 8,
   },
   infoValue: {
     ...typography.textSemiBold,

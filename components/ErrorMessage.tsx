@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
   errorText: {
     color: '#EA1D25',
     ...typography.textXSmall,
+    marginTop: -5,
   },
 });
 

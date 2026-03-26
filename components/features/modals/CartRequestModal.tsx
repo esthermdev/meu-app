@@ -162,7 +162,7 @@ const CartRequestButton = () => {
 
     // Validate requester name
     if (!requesterName.trim()) {
-      newErrors.requesterName = 'Please enter your name';
+      newErrors.requesterName = 'Please enter your name so our drivers can locate you.';
     }
 
     // Validate locations
@@ -232,12 +232,6 @@ const CartRequestButton = () => {
           style={styles.modalContainer}>
           <View style={[styles.modalOverlay, isKeyboardVisible && styles.modalOverlayKeyboardOpen]}>
             <View style={styles.modalContent}>
-              {errors.general && (
-                <View style={styles.generalErrorContainer}>
-                  <Text style={styles.generalErrorText}>{errors.general}</Text>
-                </View>
-              )}
-
               <ScrollView
                 ref={scrollViewRef}
                 keyboardDismissMode="none"
@@ -451,8 +445,8 @@ const styles = StyleSheet.create({
     borderLeftColor: '#DD3333',
     borderLeftWidth: 4,
     borderRadius: 5,
-    marginBottom: 10,
-    padding: 10,
+    marginTop: 5,
+    padding: 5,
   },
   generalErrorText: {
     color: '#DD3333',

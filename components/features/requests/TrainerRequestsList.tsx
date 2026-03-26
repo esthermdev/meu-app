@@ -110,18 +110,6 @@ const TrainerRequestsList = () => {
     }
   };
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
   // Function to determine color for time indicator based on elapsed time
   const getTimeColor = (dateString: string | null) => {
     if (!dateString) return '#EA1D25'; // Default to red if unknown
@@ -170,11 +158,11 @@ const TrainerRequestsList = () => {
       <Card style={styles.cardContainer}>
         <View style={styles.cardHeader}>
           <View style={{ flexDirection: 'row', gap: 5 }}>
-            <View style={[styles.priorityBadge, getPriorityColor(item.priority_level)]}>
-              <CustomText style={styles.priorityText}>{item.priority_level || 'Medium'}</CustomText>
-            </View>
             <View style={styles.requestIdBadge}>
               <CustomText style={styles.requestIdText}>#{item.id}</CustomText>
+            </View>
+            <View style={[styles.priorityBadge, getPriorityColor(item.priority_level)]}>
+              <CustomText style={styles.priorityText}>{item.priority_level || 'Medium'}</CustomText>
             </View>
           </View>
           <View style={styles.fieldBadge}>
@@ -202,10 +190,6 @@ const TrainerRequestsList = () => {
             <CustomText style={styles.trainerNameText}>
               {item.trainer ? item.trainer.full_name : 'Unassigned'}
             </CustomText>
-          </View>
-          <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>Created:</CustomText>
-            <CustomText style={styles.valueText}>{formatDate(item.created_at)}</CustomText>
           </View>
         </View>
 
@@ -338,8 +322,8 @@ const styles = StyleSheet.create({
     ...typography.textBold,
   },
   infoSection: {
-    gap: 8,
-    marginVertical: 15,
+    gap: 5,
+    marginVertical: 10,
   },
   infoRow: {
     alignItems: 'center',

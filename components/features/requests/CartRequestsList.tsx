@@ -195,18 +195,6 @@ const CartRequestsList = () => {
     }
   };
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
   const getLocationLabel = (locationType: LocationType) => {
     switch (locationType) {
       case 'Field':
@@ -282,19 +270,15 @@ const CartRequestsList = () => {
           </View>
         </View>
 
-        <View style={styles.passengerRow}>
-          <CustomText style={styles.passengerLabel}>Passengers:</CustomText>
-          <CustomText style={styles.passengerCount}>{item.passenger_count || 0}</CustomText>
-        </View>
-
         <View style={styles.infoRow}>
-          <CustomText style={styles.infoLabel}>Name:</CustomText>
-          <CustomText style={styles.infoValue}>{item.requester || 'Anonymous'}</CustomText>
-        </View>
-
-        <View style={styles.infoRow}>
-          <CustomText style={styles.infoLabel}>Created:</CustomText>
-          <CustomText style={styles.infoValue}>{formatDate(item.created_at)}</CustomText>
+          <View style={styles.passengerRow}>
+            <CustomText style={styles.infoLabel}>Name:</CustomText>
+            <CustomText style={styles.infoValue}>{item.requester || 'Anonymous'}</CustomText>
+          </View>
+          <View style={styles.passengerRow}>
+            <CustomText style={styles.passengerLabel}>Passengers:</CustomText>
+            <CustomText style={styles.passengerCount}>{item.passenger_count || 0}</CustomText>
+          </View>
         </View>
 
         {item.special_request && (
@@ -371,19 +355,15 @@ const CartRequestsList = () => {
           </View>
         </View>
 
-        <View style={styles.passengerRow}>
-          <CustomText style={styles.passengerLabel}>Passengers:</CustomText>
-          <CustomText style={styles.passengerCount}>{item.passenger_count || 0}</CustomText>
-        </View>
-
         <View style={styles.infoRow}>
-          <CustomText style={styles.infoLabel}>Name:</CustomText>
-          <CustomText style={styles.infoValue}>{item.requester || 'Anonymous'}</CustomText>
-        </View>
-
-        <View style={styles.infoRow}>
-          <CustomText style={styles.infoLabel}>Created:</CustomText>
-          <CustomText style={styles.infoValue}>{formatDate(item.created_at)}</CustomText>
+          <View style={styles.passengerRow}>
+            <CustomText style={styles.infoLabel}>Name:</CustomText>
+            <CustomText style={styles.infoValue}>{item.requester || 'Anonymous'}</CustomText>
+          </View>
+          <View style={styles.passengerRow}>
+            <CustomText style={styles.passengerLabel}>Passengers:</CustomText>
+            <CustomText style={styles.passengerCount}>{item.passenger_count || 0}</CustomText>
+          </View>
         </View>
 
         {item.special_request && (
@@ -503,7 +483,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 8,
   },
   cardContainer: {
     backgroundColor: '#262626',
@@ -556,13 +535,11 @@ const styles = StyleSheet.create({
     color: '#CCCCCCB2',
   },
   infoRow: {
-    alignItems: 'center',
     borderBottomColor: '#CCCCCC66',
     borderBottomWidth: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     marginBottom: 8,
-    paddingBottom: 8,
+    paddingVertical: 5,
+    gap: 5,
   },
   infoValue: {
     ...typography.textSemiBold,
@@ -589,7 +566,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   locationText: {
-    ...typography.textLargeBold,
+    ...typography.textBold,
     color: '#fff',
   },
   locationsContainer: {
@@ -606,10 +583,9 @@ const styles = StyleSheet.create({
     color: '#CCCCCCB2',
   },
   passengerRow: {
-    alignItems: 'center',
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
   },
   removeButton: {
     alignItems: 'center',
@@ -637,12 +613,12 @@ const styles = StyleSheet.create({
   },
   routeInfo: {
     flex: 1,
-    gap: 10,
+    gap: 5,
     justifyContent: 'space-between',
-    marginVertical: 10,
+    marginVertical: 8,
   },
   routeLabel: {
-    ...typography.textLarge,
+    ...typography.textMedium,
     color: '#CCCCCC',
   },
   routeLine: {
@@ -666,8 +642,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 5,
-    marginBottom: 15,
+    borderBottomColor: '#fff',
+    borderBottomWidth: 1,
+    paddingVertical: 8,
+    marginBottom: 10,
   },
   sectionTitle: {
     ...typography.textLargeBold,

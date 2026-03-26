@@ -121,9 +121,6 @@ const FulfilledWaterRequestsList = () => {
       <Card style={styles.cardContainer}>
         <View style={styles.cardHeader}>
           <CustomText style={styles.waterTitle}>Water</CustomText>
-          <View style={styles.requestIdBadge}>
-            <CustomText style={styles.requestIdText}>#{item.id}</CustomText>
-          </View>
           <View
             style={[
               styles.statusBadge,
@@ -245,28 +242,17 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   cardHeader: {
-    alignItems: 'center',
     borderBottomWidth: 1,
     borderColor: '#CCCCCC66',
+    alignItems: 'center',
     flexDirection: 'row',
-    paddingBottom: 8,
+    justifyContent: 'space-between',
+    paddingBottom: 5,
   },
   waterTitle: {
-    ...typography.textLargeBold,
+    ...typography.textSemiBold,
     color: '#fff',
     marginRight: 'auto',
-  },
-  requestIdBadge: {
-    backgroundColor: '#EA1D25',
-    borderRadius: 12,
-    marginRight: 5,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  requestIdText: {
-    ...typography.textSmall,
-    color: '#fff',
-    fontWeight: 'bold',
   },
   statusBadge: {
     borderRadius: 20,
@@ -274,15 +260,14 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   statusText: {
-    ...typography.text,
+    ...typography.textMedium,
     color: '#fff',
   },
   infoSection: {
     borderBottomColor: '#CCCCCC66',
     borderBottomWidth: 1,
-    gap: 8,
-    marginVertical: 8,
-    paddingBottom: 8,
+    paddingVertical: 5,
+    gap: 5,
   },
   infoRow: {
     alignItems: 'center',
@@ -315,7 +300,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#EA1D25',
     borderRadius: 5,
-    marginTop: 5,
+    marginTop: 8,
     paddingHorizontal: 15,
     paddingVertical: 8,
   },
