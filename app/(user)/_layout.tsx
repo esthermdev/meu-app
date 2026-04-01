@@ -95,6 +95,54 @@ export default function UserLayout() {
         }}
       />
       <Stack.Screen
+        name="trainers-list"
+        options={{
+          title: 'Trainer Requests',
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: '#EA1D25',
+          },
+          headerTintColor: '#fff',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <MaterialIcons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="cart-requests"
+        options={{
+          title: 'Cart Requests',
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: '#EA1D25',
+          },
+          headerTintColor: '#fff',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <MaterialIcons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="water-requests"
+        options={{
+          title: 'Water Requests',
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: '#EA1D25',
+          },
+          headerTintColor: '#fff',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <MaterialIcons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
         name="admin"
         options={{
           headerShown: false,

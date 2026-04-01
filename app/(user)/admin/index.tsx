@@ -69,21 +69,6 @@ const AdminScreen = () => {
       onPress: updateStandings,
     },
     {
-      title: 'Trainers List',
-      iconName: 'whistle',
-      route: '/admin/trainers-list',
-    },
-    {
-      title: 'Cart Requests',
-      iconName: 'car',
-      route: '/admin/cart-requests',
-    },
-    {
-      title: 'Water Requests',
-      iconName: 'water',
-      route: '/admin/water-requests',
-    },
-    {
       title: 'Send Public Announcement',
       iconName: 'bullhorn',
       route: '/admin/announcements',

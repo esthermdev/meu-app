@@ -18,11 +18,11 @@ export default function TabLayout() {
 
       // Handle notification navigation
       if (type === 'new_water_request') {
-        router.push('/(user)/admin/water-requests');
+        router.push('/(user)/water-requests');
       } else if (type === 'new_medic_request') {
-        router.push('/(user)/admin/trainers-list');
+        router.push('/(user)/trainers-list');
       } else if (type === 'new_cart_request') {
-        router.push('/(user)/admin/cart-requests');
+        router.push('/(user)/cart-requests');
       } else if (type === 'announcement') {
         router.push('/(tabs)/home/notifications');
       }

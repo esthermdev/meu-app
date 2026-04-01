@@ -31,51 +31,9 @@ export default function AdminLayout() {
           }}
         />
         <Stack.Screen
-          name="trainers-list"
-          options={{
-            header: () => (
-              <View
-                style={{
-                  paddingTop: Platform.OS === 'android' ? statusBarHeight : insets.top,
-                  backgroundColor: '#EA1D25',
-                }}>
-                <CustomAdminHeader title="Trainers List" />
-              </View>
-            ),
-          }}
-        />
-        <Stack.Screen
           name="update-scores"
           options={{
             headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="cart-requests"
-          options={{
-            header: () => (
-              <View
-                style={{
-                  paddingTop: Platform.OS === 'android' ? statusBarHeight : insets.top,
-                  backgroundColor: '#EA1D25',
-                }}>
-                <CustomAdminHeader title="Cart Requests" />
-              </View>
-            ),
-          }}
-        />
-        <Stack.Screen
-          name="water-requests"
-          options={{
-            header: () => (
-              <View
-                style={{
-                  paddingTop: Platform.OS === 'android' ? statusBarHeight : insets.top,
-                  backgroundColor: '#EA1D25',
-                }}>
-                <CustomAdminHeader title="Water Requests" />
-              </View>
-            ),
           }}
         />
         <Stack.Screen
