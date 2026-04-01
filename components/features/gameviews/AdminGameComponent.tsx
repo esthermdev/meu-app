@@ -13,7 +13,7 @@ import { formatTime } from '@/utils/formatTime';
 import { updateGameScore } from '@/utils/updateGameScore';
 
 import UpdateGameDetailsModal from '../modals/UpdateGameDetailsModal';
-import { Feather } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 interface AdminGameComponentProps {
   game: GameWithRelations;
@@ -252,16 +252,20 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
           </CustomText>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.actionButton, styles.updateScoreButton]} onPress={openScoreModal}>
-          <CustomText style={styles.buttonText}>Edit Details</CustomText>
+        <TouchableOpacity style={[styles.actionButton, styles.updateDetailsButton]} onPress={openScoreModal}>
+          <CustomText style={styles.buttonText}>Details</CustomText>
+          <FontAwesome5 name="pen" size={14} color="black" />
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.editActionButton, styles.editScoresButton, isEditingScores && styles.saveScoresButton]}
+          style={[styles.actionButton, styles.editScoresButton, isEditingScores && styles.saveScoresButton]}
           onPress={isEditingScores ? handleSaveInlineScores : handleStartScoreEdit}
           disabled={isLoading}
-          accessibilityLabel={isEditingScores ? 'Save scores' : 'Edit scores'}>
-          <Feather name={isEditingScores ? 'check' : 'edit'} size={20} color="#242424" />
+          accessibilityLabel={isEditingScores ? 'Save' : 'Score'}>
+          <CustomText style={isEditingScores ? styles.saveButtonText : styles.buttonText}>
+            {isEditingScores ? 'Save' : 'Score'}
+          </CustomText>
+          <FontAwesome5 name="pen" size={14} color={isEditingScores ? '#1EC8A5' : '#000'} />
         </TouchableOpacity>
       </View>
 
@@ -286,136 +290,132 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
 };
 
 const styles = StyleSheet.create({
-  actionButton: {
-    alignItems: 'center',
-    borderRadius: 8,
-    flex: 1,
-    justifyContent: 'center',
-    paddingVertical: 10,
-  },
-  editActionButton: {
-    alignItems: 'center',
-    borderRadius: 8,
-    justifyContent: 'center',
-    paddingHorizontal: 10,
-  },
-  actionContainer: {
-    flexDirection: 'row',
-    gap: 8,
-    justifyContent: 'space-between',
-  },
-  buttonText: {
-    color: '#242424',
-    ...typography.textSemiBold,
-  },
-  completedButton: {
-    backgroundColor: '#242424',
-    borderColor: '#ED8C22',
-    borderWidth: 1,
-  },
-  dateText: {
-    ...typography.textBold,
-    color: '#CCCCCC',
-    width: 100,
-  },
-  editScoresButton: {
-    backgroundColor: '#BFBFBF',
-    borderColor: '#BFBFBF',
-    borderWidth: 1,
-  },
-  fieldText: {
-    ...typography.textBold,
-    color: '#CCCCCC',
-    textAlign: 'right',
-    width: 100,
-  },
   gameCard: {
     backgroundColor: '#2A2A2A',
     borderRadius: 12,
-    gap: 12,
-    marginTop: 10,
-    padding: 15,
+    padding: 12,
+    gap: 10,
   },
   gameHeader: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  markCompletedButton: {
-    backgroundColor: '#ED8C22',
-    borderColor: '#ED8C22',
-    borderWidth: 1,
-  },
-  matchupContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  scoreInput: {
-    color: '#FFF',
-    height: 32,
-    lineHeight: 28,
-    minWidth: 32,
-    paddingVertical: 0,
-    ...typography.heading3,
-    textAlign: 'right',
-    ...(Platform.OS === 'android'
-      ? { includeFontPadding: false as const, textAlignVertical: 'center' as const }
-      : null),
-  },
-  scoreInputEditing: {
-    color: '#ED8C22',
-  },
-  scoreSlot: {
-    alignItems: 'flex-end',
-    height: 32,
-    justifyContent: 'center',
-  },
-  saveScoresButton: {
-    backgroundColor: '#ED8C22',
-    borderColor: '#ED8C22',
-    borderWidth: 1,
-  },
-  scoresSection: {
-    alignItems: 'flex-end',
-    flex: 2,
-    justifyContent: 'space-between',
-  },
-  teamLogo: {
-    borderRadius: 14,
-    height: 30,
-    marginRight: 8,
-    width: 30,
-  },
-  teamRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  teamText: {
-    height: 32,
-    ...typography.textLargeSemiBold,
-    color: '#FFF',
-  },
-  teamsSection: {
-    flex: 1,
-    gap: 15,
-    justifyContent: 'space-between',
+  dateText: {
+    ...typography.text,
+    color: '#CCCCCC',
+    width: 100,
   },
   timeContainer: {
     backgroundColor: '#EA1D253D',
     borderColor: '#EA1D25',
     borderRadius: 20,
     borderWidth: 1,
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
   },
   timeText: {
     ...typography.text,
     color: '#fff',
   },
-  updateScoreButton: {
+  fieldText: {
+    ...typography.text,
+    color: '#CCCCCC',
+    textAlign: 'right',
+    width: 100,
+  },
+  matchupContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  teamsSection: {
+    flex: 1,
+    gap: 8,
+    justifyContent: 'space-between',
+  },
+  teamRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  teamLogo: {
+    borderRadius: 14,
+    height: 30,
+    marginRight: 8,
+    width: 30,
+    backgroundColor: '#fff',
+  },
+  teamText: {
+    ...typography.textBold,
+    color: '#FFF',
+  },
+  scoresSection: {
+    alignItems: 'flex-end',
+    flex: 2,
+    justifyContent: 'space-between',
+  },
+  scoreSlot: {
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+  },
+  scoreInput: {
+    color: '#FFF',
+    paddingVertical: 0,
+    ...typography.textLargeBold,
+    textAlign: 'right',
+    ...(Platform.OS === 'android'
+      ? { includeFontPadding: false as const, textAlignVertical: 'center' as const }
+      : null),
+  },
+  scoreInputEditing: {
+    color: '#1EC8A5',
+  },
+  actionContainer: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  actionButton: {
+    alignItems: 'center',
+    borderRadius: 8,
+    flex: 1,
+    justifyContent: 'center',
+    paddingVertical: 8,
+  },
+  markCompletedButton: {
+    backgroundColor: '#ED8C22',
+    borderColor: '#ED8C22',
+    borderWidth: 1,
+  },
+  completedButton: {
+    backgroundColor: '#242424',
+    borderColor: '#ED8C22',
+    borderWidth: 1,
+  },
+  buttonText: {
+    color: '#242424',
+    ...typography.text,
+  },
+  updateDetailsButton: {
+    flexDirection: 'row',
+    gap: 6,
     backgroundColor: '#CCCCCC',
     borderColor: '#CCCCCC',
     borderWidth: 1,
+  },
+  editScoresButton: {
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    gap: 6,
+    borderColor: '#BFBFBF',
+    borderWidth: 1,
+  },
+  saveScoresButton: {
+    backgroundColor: '#FFFFFF12',
+    borderColor: '#1EC8A5',
+    borderWidth: 1,
+  },
+  saveButtonText: {
+    color: '#1EC8A5',
+    ...typography.text,
   },
 });
 

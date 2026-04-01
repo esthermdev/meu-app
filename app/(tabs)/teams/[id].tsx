@@ -4,6 +4,7 @@ import { Image, RefreshControl, ScrollView, StyleSheet, View } from 'react-nativ
 import { useLocalSearchParams } from 'expo-router';
 
 import CustomText from '@/components/CustomText';
+import GameComponent from '@/components/features/gameviews/GameComponent';
 import { CustomHeader } from '@/components/headers/CustomHeader';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { typography } from '@/constants/Typography';
@@ -11,8 +12,6 @@ import { useTeamGamesSubscription } from '@/hooks/realtime/useTeamSubscriptions'
 import { supabase } from '@/lib/supabase';
 import { GameWithRelations } from '@/types/games';
 import { TeamWithDivisionDetails } from '@/types/teams';
-import { formatDate } from '@/utils/formatDate';
-import { formatTime } from '@/utils/formatTime';
 
 const TeamDetails = () => {
   const { id } = useLocalSearchParams();
@@ -84,64 +83,6 @@ const TeamDetails = () => {
     fetchTeamDetails();
   }, [fetchTeamDetails]);
 
-  const renderGameCard = (game: GameWithRelations) => (
-    <View key={game.id} style={styles.gameCard}>
-      <View style={styles.gameHeader}>
-        <CustomText style={styles.dateText}>{formatDate(game.datetime?.date, 'short')}</CustomText>
-        <View style={styles.timeContainer}>
-          <CustomText style={styles.timeText}>{formatTime(game.datetime?.time)}</CustomText>
-        </View>
-        <CustomText style={styles.fieldText}>Field {game.field?.name}</CustomText>
-      </View>
-
-      {/* Teams and Score Container */}
-      <View style={styles.matchupContainer}>
-        {/* Left side: Teams */}
-        <View style={styles.teamsSection}>
-          {/* Team 1 */}
-          <View style={styles.teamRow}>
-            <Image
-              source={
-                game.team1?.avatar_uri
-                  ? { uri: game.team1.avatar_uri }
-                  : require('@/assets/images/avatar-placeholder.png')
-              }
-              style={styles.teamLogo}
-            />
-            <CustomText style={[styles.teamText, game.team1?.id === teamId ? styles.highlightedTeam : null]}>
-              {game.team1?.name || 'TBD'}
-            </CustomText>
-          </View>
-
-          {/* Team 2 */}
-          <View style={styles.teamRow}>
-            <Image
-              source={
-                game.team2?.avatar_uri
-                  ? { uri: game.team2.avatar_uri }
-                  : require('@/assets/images/avatar-placeholder.png')
-              }
-              style={styles.teamLogo}
-            />
-            <CustomText style={[styles.teamText, game.team2?.id === teamId ? styles.highlightedTeam : null]}>
-              {game.team2?.name || 'TBD'}
-            </CustomText>
-          </View>
-        </View>
-
-        {/* Right side: Scores */}
-        <View style={styles.scoresSection}>
-          <CustomText style={styles.scoreText}>
-            {game.scores && game.scores.length > 0 ? game.scores[0].team1_score : '-'}
-          </CustomText>
-          <CustomText style={styles.scoreText}>
-            {game.scores && game.scores.length > 0 ? game.scores[0].team2_score : '-'}
-          </CustomText>
-        </View>
-      </View>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
       <CustomHeader title={team?.name ? team.name : ''} refreshInfo={true} />
@@ -184,7 +125,11 @@ const TeamDetails = () => {
             </View>
 
             {games.length > 0 ? (
-              <View style={styles.gamesList}>{games.map((game) => renderGameCard(game))}</View>
+              <View style={styles.gamesList}>
+                {games.map((game) => (
+                  <GameComponent key={game.id} game={game} highlightedTeamId={teamId} noScoreFallback="-" />
+                ))}
+              </View>
             ) : (
               <View style={styles.noGamesContainer}>
                 <CustomText style={styles.noGamesText}>No games scheduled</CustomText>
@@ -209,6 +154,17 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
+  teamInfoContainer: {
+    alignItems: 'center',
+    borderBottomColor: '#EFEFEF',
+    borderBottomWidth: 1,
+    padding: 20,
+  },
+  teamBadge: {
+    borderRadius: 100,
+    height: 70,
+    width: 70,
+  },
   divisionContainer: {
     borderRadius: 100,
     marginTop: 10,
@@ -218,24 +174,13 @@ const styles = StyleSheet.create({
     ...typography.textMedium,
   },
   gamesSection: {
-    padding: 20,
-  },
-  teamBadge: {
-    borderRadius: 100,
-    height: 70,
-    width: 70,
-  },
-  teamInfoContainer: {
-    alignItems: 'center',
-    borderBottomColor: '#EFEFEF',
-    borderBottomWidth: 1,
-    padding: 20,
+    padding: 15,
+    backgroundColor: '#f5f5f5',
   },
   sectionHeader: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 15,
   },
   sectionTitle: {
     ...typography.textLargeBold,
@@ -244,82 +189,6 @@ const styles = StyleSheet.create({
   },
   gamesList: {
     gap: 10,
-  },
-  // Game Card Styles - Adapted from GameComponent
-  gameCard: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    elevation: 2,
-    gap: 15,
-    marginBottom: 10,
-    padding: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  gameHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  dateText: {
-    ...typography.textBold,
-    color: '#999',
-    width: 100,
-  },
-  timeContainer: {
-    backgroundColor: '#999',
-    borderRadius: 20,
-    paddingHorizontal: 8,
-  },
-  timeText: {
-    ...typography.text,
-    color: '#fff',
-  },
-  fieldText: {
-    ...typography.textBold,
-    color: '#276B5D',
-    textAlign: 'right',
-    width: 100,
-  },
-  matchupContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  teamsSection: {
-    flex: 3,
-    gap: 8,
-    justifyContent: 'space-between',
-  },
-  teamRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 8,
-  },
-  teamLogo: {
-    borderRadius: 18,
-    height: 27,
-    width: 27,
-  },
-  teamText: {
-    ...typography.textSemiBold,
-    color: '#444',
-  },
-  highlightedTeam: {
-    color: '#EA1D25',
-  },
-  scoresSection: {
-    alignItems: 'flex-end',
-    flex: 1,
-    gap: 10,
-    justifyContent: 'space-between',
-  },
-  scoreText: {
-    ...typography.textLargeBold,
-    color: '#333',
-    textAlign: 'center',
   },
   noGamesContainer: {
     alignItems: 'center',

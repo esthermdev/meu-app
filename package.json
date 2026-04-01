@@ -11,6 +11,8 @@
     "test": "jest --watchAll",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "styles:reorder": "node ./scripts/reorder-styles-by-usage.js --write",
+    "styles:reorder:check": "node ./scripts/reorder-styles-by-usage.js --check",
     "check": "npm run lint && npm run typecheck",
     "typecheck": "tsc --noEmit",
     "migration:new": "node ./scripts/new-migration.js",

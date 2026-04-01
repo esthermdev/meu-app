@@ -9,9 +9,11 @@ import { formatTime } from '@/utils/formatTime';
 
 interface GameComponentProps {
   game: GameWithRelations;
+  highlightedTeamId?: number;
+  noScoreFallback?: string | number;
 }
 
-const GameComponent: React.FC<GameComponentProps> = ({ game }) => {
+const GameComponent: React.FC<GameComponentProps> = ({ game, highlightedTeamId, noScoreFallback = 0 }) => {
   const renderGame = ({ item }: { item: GameWithRelations }) => (
     <View style={styles.gameCard}>
       <View style={styles.gameHeader}>
@@ -36,7 +38,9 @@ const GameComponent: React.FC<GameComponentProps> = ({ game }) => {
               }
               style={styles.teamLogo}
             />
-            <CustomText style={styles.teamText}>{item.team1 ? item.team1?.name : 'TBD'}</CustomText>
+            <CustomText style={[styles.teamText, item.team1?.id === highlightedTeamId ? styles.highlightedTeam : null]}>
+              {item.team1 ? item.team1?.name : 'TBD'}
+            </CustomText>
           </View>
 
           {/* Team 2 */}
@@ -49,17 +53,19 @@ const GameComponent: React.FC<GameComponentProps> = ({ game }) => {
               }
               style={styles.teamLogo}
             />
-            <CustomText style={styles.teamText}>{item.team2 ? item.team2?.name : 'TBD'}</CustomText>
+            <CustomText style={[styles.teamText, item.team2?.id === highlightedTeamId ? styles.highlightedTeam : null]}>
+              {item.team2 ? item.team2?.name : 'TBD'}
+            </CustomText>
           </View>
         </View>
 
         {/* Right side: Scores */}
         <View style={styles.scoresSection}>
           <CustomText style={styles.scoreText}>
-            {item.scores && item.scores[0] ? item.scores[0].team1_score : 0}
+            {item.scores && item.scores[0] ? item.scores[0].team1_score : noScoreFallback}
           </CustomText>
           <CustomText style={styles.scoreText}>
-            {item.scores && item.scores[0] ? item.scores[0].team2_score : 0}
+            {item.scores && item.scores[0] ? item.scores[0].team2_score : noScoreFallback}
           </CustomText>
         </View>
       </View>
@@ -74,12 +80,6 @@ const GameComponent: React.FC<GameComponentProps> = ({ game }) => {
 };
 
 const styles = StyleSheet.create({
-  dateText: {
-    ...typography.textBold,
-    color: '#999',
-    width: 100,
-  },
-  // Game Card Styles
   gameCard: {
     backgroundColor: 'white',
     borderRadius: 12,
@@ -96,6 +96,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  dateText: {
+    ...typography.textBold,
+    color: '#999',
+    width: 100,
+  },
   timeContainer: {
     backgroundColor: '#999',
     borderRadius: 20,
@@ -111,7 +116,6 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     width: 100,
   },
-  // New layout styles
   matchupContainer: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -119,7 +123,7 @@ const styles = StyleSheet.create({
   },
   teamsSection: {
     flex: 3,
-    gap: 10,
+    gap: 6,
     justifyContent: 'space-between',
   },
   teamRow: {
@@ -133,17 +137,20 @@ const styles = StyleSheet.create({
     width: 27,
   },
   teamText: {
-    ...typography.textSemiBold,
+    ...typography.textBold,
     color: '#444',
+  },
+  highlightedTeam: {
+    color: '#EA1D25',
   },
   scoresSection: {
     alignItems: 'flex-end',
     flex: 1,
-    gap: 10,
+    gap: 2,
     justifyContent: 'space-between',
   },
   scoreText: {
-    ...typography.textLargeBold,
+    ...typography.heading3,
     color: '#333',
     textAlign: 'center',
   },

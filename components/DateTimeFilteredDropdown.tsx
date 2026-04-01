@@ -84,6 +84,8 @@ export const DateTimeFilteredDropdown: React.FC<DateTimeFilteredDropdownProps> =
     setSelectedDate(null);
   };
 
+  const formatDatetimeLabel = (value: string) => value.replace(' at ', ' - ');
+
   const renderDateItem = ({ item }: { item: string }) => (
     <TouchableOpacity style={styles.item} onPress={() => handleDateSelect(item)}>
       <Text style={styles.listItem} maxFontSizeMultiplier={1}>
@@ -96,16 +98,16 @@ export const DateTimeFilteredDropdown: React.FC<DateTimeFilteredDropdownProps> =
   const renderTimeItem = ({ item }: { item: DatetimeOption }) => (
     <TouchableOpacity style={styles.item} onPress={() => handleTimeSelect(item)}>
       <Text style={styles.listItem} maxFontSizeMultiplier={1}>
-        {item.label.split(' at ')[1]}
+        {item.label.split(' at ')[1] || item.label.split(' - ')[1] || item.time}
       </Text>
     </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>
+    <View>
       <TouchableOpacity style={[styles.button, error ? { borderColor: '#EA1D25' } : null]} onPress={toggleDropdown}>
         <Text style={styles.buttonText} maxFontSizeMultiplier={1.1}>
-          {selectedValue || label}
+          {selectedValue ? formatDatetimeLabel(selectedValue) : label}
         </Text>
         <Ionicons name={visible ? 'caret-up' : 'caret-down'} size={20} color="#333" />
       </TouchableOpacity>
@@ -141,19 +143,18 @@ export const DateTimeFilteredDropdown: React.FC<DateTimeFilteredDropdownProps> =
 };
 
 const styles = StyleSheet.create({
-  backButton: {
+  item: {
     alignItems: 'center',
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
     flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingVertical: 15,
   },
-  backText: {
-    color: '#333',
-    fontFamily: fonts.medium,
-    fontSize: ms(14),
-    marginLeft: 5,
+  listItem: {
+    fontFamily: fonts.regular,
+    fontSize: 16,
   },
   button: {
     alignItems: 'center',
@@ -166,10 +167,12 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontFamily: fonts.medium,
-    fontSize: ms(16),
+    fontSize: 16,
   },
-  container: {
-    marginBottom: 8,
+  overlay: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flex: 1,
   },
   dropdown: {
     backgroundColor: 'white',
@@ -184,31 +187,27 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     width: '70%',
   },
-  headerText: {
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
-    fontFamily: fonts.medium,
-    fontSize: ms(16),
-    paddingVertical: 10,
-    textAlign: 'center',
-  },
-  item: {
+  backButton: {
     alignItems: 'center',
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     paddingHorizontal: 15,
-    paddingVertical: 15,
+    paddingVertical: 10,
   },
-  listItem: {
-    fontFamily: fonts.regular,
-    fontSize: ms(16),
+  backText: {
+    color: '#333',
+    fontFamily: fonts.medium,
+    fontSize: ms(14),
+    marginLeft: 5,
   },
-  overlay: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    flex: 1,
+  headerText: {
+    borderBottomColor: '#ccc',
+    borderBottomWidth: 1,
+    fontFamily: fonts.medium,
+    fontSize: 16,
+    paddingVertical: 10,
+    textAlign: 'center',
   },
 });
 

@@ -121,6 +121,59 @@ const UpdateGameScoreModal: React.FC<UpdateGameScoreModalProps> = ({
 };
 
 const styles = StyleSheet.create({
+  modalContainer: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  modalOverlay: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flex: 1,
+    justifyContent: 'center',
+    width: '100%',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    elevation: 5,
+    maxHeight: modalHeight,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    width: '80%',
+  },
+  modalTitle: {
+    ...typography.heading4,
+    marginBottom: 15,
+  },
+  modalTeamContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  modalTeamName: {
+    ...typography.heading5,
+    flex: 1,
+  },
+  modalScoreInputContainer: {
+    alignItems: 'center',
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    borderWidth: 1,
+    height: 50,
+    justifyContent: 'center',
+    width: 55,
+  },
+  modalScoreInput: {
+    flex: 1,
+    ...typography.heading5,
+    ...(Platform.OS === 'android'
+      ? { includeFontPadding: false as const, textAlignVertical: 'center' as const }
+      : null),
+  },
   modalButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -135,60 +188,7 @@ const styles = StyleSheet.create({
   modalCancelButtonText: {
     color: 'white',
     textAlign: 'center',
-    ...typography.textMedium,
-  },
-  modalContainer: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    elevation: 5,
-    maxHeight: modalHeight,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    width: '80%',
-  },
-  modalOverlay: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    flex: 1,
-    justifyContent: 'center',
-    width: '100%',
-  },
-  modalScoreInput: {
-    flex: 1,
-    ...typography.heading4,
-    ...(Platform.OS === 'android'
-      ? { includeFontPadding: false as const, textAlignVertical: 'center' as const }
-      : null),
-  },
-  modalScoreInputContainer: {
-    alignItems: 'center',
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    borderWidth: 1,
-    height: 50,
-    justifyContent: 'center',
-    width: 50,
-  },
-  modalTeamContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  modalTeamName: {
-    ...typography.heading5,
-    flex: 1,
-  },
-  modalTitle: {
-    ...typography.heading4,
-    marginBottom: 15,
+    ...typography.textSemiBold,
   },
   modalUpdateButton: {
     backgroundColor: '#EA1D25',
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   modalUpdateButtonText: {
     color: 'white',
     textAlign: 'center',
-    ...typography.textMedium,
+    ...typography.textSemiBold,
   },
 });
 

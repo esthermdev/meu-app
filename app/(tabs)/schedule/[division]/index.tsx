@@ -453,21 +453,11 @@ export default function DivisionScheduleScreen() {
 }
 
 const styles = StyleSheet.create({
-  centerContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  container: {
-    backgroundColor: '#E6E6E6',
-    flex: 1,
-  },
-  emptyStateContainer: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-  },
-  errorText: {
-    color: '#EA1D25',
-    ...typography.textMedium,
+  filtersContainer: {
+    backgroundColor: '#fff',
+    gap: 15,
+    padding: 20,
+    marginBottom: 10,
   },
   filterPrompt: {
     ...typography.textLarge,
@@ -477,18 +467,12 @@ const styles = StyleSheet.create({
   filterRowViewport: {
     marginHorizontal: -20,
   },
+  gameTypeRow: {
+    gap: 12,
+    paddingHorizontal: 20,
+  },
   filterScrollView: {
     overflow: 'visible',
-  },
-  filtersContainer: {
-    backgroundColor: '#fff',
-    gap: 15,
-    padding: 20,
-    marginBottom: 10,
-  },
-  gameItemContainer: {
-    paddingHorizontal: 10,
-    paddingBottom: 10,
   },
   gameTypeChip: {
     borderRadius: 18,
@@ -515,19 +499,14 @@ const styles = StyleSheet.create({
   gameTypeChipTextActive: {
     color: '#fff',
   },
-  gameTypeRow: {
-    gap: 12,
-    paddingHorizontal: 20,
-  },
-  loadingContent: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-  },
   poolLoadingContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 56,
+  },
+  poolRow: {
+    gap: 10,
+    paddingHorizontal: 20,
   },
   filterChip: {
     borderRadius: 100,
@@ -552,8 +531,29 @@ const styles = StyleSheet.create({
   filterChipTextActive: {
     color: '#fff',
   },
-  poolRow: {
-    gap: 10,
+  container: {
+    backgroundColor: '#E6E6E6',
+    flex: 1,
+  },
+  centerContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  errorText: {
+    color: '#EA1D25',
+    ...typography.textMedium,
+  },
+  loadingContent: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  gameItemContainer: {
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+  },
+  emptyStateContainer: {
     paddingHorizontal: 20,
+    paddingTop: 20,
   },
 });

@@ -547,14 +547,16 @@ export default function UpdateScoresDivisionScreen() {
           <SectionList
             sections={sections}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item, section }) => {
+            renderItem={({ item, index, section }) => {
               const sectionId = section.id;
               if (collapsedSections[sectionId]) {
                 return null;
               }
 
+              const isLastItemInSection = index === section.data.length - 1;
+
               return (
-                <View style={styles.gameItemContainer}>
+                <View style={[styles.gameItemContainer, isLastItemInSection && styles.lastGameItemInSection]}>
                   <AdminGameComponent game={item} onGameStatusChange={refreshGames} />
                 </View>
               );
@@ -569,7 +571,7 @@ export default function UpdateScoresDivisionScreen() {
 
               return (
                 <TouchableOpacity
-                  style={styles.sectionHeader}
+                  style={[styles.sectionHeader]}
                   activeOpacity={0.7}
                   onPress={() => toggleSection(sectionId)}>
                   <CustomText style={styles.sectionHeaderText}>{section.title}</CustomText>
@@ -581,7 +583,6 @@ export default function UpdateScoresDivisionScreen() {
                 </TouchableOpacity>
               );
             }}
-            contentContainerStyle={styles.gamesList}
             stickySectionHeadersEnabled={true}
             ListHeaderComponent={filtersHeader}
             ListEmptyComponent={() => (
@@ -598,6 +599,16 @@ export default function UpdateScoresDivisionScreen() {
                 tintColor="#EA1D25"
               />
             }
+            ItemSeparatorComponent={({ section }) => {
+              const sectionId = section.id;
+              const isCollapsed = collapsedSections[sectionId];
+
+              if (isCollapsed) {
+                return null;
+              }
+
+              return <View style={styles.itemSeparator} />;
+            }}
           />
 
           {/* Bottom Action Buttons */}
@@ -620,17 +631,10 @@ export default function UpdateScoresDivisionScreen() {
 }
 
 const styles = StyleSheet.create({
-  centerContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  container: {
+  filtersContainer: {
     backgroundColor: '#000',
-    flex: 1,
-  },
-  errorText: {
-    color: '#EA1D25',
-    ...typography.textMedium,
+    gap: 15,
+    padding: 20,
   },
   filterPrompt: {
     color: '#fff',
@@ -639,44 +643,12 @@ const styles = StyleSheet.create({
   filterRowViewport: {
     marginHorizontal: -20,
   },
-  filterScrollView: {
-    overflow: 'visible',
-  },
-  filtersContainer: {
-    backgroundColor: '#000',
-    gap: 15,
-    padding: 20,
-    borderColor: '#EA1D25',
-    borderBottomWidth: 1,
-  },
-  filterChip: {
-    borderRadius: 100,
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginRight: -3,
-  },
-  filterChipActive: {
-    backgroundColor: '#EA1D25',
-    borderColor: '#EA1D25',
-  },
-  filterChipInactive: {
-    backgroundColor: '#4D0000',
-    borderColor: '#EA1D25',
-  },
-  filterChipRow: {
-    gap: 10,
+  gameTypeRow: {
+    gap: 14,
     paddingHorizontal: 20,
   },
-  filterChipText: {
-    ...typography.heading5,
-    color: '#fff',
-  },
-  filterChipTextActive: {
-    color: '#fff',
-  },
-  gameItemContainer: {
-    paddingHorizontal: 10,
+  filterScrollView: {
+    overflow: 'visible',
   },
   gameTypeChip: {
     borderRadius: 18,
@@ -700,26 +672,79 @@ const styles = StyleSheet.create({
     ...typography.heading5,
     color: '#fff',
   },
-  gameTypeRow: {
-    gap: 14,
-    paddingHorizontal: 20,
-  },
-  gamesList: {
-    paddingBottom: 15,
-  },
   poolLoadingContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 56,
+  },
+  filterChipRow: {
+    gap: 10,
+    paddingHorizontal: 20,
+  },
+  filterChip: {
+    borderRadius: 100,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginRight: -3,
+  },
+  filterChipActive: {
+    backgroundColor: '#EA1D25',
+    borderColor: '#EA1D25',
+  },
+  filterChipInactive: {
+    backgroundColor: '#4D0000',
+    borderColor: '#EA1D25',
+  },
+  filterChipText: {
+    ...typography.heading5,
+    color: '#fff',
+  },
+  filterChipTextActive: {
+    color: '#fff',
+  },
+  container: {
+    backgroundColor: '#000',
+    flex: 1,
+  },
+  centerContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  errorText: {
+    color: '#EA1D25',
+    ...typography.textMedium,
+  },
+  loadingOverlay: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    bottom: 0,
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    zIndex: 1000,
+  },
+  gameItemContainer: {
+    paddingHorizontal: 10,
+  },
+  lastGameItemInSection: {
+    marginBottom: 10,
+  },
+  itemSeparator: {
+    height: 10,
   },
   sectionHeader: {
     alignItems: 'center',
     backgroundColor: '#1a0000',
     borderColor: '#EA1D25',
     borderBottomWidth: 1,
+    borderTopWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
+    marginBottom: 10,
   },
   sectionHeaderText: {
     color: '#fff',
@@ -733,16 +758,5 @@ const styles = StyleSheet.create({
     color: '#888',
     ...typography.textMedium,
     textAlign: 'center',
-  },
-  loadingOverlay: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    bottom: 0,
-    justifyContent: 'center',
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    zIndex: 1000,
   },
 });

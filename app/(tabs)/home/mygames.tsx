@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import CustomText from '@/components/CustomText';
@@ -43,12 +43,6 @@ const MyGames = () => {
   const [team2Score, setTeam2Score] = useState('0');
 
   const { session } = useAuth();
-
-  useEffect(() => {
-    if (session) {
-      fetchFavoriteGames(session.user.id);
-    }
-  }, [session]);
 
   // Set up real-time subscription for favorite games
   const gameIds = games.map((game) => game.id);
@@ -150,7 +144,7 @@ const MyGames = () => {
     }
   }, [selectedDate, games]);
 
-  const fetchFavoriteGames = async (userId: string) => {
+  const fetchFavoriteGames = useCallback(async (userId: string) => {
     try {
       setLoading(true);
 
@@ -197,16 +191,24 @@ const MyGames = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const onRefresh = React.useCallback(() => {
+  useFocusEffect(
+    useCallback(() => {
+      if (session) {
+        fetchFavoriteGames(session.user.id);
+      }
+    }, [fetchFavoriteGames, session]),
+  );
+
+  const onRefresh = useCallback(() => {
     setRefreshing(true);
     if (session) {
       fetchFavoriteGames(session.user.id).finally(() => setRefreshing(false));
     } else {
       setRefreshing(false);
     }
-  }, [session]);
+  }, [fetchFavoriteGames, session]);
 
   // This function prepares the modal with game data and shows it
   const openScoreModal = (game: GameWithRelations) => {
@@ -449,7 +451,7 @@ const MyGames = () => {
           <Text style={styles.messageText}>Select your favorite teams to see their matches here.</Text>
           <PrimaryButton
             title="Find Teams   +"
-            onPress={() => router.push('/teams')}
+            onPress={() => router.push('/favorites')}
             style={{ height: 35, paddingHorizontal: 15 }}
             textStyle={{ ...typography.buttonLarge }}
           />
@@ -460,29 +462,10 @@ const MyGames = () => {
 };
 
 const styles = StyleSheet.create({
-  centerContainer: {
-    alignItems: 'center',
-    flex: 1,
-    gap: 30,
-    justifyContent: 'center',
-    padding: 50,
-  },
-  container: {
-    flex: 1,
-  },
-  dateButton: {
-    borderRadius: 6,
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-  },
-  dateButtonText: {
-    ...typography.textMedium,
-    color: '#999999',
-  },
   dateFilterContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    padding: 20,
+    padding: 15,
   },
   dateLabel: {
     ...typography.textBold,
@@ -491,63 +474,30 @@ const styles = StyleSheet.create({
   },
   dateScroll: {
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 6,
     flexDirection: 'row',
     padding: 7,
   },
-  linkText: {
-    color: '#EA1D25',
-    ...typography.heading5,
-    textDecorationLine: 'underline',
-  },
-  mainMessageText: {
-    ...typography.textLargeBold,
-    color: '#838383',
-    textAlign: 'center',
-  },
-  messageText: {
-    ...typography.textLarge,
-    color: '#00000066',
-    textAlign: 'center',
+  dateButton: {
+    borderRadius: 3,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
   },
   selectedDateButton: {
-    backgroundColor: '#FE0000',
+    backgroundColor: '#EA1D25',
+  },
+  dateButtonText: {
+    ...typography.textMedium,
+    color: '#999999',
   },
   selectedDateText: {
     color: '#fff',
-  },
-  // Game List Container
-  matchupContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  teamsSection: {
-    flex: 3,
-    gap: 10,
-    justifyContent: 'space-between',
-  },
-  teamRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 8,
-  },
-  scoresSection: {
-    alignItems: 'flex-end',
-    flex: 1,
-    gap: 10,
-    justifyContent: 'space-between',
-  },
-  listContainer: {
-    paddingBottom: 10,
-    paddingHorizontal: 20,
-    paddingTop: 5,
   },
   gameCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
     elevation: 2,
-    gap: 15,
+    gap: 5,
     marginBottom: 12,
     padding: 10,
     shadowColor: '#000',
@@ -580,22 +530,50 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     width: 100,
   },
-  teamText: {
-    ...typography.textLargeSemiBold,
-    color: '#444',
+  matchupContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  highlightedTeam: {
-    color: '#FE0000',
-    fontWeight: '700',
+  teamsSection: {
+    flex: 3,
+    gap: 6,
+    justifyContent: 'space-between',
+  },
+  teamRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 8,
   },
   teamLogo: {
     borderRadius: 18,
     height: 27,
     width: 27,
   },
+  teamText: {
+    ...typography.textBold,
+    color: '#444',
+  },
+  highlightedTeam: {
+    color: '#FE0000',
+    fontWeight: '700',
+  },
+  scoresSection: {
+    alignItems: 'flex-end',
+    flex: 1,
+    gap: 2,
+    justifyContent: 'space-between',
+  },
   scoreText: {
-    ...typography.heading4,
+    ...typography.heading3,
     color: '#333',
+  },
+  completedContainer: {
+    alignItems: 'center',
+  },
+  completedText: {
+    ...typography.textSmallBold,
+    color: '#276B5D', // Using a green color to indicate completion
   },
   updateScoreButton: {
     alignItems: 'center',
@@ -605,12 +583,35 @@ const styles = StyleSheet.create({
     color: '#EA1D25',
     textDecorationLine: 'underline',
   },
-  completedContainer: {
+  centerContainer: {
     alignItems: 'center',
+    flex: 1,
+    gap: 30,
+    justifyContent: 'center',
+    padding: 50,
   },
-  completedText: {
-    ...typography.textSmallBold,
-    color: '#276B5D', // Using a green color to indicate completion
+  mainMessageText: {
+    ...typography.textLargeBold,
+    color: '#838383',
+    textAlign: 'center',
+  },
+  messageText: {
+    ...typography.textLarge,
+    color: '#00000066',
+    textAlign: 'center',
+  },
+  linkText: {
+    color: '#EA1D25',
+    ...typography.heading5,
+    textDecorationLine: 'underline',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#E6E6E6',
+  },
+  listContainer: {
+    paddingBottom: 10,
+    paddingHorizontal: 15,
   },
 });
 

@@ -35,7 +35,7 @@ export const Dropdown: React.FC<DropdownProps> = ({ label, data, onSelect, selec
   );
 
   return (
-    <View style={styles.container}>
+    <View>
       <TouchableOpacity style={[styles.button, error ? { borderColor: '#EA1D25' } : null]} onPress={toggleDropdown}>
         <Text style={styles.buttonText} maxFontSizeMultiplier={1.1}>
           {selectedValue || label}
@@ -54,6 +54,17 @@ export const Dropdown: React.FC<DropdownProps> = ({ label, data, onSelect, selec
 };
 
 const styles = StyleSheet.create({
+  item: {
+    alignItems: 'center',
+    borderBottomColor: '#ccc',
+    borderBottomWidth: 1,
+    marginHorizontal: 10,
+    paddingVertical: 15,
+  },
+  listItem: {
+    fontFamily: fonts.regular,
+    fontSize: ms(16),
+  },
   button: {
     alignItems: 'center',
     borderColor: '#ccc',
@@ -67,9 +78,10 @@ const styles = StyleSheet.create({
     fontFamily: fonts.medium,
     fontSize: ms(16),
   },
-  container: {
+  overlay: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     flex: 1,
-    marginBottom: 8,
   },
   dropdown: {
     backgroundColor: 'white',
@@ -86,22 +98,6 @@ const styles = StyleSheet.create({
   inputError: {
     borderColor: '#DD3333',
     borderWidth: 1,
-  },
-  item: {
-    alignItems: 'center',
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
-    marginHorizontal: 10,
-    paddingVertical: 15,
-  },
-  listItem: {
-    fontFamily: fonts.regular,
-    fontSize: ms(16),
-  },
-  overlay: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    flex: 1,
   },
 });
 
