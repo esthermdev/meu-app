@@ -297,104 +297,110 @@ const CartRequestButton = () => {
                   <PassengerCountInput value={passengerCount} onValueChange={setPassengerCount} />
                 </View>
 
-                <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>
-                  From:
-                </Text>
-                <View style={{ flexDirection: 'row', gap: 5 }}>
-                  <View style={{ flex: 1, flexDirection: 'column' }}>
-                    <Dropdown
-                      label="From Location"
-                      data={LOCATIONS}
-                      onSelect={(item) => {
-                        setFromLocation(item as LocationType);
-                        // Clear error when user makes a selection
-                        setErrors((prev) => ({
-                          ...prev,
-                          fromLocation: undefined,
-                        }));
-                      }}
-                      selectedValue={fromLocation}
-                      error={!!errors.fromLocation}
-                    />
-                    <ErrorMessage message={errors.fromLocation} />
-                  </View>
-                  {fromLocation === 'Field' && (
-                    <View style={{ flex: 1, flexDirection: 'column', width: 165 }}>
+                <View style={{ marginBottom: 10 }}>
+                  <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>
+                    From:
+                  </Text>
+                  <View style={{ flexDirection: 'row', gap: 5 }}>
+                    <View style={{ flex: 1, flexDirection: 'column' }}>
                       <Dropdown
-                        label="From Field"
-                        data={fieldOptions}
-                        onSelect={(fieldName: string) => {
-                          const fieldId = fieldNameToIdMap[fieldName]?.toString() || '';
-                          setFromFieldNumber(fieldId);
+                        label="From Location"
+                        data={LOCATIONS}
+                        onSelect={(item) => {
+                          setFromLocation(item as LocationType);
                           // Clear error when user makes a selection
                           setErrors((prev) => ({
                             ...prev,
-                            fromFieldNumber: undefined,
+                            fromLocation: undefined,
                           }));
                         }}
-                        selectedValue={fromFieldNumber ? fieldIdToNameMap[parseInt(fromFieldNumber)] : ''}
-                        error={!!errors.fromFieldNumber}
+                        selectedValue={fromLocation}
+                        error={!!errors.fromLocation}
                       />
-                      <ErrorMessage message={errors.fromFieldNumber} />
+                      <ErrorMessage message={errors.fromLocation} />
                     </View>
-                  )}
-                </View>
-
-                <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>
-                  To:
-                </Text>
-                <View style={{ flexDirection: 'row', gap: 5 }}>
-                  <View style={{ flex: 1, flexDirection: 'column' }}>
-                    <Dropdown
-                      label="To Location"
-                      data={LOCATIONS}
-                      onSelect={(item) => {
-                        setToLocation(item as LocationType);
-                        // Clear error when user makes a selection
-                        setErrors((prev) => ({ ...prev, toLocation: undefined }));
-                      }}
-                      selectedValue={toLocation}
-                      error={!!errors.toLocation}
-                    />
-                    <ErrorMessage message={errors.toLocation} />
+                    {fromLocation === 'Field' && (
+                      <View style={{ flex: 1, flexDirection: 'column', width: 165 }}>
+                        <Dropdown
+                          label="From Field"
+                          data={fieldOptions}
+                          onSelect={(fieldName: string) => {
+                            const fieldId = fieldNameToIdMap[fieldName]?.toString() || '';
+                            setFromFieldNumber(fieldId);
+                            // Clear error when user makes a selection
+                            setErrors((prev) => ({
+                              ...prev,
+                              fromFieldNumber: undefined,
+                            }));
+                          }}
+                          selectedValue={fromFieldNumber ? fieldIdToNameMap[parseInt(fromFieldNumber)] : ''}
+                          error={!!errors.fromFieldNumber}
+                        />
+                        <ErrorMessage message={errors.fromFieldNumber} />
+                      </View>
+                    )}
                   </View>
-                  {toLocation === 'Field' && (
-                    <View style={{ flex: 1, flexDirection: 'column', width: 165 }}>
-                      <Dropdown
-                        label="To Field"
-                        data={fieldOptions}
-                        onSelect={(fieldName: string) => {
-                          const fieldId = fieldNameToIdMap[fieldName]?.toString() || '';
-                          setToFieldNumber(fieldId);
-                          // Clear error when user makes a selection
-                          setErrors((prev) => ({
-                            ...prev,
-                            toFieldNumber: undefined,
-                          }));
-                        }}
-                        selectedValue={toFieldNumber ? fieldIdToNameMap[parseInt(toFieldNumber)] : ''}
-                        error={!!errors.toFieldNumber}
-                      />
-                      <ErrorMessage message={errors.toFieldNumber} />
-                    </View>
-                  )}
                 </View>
 
-                <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>
-                  Special Request:
-                </Text>
-                <TextInput
-                  style={styles.specialRequestInput}
-                  placeholder="e.g., Wheelchair needed, carrying large items..."
-                  placeholderTextColor={'#0000004D'}
-                  value={specialRequest}
-                  onChangeText={setSpecialRequest}
-                  onFocus={handleSpecialRequestFocus}
-                  multiline
-                  numberOfLines={3}
-                  maxLength={200}
-                  maxFontSizeMultiplier={1.2}
-                />
+                <View style={{ marginBottom: 10 }}>
+                  <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>
+                    To:
+                  </Text>
+                  <View style={{ flexDirection: 'row', gap: 5 }}>
+                    <View style={{ flex: 1, flexDirection: 'column' }}>
+                      <Dropdown
+                        label="To Location"
+                        data={LOCATIONS}
+                        onSelect={(item) => {
+                          setToLocation(item as LocationType);
+                          // Clear error when user makes a selection
+                          setErrors((prev) => ({ ...prev, toLocation: undefined }));
+                        }}
+                        selectedValue={toLocation}
+                        error={!!errors.toLocation}
+                      />
+                      <ErrorMessage message={errors.toLocation} />
+                    </View>
+                    {toLocation === 'Field' && (
+                      <View style={{ flex: 1, flexDirection: 'column', width: 165 }}>
+                        <Dropdown
+                          label="To Field"
+                          data={fieldOptions}
+                          onSelect={(fieldName: string) => {
+                            const fieldId = fieldNameToIdMap[fieldName]?.toString() || '';
+                            setToFieldNumber(fieldId);
+                            // Clear error when user makes a selection
+                            setErrors((prev) => ({
+                              ...prev,
+                              toFieldNumber: undefined,
+                            }));
+                          }}
+                          selectedValue={toFieldNumber ? fieldIdToNameMap[parseInt(toFieldNumber)] : ''}
+                          error={!!errors.toFieldNumber}
+                        />
+                        <ErrorMessage message={errors.toFieldNumber} />
+                      </View>
+                    )}
+                  </View>
+                </View>
+
+                <View>
+                  <Text style={styles.labelHeader} maxFontSizeMultiplier={1.2}>
+                    Special Request:
+                  </Text>
+                  <TextInput
+                    style={styles.specialRequestInput}
+                    placeholder="e.g., Wheelchair needed, carrying large items..."
+                    placeholderTextColor={'#0000004D'}
+                    value={specialRequest}
+                    onChangeText={setSpecialRequest}
+                    onFocus={handleSpecialRequestFocus}
+                    multiline
+                    numberOfLines={3}
+                    maxLength={200}
+                    maxFontSizeMultiplier={1.2}
+                  />
+                </View>
 
                 <ModalButton onCancel={handleCloseModal} onConfirm={handleRequestCart} confirmText="Request Cart" />
               </ScrollView>
