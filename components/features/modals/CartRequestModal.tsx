@@ -285,7 +285,7 @@ const CartRequestButton = () => {
 
                 <View
                   style={{
-                    marginBottom: 5,
+                    marginVertical: 5,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
@@ -497,7 +497,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 12,
     ...typography.textSmall,
-    marginBottom: 10,
   },
   noteContainer: {
     backgroundColor: '#F5F8FF',
