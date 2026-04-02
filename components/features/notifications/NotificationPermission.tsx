@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     ...typography.textMedium,
+    color: '#FFFFFF',
   },
   compactButton: {
     paddingHorizontal: 12,

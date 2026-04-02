@@ -7,7 +7,7 @@ import CustomText from '@/components/CustomText';
 import NotificationPermission from '@/components/features/notifications/NotificationPermission';
 import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
-import { hasPermission } from '@/context/profileRoles';
+import { hasPermission, hasRole } from '@/context/profileRoles';
 
 import SignIn from '../../sign-in';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -47,8 +47,8 @@ export default function UserDashboard() {
           </CustomText>
         </View>
 
-        {/* Cards */}
-        <View>
+        {/* User */}
+        <View style={styles.section}>
           <TouchableOpacity onPress={() => router.push('/(user)/account')}>
             <Card style={styles.card}>
               <MaterialIcons name="account-box" size={24} color="#FE0000" style={styles.cardIcon} />
@@ -64,65 +64,72 @@ export default function UserDashboard() {
               <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
             </Card>
           </TouchableOpacity>
+        </View>
+
+        {/* Support */}
+        <View style={styles.section}>
+          {!hasRole(profile, 'user') ? <CustomText style={styles.sectionTitle}>Support</CustomText> : null}
 
           {hasPermission(profile, 'view_admin_dashboard') ? (
             <TouchableOpacity onPress={() => router.push('/(user)/admin' as Href)}>
-              <Card style={styles.card}>
-                <Ionicons name="settings" size={24} color="#FE0000" style={styles.cardIcon} />
-                <CustomText style={styles.cardLabel}>Admin</CustomText>
-                <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
+              <Card style={styles.supportCard}>
+                <Ionicons name="settings" size={24} color="#4357AD" style={styles.cardIcon} />
+                <CustomText style={styles.supportCardLabel}>Admin</CustomText>
+                <MaterialIcons name="arrow-right" size={24} color="#4357AD" />
               </Card>
             </TouchableOpacity>
           ) : null}
 
           {hasPermission(profile, 'manage_water') ? (
             <TouchableOpacity onPress={() => router.push('/(user)/water-requests' as Href)}>
-              <Card style={styles.card}>
-                <Ionicons name="water" size={24} color="#FE0000" style={styles.cardIcon} />
-                <CustomText style={styles.cardLabel}>Water Requests</CustomText>
-                <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
+              <Card style={styles.supportCard}>
+                <Ionicons name="water" size={24} color="#4357AD" style={styles.cardIcon} />
+                <CustomText style={styles.supportCardLabel}>Water Requests</CustomText>
+                <MaterialIcons name="arrow-right" size={24} color="#4357AD" />
               </Card>
             </TouchableOpacity>
           ) : null}
 
           {hasPermission(profile, 'manage_transport') ? (
             <TouchableOpacity onPress={() => router.push('/(user)/cart-requests' as Href)}>
-              <Card style={styles.card}>
-                <Ionicons name="car" size={24} color="#FE0000" style={styles.cardIcon} />
-                <CustomText style={styles.cardLabel}>Cart Requests</CustomText>
-                <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
+              <Card style={styles.supportCard}>
+                <Ionicons name="car" size={24} color="#4357AD" style={styles.cardIcon} />
+                <CustomText style={styles.supportCardLabel}>Cart Requests</CustomText>
+                <MaterialIcons name="arrow-right" size={24} color="#4357AD" />
               </Card>
             </TouchableOpacity>
           ) : null}
 
           {hasPermission(profile, 'manage_trainer_requests') ? (
             <TouchableOpacity onPress={() => router.push('/(user)/trainers-list' as Href)}>
-              <Card style={styles.card}>
-                <Ionicons name="medkit" size={24} color="#FE0000" style={styles.cardIcon} />
-                <CustomText style={styles.cardLabel}>Trainer Requests</CustomText>
-                <MaterialIcons name="arrow-right" size={24} color="#FE0000" />
+              <Card style={styles.supportCard}>
+                <Ionicons name="medkit" size={24} color="#4357AD" style={styles.cardIcon} />
+                <CustomText style={styles.supportCardLabel}>Trainer Requests</CustomText>
+                <MaterialIcons name="arrow-right" size={24} color="#4357AD" />
               </Card>
             </TouchableOpacity>
           ) : null}
         </View>
 
         {/* Quick Actions */}
-        <CustomText style={styles.sectionTitle}>Quick Actions</CustomText>
-        <TouchableOpacity onPress={() => router.navigate('/(user)/feedback')} style={styles.actionButton}>
-          <MaterialIcons name="feedback" size={24} color="#000" style={styles.cardIcon} />
-          <CustomText style={styles.quickActionLabels}>Feedback</CustomText>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleSignOut()}
-          style={[styles.actionButton, isSigningOut && styles.disabledButton]}
-          disabled={isSigningOut}>
-          <Ionicons name="arrow-back-circle" size={24} color="#000" style={styles.cardIcon} />
-          <CustomText style={styles.quickActionLabels}>{isSigningOut ? 'Signing out...' : 'Sign Out'}</CustomText>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleOpenDeleteAccount} style={styles.actionButton}>
-          <MaterialIcons name="delete-sweep" size={24} color="#000" style={styles.cardIcon} />
-          <CustomText style={styles.quickActionLabels}>Delete Account</CustomText>
-        </TouchableOpacity>
+        <View>
+          <CustomText style={[styles.sectionTitle, { marginBottom: 10 }]}>Quick Actions</CustomText>
+          <TouchableOpacity onPress={() => router.navigate('/(user)/feedback')} style={styles.actionButton}>
+            <MaterialIcons name="feedback" size={24} color="#000" style={styles.cardIcon} />
+            <CustomText style={styles.quickActionLabels}>Feedback</CustomText>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleSignOut()}
+            style={[styles.actionButton, isSigningOut && styles.disabledButton]}
+            disabled={isSigningOut}>
+            <Ionicons name="arrow-back-circle" size={24} color="#000" style={styles.cardIcon} />
+            <CustomText style={styles.quickActionLabels}>{isSigningOut ? 'Signing out...' : 'Sign Out'}</CustomText>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleOpenDeleteAccount} style={styles.actionButton}>
+            <MaterialIcons name="delete-sweep" size={24} color="#000" style={styles.cardIcon} />
+            <CustomText style={styles.quickActionLabels}>Delete Account</CustomText>
+          </TouchableOpacity>
+        </View>
 
         {/* Notifications Section */}
         <NotificationPermission />
@@ -137,14 +144,20 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E5E5E5',
     borderBottomWidth: 1,
     flexDirection: 'row',
-    paddingVertical: 20,
+    paddingVertical: 15,
   },
   card: {
     alignItems: 'center',
     backgroundColor: '#FFF0F0',
     borderRadius: 12,
     flexDirection: 'row',
-    marginVertical: 8,
+    padding: 20,
+  },
+  supportCard: {
+    alignItems: 'center',
+    backgroundColor: '#ECEFFD',
+    borderRadius: 12,
+    flexDirection: 'row',
     padding: 20,
   },
   cardIcon: {
@@ -154,6 +167,11 @@ const styles = StyleSheet.create({
     flex: 1,
     ...typography.textLargeBold,
     color: '#FE0000',
+  },
+  supportCardLabel: {
+    flex: 1,
+    ...typography.textLargeBold,
+    color: '#4357AD',
   },
   container: {
     backgroundColor: '#fff',
@@ -171,8 +189,11 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   sectionTitle: {
-    ...typography.textLargeBold,
-    marginTop: 20,
+    ...typography.heading4,
+  },
+  section: {
+    gap: 10,
+    marginBottom: 20,
   },
   username: {
     color: '#000',

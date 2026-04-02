@@ -7,10 +7,7 @@ export type PermissionKey =
   | 'manage_games'
   | 'manage_transport'
   | 'manage_water'
-  | 'manage_trainer_requests'
-  | 'receive_cart_notifications'
-  | 'receive_water_notifications'
-  | 'receive_medic_notifications';
+  | 'manage_trainer_requests';
 
 type ProfileRoleJoin = {
   role?: {
@@ -31,19 +28,10 @@ export type ProfileWithRole = ProfileRow &
 
 const DEFAULT_ROLE_PERMISSIONS: Record<RoleKey, PermissionKey[]> = {
   user: [],
-  admin: [
-    'view_admin_dashboard',
-    'manage_games',
-    'manage_transport',
-    'manage_water',
-    'manage_trainer_requests',
-    'receive_cart_notifications',
-    'receive_water_notifications',
-    'receive_medic_notifications',
-  ],
-  driver: ['manage_transport', 'receive_cart_notifications'],
-  volunteer: ['manage_water', 'receive_water_notifications'],
-  medic: ['manage_trainer_requests', 'receive_medic_notifications'],
+  admin: ['view_admin_dashboard', 'manage_games', 'manage_transport', 'manage_water', 'manage_trainer_requests'],
+  driver: ['manage_transport'],
+  volunteer: ['manage_water'],
+  medic: ['manage_trainer_requests'],
 };
 
 function isRoleKey(value: string | null | undefined): value is RoleKey {

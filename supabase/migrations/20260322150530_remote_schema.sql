@@ -2222,9 +2222,6 @@ ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
 CREATE PUBLICATION "supabase_realtime_messages_publication" WITH (publish = 'insert, update, delete, truncate');
 
 
-ALTER PUBLICATION "supabase_realtime_messages_publication" OWNER TO "supabase_admin";
-
-
 ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."cart_requests";
 
 
