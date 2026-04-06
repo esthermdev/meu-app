@@ -90,10 +90,6 @@ const PoolGameView: React.FC<PoolProps> = ({ poolId, divisionId }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  // Game Card Styles
   gameCard: {
     backgroundColor: 'white',
     borderRadius: 12,
@@ -110,15 +106,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  gameList: {
-    paddingBottom: 10,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-  },
-  infoText: {
-    ...typography.text,
-    justifyContent: 'center',
   },
   dateText: {
     ...typography.textBold,
@@ -140,7 +127,6 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     width: 100,
   },
-  // New layout styles
   matchupContainer: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -175,6 +161,18 @@ const styles = StyleSheet.create({
     ...typography.textLargeBold,
     color: '#333',
     textAlign: 'center',
+  },
+  container: {
+    flex: 1,
+  },
+  gameList: {
+    paddingBottom: 10,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  infoText: {
+    ...typography.text,
+    justifyContent: 'center',
   },
 });
 

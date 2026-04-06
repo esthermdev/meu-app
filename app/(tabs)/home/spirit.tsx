@@ -63,16 +63,12 @@ export default function SpiritPage() {
 }
 
 const styles = StyleSheet.create({
-  buttonSubtext: {
-    color: '#fff',
-    opacity: 0.9,
-  },
-  buttonText: {
-    color: '#fff',
-    marginBottom: 2,
-  },
-  buttonTextContainer: {
+  container: {
+    backgroundColor: '#fff',
     flex: 1,
+  },
+  content: {
+    padding: 20,
   },
   card: {
     backgroundColor: '#f8f8f8',
@@ -82,12 +78,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 20,
   },
-  container: {
-    backgroundColor: '#fff',
-    flex: 1,
+  message: {
+    color: '#333',
+    lineHeight: 24,
   },
-  content: {
-    padding: 20,
+  name: {
+    color: '#E0AE43',
   },
   formButton: {
     alignItems: 'center',
@@ -98,12 +94,16 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     padding: 18,
   },
-  message: {
-    color: '#333',
-    lineHeight: 24,
+  buttonTextContainer: {
+    flex: 1,
   },
-  name: {
-    color: '#E0AE43',
+  buttonText: {
+    color: '#fff',
+    marginBottom: 2,
+  },
+  buttonSubtext: {
+    color: '#fff',
+    opacity: 0.9,
   },
   pdfButton: {
     alignItems: 'center',
@@ -115,11 +115,11 @@ const styles = StyleSheet.create({
     gap: 12,
     padding: 18,
   },
-  pdfButtonSubtext: {
-    color: '#666',
-  },
   pdfButtonText: {
     color: '#333',
     marginBottom: 2,
+  },
+  pdfButtonSubtext: {
+    color: '#666',
   },
 });

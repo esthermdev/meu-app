@@ -30,6 +30,27 @@ const RulesAndSOTG = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
+  },
+  scrollview: {
+    flex: 1,
+  },
+  contentContainer: {
+    padding: 20,
+  },
+  contentHeader: {
+    ...typography.heading4,
+    marginBottom: 10,
+  },
+  content: {
+    ...typography.text,
+  },
+  link: {
+    ...typography.textMedium,
+    color: 'blue',
+  },
   bold: {
     ...typography.textBold,
   },
@@ -41,31 +62,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     marginLeft: 15,
   },
-  container: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  content: {
-    ...typography.text,
-  },
-  contentContainer: {
-    padding: 20,
-  },
-  contentHeader: {
-    ...typography.heading4,
-    marginBottom: 10,
-  },
   contentSubHeader: {
     ...typography.heading5,
     color: '#EA1D25',
     textDecorationLine: 'underline',
-  },
-  link: {
-    ...typography.textMedium,
-    color: 'blue',
-  },
-  scrollview: {
-    flex: 1,
   },
 });
 

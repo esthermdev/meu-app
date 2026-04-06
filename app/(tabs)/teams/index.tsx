@@ -240,9 +240,47 @@ const Teams = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#FFFFFF',
+  teamItem: {
+    alignItems: 'center',
+    borderBottomColor: '#EFEFEF',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 15,
+  },
+  teamContent: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  teamAvatarContainer: {
+    marginRight: 15,
+  },
+  teamAvatar: {
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    borderColor: '#000',
+    borderRadius: 25,
+    borderWidth: 0.5,
+    height: 50,
+    justifyContent: 'center',
+    width: 50,
+  },
+  teamAvatarImage: {
+    borderRadius: 25,
+    height: 50,
+    width: 50,
+  },
+  teamAvatarText: {
+    ...typography.textBold,
+    color: '#333',
+  },
+  teamInfo: {
     flex: 1,
+  },
+  teamName: {
+    ...typography.textBold,
+    color: '#333243',
+    marginBottom: 5,
   },
   divisionLabel: {
     alignSelf: 'flex-start',
@@ -252,48 +290,9 @@ const styles = StyleSheet.create({
   divisionText: {
     ...typography.textXSmall,
   },
-  emptyContainer: {
-    alignItems: 'center',
+  container: {
+    backgroundColor: '#FFFFFF',
     flex: 1,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  emptyText: {
-    ...typography.textMedium,
-    color: '#8F8DAA',
-    textAlign: 'center',
-  },
-  filterButton: {
-    borderRadius: 100,
-    paddingHorizontal: 7,
-  },
-  filterButtonText: {
-    ...typography.textSmallMedium,
-  },
-  filterButtonsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 5,
-  },
-  filterLabel: {
-    ...typography.textBold,
-    color: '#808080',
-    marginRight: 5,
-  },
-  filtersSection: {
-    marginBottom: 15,
-    paddingHorizontal: 20,
-  },
-  listContainer: {
-    borderTopColor: '#EFEFEF',
-    borderTopWidth: 1,
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
   },
   searchBarContainer: {
     alignItems: 'center',
@@ -316,47 +315,48 @@ const styles = StyleSheet.create({
     ...typography.text,
     color: '#000',
   },
-  teamAvatar: {
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    borderColor: '#000',
-    borderRadius: 25,
-    borderWidth: 0.5,
-    height: 50,
-    justifyContent: 'center',
-    width: 50,
+  filtersSection: {
+    marginBottom: 15,
+    paddingHorizontal: 20,
   },
-  teamAvatarContainer: {
-    marginRight: 15,
-  },
-  teamAvatarImage: {
-    borderRadius: 25,
-    height: 50,
-    width: 50,
-  },
-  teamAvatarText: {
-    ...typography.textBold,
-    color: '#333',
-  },
-  teamContent: {
-    alignItems: 'center',
+  filterButtonsContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 5,
   },
-  teamInfo: {
+  filterLabel: {
+    ...typography.textBold,
+    color: '#808080',
+    marginRight: 5,
+  },
+  filterButton: {
+    borderRadius: 100,
+    paddingHorizontal: 7,
+  },
+  filterButtonText: {
+    ...typography.textSmallMedium,
+  },
+  listContainer: {
+    borderTopColor: '#EFEFEF',
+    borderTopWidth: 1,
     flex: 1,
+    paddingHorizontal: 20,
   },
-  teamItem: {
+  emptyContainer: {
     alignItems: 'center',
-    borderBottomColor: '#EFEFEF',
-    borderBottomWidth: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 15,
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
   },
-  teamName: {
-    ...typography.textBold,
-    color: '#333243',
-    marginBottom: 5,
+  emptyText: {
+    ...typography.textMedium,
+    color: '#8F8DAA',
+    textAlign: 'center',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
   },
 });
 

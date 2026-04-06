@@ -120,28 +120,6 @@ const RestaurantsHotelsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  discountContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginTop: 6,
-  },
-  errorContainer: {
-    alignItems: 'center',
-    backgroundColor: '#f8f8f8',
-    flex: 1,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  errorText: {
-    ...typography.textMedium,
-    color: '#333',
-    marginBottom: 20,
-    marginTop: 10,
-    textAlign: 'center',
-  },
   item: {
     alignItems: 'center',
     backgroundColor: 'white',
@@ -160,33 +138,24 @@ const styles = StyleSheet.create({
   itemContent: {
     flex: 1,
   },
+  itemName: {
+    ...typography.textBold,
+    color: '#333',
+  },
+  discountContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginTop: 6,
+  },
   itemDiscount: {
     ...typography.textSmall,
     color: '#EA1D25',
     marginLeft: 6,
   },
-  itemName: {
-    ...typography.textBold,
-    color: '#333',
-  },
-  listContent: {
-    paddingBottom: 10,
-  },
-  loadingContainer: {
+  websiteContainer: {
     alignItems: 'center',
-    backgroundColor: '#f8f8f8',
-    flex: 1,
     justifyContent: 'center',
-  },
-  retryButton: {
-    backgroundColor: '#EA1D25',
-    borderRadius: 8,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  retryButtonText: {
-    ...typography.textSemiBold,
-    color: 'white',
+    paddingLeft: 12,
   },
   sectionHeader: {
     backgroundColor: '#EA1D25',
@@ -198,10 +167,41 @@ const styles = StyleSheet.create({
     ...typography.textLargeBold,
     color: '#fff',
   },
-  websiteContainer: {
+  errorContainer: {
     alignItems: 'center',
+    backgroundColor: '#f8f8f8',
+    flex: 1,
     justifyContent: 'center',
-    paddingLeft: 12,
+    padding: 20,
+  },
+  errorText: {
+    ...typography.textMedium,
+    color: '#333',
+    marginBottom: 20,
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  retryButton: {
+    backgroundColor: '#EA1D25',
+    borderRadius: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  retryButtonText: {
+    ...typography.textSemiBold,
+    color: 'white',
+  },
+  container: {
+    flex: 1,
+  },
+  listContent: {
+    paddingBottom: 10,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    backgroundColor: '#f8f8f8',
+    flex: 1,
+    justifyContent: 'center',
   },
 });
 

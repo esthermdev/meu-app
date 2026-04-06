@@ -93,6 +93,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     flex: 1,
   },
+  keyboardAvoidView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    padding: 20,
+  },
+  title: {
+    color: '#fff',
+    ...typography.heading3,
+  },
+  subtitle: {
+    color: '#fff',
+    ...typography.textMedium,
+    marginVertical: 15,
+  },
+  label: {
+    ...typography.textLargeBold,
+    color: '#fff',
+    marginBottom: 8,
+  },
   input: {
     backgroundColor: '#fff',
     borderColor: '#fff',
@@ -103,30 +124,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     ...typography.text,
   },
-  keyboardAvoidView: {
-    flex: 1,
-  },
-  label: {
-    ...typography.textLargeBold,
-    color: '#fff',
-    marginBottom: 8,
-  },
   messageInput: {
     height: 120,
     textAlignVertical: 'top',
-  },
-  scrollContent: {
-    flexGrow: 1,
-    padding: 20,
-  },
-  subtitle: {
-    color: '#fff',
-    ...typography.textMedium,
-    marginVertical: 15,
-  },
-  title: {
-    color: '#fff',
-    ...typography.heading3,
   },
 });
 

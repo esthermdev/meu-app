@@ -55,22 +55,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flex: 1,
   },
+  scrollView: {
+    flex: 1,
+  },
+  contentContainer: {
+    padding: 20,
+  },
+  title: {
+    ...typography.heading3,
+    color: '#333',
+    marginBottom: 16,
+  },
   content: {
     ...typography.text,
     color: '#333',
     lineHeight: 24,
     marginBottom: 16,
   },
-  contentContainer: {
-    padding: 20,
-  },
   linkStyle: {
     color: '#2871FF',
     textDecorationLine: 'underline',
     ...typography.textMedium,
-  },
-  scrollView: {
-    flex: 1,
   },
   section: {
     marginBottom: 16,
@@ -80,11 +85,6 @@ const styles = StyleSheet.create({
     ...typography.textBold,
     color: '#333',
     marginBottom: 8,
-  },
-  title: {
-    ...typography.heading3,
-    color: '#333',
-    marginBottom: 16,
   },
   version: {
     ...typography.text,

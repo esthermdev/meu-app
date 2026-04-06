@@ -105,48 +105,16 @@ const VendorsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#f8f8f8',
-    flex: 1,
-  },
-  emptyText: {
-    ...typography.text,
-    color: '#666',
-    marginTop: 40,
-    textAlign: 'center',
-  },
-  errorContainer: {
-    alignItems: 'center',
-    backgroundColor: '#f8f8f8',
-    flex: 1,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  errorText: {
-    ...typography.textMedium,
-    color: '#333',
-    marginBottom: 20,
-    marginTop: 10,
-    textAlign: 'center',
-  },
-  listContainer: {
-    padding: 20,
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    backgroundColor: '#f8f8f8',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  retryButton: {
-    backgroundColor: '#EA1D25',
-    borderRadius: 8,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  retryButtonText: {
-    ...typography.textMedium,
-    color: 'white',
+  vendorItem: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    elevation: 2,
+    marginBottom: 10,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   vendorContent: {
     alignItems: 'center',
@@ -170,17 +138,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 16,
   },
-  vendorItem: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    elevation: 2,
-    marginBottom: 10,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
   vendorName: {
     ...typography.textLargeBold,
     color: '#333',
@@ -197,6 +154,49 @@ const styles = StyleSheet.create({
   websiteText: {
     ...typography.textSmall,
     color: '#2871FF',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    backgroundColor: '#f8f8f8',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  errorContainer: {
+    alignItems: 'center',
+    backgroundColor: '#f8f8f8',
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
+  errorText: {
+    ...typography.textMedium,
+    color: '#333',
+    marginBottom: 20,
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  retryButton: {
+    backgroundColor: '#EA1D25',
+    borderRadius: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  retryButtonText: {
+    ...typography.textMedium,
+    color: 'white',
+  },
+  container: {
+    backgroundColor: '#f8f8f8',
+    flex: 1,
+  },
+  listContainer: {
+    padding: 20,
+  },
+  emptyText: {
+    ...typography.text,
+    color: '#666',
+    marginTop: 40,
+    textAlign: 'center',
   },
 });
 

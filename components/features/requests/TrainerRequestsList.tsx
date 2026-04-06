@@ -241,38 +241,6 @@ const TrainerRequestsList = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#000',
-    flex: 1,
-  },
-  // Loading and empty
-  emptyContainer: {
-    alignItems: 'center',
-    backgroundColor: '#000',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  emptyListContainer: {
-    flexGrow: 1,
-  },
-  emptyText: {
-    ...typography.textMedium,
-    color: '#B0B0B0',
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    backgroundColor: '#000',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  loadingText: {
-    ...typography.textBold,
-    color: '#fff',
-  },
-  // Request card styles
-  listContainer: {
-    padding: 15,
-  },
   cardContainer: {
     backgroundColor: '#262626',
     borderRadius: 12,
@@ -288,15 +256,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingBottom: 8,
   },
-  priorityBadge: {
-    borderRadius: 20,
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-  },
-  priorityText: {
-    color: '#fff',
-    ...typography.text,
-  },
   requestIdBadge: {
     backgroundColor: '#EA1D25',
     borderRadius: 12,
@@ -307,6 +266,15 @@ const styles = StyleSheet.create({
     ...typography.textSmall,
     color: '#fff',
     fontWeight: 'bold',
+  },
+  priorityBadge: {
+    borderRadius: 20,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+  },
+  priorityText: {
+    color: '#fff',
+    ...typography.text,
   },
   fieldBadge: {
     alignItems: 'center',
@@ -334,10 +302,6 @@ const styles = StyleSheet.create({
     ...typography.text,
     color: '#CCCCCC80',
   },
-  trainerNameText: {
-    ...typography.textBold,
-    color: '#fff',
-  },
   valueText: {
     ...typography.textMedium,
     color: '#CCCCCCBF',
@@ -354,6 +318,10 @@ const styles = StyleSheet.create({
   },
   timeText: {
     ...typography.textSemiBold,
+    color: '#fff',
+  },
+  trainerNameText: {
+    ...typography.textBold,
     color: '#fff',
   },
   descriptionContainer: {
@@ -394,6 +362,36 @@ const styles = StyleSheet.create({
     ...typography.textBold,
     color: '#fff',
     marginRight: 5,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  loadingText: {
+    ...typography.textBold,
+    color: '#fff',
+  },
+  container: {
+    backgroundColor: '#000',
+    flex: 1,
+  },
+  listContainer: {
+    padding: 15,
+  },
+  emptyListContainer: {
+    flexGrow: 1,
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  emptyText: {
+    ...typography.textMedium,
+    color: '#B0B0B0',
   },
 });
 

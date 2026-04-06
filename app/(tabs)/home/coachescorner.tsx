@@ -178,10 +178,9 @@ const CoachesCorner = () => {
 export default CoachesCorner;
 
 const styles = StyleSheet.create({
-  avatar: {
-    height: 100,
-    position: 'absolute',
-    width: '100%',
+  coachCard: {
+    alignItems: 'center',
+    marginBottom: 10,
   },
   avatarContainer: {
     borderColor: '#D4A520',
@@ -192,9 +191,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     width: 100,
   },
-  avatarInitial: {
-    ...typography.textLargeBold,
-    color: '#666',
+  avatar: {
+    height: 100,
+    position: 'absolute',
+    width: '100%',
   },
   avatarPlaceholder: {
     alignItems: 'center',
@@ -204,21 +204,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     width: '100%',
   },
-  closeButton: {
-    alignItems: 'center',
-    backgroundColor: '#D4A520',
-    borderRadius: 10,
-    paddingHorizontal: 30,
-    paddingVertical: 12,
-  },
-  closeButtonText: {
-    color: '#fff',
-    ...typography.textMedium,
-    fontWeight: '600',
-  },
-  coachCard: {
-    alignItems: 'center',
-    marginBottom: 10,
+  avatarInitial: {
+    ...typography.textLargeBold,
+    color: '#666',
   },
   coachName: {
     color: '#000',
@@ -226,20 +214,32 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     ...typography.textSmallBold,
   },
+  organization: {
+    color: '#000',
+    textAlign: 'center',
+    ...typography.textXSmall,
+  },
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 20,
+  },
   coachesGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 15,
     justifyContent: 'center',
   },
-  container: {
-    backgroundColor: '#fff',
+  modalOverlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     flex: 1,
+    justifyContent: 'flex-end',
   },
-  modalAvatar: {
-    height: 120,
-    position: 'absolute',
-    width: '100%',
+  modalWrapper: {
+    alignItems: 'center',
+    position: 'relative',
   },
   modalAvatarContainer: {
     backgroundColor: '#fff',
@@ -253,10 +253,10 @@ const styles = StyleSheet.create({
     width: 120,
     zIndex: 100,
   },
-  modalAvatarInitial: {
-    ...typography.textLargeBold,
-    color: '#666',
-    fontSize: 36,
+  modalAvatar: {
+    height: 120,
+    position: 'absolute',
+    width: '100%',
   },
   modalAvatarPlaceholder: {
     alignItems: 'center',
@@ -265,8 +265,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
   },
-  modalBody: {
-    marginBottom: 25,
+  modalAvatarInitial: {
+    ...typography.textLargeBold,
+    color: '#666',
+    fontSize: 36,
   },
   modalContent: {
     backgroundColor: '#fff',
@@ -285,11 +287,6 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     width: '100%',
   },
-  modalDescription: {
-    color: '#333',
-    lineHeight: 24,
-    textAlign: 'left',
-  },
   modalHeader: {
     alignItems: 'center',
     borderBottomColor: '#E0E0E0',
@@ -307,22 +304,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     ...typography.textMedium,
   },
-  modalOverlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    flex: 1,
-    justifyContent: 'flex-end',
+  modalBody: {
+    marginBottom: 25,
   },
-  modalWrapper: {
+  modalDescription: {
+    color: '#333',
+    lineHeight: 24,
+    textAlign: 'left',
+  },
+  closeButton: {
     alignItems: 'center',
-    position: 'relative',
+    backgroundColor: '#D4A520',
+    borderRadius: 10,
+    paddingHorizontal: 30,
+    paddingVertical: 12,
   },
-  organization: {
-    color: '#000',
-    textAlign: 'center',
-    ...typography.textXSmall,
-  },
-  scrollContent: {
-    padding: 20,
+  closeButtonText: {
+    color: '#fff',
+    ...typography.textMedium,
+    fontWeight: '600',
   },
   title: {
     color: '#000',

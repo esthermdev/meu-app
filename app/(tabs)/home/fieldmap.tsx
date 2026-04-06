@@ -28,6 +28,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flex: 1,
   },
+  scrollContainer: {
+    alignItems: 'center',
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
   image: {
     height: '100%',
     width: '100%',
@@ -41,11 +46,6 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     zIndex: 10,
-  },
-  scrollContainer: {
-    alignItems: 'center',
-    flexGrow: 1,
-    justifyContent: 'center',
   },
 });
 

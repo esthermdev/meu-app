@@ -40,18 +40,18 @@ const styles = StyleSheet.create({
     flex: 1,
     width: centerContainerWidth,
   },
-  tournamentLogo: {
-    maxHeight: 250,
-    width: '80%',
+  welcomeText: {
+    ...typography.heading2,
+    color: '#000',
+    textAlign: 'center',
   },
   tournamentLogoContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     maxHeight: 250,
   },
-  welcomeText: {
-    ...typography.heading2,
-    color: '#000',
-    textAlign: 'center',
+  tournamentLogo: {
+    maxHeight: 250,
+    width: '80%',
   },
 });

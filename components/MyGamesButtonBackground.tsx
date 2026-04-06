@@ -22,6 +22,13 @@ const MyGamesButtonBackground = ({ title }: { title: string }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#e63e2f',
+    flex: 1,
+    justifyContent: 'space-between',
+    overflow: 'hidden',
+    padding: 14,
+  },
   circleContainer: {
     backgroundColor: '#ff5a46',
     borderRadius: 150,
@@ -31,13 +38,6 @@ const styles = StyleSheet.create({
     right: -100,
     top: -120,
     width: 300,
-  },
-  container: {
-    backgroundColor: '#e63e2f',
-    flex: 1,
-    justifyContent: 'space-between',
-    overflow: 'hidden',
-    padding: 14,
   },
   title: {
     color: '#fff',

@@ -40,16 +40,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 20,
   },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    ...typography.textSemiBold,
-  },
   cancelButton: {
     borderRadius: 6,
     justifyContent: 'center',
     padding: 12,
     width: '48%',
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+    ...typography.textSemiBold,
   },
   confirmButton: {
     borderRadius: 6,

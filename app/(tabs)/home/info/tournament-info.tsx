@@ -101,26 +101,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flex: 1,
   },
-  content: {
-    ...typography.text,
-  },
   contentContainer: {
     padding: 20,
   },
-  contentHeader: {
-    ...typography.heading5,
+  content: {
+    ...typography.text,
   },
-  contentSubHeader: {
-    ...typography.textBold,
+  linkRed: {
+    ...typography.textSemiBold,
+    color: '#EA1D25',
   },
   link: {
     ...typography.text,
     color: 'blue',
     textDecorationLine: 'underline',
   },
-  linkRed: {
-    ...typography.textSemiBold,
-    color: '#EA1D25',
+  contentSubHeader: {
+    ...typography.textBold,
+  },
+  contentHeader: {
+    ...typography.heading5,
   },
 });
 

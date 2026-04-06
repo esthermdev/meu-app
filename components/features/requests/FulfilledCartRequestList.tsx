@@ -412,38 +412,6 @@ const FulfilledCartRequestsList = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#000',
-    flex: 1,
-  },
-  // Loading and empty
-  emptyContainer: {
-    alignItems: 'center',
-    backgroundColor: '#000',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  emptyListContainer: {
-    flexGrow: 1,
-  },
-  emptyText: {
-    ...typography.textMedium,
-    color: '#B0B0B0',
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    backgroundColor: '#000',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  loadingText: {
-    ...typography.textBold,
-    color: '#fff',
-  },
-  // Card styles
-  listContainer: {
-    padding: 15,
-  },
   cardContainer: {
     backgroundColor: '#262626',
     borderRadius: 12,
@@ -489,23 +457,6 @@ const styles = StyleSheet.create({
     marginVertical: 'auto',
     paddingHorizontal: 8,
   },
-  locationInfo: {
-    flexDirection: 'row',
-  },
-  routeInfo: {
-    flex: 1,
-    gap: 5,
-    justifyContent: 'space-between',
-    marginVertical: 8,
-  },
-  routeLabel: {
-    ...typography.textMedium,
-    color: '#CCCCCC',
-  },
-  locationText: {
-    ...typography.textBold,
-    color: '#fff',
-  },
   routePoint: {
     backgroundColor: '#EA1D25',
     borderRadius: 6,
@@ -516,6 +467,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#EA1D25',
     flex: 1, // Makes the line fill the space between the points
     width: 2,
+  },
+  routeInfo: {
+    flex: 1,
+    gap: 5,
+    justifyContent: 'space-between',
+    marginVertical: 8,
+  },
+  locationInfo: {
+    flexDirection: 'row',
+  },
+  routeLabel: {
+    ...typography.textMedium,
+    color: '#CCCCCC',
+  },
+  locationText: {
+    ...typography.textBold,
+    color: '#fff',
   },
   infoSection: {
     borderBottomColor: '#CCCCCC66',
@@ -564,32 +532,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginTop: 8,
   },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
   deleteButtonText: {
     ...typography.textBold,
     color: '#fff',
-  },
-  clearAllButton: {
-    alignItems: 'center',
-    backgroundColor: '#ea8e1dff',
-    borderRadius: 8,
-    paddingVertical: 12,
-    width: 200,
-  },
-  clearAllButtonText: {
-    ...typography.textBold,
-    color: '#fff',
-    fontSize: 16,
-  },
-  clearAllContainer: {
-    alignItems: 'center',
-    backgroundColor: '#242424',
-    marginBottom: 0,
-    paddingBottom: 35,
-    paddingHorizontal: 15,
-    paddingVertical: 20,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
   },
   sectionHeader: {
     alignItems: 'center',
@@ -603,6 +551,56 @@ const styles = StyleSheet.create({
   sectionTitle: {
     ...typography.textLargeBold,
     color: '#fff',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  loadingText: {
+    ...typography.textBold,
+    color: '#fff',
+  },
+  container: {
+    backgroundColor: '#000',
+    flex: 1,
+  },
+  listContainer: {
+    padding: 15,
+  },
+  emptyListContainer: {
+    flexGrow: 1,
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  emptyText: {
+    ...typography.textMedium,
+    color: '#B0B0B0',
+  },
+  clearAllContainer: {
+    alignItems: 'center',
+    backgroundColor: '#242424',
+    marginBottom: 0,
+    paddingBottom: 35,
+    paddingHorizontal: 15,
+    paddingVertical: 20,
+  },
+  clearAllButton: {
+    alignItems: 'center',
+    backgroundColor: '#ea8e1dff',
+    borderRadius: 8,
+    paddingVertical: 12,
+    width: 200,
+  },
+  clearAllButtonText: {
+    ...typography.textBold,
+    color: '#fff',
+    fontSize: 16,
   },
 });
 

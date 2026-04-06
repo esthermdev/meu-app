@@ -90,34 +90,6 @@ const NotificationPrompt = () => {
 };
 
 const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    borderRadius: 8,
-    flex: 1,
-    justifyContent: 'center',
-    marginHorizontal: 8,
-    paddingVertical: 12,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  description: {
-    color: '#333',
-    fontFamily: fonts.regular,
-    fontSize: 16,
-    lineHeight: 24,
-    marginBottom: 24,
-    textAlign: 'center',
-  },
-  enableButton: {
-    backgroundColor: '#FE0000',
-  },
-  enableButtonText: {
-    color: 'white',
-    fontFamily: fonts.medium,
-    fontSize: 16,
-  },
   modalOverlay: {
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -132,6 +104,33 @@ const styles = StyleSheet.create({
     padding: 24,
     width: '100%',
   },
+  title: {
+    color: '#FE0000',
+    fontFamily: fonts.bold,
+    fontSize: 22,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  description: {
+    color: '#333',
+    fontFamily: fonts.regular,
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  button: {
+    alignItems: 'center',
+    borderRadius: 8,
+    flex: 1,
+    justifyContent: 'center',
+    marginHorizontal: 8,
+    paddingVertical: 12,
+  },
   skipButton: {
     backgroundColor: '#F5F5F5',
   },
@@ -140,12 +139,13 @@ const styles = StyleSheet.create({
     fontFamily: fonts.medium,
     fontSize: 16,
   },
-  title: {
-    color: '#FE0000',
-    fontFamily: fonts.bold,
-    fontSize: 22,
-    marginBottom: 16,
-    textAlign: 'center',
+  enableButton: {
+    backgroundColor: '#FE0000',
+  },
+  enableButtonText: {
+    color: 'white',
+    fontFamily: fonts.medium,
+    fontSize: 16,
   },
 });
 

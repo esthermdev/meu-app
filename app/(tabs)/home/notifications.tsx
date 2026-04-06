@@ -225,17 +225,54 @@ const NotificationScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    flex: 1,
+  notificationItem: {
+    alignItems: 'center',
+    borderBottomColor: '#e0e0e0',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    paddingVertical: 15,
+  },
+  iconContainer: {
+    marginRight: 15,
+  },
+  iconCircle: {
+    alignItems: 'center',
+    backgroundColor: '#F2F2F2',
+    borderRadius: 25,
+    height: 50,
+    justifyContent: 'center',
+    width: 50,
   },
   contentContainer: {
     flex: 1,
   },
-  divider: {
-    backgroundColor: '#e0e0e0',
-    height: 1,
-    width: '100%',
+  notificationTitle: {
+    ...typography.textBold,
+    color: '#333',
+  },
+  notificationTime: {
+    ...typography.textSmall,
+    color: '#969696',
+    marginTop: 4,
+  },
+  unreadIndicator: {
+    backgroundColor: '#f5a623',
+    borderRadius: 4,
+    height: 8,
+    marginLeft: 10,
+    width: 8,
+  },
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  listContainer: {
+    paddingHorizontal: 20,
   },
   emptyContainer: {
     alignItems: 'center',
@@ -248,50 +285,13 @@ const styles = StyleSheet.create({
     marginTop: 16,
     ...typography.textMedium,
   },
-  iconCircle: {
-    alignItems: 'center',
-    backgroundColor: '#F2F2F2',
-    borderRadius: 25,
-    height: 50,
-    justifyContent: 'center',
-    width: 50,
-  },
-  iconContainer: {
-    marginRight: 15,
-  },
-  listContainer: {
-    paddingHorizontal: 20,
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  notificationItem: {
-    alignItems: 'center',
-    borderBottomColor: '#e0e0e0',
-    borderBottomWidth: 1,
-    flexDirection: 'row',
-    paddingVertical: 15,
+  divider: {
+    backgroundColor: '#e0e0e0',
+    height: 1,
+    width: '100%',
   },
   notificationMessage: {
     ...typography.text,
-  },
-  notificationTime: {
-    ...typography.textSmall,
-    color: '#969696',
-    marginTop: 4,
-  },
-  notificationTitle: {
-    ...typography.textBold,
-    color: '#333',
-  },
-  unreadIndicator: {
-    backgroundColor: '#f5a623',
-    borderRadius: 4,
-    height: 8,
-    marginLeft: 10,
-    width: 8,
   },
 });
 

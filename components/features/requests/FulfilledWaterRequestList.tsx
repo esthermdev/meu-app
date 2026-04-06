@@ -202,38 +202,6 @@ const FulfilledWaterRequestsList = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#000',
-    flex: 1,
-  },
-  // Loading and empty
-  emptyContainer: {
-    alignItems: 'center',
-    backgroundColor: '#000',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  emptyListContainer: {
-    flexGrow: 1,
-  },
-  emptyText: {
-    ...typography.textMedium,
-    color: '#B0B0B0',
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    backgroundColor: '#000',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  loadingText: {
-    ...typography.textBold,
-    color: '#fff',
-  },
-  // Card styles
-  listContainer: {
-    padding: 15,
-  },
   cardContainer: {
     backgroundColor: '#262626',
     borderRadius: 12,
@@ -282,20 +250,6 @@ const styles = StyleSheet.create({
     ...typography.textSemiBold,
     color: '#CCCCCCBF',
   },
-  timeContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  timeIndicator: {
-    borderRadius: 4,
-    height: 8,
-    marginRight: 5,
-    width: 8,
-  },
-  timeText: {
-    ...typography.textSemiBold,
-    color: '#fff',
-  },
   deleteButton: {
     alignItems: 'center',
     backgroundColor: '#EA1D25',
@@ -307,6 +261,36 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     ...typography.textBold,
     color: '#fff',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  loadingText: {
+    ...typography.textBold,
+    color: '#fff',
+  },
+  container: {
+    backgroundColor: '#000',
+    flex: 1,
+  },
+  listContainer: {
+    padding: 15,
+  },
+  emptyListContainer: {
+    flexGrow: 1,
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  emptyText: {
+    ...typography.textMedium,
+    color: '#B0B0B0',
   },
   clearAllContainer: {
     alignItems: 'center',
@@ -327,6 +311,20 @@ const styles = StyleSheet.create({
     ...typography.textBold,
     color: '#fff',
     fontSize: 16,
+  },
+  timeContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  timeIndicator: {
+    borderRadius: 4,
+    height: 8,
+    marginRight: 5,
+    width: 8,
+  },
+  timeText: {
+    ...typography.textSemiBold,
+    color: '#fff',
   },
 });
 

@@ -85,19 +85,18 @@ export default function MiscInfoScreen() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#000',
+    flex: 1,
+  },
   centerContent: {
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
   },
-  container: {
-    backgroundColor: '#000',
-    flex: 1,
-  },
-  dateText: {
-    color: '#999',
-    ...typography.textSmall,
-    textAlign: 'right',
+  loadingText: {
+    color: '#fff',
+    ...typography.textMedium,
   },
   emptyText: {
     color: '#666',
@@ -110,19 +109,20 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     padding: 16,
   },
+  feedbackSubject: {
+    color: '#f9efa4ff',
+    ...typography.textLargeBold,
+    marginBottom: 8,
+  },
   feedbackMessage: {
     color: '#fff',
     ...typography.textMedium,
     lineHeight: 20,
     marginBottom: 8,
   },
-  feedbackSubject: {
-    color: '#f9efa4ff',
-    ...typography.textLargeBold,
-    marginBottom: 8,
-  },
-  loadingText: {
-    color: '#fff',
-    ...typography.textMedium,
+  dateText: {
+    color: '#999',
+    ...typography.textSmall,
+    textAlign: 'right',
   },
 });

@@ -83,12 +83,6 @@ export const CustomHeader: React.FC<CustomHeaderProps> = ({ title, refreshInfo }
 };
 
 const styles = StyleSheet.create({
-  header: {
-    color: '#000',
-    fontFamily: fonts.semiBold,
-    fontSize: 18,
-    textAlign: 'center',
-  },
   headerContainer: {
     alignItems: 'center',
     backgroundColor: '#fff',
@@ -104,17 +98,22 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 10,
   },
-  infoButton: {
-    position: 'absolute',
-    right: 20,
-    zIndex: 10,
-  },
   titleContainer: {
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
   },
-  // Modal styles
+  header: {
+    color: '#000',
+    fontFamily: fonts.semiBold,
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  infoButton: {
+    position: 'absolute',
+    right: 20,
+    zIndex: 10,
+  },
   modalOverlay: {
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',

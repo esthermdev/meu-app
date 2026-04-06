@@ -128,6 +128,24 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
+  form: {
+    flex: 1,
+    gap: 15,
+  },
+  title: {
+    ...typography.heading2,
+  },
+  label: {
+    ...typography.textLargeBold,
+  },
+  inputContainer: {
+    alignItems: 'center',
+    borderColor: '#000',
+    borderRadius: 12,
+    borderWidth: 1,
+    flexDirection: 'row',
+    padding: 20,
+  },
   disabledInput: {
     backgroundColor: '#f0f0f0',
     borderColor: '#ccc',
@@ -138,27 +156,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 8,
   },
-  form: {
-    flex: 1,
-    gap: 15,
-  },
-  inputContainer: {
-    alignItems: 'center',
-    borderColor: '#000',
-    borderRadius: 12,
-    borderWidth: 1,
-    flexDirection: 'row',
-    padding: 20,
-  },
   inputWithIcon: {
     flex: 1,
     marginLeft: 8,
     ...typography.textSemiBold,
-  },
-  label: {
-    ...typography.textLargeBold,
-  },
-  title: {
-    ...typography.heading2,
   },
 });

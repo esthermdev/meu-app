@@ -51,15 +51,19 @@ export default function UpdateScoresIndex() {
 }
 
 const styles = StyleSheet.create({
-  centerContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   container: {
     backgroundColor: '#000',
     flex: 1,
     gap: 12,
     padding: 20,
+  },
+  centerContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  errorText: {
+    color: '#EA1D25',
+    ...typography.textMedium,
   },
   divisionItem: {
     backgroundColor: '#262626',
@@ -86,9 +90,5 @@ const styles = StyleSheet.create({
     ...typography.textLargeSemiBold,
     textAlign: 'center',
     textDecorationLine: 'underline',
-  },
-  errorText: {
-    color: '#EA1D25',
-    ...typography.textMedium,
   },
 });

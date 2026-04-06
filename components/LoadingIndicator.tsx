@@ -44,13 +44,13 @@ const styles = StyleSheet.create({
     top: 0,
     zIndex: 10,
   },
+  transparent: {
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+  },
   text: {
     marginTop: 10,
     ...typography.heading4,
     color: '#000',
-  },
-  transparent: {
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
   },
 });
 

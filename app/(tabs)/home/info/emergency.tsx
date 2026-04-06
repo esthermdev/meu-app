@@ -106,9 +106,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flex: 1,
   },
-  content: {
-    ...typography.text,
-    color: '#333',
+  scrollview: {
+    flex: 1,
   },
   contentContainer: {
     padding: 20,
@@ -119,8 +118,9 @@ const styles = StyleSheet.create({
   contentSubHeader: {
     ...typography.textLargeBold,
   },
-  scrollview: {
-    flex: 1,
+  content: {
+    ...typography.text,
+    color: '#333',
   },
 });
 

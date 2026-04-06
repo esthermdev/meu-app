@@ -85,11 +85,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flex: 1,
   },
+  scrollViewContent: {
+    flexGrow: 1,
+  },
   content: {
     padding: 20,
   },
-  disabledButton: {
-    backgroundColor: '#ccc',
+  label: {
+    ...typography.textLargeBold,
+    marginBottom: 5,
   },
   input: {
     borderColor: '#ccc',
@@ -99,13 +103,12 @@ const styles = StyleSheet.create({
     padding: 10,
     ...typography.text,
   },
-  label: {
-    ...typography.textLargeBold,
-    marginBottom: 5,
-  },
   messageInput: {
     height: 150,
     textAlignVertical: 'top',
+  },
+  disabledButton: {
+    backgroundColor: '#ccc',
   },
   noteHeader: {
     fontFamily: fonts.bold,
@@ -118,9 +121,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     fontSize: 14,
     lineHeight: 20,
-  },
-  scrollViewContent: {
-    flexGrow: 1,
   },
   submitButton: {
     alignItems: 'center',

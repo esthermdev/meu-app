@@ -75,7 +75,7 @@ export default function HomeScreen() {
             style={{ flex: 1 }}
           />
         </View>
-        <FullWidthButton
+        {/* <FullWidthButton
           title="Coaches Corner"
           icon="whistle"
           backgroundColor="#000"
@@ -87,7 +87,7 @@ export default function HomeScreen() {
             width: 'auto',
             marginTop: 14,
           }}
-        />
+        /> */}
         <NotificationPrompt />
       </ScrollView>
     </View>
@@ -95,31 +95,31 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  bottomButtons: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 'auto',
-  },
   container: {
     backgroundColor: '#fff',
     flex: 1,
-  },
-  row: {
-    flexDirection: 'row',
-    gap: 10,
-    justifyContent: 'space-between',
   },
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'space-between',
     padding: 20,
   },
-  spacer: {
-    height: 40, // Adds some space before the bottom buttons
+  row: {
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'space-between',
   },
   utilsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 15,
+  },
+  spacer: {
+    height: 40, // Adds some space before the bottom buttons
+  },
+  bottomButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 'auto',
   },
 });

@@ -252,27 +252,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  container: {
-    backgroundColor: '#000',
-    flex: 1,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    padding: 40,
-  },
-  emptyText: {
-    color: '#888',
-    ...typography.textMedium,
-    textAlign: 'center',
-  },
   errorText: {
     color: '#EA1D25',
     ...typography.textMedium,
   },
-  gamesList: {
-    paddingBottom: 15,
-    paddingHorizontal: 15,
-    paddingTop: 3,
+  container: {
+    backgroundColor: '#000',
+    flex: 1,
   },
   loadingOverlay: {
     alignItems: 'center',
@@ -284,6 +270,20 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     zIndex: 1000,
+  },
+  gamesList: {
+    paddingBottom: 15,
+    paddingHorizontal: 15,
+    paddingTop: 3,
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    padding: 40,
+  },
+  emptyText: {
+    color: '#888',
+    ...typography.textMedium,
+    textAlign: 'center',
   },
 });
 

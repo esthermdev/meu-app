@@ -732,9 +732,6 @@ const styles = StyleSheet.create({
   lastGameItemInSection: {
     marginBottom: 10,
   },
-  itemSeparator: {
-    height: 10,
-  },
   sectionHeader: {
     alignItems: 'center',
     backgroundColor: '#1a0000',
@@ -758,5 +755,8 @@ const styles = StyleSheet.create({
     color: '#888',
     ...typography.textMedium,
     textAlign: 'center',
+  },
+  itemSeparator: {
+    height: 10,
   },
 });

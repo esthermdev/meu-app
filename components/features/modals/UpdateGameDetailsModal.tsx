@@ -207,23 +207,9 @@ const styles = StyleSheet.create({
     ...typography.heading4,
     marginBottom: 5,
   },
-  modalFieldContainer: {
-    flex: 1,
-  },
   modalFieldLabel: {
     ...typography.textMedium,
     marginBottom: 3,
-  },
-  modalFieldInput: {
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    borderWidth: 1,
-    padding: 12,
-    ...typography.textMedium,
-  },
-  readOnlyInput: {
-    backgroundColor: '#F5F5F5',
-    color: '#666',
   },
   modalButtonContainer: {
     flexDirection: 'row',
@@ -252,6 +238,20 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     ...typography.textMedium,
+  },
+  modalFieldContainer: {
+    flex: 1,
+  },
+  modalFieldInput: {
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    borderWidth: 1,
+    padding: 12,
+    ...typography.textMedium,
+  },
+  readOnlyInput: {
+    backgroundColor: '#F5F5F5',
+    color: '#666',
   },
 });
 

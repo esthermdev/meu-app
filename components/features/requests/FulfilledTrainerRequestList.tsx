@@ -222,37 +222,6 @@ const FulfilledTrainerRequestList = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#000',
-    flex: 1,
-  },
-  // Loading and empty
-  emptyContainer: {
-    alignItems: 'center',
-    backgroundColor: '#000',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  emptyText: {
-    ...typography.textMedium,
-    color: '#B0B0B0',
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    backgroundColor: '#000',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  loadingText: {
-    ...typography.textBold,
-    color: '#fff',
-  },
-  // Card styles
-  listContainer: {
-    paddingBottom: 15,
-    paddingHorizontal: 15,
-    paddingTop: 3,
-  },
   cardContainer: {
     backgroundColor: '#262626',
     borderRadius: 12,
@@ -268,15 +237,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingBottom: 8,
   },
-  priorityBadge: {
-    borderRadius: 20,
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-  },
-  priorityText: {
-    color: '#fff',
-    ...typography.text,
-  },
   requestIdBadge: {
     backgroundColor: '#EA1D25',
     borderRadius: 12,
@@ -287,6 +247,15 @@ const styles = StyleSheet.create({
     ...typography.textSmall,
     color: '#fff',
     fontWeight: 'bold',
+  },
+  priorityBadge: {
+    borderRadius: 20,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+  },
+  priorityText: {
+    color: '#fff',
+    ...typography.text,
   },
   fieldBadge: {
     alignItems: 'center',
@@ -317,13 +286,13 @@ const styles = StyleSheet.create({
     ...typography.text,
     color: '#CCCCCC80',
   },
-  trainerNameText: {
-    ...typography.textBold,
-    color: '#fff',
-  },
   valueText: {
     ...typography.textMedium,
     color: '#CCCCCCBF',
+  },
+  trainerNameText: {
+    ...typography.textBold,
+    color: '#fff',
   },
   descriptionContainer: {
     backgroundColor: '#262626',
@@ -344,17 +313,6 @@ const styles = StyleSheet.create({
     ...typography.textMedium,
     color: '#fff',
   },
-  statusBadge: {
-    borderRadius: 20,
-    marginLeft: 5,
-    marginRight: 'auto',
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-  },
-  statusText: {
-    ...typography.text,
-    color: '#fff',
-  },
   deleteButton: {
     alignItems: 'center',
     backgroundColor: '#EA1D25',
@@ -367,6 +325,35 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     ...typography.textBold,
     color: '#fff',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  loadingText: {
+    ...typography.textBold,
+    color: '#fff',
+  },
+  container: {
+    backgroundColor: '#000',
+    flex: 1,
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  emptyText: {
+    ...typography.textMedium,
+    color: '#B0B0B0',
+  },
+  listContainer: {
+    paddingBottom: 15,
+    paddingHorizontal: 15,
+    paddingTop: 3,
   },
   clearAllContainer: {
     alignItems: 'center',
@@ -387,6 +374,17 @@ const styles = StyleSheet.create({
     ...typography.textBold,
     color: '#fff',
     fontSize: 16,
+  },
+  statusBadge: {
+    borderRadius: 20,
+    marginLeft: 5,
+    marginRight: 'auto',
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+  },
+  statusText: {
+    ...typography.text,
+    color: '#fff',
   },
 });
 

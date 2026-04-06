@@ -24,6 +24,23 @@ const Wainwright = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
+  },
+  scrollview: {
+    flex: 1,
+  },
+  contentContainer: {
+    padding: 20,
+  },
+  contentHeader: {
+    ...typography.heading3,
+    marginBottom: 10,
+  },
+  content: {
+    ...typography.text,
+  },
   bold: {
     ...typography.textBold,
   },
@@ -35,20 +52,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     marginLeft: 15,
   },
-  container: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  content: {
-    ...typography.text,
-  },
-  contentContainer: {
-    padding: 20,
-  },
-  contentHeader: {
-    ...typography.heading3,
-    marginBottom: 10,
-  },
   contentSubHeader: {
     ...typography.heading5,
     color: '#EA1D25',
@@ -57,9 +60,6 @@ const styles = StyleSheet.create({
   link: {
     ...typography.textMedium,
     color: 'blue',
-  },
-  scrollview: {
-    flex: 1,
   },
 });
 

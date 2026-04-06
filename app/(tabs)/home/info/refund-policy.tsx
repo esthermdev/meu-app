@@ -35,9 +35,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flex: 1,
   },
-  content: {
-    ...typography.textSmall,
-    color: '#333',
+  scrollview: {
+    flex: 1,
   },
   contentContainer: {
     padding: 20,
@@ -45,8 +44,9 @@ const styles = StyleSheet.create({
   contentHeader: {
     ...typography.heading4,
   },
-  scrollview: {
-    flex: 1,
+  content: {
+    ...typography.textSmall,
+    color: '#333',
   },
 });
 

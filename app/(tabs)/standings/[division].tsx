@@ -165,29 +165,13 @@ export default function DivisionStandings() {
 }
 
 const styles = StyleSheet.create({
-  centerContainer: {
+  sectionHeader: {
     alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  container: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  itemContainer: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderBottomColor: '#E5E5E5',
-    borderBottomWidth: 1,
+    backgroundColor: '#EA1D25', // Red background for pool headers
     flexDirection: 'row',
-    padding: 12,
-  },
-  listContent: {
-    paddingBottom: 20,
-  },
-  poolLabel: {
-    ...typography.textLargeBold,
-    color: '#EA1D25',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 9,
   },
   poolLabelContainer: {
     alignItems: 'center',
@@ -197,18 +181,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
-  rankNumber: {
-    ...typography.textSmall,
-    color: '#9E9E9E',
-    width: 20,
-  },
-  recordContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  recordDivider: {
-    ...typography.text,
-    color: '#fff',
+  poolLabel: {
+    ...typography.textLargeBold,
+    color: '#EA1D25',
   },
   recordHeaderContainer: {
     alignItems: 'center',
@@ -220,18 +195,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     width: 30,
   },
-  recordText: {
+  recordDivider: {
     ...typography.text,
-    textAlign: 'center',
-    width: 30,
+    color: '#fff',
   },
-  sectionHeader: {
+  itemContainer: {
     alignItems: 'center',
-    backgroundColor: '#EA1D25', // Red background for pool headers
+    backgroundColor: '#fff',
+    borderBottomColor: '#E5E5E5',
+    borderBottomWidth: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 12,
-    paddingVertical: 9,
+    padding: 12,
+  },
+  rankNumber: {
+    ...typography.textSmall,
+    color: '#9E9E9E',
+    width: 20,
   },
   teamLogo: {
     borderRadius: 20,
@@ -242,5 +221,26 @@ const styles = StyleSheet.create({
   teamName: {
     flex: 1,
     ...typography.textSemiBold,
+  },
+  recordContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  recordText: {
+    ...typography.text,
+    textAlign: 'center',
+    width: 30,
+  },
+  centerContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
+  },
+  listContent: {
+    paddingBottom: 20,
   },
 });

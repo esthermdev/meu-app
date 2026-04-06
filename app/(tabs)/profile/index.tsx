@@ -139,23 +139,29 @@ export default function UserDashboard() {
 }
 
 const styles = StyleSheet.create({
-  actionButton: {
-    alignItems: 'center',
-    borderBottomColor: '#E5E5E5',
-    borderBottomWidth: 1,
-    flexDirection: 'row',
-    paddingVertical: 15,
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
+    padding: 20,
+  },
+  header: {
+    marginBottom: 12,
+  },
+  welcomeText: {
+    ...typography.heading3,
+    color: '#B3B3B3',
+  },
+  username: {
+    color: '#000',
+    ...typography.heading3,
+  },
+  section: {
+    gap: 10,
+    marginBottom: 20,
   },
   card: {
     alignItems: 'center',
     backgroundColor: '#FFF0F0',
-    borderRadius: 12,
-    flexDirection: 'row',
-    padding: 20,
-  },
-  supportCard: {
-    alignItems: 'center',
-    backgroundColor: '#ECEFFD',
     borderRadius: 12,
     flexDirection: 'row',
     padding: 20,
@@ -168,39 +174,33 @@ const styles = StyleSheet.create({
     ...typography.textLargeBold,
     color: '#FE0000',
   },
+  sectionTitle: {
+    ...typography.heading4,
+  },
+  supportCard: {
+    alignItems: 'center',
+    backgroundColor: '#ECEFFD',
+    borderRadius: 12,
+    flexDirection: 'row',
+    padding: 20,
+  },
   supportCardLabel: {
     flex: 1,
     ...typography.textLargeBold,
     color: '#4357AD',
   },
-  container: {
-    backgroundColor: '#fff',
-    flex: 1,
-    padding: 20,
-  },
-  disabledButton: {
-    opacity: 0.6,
-  },
-  header: {
-    marginBottom: 12,
+  actionButton: {
+    alignItems: 'center',
+    borderBottomColor: '#E5E5E5',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    paddingVertical: 15,
   },
   quickActionLabels: {
     ...typography.textLargeMedium,
     color: '#000',
   },
-  sectionTitle: {
-    ...typography.heading4,
-  },
-  section: {
-    gap: 10,
-    marginBottom: 20,
-  },
-  username: {
-    color: '#000',
-    ...typography.heading3,
-  },
-  welcomeText: {
-    ...typography.heading3,
-    color: '#B3B3B3',
+  disabledButton: {
+    opacity: 0.6,
   },
 });

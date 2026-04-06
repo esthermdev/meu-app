@@ -71,10 +71,15 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
-  button: {
-    borderRadius: 12,
-    height: 120,
-    overflow: 'hidden',
+  watchLiveContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    flex: 1,
+    justifyContent: 'space-between',
+    padding: 15,
+  },
+  text: {
+    color: '#fff',
+    ...typography.textLargeBold,
   },
   contentContainer: {
     alignContent: 'space-between',
@@ -82,19 +87,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 14,
   },
+  button: {
+    borderRadius: 12,
+    height: 120,
+    overflow: 'hidden',
+  },
   halfWidth: {
     flex: 1,
     minWidth: '45%',
-  },
-  text: {
-    color: '#fff',
-    ...typography.textLargeBold,
-  },
-  watchLiveContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    flex: 1,
-    justifyContent: 'space-between',
-    padding: 15,
   },
 });
 

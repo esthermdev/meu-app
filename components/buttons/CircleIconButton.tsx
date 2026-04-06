@@ -29,6 +29,9 @@ const CircleIconButton: React.FC<CircleIconButtonProps> = ({ icon, iconColor, la
 };
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+  },
   button: {
     alignItems: 'center',
     backgroundColor: '#edebebff',
@@ -36,9 +39,6 @@ const styles = StyleSheet.create({
     height: 70,
     justifyContent: 'center',
     width: 70,
-  },
-  container: {
-    alignItems: 'center',
   },
   label: {
     marginTop: 5,

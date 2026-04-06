@@ -74,6 +74,12 @@ const Volunteers = () => {
 };
 
 const styles = StyleSheet.create({
+  itemContainer: {
+    alignItems: 'center',
+    flex: 1,
+    margin: 10,
+    width: 100,
+  },
   avatar: {
     borderRadius: 30,
     height: 60,
@@ -85,25 +91,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     ...typography.textSmallBold,
   },
+  roleText: {
+    ...typography.textSmall,
+    color: '#666',
+    textAlign: 'center',
+  },
   container: {
     backgroundColor: '#fff',
     flex: 1,
-  },
-  itemContainer: {
-    alignItems: 'center',
-    flex: 1,
-    margin: 10,
-    width: 100,
   },
   listContainer: {
     flexDirection: 'row',
     paddingHorizontal: 10,
     paddingTop: 10,
-  },
-  roleText: {
-    ...typography.textSmall,
-    color: '#666',
-    textAlign: 'center',
   },
 });
 

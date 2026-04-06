@@ -76,6 +76,22 @@ export const FavoriteTeamsListItem = React.memo(({ item, isFavorited, onToggleFa
 FavoriteTeamsListItem.displayName = 'FavoriteTeamsListItem';
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderBottomColor: '#f0f0f0',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  avatarImage: {
+    borderColor: '#000',
+    borderRadius: 25,
+    borderWidth: 0.5,
+    height: 50,
+    width: 50,
+  },
   avatarFallback: {
     alignItems: 'center',
     backgroundColor: '#fff',
@@ -90,28 +106,15 @@ const styles = StyleSheet.create({
     ...typography.textSemiBold,
     color: '#000',
   },
-  avatarImage: {
-    borderColor: '#000',
-    borderRadius: 25,
-    borderWidth: 0.5,
-    height: 50,
-    width: 50,
-  },
-  container: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderBottomColor: '#f0f0f0',
-    borderBottomWidth: 1,
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
   content: {
     alignItems: 'center',
     flexDirection: 'row',
     flex: 1,
     gap: 10,
     marginLeft: 12,
+  },
+  name: {
+    ...typography.textSemiBold,
   },
   divisionContainer: {
     alignSelf: 'flex-start',
@@ -123,8 +126,5 @@ const styles = StyleSheet.create({
   },
   favoriteIcon: {
     marginLeft: 'auto',
-  },
-  name: {
-    ...typography.textSemiBold,
   },
 });

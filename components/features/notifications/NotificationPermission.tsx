@@ -94,25 +94,6 @@ const NotificationPermission: React.FC<NotificationPermissionProps> = ({ compact
 };
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#EA1D25',
-    borderRadius: 4,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  buttonText: {
-    ...typography.textMedium,
-    color: '#FFFFFF',
-  },
-  compactButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-  },
-  compactContainer: {
-    alignItems: 'flex-end',
-    backgroundColor: 'transparent',
-    padding: 0,
-  },
   container: {
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
@@ -123,14 +104,33 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     padding: 16,
   },
+  enabledText: {
+    ...typography.textMedium,
+    color: '#4CAF50',
+  },
+  compactContainer: {
+    alignItems: 'flex-end',
+    backgroundColor: 'transparent',
+    padding: 0,
+  },
   disabledText: {
     color: '#616161',
     textAlign: 'center',
     ...typography.textMedium,
   },
-  enabledText: {
+  button: {
+    backgroundColor: '#EA1D25',
+    borderRadius: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  compactButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  buttonText: {
     ...typography.textMedium,
-    color: '#4CAF50',
+    color: '#FFFFFF',
   },
 });
 

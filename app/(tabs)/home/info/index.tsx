@@ -61,9 +61,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
   },
-  menuContent: {
-    flex: 1,
-  },
   menuItem: {
     alignItems: 'center',
     borderBottomColor: '#eee',
@@ -71,6 +68,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 23,
+  },
+  menuContent: {
+    flex: 1,
   },
   menuText: {
     ...typography.heading5,

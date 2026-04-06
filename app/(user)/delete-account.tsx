@@ -134,21 +134,6 @@ export default function DeleteAccountScreen() {
 }
 
 const styles = StyleSheet.create({
-  bodyText: {
-    ...typography.text,
-    color: '#444444',
-    lineHeight: 22,
-    marginTop: 8,
-  },
-  cancelButton: {
-    alignItems: 'center',
-    marginTop: 16,
-    paddingVertical: 12,
-  },
-  cancelButtonText: {
-    ...typography.textLargeBold,
-    color: '#4A4A4A',
-  },
   container: {
     backgroundColor: '#FFFFFF',
     flex: 1,
@@ -157,8 +142,31 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
   },
-  deleteButton: {
-    marginTop: 10,
+  heroCard: {
+    backgroundColor: '#FFF1F1',
+    borderColor: '#F0C6C6',
+    borderRadius: 16,
+    borderWidth: 1,
+    marginBottom: 24,
+    padding: 15,
+  },
+  heroTitle: {
+    ...typography.heading3,
+    color: '#B00020',
+  },
+  heroText: {
+    ...typography.text,
+    color: '#444444',
+    lineHeight: 22,
+    marginTop: 8,
+  },
+  section: {
+    marginBottom: 10,
+  },
+  label: {
+    ...typography.textLargeBold,
+    color: '#1F1F1F',
+    marginBottom: 6,
   },
   emailPreview: {
     backgroundColor: '#FFF4F4',
@@ -172,24 +180,6 @@ const styles = StyleSheet.create({
     ...typography.textLargeMedium,
     color: '#1F1F1F',
   },
-  heroCard: {
-    backgroundColor: '#FFF1F1',
-    borderColor: '#F0C6C6',
-    borderRadius: 16,
-    borderWidth: 1,
-    marginBottom: 24,
-    padding: 15,
-  },
-  heroText: {
-    ...typography.text,
-    color: '#444444',
-    lineHeight: 22,
-    marginTop: 8,
-  },
-  heroTitle: {
-    ...typography.heading3,
-    color: '#B00020',
-  },
   input: {
     borderColor: '#D7D7D7',
     borderRadius: 12,
@@ -200,13 +190,23 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     ...typography.text,
   },
-  label: {
-    ...typography.textLargeBold,
-    color: '#1F1F1F',
-    marginBottom: 6,
+  deleteButton: {
+    marginTop: 10,
   },
-  section: {
-    marginBottom: 10,
+  cancelButton: {
+    alignItems: 'center',
+    marginTop: 16,
+    paddingVertical: 12,
+  },
+  cancelButtonText: {
+    ...typography.textLargeBold,
+    color: '#4A4A4A',
+  },
+  bodyText: {
+    ...typography.text,
+    color: '#444444',
+    lineHeight: 22,
+    marginTop: 8,
   },
   sectionTitle: {
     ...typography.textLargeBold,

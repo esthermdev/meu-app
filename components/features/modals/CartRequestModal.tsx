@@ -413,6 +413,112 @@ const CartRequestButton = () => {
 };
 
 const styles = StyleSheet.create({
+  passengerCountContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  passengerCountButton: {
+    alignItems: 'center',
+    backgroundColor: '#F0F0F0',
+    borderRadius: 20,
+    height: 35,
+    justifyContent: 'center',
+    width: 35,
+  },
+  passengerCountText: {
+    ...typography.textBold,
+    paddingHorizontal: 20,
+  },
+  circleButton: {
+    alignItems: 'center',
+    backgroundColor: '#edebebff',
+    borderRadius: 35,
+    height: 70,
+    justifyContent: 'center',
+    width: 70,
+  },
+  label: {
+    marginTop: 5,
+    textAlign: 'center',
+    ...typography.textSmallBold,
+  },
+  modalContainer: {
+    flex: 1,
+  },
+  modalOverlay: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flex: 1,
+    justifyContent: 'center',
+    width: '100%',
+  },
+  modalOverlayKeyboardOpen: {
+    justifyContent: Platform.OS === 'android' ? 'flex-start' : 'flex-end',
+    paddingTop: 52,
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    maxHeight: modalHeight,
+    padding: 20,
+    width: '90%',
+  },
+  noteToggleButton: {
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    gap: 4,
+    marginBottom: 8,
+  },
+  noteToggleText: {
+    ...typography.textSmallBold,
+    color: '#4F628E',
+  },
+  noteContainer: {
+    backgroundColor: '#F5F8FF',
+    borderColor: '#D8E3FF',
+    borderRadius: 10,
+    borderWidth: 1,
+    marginBottom: 8,
+    padding: 10,
+  },
+  noteHeaderRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  noteTitle: {
+    ...typography.textSmallBold,
+    color: '#4F628E',
+  },
+  noteText: {
+    ...typography.textXSmall,
+    color: '#666',
+  },
+  labelHeader: {
+    ...typography.textBold,
+    marginBottom: 5,
+  },
+  nameInput: {
+    borderColor: '#ccc',
+    borderRadius: 8,
+    borderWidth: 1,
+    padding: 12,
+    ...typography.textSmall,
+  },
+  inputError: {
+    borderColor: '#DD3333',
+  },
+  specialRequestInput: {
+    borderColor: '#ccc',
+    borderRadius: 8,
+    borderWidth: 1,
+    padding: 10,
+    ...typography.textSmall,
+    textAlignVertical: 'top',
+  },
   backdropPressArea: {
     ...StyleSheet.absoluteFill,
   },
@@ -426,14 +532,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 12,
     width: '48%',
-  },
-  circleButton: {
-    alignItems: 'center',
-    backgroundColor: '#edebebff',
-    borderRadius: 35,
-    height: 70,
-    justifyContent: 'center',
-    width: 70,
   },
   closeButton: {
     alignSelf: 'flex-end',
@@ -457,104 +555,6 @@ const styles = StyleSheet.create({
   generalErrorText: {
     color: '#DD3333',
     ...typography.text,
-  },
-  inputError: {
-    borderColor: '#DD3333',
-  },
-  label: {
-    marginTop: 5,
-    textAlign: 'center',
-    ...typography.textSmallBold,
-  },
-  labelHeader: {
-    ...typography.textBold,
-    marginBottom: 5,
-  },
-  modalContainer: {
-    flex: 1,
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    maxHeight: modalHeight,
-    padding: 20,
-    width: '90%',
-  },
-  modalOverlay: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    flex: 1,
-    justifyContent: 'center',
-    width: '100%',
-  },
-  modalOverlayKeyboardOpen: {
-    justifyContent: Platform.OS === 'android' ? 'flex-start' : 'flex-end',
-    paddingTop: 52,
-  },
-  nameInput: {
-    borderColor: '#ccc',
-    borderRadius: 8,
-    borderWidth: 1,
-    padding: 12,
-    ...typography.textSmall,
-  },
-  noteContainer: {
-    backgroundColor: '#F5F8FF',
-    borderColor: '#D8E3FF',
-    borderRadius: 10,
-    borderWidth: 1,
-    marginBottom: 8,
-    padding: 10,
-  },
-  noteHeaderRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 4,
-  },
-  noteText: {
-    ...typography.textXSmall,
-    color: '#666',
-  },
-  noteTitle: {
-    ...typography.textSmallBold,
-    color: '#4F628E',
-  },
-  noteToggleButton: {
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    gap: 4,
-    marginBottom: 8,
-  },
-  noteToggleText: {
-    ...typography.textSmallBold,
-    color: '#4F628E',
-  },
-  passengerCountButton: {
-    alignItems: 'center',
-    backgroundColor: '#F0F0F0',
-    borderRadius: 20,
-    height: 35,
-    justifyContent: 'center',
-    width: 35,
-  },
-  passengerCountContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  passengerCountText: {
-    ...typography.textBold,
-    paddingHorizontal: 20,
-  },
-  specialRequestInput: {
-    borderColor: '#ccc',
-    borderRadius: 8,
-    borderWidth: 1,
-    padding: 10,
-    ...typography.textSmall,
-    textAlignVertical: 'top',
   },
 });
 

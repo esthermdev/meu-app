@@ -68,25 +68,6 @@ const FAQScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  answer: {
-    ...typography.text,
-    color: '#333',
-    lineHeight: 22,
-  },
-  centeredContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  container: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  emptyText: {
-    ...typography.textMedium,
-    color: '#666',
-    marginTop: 40,
-    textAlign: 'center',
-  },
   faqItem: {
     backgroundColor: '#f9f9f9',
     borderLeftColor: '#EA1D25',
@@ -95,13 +76,32 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     padding: 16,
   },
-  listContainer: {
-    padding: 20,
-  },
   question: {
     ...typography.textLargeBold,
     color: '#EA1D25',
     marginBottom: 8,
+  },
+  answer: {
+    ...typography.text,
+    color: '#333',
+    lineHeight: 22,
+  },
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
+  },
+  centeredContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  listContainer: {
+    padding: 20,
+  },
+  emptyText: {
+    ...typography.textMedium,
+    color: '#666',
+    marginTop: 40,
+    textAlign: 'center',
   },
 });
 

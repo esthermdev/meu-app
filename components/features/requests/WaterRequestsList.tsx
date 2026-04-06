@@ -184,48 +184,23 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
-  container: {
-    backgroundColor: '#000',
-    flex: 1,
-  },
-  divider: {
-    backgroundColor: '#444',
-    height: 1,
-    marginVertical: 5,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    backgroundColor: '#000',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  emptyListContainer: {
-    flexGrow: 1,
-  },
-  emptyText: {
-    ...typography.textMedium,
-    color: '#B0B0B0',
-  },
-  fieldLink: {
-    color: '#4A9EFF',
-    textDecorationLine: 'underline',
-  },
   headerContainer: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  headerDate: {
-    ...typography.textMedium,
-    color: '#aaa',
-  },
   headerTitle: {
     ...typography.textSemiBold,
     color: '#fff',
   },
-  infoLabel: {
-    ...typography.text,
-    color: '#CCCCCC',
+  headerDate: {
+    ...typography.textMedium,
+    color: '#aaa',
+  },
+  divider: {
+    backgroundColor: '#444',
+    height: 1,
+    marginVertical: 5,
   },
   infoSection: {
     borderBottomColor: '#CCCCCC66',
@@ -238,22 +213,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  infoLabel: {
+    ...typography.text,
+    color: '#CCCCCC',
+  },
   infoValue: {
     ...typography.textSemiBold,
     color: '#fff',
   },
-  listContainer: {
-    padding: 15,
+  fieldLink: {
+    color: '#4A9EFF',
+    textDecorationLine: 'underline',
   },
-  loadingContainer: {
-    alignItems: 'center',
-    backgroundColor: '#000',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  loadingText: {
-    ...typography.textBold,
-    color: '#fff',
+  statusPending: {
+    color: '#FFD600',
+    ...typography.textSemiBold,
   },
   resolveButton: {
     alignItems: 'center',
@@ -269,9 +243,35 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginRight: 5,
   },
-  statusPending: {
-    color: '#FFD600',
-    ...typography.textSemiBold,
+  loadingContainer: {
+    alignItems: 'center',
+    backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  loadingText: {
+    ...typography.textBold,
+    color: '#fff',
+  },
+  container: {
+    backgroundColor: '#000',
+    flex: 1,
+  },
+  listContainer: {
+    padding: 15,
+  },
+  emptyListContainer: {
+    flexGrow: 1,
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    backgroundColor: '#000',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  emptyText: {
+    ...typography.textMedium,
+    color: '#B0B0B0',
   },
 });
 

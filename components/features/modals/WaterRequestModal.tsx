@@ -223,35 +223,6 @@ const WaterRequestButton = () => {
 export default WaterRequestButton;
 
 const styles = StyleSheet.create({
-  circleButton: {
-    alignItems: 'center',
-    backgroundColor: '#edebebff',
-    borderRadius: 35,
-    height: 70,
-    justifyContent: 'center',
-    width: 70,
-  },
-  disabledFieldBlock: {
-    backgroundColor: '#D0D0D0',
-    borderColor: '#B0B0B0',
-    opacity: 0.5,
-  },
-  disabledFieldText: {
-    color: '#999',
-  },
-  disabledNote: {
-    ...typography.label,
-    color: '#E74C3C',
-    textAlign: 'center',
-  },
-  disabledNoteContainer: {
-    backgroundColor: '#FFEBEE',
-    borderColor: '#FFCDD2',
-    borderRadius: 8,
-    borderWidth: 1,
-    marginVertical: 10,
-    padding: 10,
-  },
   fieldBlock: {
     alignItems: 'center',
     backgroundColor: '#F0F0F0',
@@ -261,16 +232,32 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: blockSize,
   },
+  selectedFieldBlock: {
+    backgroundColor: '#E74C3C',
+    borderColor: '#C0392B',
+  },
+  disabledFieldBlock: {
+    backgroundColor: '#D0D0D0',
+    borderColor: '#B0B0B0',
+    opacity: 0.5,
+  },
   fieldBlockText: {
     ...typography.labelBold,
     textAlign: 'center',
   },
-  fieldGridContainer: {
-    maxHeight: 300,
+  selectedFieldText: {
+    color: '#fff',
   },
-  gridContent: {
+  disabledFieldText: {
+    color: '#999',
+  },
+  circleButton: {
     alignItems: 'center',
+    backgroundColor: '#edebebff',
+    borderRadius: 35,
+    height: 70,
     justifyContent: 'center',
+    width: 70,
   },
   label: {
     marginTop: 5,
@@ -294,12 +281,25 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
   },
-  selectedFieldBlock: {
-    backgroundColor: '#E74C3C',
-    borderColor: '#C0392B',
+  disabledNoteContainer: {
+    backgroundColor: '#FFEBEE',
+    borderColor: '#FFCDD2',
+    borderRadius: 8,
+    borderWidth: 1,
+    marginVertical: 10,
+    padding: 10,
   },
-  selectedFieldText: {
-    color: '#fff',
+  disabledNote: {
+    ...typography.label,
+    color: '#E74C3C',
+    textAlign: 'center',
+  },
+  fieldGridContainer: {
+    maxHeight: 300,
+  },
+  gridContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   selectionInfo: {
     backgroundColor: '#F9F9F9',

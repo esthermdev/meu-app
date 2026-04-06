@@ -38,12 +38,6 @@ export const CustomAdminHeader: React.FC<CustomAdminHeaderProps> = ({ title, rig
 };
 
 const styles = StyleSheet.create({
-  header: {
-    color: '#fff',
-    fontFamily: fonts.semiBold,
-    fontSize: 18,
-    textAlign: 'center',
-  },
   headerContainer: {
     alignItems: 'center',
     backgroundColor: '#EA1D25',
@@ -56,6 +50,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
+  },
+  header: {
+    color: '#fff',
+    fontFamily: fonts.semiBold,
+    fontSize: 18,
+    textAlign: 'center',
   },
 });
 

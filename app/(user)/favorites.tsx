@@ -167,44 +167,39 @@ const FavoritesScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  centeredContainer: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-    padding: 20,
+  sectionHeader: {
+    backgroundColor: '#f8f8f8',
+    borderBottomColor: '#EFEFEF',
+    borderBottomWidth: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+  },
+  sectionHeaderText: {
+    ...typography.textBold,
+    color: '#555',
   },
   container: {
     backgroundColor: '#fff',
     flex: 1,
-  },
-  favoritesCount: {
-    ...typography.text,
-    color: '#EA1D25',
-  },
-  favoritesCountNumber: {
-    ...typography.textBold,
-    color: '#EA1D25',
   },
   headerContainer: {
     borderBottomColor: '#EFEFEF',
     borderBottomWidth: 1,
     paddingBottom: 15,
   },
+  title: {
+    ...typography.heading4,
+    marginTop: 15,
+    paddingHorizontal: 20,
+  },
+  subtitle: {
+    ...typography.text,
+    marginBottom: 15,
+    paddingHorizontal: 20,
+  },
   link: {
     color: '#4357AD',
     textDecorationLine: 'underline',
-  },
-  messageText: {
-    ...typography.text,
-    color: '#8F8DAA',
-    textAlign: 'center',
-  },
-  remainingSlots: {
-    ...typography.text,
-    color: '#666',
-  },
-  remainingSlotsNumber: {
-    ...typography.textBold,
   },
   searchBarContainer: {
     alignItems: 'center',
@@ -227,32 +222,37 @@ const styles = StyleSheet.create({
     ...typography.text,
     color: '#000',
   },
-  sectionHeader: {
-    backgroundColor: '#f8f8f8',
-    borderBottomColor: '#EFEFEF',
-    borderBottomWidth: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-  },
-  sectionHeaderText: {
-    ...typography.textBold,
-    color: '#555',
-  },
   statsContainer: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
   },
-  subtitle: {
+  favoritesCount: {
     ...typography.text,
-    marginBottom: 15,
-    paddingHorizontal: 20,
+    color: '#EA1D25',
   },
-  title: {
-    ...typography.heading4,
-    marginTop: 15,
-    paddingHorizontal: 20,
+  favoritesCountNumber: {
+    ...typography.textBold,
+    color: '#EA1D25',
+  },
+  remainingSlots: {
+    ...typography.text,
+    color: '#666',
+  },
+  remainingSlotsNumber: {
+    ...typography.textBold,
+  },
+  centeredContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
+  messageText: {
+    ...typography.text,
+    color: '#8F8DAA',
+    textAlign: 'center',
   },
 });
 

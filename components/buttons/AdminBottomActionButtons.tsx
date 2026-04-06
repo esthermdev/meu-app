@@ -50,17 +50,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 15,
   },
-  buttonText: {
-    color: '#242424',
-    ...typography.textSemiBold,
-    textAlign: 'center',
-  },
   leftButton: {
     alignItems: 'center',
     backgroundColor: '#ED8C22',
     borderRadius: 8,
     flex: 1,
     paddingVertical: 12,
+  },
+  buttonText: {
+    color: '#242424',
+    ...typography.textSemiBold,
+    textAlign: 'center',
   },
   rightButton: {
     alignItems: 'center',

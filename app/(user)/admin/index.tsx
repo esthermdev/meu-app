@@ -101,24 +101,6 @@ const AdminScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#000',
-    flex: 1,
-  },
-  contentContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-    justifyContent: 'center',
-  },
-  headerText: {
-    ...typography.heading3,
-    color: '#fff',
-    marginBottom: 12,
-    marginTop: 20,
-    paddingLeft: 20,
-  },
   optionButton: {
     alignItems: 'center',
     aspectRatio: 1,
@@ -133,6 +115,24 @@ const styles = StyleSheet.create({
     marginTop: 5,
     ...typography.textSemiBold,
     textAlign: 'center',
+  },
+  container: {
+    backgroundColor: '#000',
+    flex: 1,
+  },
+  headerText: {
+    ...typography.heading3,
+    color: '#fff',
+    marginBottom: 12,
+    marginTop: 20,
+    paddingLeft: 20,
+  },
+  contentContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    justifyContent: 'center',
   },
 });
 

@@ -187,6 +187,45 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 25,
   },
+  form: {
+    flex: 1,
+  },
+  image: {
+    height: 90,
+    marginBottom: 25,
+    marginTop: 50,
+    width: 90,
+  },
+  title: {
+    ...typography.heading1,
+    color: '#EA1D25',
+    marginTop: 10,
+  },
+  subtitle: {
+    marginBottom: 20,
+    marginTop: 10,
+    ...typography.heading5,
+  },
+  inputContainer: {
+    alignItems: 'center',
+    borderColor: '#000',
+    borderRadius: 12,
+    borderWidth: 1,
+    flexDirection: 'row',
+    height: 56,
+    marginBottom: 10,
+    paddingHorizontal: 16,
+  },
+  inputWithIcon: {
+    flex: 1,
+    fontSize: 16,
+    lineHeight: 20,
+    marginLeft: 8,
+    paddingVertical: 0,
+    ...(Platform.OS === 'android'
+      ? { includeFontPadding: false as const, textAlignVertical: 'center' as const }
+      : null),
+  },
   errorContainer: {
     backgroundColor: '#FEE2E2',
     borderLeftColor: '#EF4444',
@@ -199,46 +238,31 @@ const styles = StyleSheet.create({
     ...typography.textSmall,
     color: '#B91C1C',
   },
+  signUpLink: {
+    ...typography.textSemiBold,
+    color: '#EA1D25',
+    marginTop: 5,
+    textDecorationLine: 'underline',
+  },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: 40,
     marginTop: 20,
   },
-  form: {
-    flex: 1,
-  },
-  image: {
-    height: 90,
-    marginBottom: 25,
-    marginTop: 50,
-    width: 90,
-  },
-  inputContainer: {
-    alignItems: 'center',
-    borderColor: '#000',
-    borderRadius: 12,
-    borderWidth: 1,
-    flexDirection: 'row',
-    height: 56,
-    marginBottom: 10,
-    paddingHorizontal: 16,
-  },
-
-  inputWithIcon: {
-    flex: 1,
-    fontSize: 16,
-    lineHeight: 20,
-    marginLeft: 8,
-    paddingVertical: 0,
-    ...(Platform.OS === 'android'
-      ? { includeFontPadding: false as const, textAlignVertical: 'center' as const }
-      : null),
+  text: {
+    ...typography.text,
   },
   link: {
     ...typography.text,
     color: '#EA1D25',
     textDecorationLine: 'underline',
+  },
+  signInPlayer: {
+    alignSelf: 'flex-start',
+  },
+  signInPlayerAndroidFix: {
+    transform: [{ scaleX: -1 }],
   },
   reviewerButton: {
     alignItems: 'center',
@@ -250,30 +274,5 @@ const styles = StyleSheet.create({
   reviewerButtonText: {
     ...typography.textSemiBold,
     color: '#333333',
-  },
-  signInPlayer: {
-    alignSelf: 'flex-start',
-  },
-  signInPlayerAndroidFix: {
-    transform: [{ scaleX: -1 }],
-  },
-  signUpLink: {
-    ...typography.textSemiBold,
-    color: '#EA1D25',
-    marginTop: 5,
-    textDecorationLine: 'underline',
-  },
-  subtitle: {
-    marginBottom: 20,
-    marginTop: 10,
-    ...typography.heading5,
-  },
-  title: {
-    ...typography.heading1,
-    color: '#EA1D25',
-    marginTop: 10,
-  },
-  text: {
-    ...typography.text,
   },
 });

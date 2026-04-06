@@ -303,8 +303,20 @@ const TrainerRequestButton = () => {
 };
 
 const styles = StyleSheet.create({
-  backdropPressArea: {
-    ...StyleSheet.absoluteFill,
+  priorityButton: {
+    borderRadius: 8,
+    padding: 10,
+    width: '30%',
+  },
+  selected: {
+    borderColor: '#000',
+    borderRadius: 8,
+    borderWidth: 2,
+  },
+  priorityButtonText: {
+    color: 'white',
+    textAlign: 'center',
+    ...typography.textSmallBold,
   },
   circleButton: {
     alignItems: 'center',
@@ -314,44 +326,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 70,
   },
-  descriptionInput: {
-    borderColor: '#ccc',
-    borderRadius: 8,
-    borderWidth: 1,
-    padding: 10,
-    ...typography.textSmall,
-    marginBottom: 5,
-    textAlignVertical: 'top',
-  },
-  errorText: {
-    color: '#DD3333',
-    ...typography.textXSmall,
-  },
-  inputError: {
-    borderColor: '#DD3333',
-    borderWidth: 1,
-  },
   label: {
     marginTop: 5,
     textAlign: 'center',
     ...typography.textSmallBold,
   },
-  labelHeader: {
-    ...typography.labelBold,
-    marginVertical: 4,
-  },
   modalContainer: {
     flex: 1,
-  },
-  modalContainerKeyboardOpen: {
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    maxHeight: modalHeight,
-    padding: 20,
-    width: '90%',
   },
   modalOverlay: {
     alignItems: 'center',
@@ -363,6 +344,24 @@ const styles = StyleSheet.create({
   modalOverlayKeyboardOpen: {
     justifyContent: Platform.OS === 'android' ? 'flex-start' : 'flex-end',
     paddingTop: 52,
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    maxHeight: modalHeight,
+    padding: 20,
+    width: '90%',
+  },
+  noteToggleButton: {
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    gap: 4,
+    marginBottom: 8,
+  },
+  noteToggleText: {
+    ...typography.textSmallBold,
+    color: '#4F628E',
   },
   noteContainer: {
     backgroundColor: '#F5F8FF',
@@ -378,45 +377,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 4,
   },
-  noteText: {
-    ...typography.textXSmall,
-    color: '#666',
-  },
   noteTitle: {
     ...typography.textSmallBold,
     color: '#4F628E',
   },
-  noteToggleButton: {
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    gap: 4,
-    marginBottom: 8,
+  noteText: {
+    ...typography.textXSmall,
+    color: '#666',
   },
-  noteToggleText: {
-    ...typography.textSmallBold,
-    color: '#4F628E',
-  },
-  priorityButton: {
-    borderRadius: 8,
-    padding: 10,
-    width: '30%',
-  },
-  priorityButtonContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 5,
-  },
-  priorityButtonText: {
-    color: 'white',
-    textAlign: 'center',
-    ...typography.textSmallBold,
-  },
-  selected: {
-    borderColor: '#000',
-    borderRadius: 8,
-    borderWidth: 2,
+  labelHeader: {
+    ...typography.labelBold,
+    marginVertical: 4,
   },
   textInput: {
     borderColor: '#ccc',
@@ -425,6 +396,35 @@ const styles = StyleSheet.create({
     padding: 10,
     ...typography.textSmall,
     marginBottom: 5,
+  },
+  priorityButtonContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5,
+  },
+  descriptionInput: {
+    borderColor: '#ccc',
+    borderRadius: 8,
+    borderWidth: 1,
+    padding: 10,
+    ...typography.textSmall,
+    marginBottom: 5,
+    textAlignVertical: 'top',
+  },
+  backdropPressArea: {
+    ...StyleSheet.absoluteFill,
+  },
+  errorText: {
+    color: '#DD3333',
+    ...typography.textXSmall,
+  },
+  inputError: {
+    borderColor: '#DD3333',
+    borderWidth: 1,
+  },
+  modalContainerKeyboardOpen: {
+    justifyContent: 'flex-end',
   },
 });
 
