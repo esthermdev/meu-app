@@ -136,21 +136,23 @@ const FulfilledWaterRequestsList = () => {
 
         <View style={styles.infoSection}>
           <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>Field:</CustomText>
+            <CustomText style={styles.labelText}>FIELD</CustomText>
             <CustomText style={styles.valueText}>Field {item.field_number}</CustomText>
           </View>
 
           {item.volunteer && (
             <View style={styles.infoRow}>
-              <CustomText style={styles.labelText}>Volunteer:</CustomText>
+              <CustomText style={styles.labelText}>VOLUNTEER</CustomText>
               <CustomText style={styles.valueText}>{item.volunteer}</CustomText>
             </View>
           )}
         </View>
 
-        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteRequest(item.id)}>
-          <CustomText style={styles.deleteButtonText}>Remove</CustomText>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.deleteButton} onPress={() => deleteRequest(item.id)}>
+            <CustomText style={styles.deleteButtonText}>Remove</CustomText>
+          </TouchableOpacity>
+        </View>
       </Card>
     );
   };
@@ -204,18 +206,17 @@ const FulfilledWaterRequestsList = () => {
 const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: '#262626',
-    borderRadius: 12,
+    borderRadius: 8,
     borderWidth: 0,
     marginBottom: 10,
-    padding: 10,
+    padding: 0,
   },
   cardHeader: {
-    borderBottomWidth: 1,
-    borderColor: '#CCCCCC66',
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingBottom: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
   },
   waterTitle: {
     ...typography.textSemiBold,
@@ -223,38 +224,46 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
   },
   statusBadge: {
-    borderRadius: 20,
-    paddingHorizontal: 7,
+    borderRadius: 8,
+    paddingHorizontal: 5,
     paddingVertical: 2,
   },
   statusText: {
-    ...typography.textMedium,
+    ...typography.textSmall,
     color: '#fff',
+    fontWeight: 'bold',
   },
   infoSection: {
     borderBottomColor: '#CCCCCC66',
     borderBottomWidth: 1,
-    paddingVertical: 5,
     gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
   },
   infoRow: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    width: '100%',
   },
   labelText: {
-    ...typography.text,
-    color: '#CCCCCC80',
+    ...typography.textSmall,
+    color: '#CCCCCCB2',
   },
   valueText: {
-    ...typography.textSemiBold,
-    color: '#CCCCCCBF',
+    ...typography.textSmallBold,
+    color: '#fff',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   deleteButton: {
     alignItems: 'center',
     backgroundColor: '#EA1D25',
-    borderRadius: 5,
-    marginTop: 8,
+    borderBottomStartRadius: 5,
+    borderBottomEndRadius: 5,
+    flex: 1,
     paddingHorizontal: 15,
     paddingVertical: 8,
   },
@@ -311,20 +320,6 @@ const styles = StyleSheet.create({
     ...typography.textBold,
     color: '#fff',
     fontSize: 16,
-  },
-  timeContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  timeIndicator: {
-    borderRadius: 4,
-    height: 8,
-    marginRight: 5,
-    width: 8,
-  },
-  timeText: {
-    ...typography.textSemiBold,
-    color: '#fff',
   },
 });
 

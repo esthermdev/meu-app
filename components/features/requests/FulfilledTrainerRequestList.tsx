@@ -94,16 +94,17 @@ const FulfilledTrainerRequestList = () => {
     ]);
   };
 
-  const formatDate = (dateString: string | null) => {
+  const formatDateMilitary = (dateString: string | null) => {
     if (!dateString) return 'N/A';
+
     const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    const month = date.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${month} ${day}, ${year} - ${hours}:${minutes}`;
   };
 
   const getPriorityColor = (priority: string | null) => {
@@ -140,7 +141,7 @@ const FulfilledTrainerRequestList = () => {
     return (
       <Card style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <View style={{ flexDirection: 'row', gap: 5 }}>
+          <View style={styles.headerBadgesContainer}>
             <View style={styles.requestIdBadge}>
               <CustomText style={styles.requestIdText}>#{item.id}</CustomText>
             </View>
@@ -155,21 +156,23 @@ const FulfilledTrainerRequestList = () => {
         </View>
 
         <View style={styles.infoSection}>
-          {item.team_name && (
-            <View style={styles.infoRow}>
-              <CustomText style={styles.labelText}>Team:</CustomText>
-              <CustomText style={styles.valueText}>{item.team_name}</CustomText>
-            </View>
-          )}
-          <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>Trainer:</CustomText>
+          <View style={styles.trainerInfo}>
+            <CustomText style={styles.labelText}>TRAINER</CustomText>
             <CustomText style={styles.trainerNameText}>
               {item.trainer ? item.trainer.full_name : 'Unassigned'}
             </CustomText>
           </View>
-          <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>Updated:</CustomText>
-            <CustomText style={styles.valueText}>{formatDate(item.updated_at)}</CustomText>
+          <View style={styles.detailsInfo}>
+            {item.team_name && (
+              <View style={styles.detailsRow}>
+                <CustomText style={styles.labelText}>TEAM</CustomText>
+                <CustomText style={styles.valueText}>{item.team_name}</CustomText>
+              </View>
+            )}
+            <View style={styles.detailsRow}>
+              <CustomText style={styles.labelText}>UPDATED</CustomText>
+              <CustomText style={styles.valueText}>{formatDateMilitary(item.updated_at)}</CustomText>
+            </View>
           </View>
         </View>
 
@@ -180,9 +183,11 @@ const FulfilledTrainerRequestList = () => {
           </View>
         )}
 
-        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteRequest(item.id)}>
-          <CustomText style={styles.deleteButtonText}>Remove</CustomText>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.deleteButton} onPress={() => deleteRequest(item.id)}>
+            <CustomText style={styles.deleteButtonText}>Remove</CustomText>
+          </TouchableOpacity>
+        </View>
       </Card>
     );
   };
@@ -224,24 +229,29 @@ const FulfilledTrainerRequestList = () => {
 const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: '#262626',
-    borderRadius: 12,
+    borderRadius: 8,
     borderWidth: 0,
-    marginTop: 12,
-    padding: 10,
+    marginBottom: 10,
+    padding: 0,
   },
   cardHeader: {
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: '#CCCCCC66',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingBottom: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+  },
+  headerBadgesContainer: {
+    flexDirection: 'row',
+    gap: 5,
   },
   requestIdBadge: {
-    backgroundColor: '#EA1D25',
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    backgroundColor: 'rgba(145,145,255,0.38)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#919191',
+    paddingHorizontal: 5,
+    paddingVertical: 2,
   },
   requestIdText: {
     ...typography.textSmall,
@@ -249,13 +259,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   priorityBadge: {
-    borderRadius: 20,
-    paddingHorizontal: 7,
+    borderRadius: 8,
+    paddingHorizontal: 5,
     paddingVertical: 2,
   },
   priorityText: {
+    ...typography.textSmall,
     color: '#fff',
-    ...typography.text,
+    fontWeight: 'bold',
   },
   fieldBadge: {
     alignItems: 'center',
@@ -271,52 +282,61 @@ const styles = StyleSheet.create({
     ...typography.textBold,
   },
   infoSection: {
-    borderBottomColor: '#CCCCCC66',
-    borderBottomWidth: 1,
-    gap: 8,
-    marginVertical: 8,
-    paddingBottom: 8,
-  },
-  infoRow: {
-    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    gap: 5,
+  },
+  trainerInfo: {
+    flex: 1,
+  },
+  detailsInfo: {
+    flex: 2,
+  },
+  detailsRow: {
+    flexDirection: 'row',
+    gap: 5,
   },
   labelText: {
-    ...typography.text,
-    color: '#CCCCCC80',
+    flex: 0.8,
+    ...typography.textSmall,
+    color: '#CCCCCCB2',
   },
   valueText: {
-    ...typography.textMedium,
-    color: '#CCCCCCBF',
+    flex: 2,
+    alignSelf: 'flex-start',
+    ...typography.textSmallBold,
+    color: '#fff',
   },
   trainerNameText: {
-    ...typography.textBold,
+    ...typography.textSmallBold,
     color: '#fff',
   },
   descriptionContainer: {
-    backgroundColor: '#262626',
-    borderColor: '#EA1D25',
-    borderLeftColor: '#EA1D25',
-    borderLeftWidth: 4,
-    borderRadius: 5,
-    borderWidth: 0.5,
-    marginBottom: 8,
     paddingHorizontal: 10,
-    paddingVertical: 7,
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#CCCCCC66',
   },
   descriptionLabel: {
-    ...typography.text,
-    color: '#CCCCCC80',
+    ...typography.textSmall,
+    color: '#CCCCCCB2',
   },
   descriptionText: {
     ...typography.textMedium,
     color: '#fff',
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   deleteButton: {
     alignItems: 'center',
     backgroundColor: '#EA1D25',
-    borderRadius: 8,
+    borderBottomStartRadius: 5,
+    borderBottomEndRadius: 5,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     paddingHorizontal: 15,

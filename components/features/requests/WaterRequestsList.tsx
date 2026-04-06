@@ -110,16 +110,14 @@ const WaterRequestsList = () => {
 
   const renderItem = ({ item }: { item: WaterRequestWithField }) => (
     <Card style={styles.cardContainer}>
-      <View style={styles.headerContainer}>
-        <CustomText style={styles.headerTitle}>Water</CustomText>
+      <View style={styles.cardHeader}>
+        <CustomText style={styles.waterTitle}>Water</CustomText>
         <CustomText style={styles.headerDate}>{getTimeSince(item.created_at)}</CustomText>
       </View>
 
-      <View style={styles.divider} />
-
       <View style={styles.infoSection}>
         <View style={styles.infoRow}>
-          <CustomText style={styles.infoLabel}>Field:</CustomText>
+          <CustomText style={styles.infoLabel}>FIELD</CustomText>
           <Link href="/(tabs)/home/fieldmap" asChild>
             <TouchableOpacity>
               <CustomText style={[styles.infoValue, styles.fieldLink]}>
@@ -130,7 +128,7 @@ const WaterRequestsList = () => {
         </View>
 
         <View style={styles.infoRow}>
-          <CustomText style={styles.infoLabel}>Status:</CustomText>
+          <CustomText style={styles.infoLabel}>STATUS</CustomText>
           <CustomText style={[styles.infoValue, styles.statusPending]}>
             {item.status === 'pending' ? 'Pending' : item.status}
           </CustomText>
@@ -138,10 +136,12 @@ const WaterRequestsList = () => {
       </View>
 
       {item.status === 'pending' && (
-        <TouchableOpacity style={styles.resolveButton} onPress={() => resolveRequest(item.id)}>
-          <CustomText style={styles.resolveButtonText}>Resolved</CustomText>
-          <MaterialIcons name="check" size={14} color="white" />
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.resolveButton} onPress={() => resolveRequest(item.id)}>
+            <CustomText style={styles.resolveButtonText}>Resolved</CustomText>
+            <MaterialIcons name="check" size={14} color="white" />
+          </TouchableOpacity>
+        </View>
       )}
     </Card>
   );
@@ -179,60 +179,66 @@ const WaterRequestsList = () => {
 const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: '#262626',
-    borderRadius: 12,
+    borderRadius: 8,
     borderWidth: 0,
-    padding: 10,
     marginBottom: 10,
+    padding: 0,
   },
-  headerContainer: {
+  cardHeader: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingVertical: 8,
+    paddingHorizontal: 10,
   },
-  headerTitle: {
+  waterTitle: {
     ...typography.textSemiBold,
     color: '#fff',
+    marginRight: 'auto',
   },
   headerDate: {
     ...typography.textMedium,
-    color: '#aaa',
-  },
-  divider: {
-    backgroundColor: '#444',
-    height: 1,
-    marginVertical: 5,
+    color: '#CCCCCC',
   },
   infoSection: {
     borderBottomColor: '#CCCCCC66',
     borderBottomWidth: 1,
     gap: 5,
-    paddingBottom: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
   },
   infoRow: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    width: '100%',
   },
   infoLabel: {
-    ...typography.text,
-    color: '#CCCCCC',
+    ...typography.textSmall,
+    color: '#CCCCCCB2',
   },
   infoValue: {
-    ...typography.textSemiBold,
+    ...typography.textSmallBold,
     color: '#fff',
   },
   fieldLink: {
-    color: '#4A9EFF',
+    color: '#81afe4ff',
     textDecorationLine: 'underline',
   },
   statusPending: {
     color: '#FFD600',
-    ...typography.textSemiBold,
+    ...typography.textSmallBold,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   resolveButton: {
     alignItems: 'center',
     backgroundColor: '#73BF44',
-    borderRadius: 5,
+    borderBottomStartRadius: 5,
+    borderBottomEndRadius: 5,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     paddingHorizontal: 15,

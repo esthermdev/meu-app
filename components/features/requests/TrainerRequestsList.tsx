@@ -151,13 +151,13 @@ const TrainerRequestsList = () => {
     }
   };
 
-  const renderListItem = ({ item }: { item: MedicalRequestWithRelations }) => {
+  const renderItem = ({ item }: { item: MedicalRequestWithRelations }) => {
     const timeColor = getTimeColor(item.created_at);
 
     return (
       <Card style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <View style={{ flexDirection: 'row', gap: 5 }}>
+          <View style={styles.headerBadgesContainer}>
             <View style={styles.requestIdBadge}>
               <CustomText style={styles.requestIdText}>#{item.id}</CustomText>
             </View>
@@ -172,24 +172,26 @@ const TrainerRequestsList = () => {
         </View>
 
         <View style={styles.infoSection}>
-          {item.team_name && (
-            <View style={styles.infoRow}>
-              <CustomText style={styles.labelText}>Team:</CustomText>
-              <CustomText style={styles.valueText}>{item.team_name}</CustomText>
-            </View>
-          )}
-          <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>Waiting:</CustomText>
-            <View style={styles.timeContainer}>
-              <View style={[styles.timeIndicator, { backgroundColor: timeColor }]} />
-              <CustomText style={styles.timeText}>{getTimeSince(item.created_at)}</CustomText>
-            </View>
-          </View>
-          <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>Trainer:</CustomText>
+          <View style={styles.trainerInfo}>
+            <CustomText style={styles.labelText}>TRAINER</CustomText>
             <CustomText style={styles.trainerNameText}>
               {item.trainer ? item.trainer.full_name : 'Unassigned'}
             </CustomText>
+          </View>
+          <View style={styles.detailsInfo}>
+            {item.team_name && (
+              <View style={styles.detailsRow}>
+                <CustomText style={styles.labelText}>TEAM</CustomText>
+                <CustomText style={styles.valueText}>{item.team_name}</CustomText>
+              </View>
+            )}
+            <View style={styles.detailsRow}>
+              <CustomText style={styles.labelText}>WAITING</CustomText>
+              <View style={styles.timeContainer}>
+                <View style={[styles.timeIndicator, { backgroundColor: timeColor }]} />
+                <CustomText style={styles.timeText}>{getTimeSince(item.created_at)}</CustomText>
+              </View>
+            </View>
           </View>
         </View>
 
@@ -223,7 +225,7 @@ const TrainerRequestsList = () => {
     <View style={styles.container}>
       <FlatList
         data={requests}
-        renderItem={renderListItem}
+        renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={
           requests.length === 0 ? [styles.listContainer, styles.emptyListContainer] : styles.listContainer
@@ -243,24 +245,29 @@ const TrainerRequestsList = () => {
 const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: '#262626',
-    borderRadius: 12,
+    borderRadius: 8,
     borderWidth: 0,
-    padding: 10,
     marginBottom: 10,
+    padding: 0,
   },
   cardHeader: {
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: '#CCCCCC66',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingBottom: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+  },
+  headerBadgesContainer: {
+    flexDirection: 'row',
+    gap: 5,
   },
   requestIdBadge: {
-    backgroundColor: '#EA1D25',
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    backgroundColor: 'rgba(145,145,255,0.38)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#919191',
+    paddingHorizontal: 5,
+    paddingVertical: 2,
   },
   requestIdText: {
     ...typography.textSmall,
@@ -268,13 +275,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   priorityBadge: {
-    borderRadius: 20,
-    paddingHorizontal: 7,
+    borderRadius: 8,
+    paddingHorizontal: 5,
     paddingVertical: 2,
   },
   priorityText: {
+    ...typography.textSmall,
     color: '#fff',
-    ...typography.text,
+    fontWeight: 'bold',
   },
   fieldBadge: {
     alignItems: 'center',
@@ -290,21 +298,30 @@ const styles = StyleSheet.create({
     ...typography.textBold,
   },
   infoSection: {
-    gap: 5,
-    marginVertical: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
-  infoRow: {
+  trainerInfo: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  detailsInfo: {
+    flex: 1,
+  },
+  detailsRow: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   labelText: {
-    ...typography.text,
-    color: '#CCCCCC80',
+    ...typography.textSmall,
+    color: '#CCCCCCB2',
   },
   valueText: {
-    ...typography.textMedium,
-    color: '#CCCCCCBF',
+    ...typography.textSemiBold,
+    color: '#fff',
   },
   timeContainer: {
     alignItems: 'center',
@@ -317,41 +334,36 @@ const styles = StyleSheet.create({
     width: 8,
   },
   timeText: {
+    ...typography.textMedium,
+    color: '#CCCCCC',
+  },
+  trainerNameText: {
     ...typography.textSemiBold,
     color: '#fff',
   },
-  trainerNameText: {
-    ...typography.textBold,
-    color: '#fff',
-  },
   descriptionContainer: {
-    backgroundColor: '#262626',
-    borderColor: '#EA1D25',
-    borderLeftColor: '#EA1D25',
-    borderLeftWidth: 4,
-    borderRadius: 5,
-    borderWidth: 0.5,
-    marginBottom: 8,
     paddingHorizontal: 10,
-    paddingVertical: 7,
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#CCCCCC66',
   },
   descriptionLabel: {
     ...typography.text,
-    color: '#CCCCCC80',
+    color: '#CCCCCCB2',
   },
   descriptionText: {
     ...typography.textMedium,
     color: '#fff',
   },
   buttonContainer: {
-    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   resolveButton: {
     alignItems: 'center',
     backgroundColor: '#73BF44',
-    borderRadius: 8,
+    borderBottomStartRadius: 5,
+    borderBottomEndRadius: 5,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',

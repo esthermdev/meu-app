@@ -269,20 +269,22 @@ const FulfilledCartRequestsList = () => {
         </View>
 
         <View style={styles.infoSection}>
-          <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>Passengers:</CustomText>
-            <CustomText style={styles.valueText}>{item.passenger_count || 0}</CustomText>
-          </View>
-          <View style={styles.infoRow}>
-            <CustomText style={styles.labelText}>Name:</CustomText>
-            <CustomText style={styles.valueText}>{item.requester || 'Anonymous'}</CustomText>
-          </View>
           {item.status !== 'pending' && (
-            <View style={styles.infoRow}>
-              <CustomText style={styles.labelText}>Driver:</CustomText>
+            <View style={styles.driverInfo}>
+              <CustomText style={styles.labelText}>DRIVER</CustomText>
               <CustomText style={styles.driverText}>{item.driver ? item.driver.full_name : driverName}</CustomText>
             </View>
           )}
+          <View style={styles.passengerInfo}>
+            <View style={styles.passengerRow}>
+              <CustomText style={styles.labelText}>NO. PASSENGERS</CustomText>
+              <CustomText style={styles.valueText}>{item.passenger_count || 0}</CustomText>
+            </View>
+            <View style={styles.passengerRow}>
+              <CustomText style={styles.labelText}>NAME</CustomText>
+              <CustomText style={styles.valueText}>{item.requester || 'Anonymous'}</CustomText>
+            </View>
+          </View>
         </View>
 
         {item.special_request && (
@@ -414,23 +416,25 @@ const FulfilledCartRequestsList = () => {
 const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: '#262626',
-    borderRadius: 12,
+    borderRadius: 8,
     borderWidth: 0,
     marginBottom: 10,
+    padding: 0,
   },
   cardHeader: {
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: '#CCCCCC66',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingBottom: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
   },
   requestIdBadge: {
-    backgroundColor: '#EA1D25',
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    backgroundColor: 'rgba(145,145,255,0.38)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#919191',
+    paddingHorizontal: 5,
+    paddingVertical: 2,
   },
   requestIdText: {
     ...typography.textSmall,
@@ -438,24 +442,27 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   statusBadge: {
-    borderRadius: 20,
-    paddingHorizontal: 7,
+    borderRadius: 8,
+    paddingHorizontal: 5,
     paddingVertical: 2,
   },
   statusText: {
-    ...typography.text,
+    ...typography.textSmall,
     color: '#fff',
+    fontWeight: 'bold',
   },
   locationsContainer: {
     borderBottomColor: '#CCCCCC66',
     borderBottomWidth: 1,
     flexDirection: 'row',
+    paddingHorizontal: 10,
+    paddingBottom: 8,
   },
   routeVisualization: {
     alignItems: 'center',
-    height: '60%',
+    height: '80%',
     marginVertical: 'auto',
-    paddingHorizontal: 8,
+    paddingRight: 8,
   },
   routePoint: {
     backgroundColor: '#EA1D25',
@@ -470,9 +477,8 @@ const styles = StyleSheet.create({
   },
   routeInfo: {
     flex: 1,
-    gap: 5,
+    gap: 8,
     justifyContent: 'space-between',
-    marginVertical: 8,
   },
   locationInfo: {
     flexDirection: 'row',
@@ -486,38 +492,43 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   infoSection: {
-    borderBottomColor: '#CCCCCC66',
-    borderBottomWidth: 1,
-    gap: 5,
-    paddingVertical: 5,
-  },
-  infoRow: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  driverInfo: {
+    justifyContent: 'space-between',
+    flex: 1,
   },
   labelText: {
-    ...typography.text,
-    color: '#CCCCCC80',
+    ...typography.textSmall,
+    color: '#CCCCCCB2',
+  },
+  driverText: {
+    ...typography.textSemiBold,
+    color: '#fff',
+  },
+  passengerInfo: {
+    flex: 1,
+  },
+  passengerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   valueText: {
     ...typography.textSemiBold,
-    color: '#CCCCCCBF',
-  },
-  driverText: {
-    ...typography.textBold,
     color: '#fff',
   },
   specialRequestContainer: {
-    borderColor: '#EA1D25',
-    borderLeftWidth: 3,
-    borderRadius: 5,
-    borderWidth: 1,
-    padding: 7,
-    marginTop: 8,
+    borderTopColor: '#CCCCCC66',
+    borderTopWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   specialRequestLabel: {
-    ...typography.text,
+    ...typography.textSmall,
     color: '#CCCCCCB2',
   },
   specialRequestText: {
@@ -527,10 +538,10 @@ const styles = StyleSheet.create({
   deleteButton: {
     alignItems: 'center',
     backgroundColor: '#EA1D25',
-    borderRadius: 5,
+    borderBottomEndRadius: 6,
+    borderBottomStartRadius: 6,
     paddingHorizontal: 15,
     paddingVertical: 8,
-    marginTop: 8,
   },
   buttonDisabled: {
     opacity: 0.6,
