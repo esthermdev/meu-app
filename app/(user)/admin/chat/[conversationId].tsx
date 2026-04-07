@@ -1,10 +1,10 @@
-import { useEffect, useRef } from 'react';
-import { ActivityIndicator, FlatList, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
+import { useCallback, useEffect, useRef } from 'react';
+import { ActivityIndicator, FlatList, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 import CustomText from '@/components/CustomText';
+import AdminChatInput from '@/components/features/chat/AdminChatInput';
 import ChatBubble from '@/components/features/chat/ChatBubble';
-import ChatInput from '@/components/features/chat/ChatInput';
 import { fonts, fontSizes } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
 import { useAdminChat } from '@/hooks/useChat';
@@ -18,12 +18,39 @@ export default function AdminChatScreen() {
   const { pickAndUploadImage, uploading } = useChatImageUpload(conversationId);
   const flatListRef = useRef<FlatList<MessageWithSender>>(null);
 
+  const scrollToBottom = useCallback((animated = false, delay = 0) => {
+    const runScroll = () => flatListRef.current?.scrollToEnd({ animated });
+    if (delay > 0) {
+      setTimeout(runScroll, delay);
+      return;
+    }
+    requestAnimationFrame(runScroll);
+  }, []);
+
   useEffect(() => {
     if (messages.length > 0) {
-      setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
+      scrollToBottom(true, 100);
       markRead();
     }
-  }, [messages.length, markRead]);
+  }, [messages.length, markRead, scrollToBottom]);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const keyboardDelay = Platform.OS === 'ios' ? 50 : 120;
+
+    const handleKeyboardToggle = () => {
+      scrollToBottom(false, keyboardDelay);
+    };
+
+    const showSub = Keyboard.addListener(showEvent, handleKeyboardToggle);
+    const hideSub = Keyboard.addListener(hideEvent, handleKeyboardToggle);
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, [scrollToBottom]);
 
   const handleSend = async (content: string | null, imageUrl: string | null) => {
     if (!user?.id) return;
@@ -41,7 +68,8 @@ export default function AdminChatScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      enabled={Platform.OS === 'ios'}
       keyboardVerticalOffset={0}>
       <FlatList
         ref={flatListRef}
@@ -56,9 +84,10 @@ export default function AdminChatScreen() {
             <CustomText style={styles.emptyText}>No messages in this conversation yet</CustomText>
           </View>
         }
-        onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}
+        onContentSizeChange={() => scrollToBottom(false)}
+        onLayout={() => scrollToBottom(false)}
       />
-      <ChatInput onSend={handleSend} onPickImage={pickAndUploadImage} uploading={uploading} />
+      <AdminChatInput onSend={handleSend} onPickImage={pickAndUploadImage} uploading={uploading} />
     </KeyboardAvoidingView>
   );
 }

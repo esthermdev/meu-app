@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Keyboard,
   LayoutAnimation,
   Platform,
@@ -14,23 +13,22 @@ import {
 import { fonts, fontSizes } from '@/constants/Typography';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { initialWindowMetrics, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-interface ChatInputProps {
+interface AdminChatInputProps {
   onSend: (content: string | null, imageUrl: string | null) => Promise<void>;
   onPickImage: () => Promise<string | null>;
   uploading: boolean;
-  onClear?: () => Promise<void>;
-  safeAreaBottom?: boolean;
 }
 
-export default function ChatInput({ onSend, onPickImage, uploading, onClear, safeAreaBottom = true }: ChatInputProps) {
+export default function AdminChatInput({ onSend, onPickImage, uploading }: AdminChatInputProps) {
   const insets = useSafeAreaInsets();
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
   const [keyboardOpen, setKeyboardOpen] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const inputRef = useRef<TextInput>(null);
 
-  // Track keyboard on iOS for padding animation, and on Android to drop nav bar inset
   useEffect(() => {
     if (Platform.OS === 'ios') {
       const showSub = Keyboard.addListener('keyboardWillShow', () => {
@@ -46,55 +44,63 @@ export default function ChatInput({ onSend, onPickImage, uploading, onClear, saf
         hideSub.remove();
       };
     }
+
+    const showSub = Keyboard.addListener('keyboardDidShow', (event) => {
+      setKeyboardOpen(true);
+      setKeyboardHeight(event.endCoordinates?.height ?? 0);
+    });
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardOpen(false);
+      setKeyboardHeight(0);
+    });
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
   }, []);
 
   const handleSend = async () => {
     const trimmed = text.trim();
-    if (!trimmed && !uploading) return;
+    if (!trimmed || sending || uploading) return;
+    const wasInputFocused = inputRef.current?.isFocused() ?? false;
+
     setSending(true);
     try {
-      await onSend(trimmed || null, null);
+      await onSend(trimmed, null);
+      setText('');
+    } finally {
+      setSending(false);
+      if (wasInputFocused) {
+        requestAnimationFrame(() => inputRef.current?.focus());
+      }
+    }
+  };
+
+  const handleImagePick = async () => {
+    if (sending || uploading) return;
+    const imageUrl = await onPickImage();
+    if (!imageUrl) return;
+
+    setSending(true);
+    try {
+      const caption = text.trim() || null;
+      await onSend(caption, imageUrl);
       setText('');
     } finally {
       setSending(false);
     }
   };
 
-  const handleImagePick = async () => {
-    const imageUrl = await onPickImage();
-    if (imageUrl) {
-      setSending(true);
-      try {
-        // Send image with any existing text as caption
-        const caption = text.trim() || null;
-        await onSend(caption, imageUrl);
-        setText('');
-      } finally {
-        setSending(false);
-      }
-    }
-  };
-
-  const handleClear = () => {
-    if (!onClear) return;
-    Alert.alert('Clear Messages', 'Are you sure you want to delete all messages in this conversation?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Clear All', style: 'destructive', onPress: onClear },
-    ]);
-  };
-
   const isDisabled = sending || uploading;
-
-  const getBottomPadding = () => {
-    if (!safeAreaBottom) return 8;
-    // When keyboard is open, nav bar is behind keyboard — no inset needed
-    if (keyboardOpen) return 8;
-    // Keyboard closed: apply safe area for nav bar / home indicator
-    return insets.bottom;
-  };
+  const bottomInset =
+    Platform.OS === 'android'
+      ? Math.max(insets.bottom, initialWindowMetrics?.insets.bottom ?? 0, 8)
+      : Math.max(insets.bottom, 8);
+  const bottomPadding = keyboardOpen ? (Platform.OS === 'android' ? 57 : 8) : bottomInset;
+  const keyboardLift = Platform.OS === 'android' ? keyboardHeight : 0;
 
   return (
-    <View style={[styles.container, { paddingBottom: getBottomPadding() }]}>
+    <View style={[styles.container, { marginBottom: keyboardLift, paddingBottom: bottomPadding }]}>
       <TouchableOpacity style={styles.iconButton} onPress={handleImagePick} disabled={isDisabled}>
         {uploading ? (
           <ActivityIndicator size="small" color="#EA1D25" />
@@ -103,21 +109,17 @@ export default function ChatInput({ onSend, onPickImage, uploading, onClear, saf
         )}
       </TouchableOpacity>
 
-      {onClear && (
-        <TouchableOpacity style={styles.iconButton} onPress={handleClear} disabled={isDisabled}>
-          <MaterialCommunityIcons name="delete-outline" size={22} color="#999" />
-        </TouchableOpacity>
-      )}
-
       <TextInput
+        ref={inputRef}
         style={styles.input}
         value={text}
         onChangeText={setText}
         placeholder="Type a message..."
         placeholderTextColor="#999"
         multiline
+        blurOnSubmit={false}
         maxLength={1000}
-        editable={!isDisabled}
+        editable={!uploading}
       />
 
       <TouchableOpacity
