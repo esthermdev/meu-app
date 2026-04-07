@@ -64,6 +64,34 @@ export default function AdminLayout() {
             ),
           }}
         />
+        <Stack.Screen
+          name="chat-list"
+          options={{
+            header: () => (
+              <View
+                style={{
+                  paddingTop: Platform.OS === 'android' ? statusBarHeight : insets.top,
+                  backgroundColor: '#EA1D25',
+                }}>
+                <CustomAdminHeader title="Chat Messages" />
+              </View>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="chat/[conversationId]"
+          options={{
+            header: () => (
+              <View
+                style={{
+                  paddingTop: Platform.OS === 'android' ? statusBarHeight : insets.top,
+                  backgroundColor: '#EA1D25',
+                }}>
+                <CustomAdminHeader title="Chat" />
+              </View>
+            ),
+          }}
+        />
       </Stack>
     </>
   );

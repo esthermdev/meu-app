@@ -122,6 +122,38 @@ export type Database = {
           },
         ];
       };
+      conversations: {
+        Row: {
+          admin_last_read_at: string | null;
+          created_at: string;
+          id: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          admin_last_read_at?: string | null;
+          created_at?: string;
+          id?: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          admin_last_read_at?: string | null;
+          created_at?: string;
+          id?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'conversations_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: true;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       datetime: {
         Row: {
           date: string | null;
@@ -446,6 +478,48 @@ export type Database = {
             columns: ['field_number'];
             isOneToOne: false;
             referencedRelation: 'fields';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      messages: {
+        Row: {
+          content: string | null;
+          conversation_id: string;
+          created_at: string;
+          id: string;
+          image_url: string | null;
+          sender_id: string;
+        };
+        Insert: {
+          content?: string | null;
+          conversation_id: string;
+          created_at?: string;
+          id?: string;
+          image_url?: string | null;
+          sender_id: string;
+        };
+        Update: {
+          content?: string | null;
+          conversation_id?: string;
+          created_at?: string;
+          id?: string;
+          image_url?: string | null;
+          sender_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'messages_conversation_id_fkey';
+            columns: ['conversation_id'];
+            isOneToOne: false;
+            referencedRelation: 'conversations';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'messages_sender_id_fkey';
+            columns: ['sender_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
             referencedColumns: ['id'];
           },
         ];

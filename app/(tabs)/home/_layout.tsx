@@ -12,6 +12,7 @@ export default function HomeLayout() {
       <Stack.Screen name="fieldmap" options={{ header: () => <CustomHeader title="Field Map" /> }} />
       <Stack.Screen name="volunteers" options={{ header: () => <CustomHeader title="Volunteers" /> }} />
       <Stack.Screen name="notifications" options={{ header: () => <CustomHeader title="Notifications" /> }} />
+      <Stack.Screen name="chat" options={{ header: () => <CustomHeader title="Chat" /> }} />
       <Stack.Screen name="info" options={{ headerShown: false }} />
     </Stack>
   );

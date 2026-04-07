@@ -78,6 +78,11 @@ const AdminScreen = () => {
       iconName: 'information',
       route: '/admin/misc',
     },
+    {
+      title: 'Chat Messages',
+      iconName: 'chat',
+      route: '/admin/chat-list',
+    },
   ];
 
   return (
