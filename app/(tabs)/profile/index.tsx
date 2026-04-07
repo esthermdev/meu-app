@@ -68,7 +68,12 @@ export default function UserDashboard() {
 
         {/* Support */}
         <View style={styles.section}>
-          {!hasRole(profile, 'user') ? <CustomText style={styles.sectionTitle}>Support</CustomText> : null}
+          {hasRole(profile, 'admin') ||
+          hasRole(profile, 'medic') ||
+          hasRole(profile, 'driver') ||
+          hasRole(profile, 'volunteer') ? (
+            <CustomText style={styles.sectionTitle}>Support</CustomText>
+          ) : null}
 
           {hasPermission(profile, 'view_admin_dashboard') ? (
             <TouchableOpacity onPress={() => router.push('/(user)/admin' as Href)}>
