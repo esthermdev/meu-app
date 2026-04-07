@@ -74,14 +74,11 @@ Deno.serve(async (req) => {
     ) || [];
 
     if (validStaff.length > 0) {
-      // Format notification - now includes field name instead of just ID
-      // Also include team name if available
-      const teamInfo = payload.record.team_name ? `\nTeam: ${payload.record.team_name}` : '';
       
       const notification = {
         sound: "default",
         title: "Medical Assistance Required",
-        body: `Location: ${fieldName}\n${payload.record.description_of_emergency}${teamInfo}`,
+        body: `Location: ${fieldName}`,
         data: {
           requestId: payload.record.id,
           type: "new_medic_request",

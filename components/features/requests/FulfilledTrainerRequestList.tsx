@@ -162,18 +162,17 @@ const FulfilledTrainerRequestList = () => {
               {item.trainer ? item.trainer.full_name : 'Unassigned'}
             </CustomText>
           </View>
-          <View style={styles.detailsInfo}>
-            {item.team_name && (
-              <View style={styles.detailsRow}>
-                <CustomText style={styles.labelText}>TEAM</CustomText>
-                <CustomText style={styles.valueText}>{item.team_name}</CustomText>
-              </View>
-            )}
-            <View style={styles.detailsRow}>
-              <CustomText style={styles.labelText}>UPDATED</CustomText>
-              <CustomText style={styles.valueText}>{formatDateMilitary(item.updated_at)}</CustomText>
+          {item.team_name && (
+            <View style={styles.teamDetails}>
+              <CustomText style={styles.labelText}>TEAM</CustomText>
+              <CustomText style={styles.valueText}>{item.team_name}</CustomText>
             </View>
-          </View>
+          )}
+        </View>
+
+        <View style={styles.updatedRow}>
+          <CustomText style={styles.updatedLabelText}>UPDATED</CustomText>
+          <CustomText style={styles.updatedValueText}>{formatDateMilitary(item.updated_at)}</CustomText>
         </View>
 
         {item.description_of_emergency && (
@@ -286,26 +285,34 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     paddingVertical: 10,
-    gap: 5,
   },
   trainerInfo: {
     flex: 1,
   },
-  detailsInfo: {
-    flex: 2,
+  teamDetails: {
+    width: '45%',
   },
-  detailsRow: {
+  updatedRow: {
     flexDirection: 'row',
-    gap: 5,
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+  },
+  updatedLabelText: {
+    flex: 1,
+    ...typography.textSmall,
+    color: '#CCCCCCB2',
+  },
+  updatedValueText: {
+    width: '45%',
+    ...typography.textSmallBold,
+    color: '#fff',
   },
   labelText: {
-    flex: 0.8,
     ...typography.textSmall,
     color: '#CCCCCCB2',
   },
   valueText: {
-    flex: 2,
-    alignSelf: 'flex-start',
     ...typography.textSmallBold,
     color: '#fff',
   },

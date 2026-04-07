@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   trainerInfo: {
-    flex: 1,
+    flex: 0.7,
     justifyContent: 'space-between',
   },
   detailsInfo: {
@@ -314,6 +314,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    gap: 5,
   },
   labelText: {
     ...typography.textSmall,
