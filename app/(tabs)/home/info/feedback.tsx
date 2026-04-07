@@ -68,7 +68,7 @@ const FeedbackScreen = () => {
               style={[styles.input, styles.messageInput]}
               value={message}
               onChangeText={setMessage}
-              placeholder="Send in your requests or feedback here..."
+              placeholder="Enter your feedback or report a bug"
               multiline
               allowFontScaling={false}
               placeholderTextColor={'#999'}

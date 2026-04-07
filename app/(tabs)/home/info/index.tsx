@@ -7,11 +7,6 @@ import { typography } from '@/constants/Typography';
 // Define menu items with their exact paths
 const menuItems = [
   {
-    title: 'General Requests / Feedback',
-    route: '/(tabs)/home/info/feedback' as const,
-    subtitle: 'Report lost items, facility issues, bugs on app, or miscellaneous...',
-  },
-  {
     title: 'Tournament Info',
     route: '/(tabs)/home/info/tournament-info' as const,
   },
@@ -28,6 +23,10 @@ const menuItems = [
   },
   { title: 'Sponsors', route: '/(tabs)/home/info/sponsors' as const },
   { title: 'Vendors', route: '/(tabs)/home/info/vendors' as const },
+  {
+    title: 'Feedback',
+    route: '/(tabs)/home/info/feedback' as const,
+  },
   { title: 'FAQ', route: '/(tabs)/home/info/faq' as const },
   { title: 'Credits', route: '/(tabs)/home/info/credits' as const },
 ];
@@ -42,11 +41,6 @@ export default function InfoScreen() {
               <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.menuText}>
                 {item.title}
               </CustomText>
-              {item.subtitle && (
-                <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.subtitleText}>
-                  {item.subtitle}
-                </CustomText>
-              )}
             </View>
           </TouchableOpacity>
         </Link>
