@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -29,6 +29,7 @@ export default function ChatInput({ onSend, onPickImage, uploading, onClear, saf
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
   const [keyboardOpen, setKeyboardOpen] = useState(false);
+  const inputRef = useRef<TextInput>(null);
 
   // Track keyboard on iOS for padding animation, and on Android to drop nav bar inset
   useEffect(() => {
@@ -51,12 +52,16 @@ export default function ChatInput({ onSend, onPickImage, uploading, onClear, saf
   const handleSend = async () => {
     const trimmed = text.trim();
     if (!trimmed && !uploading) return;
+    const wasInputFocused = inputRef.current?.isFocused() ?? false;
     setSending(true);
     try {
       await onSend(trimmed || null, null);
       setText('');
     } finally {
       setSending(false);
+      if (wasInputFocused) {
+        requestAnimationFrame(() => inputRef.current?.focus());
+      }
     }
   };
 
@@ -110,14 +115,16 @@ export default function ChatInput({ onSend, onPickImage, uploading, onClear, saf
       )}
 
       <TextInput
+        ref={inputRef}
         style={styles.input}
         value={text}
         onChangeText={setText}
         placeholder="Type a message..."
         placeholderTextColor="#999"
         multiline
+        blurOnSubmit={false}
         maxLength={1000}
-        editable={!isDisabled}
+        editable={!uploading}
       />
 
       <TouchableOpacity
