@@ -59,7 +59,7 @@ export default function AdminLayout() {
                   paddingTop: Platform.OS === 'android' ? statusBarHeight : insets.top,
                   backgroundColor: '#EA1D25',
                 }}>
-                <CustomAdminHeader title="General Requests / Feedback" />
+                <CustomAdminHeader title="Feedback" />
               </View>
             ),
           }}
