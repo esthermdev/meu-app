@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -35,20 +35,17 @@ const WaterRequestButton = () => {
   const [fields, setFields] = useState<FieldWithCooldown[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  useEffect(() => {
-    fetchFields();
-
-    // Refresh fields every 10 seconds to update cooldown status
-    const interval = setInterval(fetchFields, 10000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchFields = async () => {
+  const fetchFields = useCallback(async () => {
     // Fetch all fields
     const { data: fieldsData, error: fieldsError } = await supabase.from('fields').select('*').order('name');
 
     if (fieldsError) {
-      console.error('Error fetching fields:', fieldsError);
+      console.error('Error fetching fields:', {
+        code: fieldsError.code,
+        details: fieldsError.details,
+        hint: fieldsError.hint,
+        message: fieldsError.message,
+      });
       return;
     }
 
@@ -60,7 +57,12 @@ const WaterRequestButton = () => {
       .order('created_at', { ascending: false });
 
     if (requestsError) {
-      console.error('Error fetching water requests:', requestsError);
+      console.error('Error fetching water requests:', {
+        code: requestsError.code,
+        details: requestsError.details,
+        hint: requestsError.hint,
+        message: requestsError.message,
+      });
     }
 
     // Create a map of field_number to most recent request time
@@ -91,7 +93,19 @@ const WaterRequestButton = () => {
     });
 
     setFields(fieldsWithCooldown);
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!isModalVisible) {
+      return;
+    }
+
+    fetchFields();
+
+    // Refresh fields every 10 seconds to update cooldown status
+    const interval = setInterval(fetchFields, 10000);
+    return () => clearInterval(interval);
+  }, [fetchFields, isModalVisible]);
 
   const showModal = () => {
     setIsModalVisible(true);

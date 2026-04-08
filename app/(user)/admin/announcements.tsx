@@ -54,7 +54,8 @@ const AnnouncementScreen = () => {
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <CustomText style={styles.title}>Send Announcement</CustomText>
           <CustomText style={styles.subtitle}>
-            This will send a push notification to all users and appear in the notifications window.
+            This will send a public notification to all users. Use this to share important updates or news with the
+            entire community.
           </CustomText>
           <View>
             <CustomText style={styles.label}>Title</CustomText>
