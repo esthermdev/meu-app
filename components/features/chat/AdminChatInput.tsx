@@ -97,8 +97,8 @@ export default function AdminChatInput({ onSend, onPickImage, uploading }: Admin
     Platform.OS === 'android'
       ? Math.max(insets.bottom, initialWindowMetrics?.insets.bottom ?? 0, 8)
       : Math.max(insets.bottom, 8);
-  const bottomPadding = keyboardOpen ? (Platform.OS === 'android' ? 57 : 8) : bottomInset;
-  const keyboardLift = Platform.OS === 'android' ? keyboardHeight : 0;
+  const bottomPadding = keyboardOpen ? (Platform.OS === 'android' ? 57 : 0) : bottomInset;
+  const keyboardLift = Platform.OS === 'android' ? keyboardHeight : 12;
 
   return (
     <View style={[styles.wrapper, { marginBottom: keyboardLift }]}>

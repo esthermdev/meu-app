@@ -1,19 +1,23 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { ActivityIndicator, FlatList, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { Redirect, useLocalSearchParams } from 'expo-router';
 
 import CustomText from '@/components/CustomText';
 import AdminChatInput from '@/components/features/chat/AdminChatInput';
 import ChatBubble from '@/components/features/chat/ChatBubble';
 import { fonts, fontSizes } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
+import { hasRole } from '@/context/profileRoles';
 import { useAdminChat } from '@/hooks/useChat';
 import { useChatImageUpload } from '@/hooks/useChatImageUpload';
 import { MessageWithSender } from '@/types/chat';
 
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 export default function AdminChatScreen() {
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
+  const insets = useSafeAreaInsets();
   const { messages, loading, sendMessage, markRead } = useAdminChat(conversationId);
   const { pickAndUploadImage, uploading } = useChatImageUpload(conversationId);
   const flatListRef = useRef<FlatList<MessageWithSender>>(null);
@@ -57,6 +61,18 @@ export default function AdminChatScreen() {
     await sendMessage(user.id, content, imageUrl);
   };
 
+  if (!profile) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#EA1D25" />
+      </View>
+    );
+  }
+
+  if (!hasRole(profile, 'admin')) {
+    return <Redirect href="/(tabs)/profile" />;
+  }
+
   if (loading) {
     return (
       <View style={styles.centered}>
@@ -70,7 +86,7 @@ export default function AdminChatScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       enabled={Platform.OS === 'ios'}
-      keyboardVerticalOffset={0}>
+      keyboardVerticalOffset={Platform.OS === 'ios' ? insets.top + 50 : 0}>
       <FlatList
         ref={flatListRef}
         data={messages}

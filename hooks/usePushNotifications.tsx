@@ -24,7 +24,7 @@ export const setNotificationRouteContext = (pathname: string) => {
 const isOnUserChatScreen = (pathname: string): boolean => pathname.includes('/home/chat');
 
 const getAdminConversationIdFromPath = (pathname: string): string | null => {
-  const match = pathname.match(/\/admin\/chat\/([^/]+)/);
+  const match = pathname.match(/\/(?:admin\/)?chat\/([^/]+)/);
   if (!match?.[1]) return null;
   return decodeURIComponent(match[1]);
 };

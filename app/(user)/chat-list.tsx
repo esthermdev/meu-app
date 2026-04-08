@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Switch, View } from 'react-native';
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 
 import CustomText from '@/components/CustomText';
 import ConversationListItem from '@/components/features/chat/ConversationListItem';
 import { fonts, fontSizes } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
+import { hasRole } from '@/context/profileRoles';
 import { useAdminConversations } from '@/hooks/useChat';
 import { supabase } from '@/lib/supabase';
 
 export default function AdminChatListScreen() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { conversations, loading, refresh } = useAdminConversations();
   const [refreshing, setRefreshing] = useState(false);
   const [adminChatNotificationsEnabled, setAdminChatNotificationsEnabled] = useState(true);
@@ -56,6 +57,18 @@ export default function AdminChatListScreen() {
     setUpdatingPreference(false);
   };
 
+  if (!profile) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#EA1D25" />
+      </View>
+    );
+  }
+
+  if (!hasRole(profile, 'admin')) {
+    return <Redirect href="/(tabs)/profile" />;
+  }
+
   if (loading) {
     return (
       <View style={styles.centered}>
@@ -70,7 +83,7 @@ export default function AdminChatListScreen() {
         data={conversations}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <ConversationListItem conversation={item} onPress={() => router.push(`/(user)/admin/chat/${item.id}`)} />
+          <ConversationListItem conversation={item} onPress={() => router.push(`/(user)/chat/${item.id}`)} />
         )}
         onRefresh={onRefresh}
         refreshing={refreshing}
@@ -116,11 +129,6 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     paddingHorizontal: 12,
     paddingVertical: 10,
-  },
-  toggleTitle: {
-    color: '#111',
-    fontFamily: fonts.medium,
-    fontSize: fontSizes.md,
   },
   toggleRow: {
     alignItems: 'center',

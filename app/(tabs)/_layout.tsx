@@ -28,9 +28,9 @@ export default function TabLayout() {
       } else if (type === 'admin_chat_message') {
         const conversationId = typeof data?.conversationId === 'string' ? data.conversationId : null;
         if (conversationId) {
-          router.push(`/(user)/admin/chat/${conversationId}`);
+          router.push(`/(user)/chat/${conversationId}`);
         } else {
-          router.push('/(user)/admin/chat-list');
+          router.push('/(user)/chat-list');
         }
       } else if (type === 'user_chat_message') {
         router.push('/(tabs)/home/chat');

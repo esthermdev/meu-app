@@ -85,6 +85,16 @@ export default function UserDashboard() {
             </TouchableOpacity>
           ) : null}
 
+          {hasRole(profile, 'admin') ? (
+            <TouchableOpacity onPress={() => router.push('/(user)/chat-list' as Href)}>
+              <Card style={styles.supportCard}>
+                <Ionicons name="chatbubbles" size={24} color="#4357AD" style={styles.cardIcon} />
+                <CustomText style={styles.supportCardLabel}>Conversations</CustomText>
+                <MaterialIcons name="arrow-right" size={24} color="#4357AD" />
+              </Card>
+            </TouchableOpacity>
+          ) : null}
+
           {hasPermission(profile, 'manage_water') ? (
             <TouchableOpacity onPress={() => router.push('/(user)/water-requests' as Href)}>
               <Card style={styles.supportCard}>
