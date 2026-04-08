@@ -146,13 +146,15 @@ export default function UserLayout() {
         name="chat-list"
         options={{
           title: 'Conversations',
+          animation: 'ios_from_left',
+          animationTypeForReplace: 'push',
           headerTitleAlign: 'center',
           headerStyle: {
             backgroundColor: '#EA1D25',
           },
           headerTintColor: '#fff',
           headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
+            <TouchableOpacity onPress={() => router.replace('/(user)')}>
               <MaterialIcons name="arrow-back" size={24} color="#fff" />
             </TouchableOpacity>
           ),
@@ -168,7 +170,7 @@ export default function UserLayout() {
           },
           headerTintColor: '#fff',
           headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
+            <TouchableOpacity onPress={() => router.replace('/(user)/chat-list')}>
               <MaterialIcons name="arrow-back" size={24} color="#fff" />
             </TouchableOpacity>
           ),

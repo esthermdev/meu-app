@@ -102,7 +102,7 @@ export default function AdminChatListScreen() {
                 thumbColor={adminChatNotificationsEnabled ? '#59DE07' : '#828282'}
               />
             </View>
-            <CustomText style={styles.toggleHelpText}>Go offline to pause chat notifications.</CustomText>
+            <CustomText style={styles.toggleHelpText}>Going offline turns off notifications.</CustomText>
           </View>
         }
         ListEmptyComponent={
@@ -126,12 +126,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     margin: 12,
-    marginBottom: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    padding: 10,
   },
   toggleRow: {
-    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
