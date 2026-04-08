@@ -25,6 +25,13 @@ export default function TabLayout() {
         router.push('/(user)/cart-requests');
       } else if (type === 'announcement') {
         router.push('/(tabs)/home/notifications');
+      } else if (type === 'admin_chat_message') {
+        const conversationId = typeof data?.conversationId === 'string' ? data.conversationId : null;
+        if (conversationId) {
+          router.push(`/(user)/admin/chat/${conversationId}`);
+        } else {
+          router.push('/(user)/admin/chat-list');
+        }
       }
     });
 

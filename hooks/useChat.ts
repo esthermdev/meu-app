@@ -133,6 +133,18 @@ export function useChat(userId: string | undefined) {
 
       if (error) {
         console.error('Error sending message:', error);
+        return;
+      }
+
+      const { error: notificationError } = await supabase.functions.invoke('admin-chat-message', {
+        body: {
+          conversationId: convId,
+          senderId: userId,
+        },
+      });
+
+      if (notificationError) {
+        console.error('Error sending admin chat notification:', notificationError);
       }
 
       // Update conversation timestamp

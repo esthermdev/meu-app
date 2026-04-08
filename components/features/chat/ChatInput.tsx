@@ -6,6 +6,7 @@ import {
   LayoutAnimation,
   Platform,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -99,49 +100,72 @@ export default function ChatInput({ onSend, onPickImage, uploading, onClear, saf
   };
 
   return (
-    <View style={[styles.container, { paddingBottom: getBottomPadding() }]}>
-      <TouchableOpacity style={styles.iconButton} onPress={handleImagePick} disabled={isDisabled}>
-        {uploading ? (
+    <View style={styles.wrapper}>
+      {sending && (
+        <View style={styles.sendingRow}>
           <ActivityIndicator size="small" color="#EA1D25" />
-        ) : (
-          <MaterialCommunityIcons name="image-plus" size={24} color="#EA1D25" />
-        )}
-      </TouchableOpacity>
-
-      {onClear && (
-        <TouchableOpacity style={styles.iconButton} onPress={handleClear} disabled={isDisabled}>
-          <MaterialCommunityIcons name="delete-outline" size={22} color="#999" />
-        </TouchableOpacity>
+          <Text style={styles.sendingText}>Sending message...</Text>
+        </View>
       )}
+      <View style={[styles.container, { paddingBottom: getBottomPadding() }]}>
+        <TouchableOpacity style={styles.iconButton} onPress={handleImagePick} disabled={isDisabled}>
+          {uploading ? (
+            <ActivityIndicator size="small" color="#EA1D25" />
+          ) : (
+            <MaterialCommunityIcons name="image-plus" size={24} color="#EA1D25" />
+          )}
+        </TouchableOpacity>
 
-      <TextInput
-        ref={inputRef}
-        style={styles.input}
-        value={text}
-        onChangeText={setText}
-        placeholder="Type a message..."
-        placeholderTextColor="#999"
-        multiline
-        blurOnSubmit={false}
-        maxLength={1000}
-        editable={!uploading}
-      />
-
-      <TouchableOpacity
-        style={[styles.sendButton, (!text.trim() || isDisabled) && styles.sendButtonDisabled]}
-        onPress={handleSend}
-        disabled={!text.trim() || isDisabled}>
-        {sending ? (
-          <ActivityIndicator size="small" color="#fff" />
-        ) : (
-          <MaterialCommunityIcons name="send" size={20} color="#fff" />
+        {onClear && (
+          <TouchableOpacity style={styles.iconButton} onPress={handleClear} disabled={isDisabled}>
+            <MaterialCommunityIcons name="delete-outline" size={22} color="#999" />
+          </TouchableOpacity>
         )}
-      </TouchableOpacity>
+
+        <TextInput
+          ref={inputRef}
+          style={styles.input}
+          value={text}
+          onChangeText={setText}
+          placeholder="Type a message..."
+          placeholderTextColor="#999"
+          multiline
+          blurOnSubmit={false}
+          maxLength={1000}
+          editable={!uploading}
+        />
+
+        <TouchableOpacity
+          style={[styles.sendButton, (!text.trim() || isDisabled) && styles.sendButtonDisabled]}
+          onPress={handleSend}
+          disabled={!text.trim() || isDisabled}>
+          {sending ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <MaterialCommunityIcons name="send" size={20} color="#fff" />
+          )}
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    backgroundColor: '#fff',
+  },
+  sendingRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'center',
+    paddingVertical: 8,
+  },
+  sendingText: {
+    color: '#666',
+    fontFamily: fonts.regular,
+    fontSize: fontSizes.sm,
+  },
   container: {
     alignItems: 'flex-end',
     backgroundColor: '#fff',

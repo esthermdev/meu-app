@@ -676,6 +676,7 @@ export type Database = {
           full_name: string | null;
           id: string;
           is_available: boolean | null;
+          is_chat_online: boolean;
           is_logged_in: boolean | null;
           role_id: number;
           updated_at: string | null;
@@ -686,6 +687,7 @@ export type Database = {
           full_name?: string | null;
           id: string;
           is_available?: boolean | null;
+          is_chat_online?: boolean;
           is_logged_in?: boolean | null;
           role_id: number;
           updated_at?: string | null;
@@ -696,6 +698,7 @@ export type Database = {
           full_name?: string | null;
           id?: string;
           is_available?: boolean | null;
+          is_chat_online?: boolean;
           is_logged_in?: boolean | null;
           role_id?: number;
           updated_at?: string | null;
