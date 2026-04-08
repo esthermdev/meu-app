@@ -218,8 +218,7 @@ Deno.serve(async (req: Request) => {
       return createResponse({ success: true, recipients: 0, data: [] }, 200);
     }
 
-    const pluralSuffix = unreadCount === 1 ? "" : "s";
-    const body = `You have ${unreadCount} new message${pluralSuffix}.`;
+    const body = `You have a new message`;
 
     const results: ExpoPushResponse[] = [];
     for (let i = 0; i < uniqueTokens.length; i += BATCH_SIZE) {

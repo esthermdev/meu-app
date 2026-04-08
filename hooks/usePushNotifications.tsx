@@ -9,14 +9,65 @@ import { supabase } from '@/lib/supabase';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+type NotificationRouteContext = {
+  pathname: string;
+};
+
+let notificationRouteContext: NotificationRouteContext = {
+  pathname: '',
+};
+
+export const setNotificationRouteContext = (pathname: string) => {
+  notificationRouteContext = { pathname };
+};
+
+const isOnUserChatScreen = (pathname: string): boolean => pathname.includes('/home/chat');
+
+const getAdminConversationIdFromPath = (pathname: string): string | null => {
+  const match = pathname.match(/\/admin\/chat\/([^/]+)/);
+  if (!match?.[1]) return null;
+  return decodeURIComponent(match[1]);
+};
+
+const shouldSuppressForegroundNotification = (notification: Notifications.Notification): boolean => {
+  const type =
+    typeof notification.request.content.data?.type === 'string' ? notification.request.content.data.type : null;
+  const pathname = notificationRouteContext.pathname;
+
+  if (!type) return false;
+
+  if (type === 'user_chat_message') {
+    return isOnUserChatScreen(pathname);
+  }
+
+  if (type === 'admin_chat_message') {
+    const activeConversationId = getAdminConversationIdFromPath(pathname);
+    if (!activeConversationId) return false;
+
+    const notificationConversationId =
+      typeof notification.request.content.data?.conversationId === 'string'
+        ? notification.request.content.data.conversationId
+        : null;
+
+    if (!notificationConversationId) return true;
+    return activeConversationId === notificationConversationId;
+  }
+
+  return false;
+};
+
 // Define notification behavior
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
+  handleNotification: async (notification) => {
+    const suppress = shouldSuppressForegroundNotification(notification);
+
+    return {
+      shouldShowBanner: !suppress,
+      shouldShowList: !suppress,
+      shouldPlaySound: !suppress,
+      shouldSetBadge: !suppress,
+    };
+  },
 });
 
 // Key for storing if we've already initialized notifications

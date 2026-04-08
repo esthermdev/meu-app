@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { AuthProvider } from '@/context/AuthProvider';
 import { useCheckForAppUpdates } from '@/hooks/useCheckForAppUpdates';
+import { setNotificationRouteContext } from '@/hooks/usePushNotifications';
 
 import 'expo-dev-client';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -16,6 +17,7 @@ SplashScreen.preventAutoHideAsync().catch((error) => {
 });
 
 export default function RootLayout() {
+  const pathname = usePathname();
   const [fontsLoaded] = useFonts({
     GeistThin: require('../assets/fonts/Geist-Thin.ttf'),
     GeistExtraLight: require('../assets/fonts/Geist-ExtraLight.ttf'),
@@ -29,6 +31,10 @@ export default function RootLayout() {
   });
 
   useCheckForAppUpdates();
+
+  useEffect(() => {
+    setNotificationRouteContext(pathname);
+  }, [pathname]);
 
   // Use an effect to hide the splash screen when fonts are loaded and version check is complete
   useEffect(() => {
