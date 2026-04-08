@@ -32,6 +32,8 @@ export default function TabLayout() {
         } else {
           router.push('/(user)/admin/chat-list');
         }
+      } else if (type === 'user_chat_message') {
+        router.push('/(tabs)/home/chat');
       }
     });
 

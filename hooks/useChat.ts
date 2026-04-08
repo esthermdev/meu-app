@@ -311,6 +311,18 @@ export function useAdminChat(conversationId: string) {
 
       if (error) {
         console.error('Error sending message:', error);
+        return;
+      }
+
+      const { error: notificationError } = await supabase.functions.invoke('user-chat-message', {
+        body: {
+          conversationId,
+          senderId,
+        },
+      });
+
+      if (notificationError) {
+        console.error('Error sending user chat notification:', notificationError);
       }
 
       await db.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', conversationId);

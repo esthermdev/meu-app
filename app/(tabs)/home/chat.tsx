@@ -73,7 +73,7 @@ export default function ChatScreen() {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <CustomText style={styles.emptyText}>
-              Send a message to reach the tournament administrators. They&apos;ll respond here!
+              Send a message to reach out to our tournament administrators. They&apos;ll respond here!
             </CustomText>
           </View>
         }
