@@ -9,6 +9,18 @@ import { RealtimeChannel } from '@supabase/supabase-js';
 // Remove after running: npm run schema:sync
 const db = supabase as any;
 
+const mergeUniqueMessages = (messages: MessageWithSender[]) => {
+  const messageMap = new Map<string, MessageWithSender>();
+
+  messages.forEach((message) => {
+    messageMap.set(message.id, message);
+  });
+
+  return Array.from(messageMap.values()).sort(
+    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+  );
+};
+
 /**
  * Hook for user-side chat: manages a single conversation with the admin team.
  */
@@ -51,7 +63,7 @@ export function useChat(userId: string | undefined) {
       return;
     }
 
-    setMessages((data as MessageWithSender[]) ?? []);
+    setMessages(mergeUniqueMessages((data as MessageWithSender[]) ?? []));
   }, [conversationId]);
 
   // Subscribe to new messages via realtime
@@ -79,7 +91,7 @@ export function useChat(userId: string | undefined) {
             .single();
 
           if (data) {
-            setMessages((prev) => [...prev, data as MessageWithSender]);
+            setMessages((prev) => mergeUniqueMessages([...prev, data as MessageWithSender]));
           }
         },
       )
@@ -239,7 +251,19 @@ export function useAdminConversations() {
     };
   }, [loadConversations]);
 
-  return { conversations, loading, refresh: loadConversations };
+  const deleteConversation = useCallback(async (conversationId: string) => {
+    const { error } = await db.from('conversations').delete().eq('id', conversationId);
+
+    if (error) {
+      console.error('Error deleting conversation:', error);
+      return { error };
+    }
+
+    setConversations((prev) => prev.filter((conversation) => conversation.id !== conversationId));
+    return { error: null };
+  }, []);
+
+  return { conversations, loading, refresh: loadConversations, deleteConversation };
 }
 
 /**
@@ -262,7 +286,7 @@ export function useAdminChat(conversationId: string) {
       return;
     }
 
-    setMessages((data as MessageWithSender[]) ?? []);
+    setMessages(mergeUniqueMessages((data as MessageWithSender[]) ?? []));
     setLoading(false);
   }, [conversationId]);
 
@@ -287,7 +311,7 @@ export function useAdminChat(conversationId: string) {
             .single();
 
           if (data) {
-            setMessages((prev) => [...prev, data as MessageWithSender]);
+            setMessages((prev) => mergeUniqueMessages([...prev, data as MessageWithSender]));
           }
         },
       )

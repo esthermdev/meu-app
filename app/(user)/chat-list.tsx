@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Switch, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
 import { Redirect, router } from 'expo-router';
 
 import CustomText from '@/components/CustomText';
@@ -10,12 +10,15 @@ import { hasRole } from '@/context/profileRoles';
 import { useAdminConversations } from '@/hooks/useChat';
 import { supabase } from '@/lib/supabase';
 
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+
 export default function AdminChatListScreen() {
   const { user, profile } = useAuth();
-  const { conversations, loading, refresh } = useAdminConversations();
+  const { conversations, loading, refresh, deleteConversation } = useAdminConversations();
   const [refreshing, setRefreshing] = useState(false);
   const [adminChatNotificationsEnabled, setAdminChatNotificationsEnabled] = useState(true);
   const [updatingPreference, setUpdatingPreference] = useState(false);
+  const [deletingConversationId, setDeletingConversationId] = useState<string | null>(null);
 
   const fetchAdminChatNotificationPreference = useCallback(async () => {
     if (!user?.id) return;
@@ -39,6 +42,65 @@ export default function AdminChatListScreen() {
     await Promise.all([refresh(), fetchAdminChatNotificationPreference()]);
     setRefreshing(false);
   }, [fetchAdminChatNotificationPreference, refresh]);
+
+  const handleDeleteConversation = useCallback(
+    async (conversationId: string) => {
+      if (deletingConversationId) return;
+
+      setDeletingConversationId(conversationId);
+      const { error } = await deleteConversation(conversationId);
+
+      setDeletingConversationId((currentId) => (currentId === conversationId ? null : currentId));
+
+      if (error) {
+        Alert.alert('Delete failed', 'Could not delete this conversation. Please try again.');
+      }
+    },
+    [deleteConversation, deletingConversationId],
+  );
+
+  const confirmDeleteConversation = useCallback(
+    (conversationId: string) => {
+      Alert.alert(
+        'Delete conversation?',
+        'This will permanently delete the conversation and all messages for this user.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Delete',
+            style: 'destructive',
+            onPress: () => {
+              void handleDeleteConversation(conversationId);
+            },
+          },
+        ],
+      );
+    },
+    [handleDeleteConversation],
+  );
+
+  const renderRightActions = useCallback(
+    (conversationId: string) => {
+      const isDeleting = deletingConversationId === conversationId;
+
+      return (
+        <View style={styles.rightActionsContainer}>
+          <TouchableOpacity
+            style={[styles.deleteAction, isDeleting && styles.deleteActionDisabled]}
+            onPress={() => confirmDeleteConversation(conversationId)}
+            disabled={isDeleting}
+            activeOpacity={0.8}>
+            {isDeleting ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <CustomText style={styles.deleteActionText}>Delete</CustomText>
+            )}
+          </TouchableOpacity>
+        </View>
+      );
+    },
+    [confirmDeleteConversation, deletingConversationId],
+  );
 
   const handleToggleAdminChatNotifications = async (nextValue: boolean) => {
     if (!user?.id || updatingPreference) return;
@@ -83,7 +145,15 @@ export default function AdminChatListScreen() {
         data={conversations}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <ConversationListItem conversation={item} onPress={() => router.push(`/(user)/chat/${item.id}`)} />
+          <Swipeable overshootRight={false} rightThreshold={40} renderRightActions={() => renderRightActions(item.id)}>
+            <ConversationListItem
+              conversation={item}
+              onPress={() => {
+                if (deletingConversationId) return;
+                router.push(`/(user)/chat/${item.id}`);
+              }}
+            />
+          </Swipeable>
         )}
         onRefresh={onRefresh}
         refreshing={refreshing}
@@ -159,5 +229,26 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     fontSize: fontSizes.sm,
     textAlign: 'center',
+  },
+  rightActionsContainer: {
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    paddingVertical: 1,
+  },
+  deleteAction: {
+    alignItems: 'center',
+    backgroundColor: '#D81E1E',
+    height: '100%',
+    justifyContent: 'center',
+    minWidth: 96,
+    paddingHorizontal: 18,
+  },
+  deleteActionDisabled: {
+    opacity: 0.85,
+  },
+  deleteActionText: {
+    color: '#fff',
+    fontFamily: fonts.semiBold,
+    fontSize: fontSizes.sm,
   },
 });

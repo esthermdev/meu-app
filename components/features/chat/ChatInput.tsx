@@ -52,7 +52,7 @@ export default function ChatInput({ onSend, onPickImage, uploading, onClear, saf
 
   const handleSend = async () => {
     const trimmed = text.trim();
-    if (!trimmed && !uploading) return;
+    if (!trimmed || sending || uploading) return;
     const wasInputFocused = inputRef.current?.isFocused() ?? false;
     setSending(true);
     try {
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
     justifyContent: 'center',
-    paddingVertical: 8,
+    paddingVertical: 6,
   },
   sendingText: {
     color: '#666',
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 40,
     justifyContent: 'center',
-    width: 40,
+    marginHorizontal: 5,
   },
   input: {
     backgroundColor: '#F5F5F5',
@@ -188,9 +188,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     flex: 1,
     fontFamily: fonts.regular,
-    fontSize: fontSizes.sm,
+    fontSize: fontSizes.md,
     maxHeight: 100,
-    marginHorizontal: 8,
+    marginHorizontal: 5,
     paddingHorizontal: 16,
     paddingVertical: 10,
   },

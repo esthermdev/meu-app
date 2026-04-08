@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   senderName: {
     color: '#EA1D25',
     fontFamily: fonts.semiBold,
-    fontSize: fontSizes.xs,
+    fontSize: fontSizes.sm,
     marginBottom: 2,
     marginLeft: 8,
   },
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   text: {
     color: '#333',
     fontFamily: fonts.regular,
-    fontSize: fontSizes.sm,
+    fontSize: fontSizes.md,
   },
   ownText: {
     color: '#fff',
