@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 import { Image } from 'expo-image';
 
 import CustomText from '@/components/CustomText';
-import { fonts, fontSizes } from '@/constants/Typography';
+import { fonts, fontSizes, typography } from '@/constants/Typography';
 import { MessageWithSender } from '@/types/chat';
 
 interface ChatBubbleProps {
@@ -23,10 +23,10 @@ export default function ChatBubble({ message, isOwnMessage }: ChatBubbleProps) {
         {message.content && (
           <CustomText style={[styles.text, isOwnMessage && styles.ownText]}>{message.content}</CustomText>
         )}
-        <CustomText style={[styles.time, isOwnMessage && styles.ownTimeText]}>
-          {new Date(message.created_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
-        </CustomText>
       </View>
+      <CustomText style={styles.time}>
+        {new Date(message.created_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
+      </CustomText>
     </View>
   );
 }
@@ -58,10 +58,19 @@ const styles = StyleSheet.create({
   ownBubble: {
     backgroundColor: '#EA1D25',
     borderBottomRightRadius: 4,
+    boxShadow: '#333',
+    shadowColor: '#333',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.5,
+    shadowRadius: 0.5,
   },
   otherBubble: {
     backgroundColor: '#F0F0F0',
     borderBottomLeftRadius: 4,
+    shadowColor: '#333',
+    shadowOffset: { width: 0, height: 0.5 },
+    shadowOpacity: 0.5,
+    shadowRadius: 0.5,
   },
   text: {
     color: '#333',
@@ -72,14 +81,10 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   time: {
-    color: '#999',
-    fontFamily: fonts.regular,
-    fontSize: fontSizes.xxs,
-    marginTop: 4,
+    color: '#5C5C5C',
+    ...typography.textXSmall,
+    marginVertical: 4,
     textAlign: 'right',
-  },
-  ownTimeText: {
-    color: 'rgba(255,255,255,0.7)',
   },
   image: {
     borderRadius: 12,
