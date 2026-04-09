@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.sm,
     textDecorationLine: 'underline',
     textAlign: 'center',
-    marginBottom: 6,
+    marginVertical: 3,
   },
   sendButtonDisabled: {
     backgroundColor: '#ccc',
