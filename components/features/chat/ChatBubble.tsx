@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.semiBold,
     fontSize: fontSizes.sm,
     marginBottom: 2,
-    marginLeft: 8,
   },
   bubble: {
     borderRadius: 16,
