@@ -2,7 +2,7 @@
   "expo": {
     "name": "Maine Ultimate",
     "slug": "meu-app",
-    "version": "2.0.6",
+    "version": "2.0.7",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "meu.app",
@@ -19,7 +19,7 @@
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       },
-      "buildNumber": "2"
+      "buildNumber": "4"
     },
     "android": {
       "adaptiveIcon": {
@@ -28,7 +28,7 @@
       },
       "package": "com.esmdev.TourneyAppMEU",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 44
+      "versionCode": 46
     },
     "web": {
       "bundler": "metro",

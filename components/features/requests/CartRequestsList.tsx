@@ -272,11 +272,11 @@ const CartRequestsList = () => {
 
         <View style={styles.infoSection}>
           <View style={styles.passengerCol}>
-            <CustomText style={styles.infoLabel}>NAME</CustomText>
+            <CustomText style={styles.infoLabel}>Name</CustomText>
             <CustomText style={styles.infoValue}>{item.requester || 'Anonymous'}</CustomText>
           </View>
           <View style={styles.passengerCol}>
-            <CustomText style={styles.passengerLabel}>NO. PASSENGERS</CustomText>
+            <CustomText style={styles.passengerLabel}>No. of Passengers</CustomText>
             <CustomText style={styles.passengerCount}>{item.passenger_count || 0}</CustomText>
           </View>
         </View>
@@ -357,11 +357,11 @@ const CartRequestsList = () => {
 
         <View style={styles.infoSection}>
           <View style={styles.passengerCol}>
-            <CustomText style={styles.infoLabel}>NAME</CustomText>
+            <CustomText style={styles.infoLabel}>Name</CustomText>
             <CustomText style={styles.infoValue}>{item.requester || 'Anonymous'}</CustomText>
           </View>
           <View style={styles.passengerCol}>
-            <CustomText style={styles.passengerLabel}>NO. PASSENGERS</CustomText>
+            <CustomText style={styles.passengerLabel}>No. of Passengers</CustomText>
             <CustomText style={styles.passengerCount}>{item.passenger_count || 0}</CustomText>
           </View>
         </View>
@@ -468,7 +468,7 @@ const CartRequestsList = () => {
 
 const styles = StyleSheet.create({
   cardContainer: {
-    backgroundColor: '#262626',
+    backgroundColor: '#1A1B22',
     borderRadius: 8,
     borderWidth: 0,
     marginBottom: 10,
@@ -512,8 +512,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   locationsContainer: {
-    borderBottomColor: '#CCCCCC66',
-    borderBottomWidth: 1,
     flexDirection: 'row',
     paddingHorizontal: 10,
     paddingBottom: 8,
@@ -557,22 +555,20 @@ const styles = StyleSheet.create({
   },
   infoSection: {
     flexDirection: 'row',
-    paddingVertical: 5,
+    paddingBottom: 8,
     paddingHorizontal: 10,
     gap: 5,
-    borderBottomColor: '#CCCCCC66',
-    borderBottomWidth: 1,
   },
   passengerCol: {
     flex: 1,
     justifyContent: 'space-between',
   },
   infoLabel: {
-    ...typography.text,
+    ...typography.textSmall,
     color: '#CCCCCCB2',
   },
   infoValue: {
-    ...typography.textLargeBold,
+    ...typography.textBold,
     color: '#fff',
   },
   passengerLabel: {
@@ -580,15 +576,17 @@ const styles = StyleSheet.create({
     color: '#CCCCCCB2',
   },
   passengerCount: {
-    ...typography.textLargeBold,
+    ...typography.textBold,
     color: '#fff',
   },
   specialRequestContainer: {
+    borderTopColor: '#CCCCCC66',
+    borderTopWidth: 1,
     paddingHorizontal: 10,
-    paddingTop: 5,
+    paddingVertical: 5,
   },
   specialRequestLabel: {
-    ...typography.text,
+    ...typography.textSmall,
     color: '#CCCCCCB2',
   },
   specialRequestText: {
@@ -601,11 +599,10 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: 6,
     borderBottomStartRadius: 6,
     paddingHorizontal: 15,
-    paddingVertical: 8,
-    marginTop: 5,
+    paddingVertical: 5,
   },
   completeButtonText: {
-    ...typography.textBold,
+    ...typography.textSmallBold,
     color: '#fff',
   },
   timeContainer: {
@@ -626,7 +623,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    paddingVertical: 10,
+    paddingBottom: 10,
   },
   acceptButton: {
     alignItems: 'center',
@@ -635,10 +632,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 4,
     paddingHorizontal: 15,
-    paddingVertical: 8,
+    paddingVertical: 5,
   },
   acceptButtonText: {
-    ...typography.textBold,
+    ...typography.textSmallBold,
     color: '#fff',
   },
   removeButton: {
@@ -648,10 +645,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 4,
     paddingHorizontal: 15,
-    paddingVertical: 8,
+    paddingVertical: 5,
   },
   removeButtonText: {
-    ...typography.textBold,
+    ...typography.textSmallBold,
     color: '#fff',
   },
   loadingContainer: {

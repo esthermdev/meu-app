@@ -271,17 +271,17 @@ const FulfilledCartRequestsList = () => {
         <View style={styles.infoSection}>
           {item.status !== 'pending' && (
             <View style={styles.driverInfo}>
-              <CustomText style={styles.labelText}>DRIVER</CustomText>
+              <CustomText style={styles.labelText}>Driver</CustomText>
               <CustomText style={styles.driverText}>{item.driver ? item.driver.full_name : driverName}</CustomText>
             </View>
           )}
           <View style={styles.passengerInfo}>
             <View style={styles.passengerRow}>
-              <CustomText style={styles.labelText}>NO. PASSENGERS</CustomText>
+              <CustomText style={styles.labelText}>No. of Passengers</CustomText>
               <CustomText style={styles.valueText}>{item.passenger_count || 0}</CustomText>
             </View>
             <View style={styles.passengerRow}>
-              <CustomText style={styles.labelText}>NAME</CustomText>
+              <CustomText style={styles.labelText}>Name</CustomText>
               <CustomText style={styles.valueText}>{item.requester || 'Anonymous'}</CustomText>
             </View>
           </View>
@@ -452,8 +452,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   locationsContainer: {
-    borderBottomColor: '#CCCCCC66',
-    borderBottomWidth: 1,
     flexDirection: 'row',
     paddingHorizontal: 10,
     paddingBottom: 8,
@@ -495,7 +493,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    paddingVertical: 8,
+    paddingBottom: 8,
   },
   driverInfo: {
     justifyContent: 'space-between',
@@ -541,13 +539,13 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: 6,
     borderBottomStartRadius: 6,
     paddingHorizontal: 15,
-    paddingVertical: 8,
+    paddingVertical: 5,
   },
   buttonDisabled: {
     opacity: 0.6,
   },
   deleteButtonText: {
-    ...typography.textBold,
+    ...typography.textSmallBold,
     color: '#fff',
   },
   sectionHeader: {

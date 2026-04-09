@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 
+import { UploadImage } from '@/assets/svg';
 import { fonts, fontSizes } from '@/constants/Typography';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -109,26 +110,28 @@ export default function AdminChatInput({ onSend, onPickImage, uploading }: Admin
         </View>
       )}
       <View style={[styles.container, { paddingBottom: bottomPadding }]}>
-        <TouchableOpacity style={styles.iconButton} onPress={handleImagePick} disabled={isDisabled}>
-          {uploading ? (
-            <ActivityIndicator size="small" color="#EA1D25" />
-          ) : (
-            <MaterialCommunityIcons name="image-plus" size={24} color="#EA1D25" />
-          )}
-        </TouchableOpacity>
+        <View style={styles.inputWrapper}>
+          <TouchableOpacity style={styles.inputIconButton} onPress={handleImagePick} disabled={isDisabled}>
+            {uploading ? (
+              <ActivityIndicator size="small" color="#EA1D25" />
+            ) : (
+              <UploadImage width={16} height={16} color="#000" />
+            )}
+          </TouchableOpacity>
 
-        <TextInput
-          ref={inputRef}
-          style={styles.input}
-          value={text}
-          onChangeText={setText}
-          placeholder="Type a message..."
-          placeholderTextColor="#999"
-          multiline
-          blurOnSubmit={false}
-          maxLength={1000}
-          editable={!uploading}
-        />
+          <TextInput
+            ref={inputRef}
+            style={styles.input}
+            value={text}
+            onChangeText={setText}
+            placeholder="Type a message..."
+            placeholderTextColor="#999"
+            multiline
+            blurOnSubmit={false}
+            maxLength={1000}
+            editable={!uploading}
+          />
+        </View>
 
         <TouchableOpacity
           style={[styles.sendButton, (!text.trim() || isDisabled) && styles.sendButtonDisabled]}
@@ -170,23 +173,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingTop: 8,
   },
-  iconButton: {
+  inputWrapper: {
     alignItems: 'center',
-    height: 40,
-    justifyContent: 'center',
-    marginHorizontal: 5,
-  },
-  input: {
     backgroundColor: '#F5F5F5',
     borderColor: '#E0E0E0',
     borderRadius: 20,
     borderWidth: 1,
     flex: 1,
+    flexDirection: 'row',
+    marginRight: 8,
+    maxHeight: 100,
+    minHeight: 40,
+    paddingHorizontal: 6,
+  },
+  inputIconButton: {
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    justifyContent: 'center',
+    height: 36,
+    width: 36,
+    marginBottom: 3,
+  },
+  input: {
+    flex: 1,
     fontFamily: fonts.regular,
     fontSize: fontSizes.md,
-    maxHeight: 100,
-    marginHorizontal: 5,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
     paddingVertical: 10,
   },
   sendButton: {
