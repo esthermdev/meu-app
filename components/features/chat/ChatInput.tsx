@@ -107,11 +107,6 @@ export default function ChatInput({ onSend, onPickImage, uploading, onClear, saf
   const getBottomPadding = () => {
     const basePadding = 8;
 
-    // On Android, lift the input while typing, then drop back to 8 when keyboard closes.
-    if (Platform.OS === 'android') {
-      return keyboardOpen ? 35 : 8;
-    }
-
     if (!safeAreaBottom) return basePadding;
     if (keyboardOpen) return basePadding;
     return Math.max(insets.bottom, basePadding);
