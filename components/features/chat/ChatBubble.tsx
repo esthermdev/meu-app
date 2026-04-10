@@ -1,4 +1,5 @@
-import { StyleSheet, View } from 'react-native';
+import { useRef } from 'react';
+import { Alert, Animated, Easing, Pressable, StyleSheet, View } from 'react-native';
 import { Image } from 'expo-image';
 
 import CustomText from '@/components/CustomText';
@@ -8,22 +9,86 @@ import { MessageWithSender } from '@/types/chat';
 interface ChatBubbleProps {
   message: MessageWithSender;
   isOwnMessage: boolean;
+  canDelete?: boolean;
+  onDeleteMessage?: (messageId: string) => Promise<void> | void;
 }
 
-export default function ChatBubble({ message, isOwnMessage }: ChatBubbleProps) {
+export default function ChatBubble({ message, isOwnMessage, canDelete = false, onDeleteMessage }: ChatBubbleProps) {
   const senderName = message.sender?.full_name ?? 'Unknown';
+  const bubbleScale = useRef(new Animated.Value(1)).current;
+  const bubbleOpacity = useRef(new Animated.Value(1)).current;
+
+  const runLongPressFeedback = (onComplete: () => void) => {
+    Animated.parallel([
+      Animated.timing(bubbleScale, {
+        toValue: 0.9,
+        duration: 50,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(bubbleOpacity, {
+        toValue: 0.8,
+        duration: 110,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      onComplete();
+      Animated.parallel([
+        Animated.timing(bubbleScale, {
+          toValue: 1,
+          duration: 130,
+          easing: Easing.inOut(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(bubbleOpacity, {
+          toValue: 1,
+          duration: 130,
+          easing: Easing.inOut(Easing.cubic),
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
+  };
+
+  const handleLongPress = () => {
+    if (!canDelete || !onDeleteMessage) return;
+
+    runLongPressFeedback(() => {
+      Alert.alert('Message options', 'What would you like to do?', [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete message',
+          style: 'destructive',
+          onPress: () => {
+            void onDeleteMessage(message.id);
+          },
+        },
+      ]);
+    });
+  };
 
   return (
     <View style={[styles.container, isOwnMessage ? styles.ownContainer : styles.otherContainer]}>
       {!isOwnMessage && <CustomText style={styles.senderName}>{senderName}</CustomText>}
-      <View style={[styles.bubble, isOwnMessage ? styles.ownBubble : styles.otherBubble]}>
-        {message.image_url && (
-          <Image source={{ uri: message.image_url }} style={styles.image} contentFit="cover" transition={200} />
-        )}
-        {message.content && (
-          <CustomText style={[styles.text, isOwnMessage && styles.ownText]}>{message.content}</CustomText>
-        )}
-      </View>
+      <Animated.View
+        style={{
+          opacity: bubbleOpacity,
+          transform: [{ scale: bubbleScale }],
+        }}>
+        <Pressable
+          style={[styles.bubble, isOwnMessage ? styles.ownBubble : styles.otherBubble]}
+          onLongPress={handleLongPress}
+          disabled={!canDelete || !onDeleteMessage}
+          delayLongPress={350}>
+          {message.image_url && (
+            <Image source={{ uri: message.image_url }} style={styles.image} contentFit="cover" transition={200} />
+          )}
+          {message.content && (
+            <CustomText style={[styles.text, isOwnMessage && styles.ownText]}>{message.content}</CustomText>
+          )}
+        </Pressable>
+      </Animated.View>
       <CustomText style={styles.time}>
         {new Date(message.created_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
       </CustomText>

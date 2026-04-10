@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { ActivityIndicator, FlatList, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 
 import CustomText from '@/components/CustomText';
@@ -18,9 +18,20 @@ export default function AdminChatScreen() {
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
   const { user, profile } = useAuth();
   const insets = useSafeAreaInsets();
-  const { messages, loading, sendMessage, markRead } = useAdminChat(conversationId);
+  const { messages, loading, sendMessage, markRead, deleteMessage } = useAdminChat(conversationId);
   const { pickAndUploadImage, uploading } = useChatImageUpload(conversationId);
   const flatListRef = useRef<FlatList<MessageWithSender>>(null);
+
+  const handleDeleteMessage = useCallback(
+    async (messageId: string) => {
+      if (!user?.id) return;
+      const { error } = await deleteMessage(messageId, user.id);
+      if (error) {
+        Alert.alert('Unable to delete', 'We could not delete this message. Please try again.');
+      }
+    },
+    [deleteMessage, user?.id],
+  );
 
   const scrollToBottom = useCallback((animated = false, delay = 0) => {
     const runScroll = () => flatListRef.current?.scrollToEnd({ animated });
@@ -91,7 +102,17 @@ export default function AdminChatScreen() {
         ref={flatListRef}
         data={messages}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <ChatBubble message={item} isOwnMessage={item.sender_id === user?.id} />}
+        renderItem={({ item }) => {
+          const isOwnMessage = item.sender_id === user?.id;
+          return (
+            <ChatBubble
+              message={item}
+              isOwnMessage={isOwnMessage}
+              canDelete={isOwnMessage}
+              onDeleteMessage={handleDeleteMessage}
+            />
+          );
+        }}
         contentContainerStyle={styles.messagesList}
         keyboardDismissMode="interactive"
         keyboardShouldPersistTaps="handled"

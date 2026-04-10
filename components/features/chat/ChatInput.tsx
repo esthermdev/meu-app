@@ -55,10 +55,10 @@ export default function ChatInput({ onSend, onPickImage, uploading, onClear, saf
     const trimmed = text.trim();
     if (!trimmed || sending || uploading) return;
     const wasInputFocused = inputRef.current?.isFocused() ?? false;
+    setText('');
     setSending(true);
     try {
       await onSend(trimmed || null, null);
-      setText('');
     } finally {
       setSending(false);
       if (wasInputFocused) {
@@ -196,6 +196,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 36,
     width: 36,
+    marginRight: -6,
     marginBottom: 3,
   },
   input: {

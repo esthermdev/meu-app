@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { ActivityIndicator, FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
+import { useCallback, useEffect, useRef } from 'react';
+import { ActivityIndicator, Alert, FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 
 import PrimaryButton from '@/components/buttons/PrimaryButton';
@@ -17,9 +17,19 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export default function ChatScreen() {
   const { user, session } = useAuth();
   const insets = useSafeAreaInsets();
-  const { messages, loading, sendMessage, conversationId, clearMessages } = useChat(user?.id);
+  const { messages, loading, sendMessage, conversationId, clearMessages, deleteMessage } = useChat(user?.id);
   const { pickAndUploadImage, uploading } = useChatImageUpload(conversationId);
   const flatListRef = useRef<FlatList<MessageWithSender>>(null);
+
+  const handleDeleteMessage = useCallback(
+    async (messageId: string) => {
+      const { error } = await deleteMessage(messageId);
+      if (error) {
+        Alert.alert('Unable to delete', 'We could not delete this message. Please try again.');
+      }
+    },
+    [deleteMessage],
+  );
 
   useEffect(() => {
     // Scroll to bottom when new messages arrive
@@ -66,7 +76,17 @@ export default function ChatScreen() {
         ref={flatListRef}
         data={messages}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <ChatBubble message={item} isOwnMessage={item.sender_id === user?.id} />}
+        renderItem={({ item }) => {
+          const isOwnMessage = item.sender_id === user?.id;
+          return (
+            <ChatBubble
+              message={item}
+              isOwnMessage={isOwnMessage}
+              canDelete={isOwnMessage}
+              onDeleteMessage={handleDeleteMessage}
+            />
+          );
+        }}
         contentContainerStyle={styles.messagesList}
         keyboardDismissMode="interactive"
         keyboardShouldPersistTaps="handled"

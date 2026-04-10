@@ -66,10 +66,10 @@ export default function AdminChatInput({ onSend, onPickImage, uploading }: Admin
     if (!trimmed || sending || uploading) return;
     const wasInputFocused = inputRef.current?.isFocused() ?? false;
 
+    setText('');
     setSending(true);
     try {
       await onSend(trimmed, null);
-      setText('');
     } finally {
       setSending(false);
       if (wasInputFocused) {
@@ -192,6 +192,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 36,
     width: 36,
+    marginRight: -6,
     marginBottom: 3,
   },
   input: {

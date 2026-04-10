@@ -95,6 +95,20 @@ export function useChat(userId: string | undefined) {
           }
         },
       )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'messages',
+          filter: `conversation_id=eq.${conversationId}`,
+        },
+        (payload) => {
+          const deletedId = (payload.old as any)?.id as string | undefined;
+          if (!deletedId) return;
+          setMessages((prev) => prev.filter((message) => message.id !== deletedId));
+        },
+      )
       .subscribe();
 
     return () => {
@@ -179,7 +193,26 @@ export function useChat(userId: string | undefined) {
     setMessages([]);
   }, [conversationId]);
 
-  return { messages, loading, sendMessage, conversationId, clearMessages };
+  const deleteMessage = useCallback(
+    async (messageId: string) => {
+      if (!userId) {
+        return { error: new Error('Missing user id') };
+      }
+
+      const { error } = await db.from('messages').delete().eq('id', messageId).eq('sender_id', userId);
+
+      if (error) {
+        console.error('Error deleting message:', error);
+        return { error };
+      }
+
+      setMessages((prev) => prev.filter((message) => message.id !== messageId));
+      return { error: null };
+    },
+    [userId],
+  );
+
+  return { messages, loading, sendMessage, conversationId, clearMessages, deleteMessage };
 }
 
 /**
@@ -315,6 +348,20 @@ export function useAdminChat(conversationId: string) {
           }
         },
       )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'messages',
+          filter: `conversation_id=eq.${conversationId}`,
+        },
+        (payload) => {
+          const deletedId = (payload.old as any)?.id as string | undefined;
+          if (!deletedId) return;
+          setMessages((prev) => prev.filter((message) => message.id !== deletedId));
+        },
+      )
       .subscribe();
 
     return () => {
@@ -358,5 +405,17 @@ export function useAdminChat(conversationId: string) {
     await db.from('conversations').update({ admin_last_read_at: new Date().toISOString() }).eq('id', conversationId);
   }, [conversationId]);
 
-  return { messages, loading, sendMessage, markRead };
+  const deleteMessage = useCallback(async (messageId: string, senderId: string) => {
+    const { error } = await db.from('messages').delete().eq('id', messageId).eq('sender_id', senderId);
+
+    if (error) {
+      console.error('Error deleting message:', error);
+      return { error };
+    }
+
+    setMessages((prev) => prev.filter((message) => message.id !== messageId));
+    return { error: null };
+  }, []);
+
+  return { messages, loading, sendMessage, markRead, deleteMessage };
 }
