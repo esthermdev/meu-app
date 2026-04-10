@@ -1,6 +1,15 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { ActivityIndicator, Alert, FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
 
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import CustomText from '@/components/CustomText';
@@ -17,7 +26,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export default function ChatScreen() {
   const { user, session } = useAuth();
   const insets = useSafeAreaInsets();
-  const { messages, loading, sendMessage, conversationId, clearMessages, deleteMessage } = useChat(user?.id);
+  const { messages, loading, sendMessage, conversationId, clearMessages, deleteMessage, refreshMessages } = useChat(
+    user?.id,
+  );
   const { pickAndUploadImage, uploading } = useChatImageUpload(conversationId);
   const flatListRef = useRef<FlatList<MessageWithSender>>(null);
 
@@ -37,6 +48,13 @@ export default function ChatScreen() {
       setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
     }
   }, [messages.length]);
+
+  useFocusEffect(
+    useCallback(() => {
+      void refreshMessages();
+      return undefined;
+    }, [refreshMessages]),
+  );
 
   if (!session) {
     return (

@@ -212,7 +212,17 @@ export function useChat(userId: string | undefined) {
     [userId],
   );
 
-  return { messages, loading, sendMessage, conversationId, clearMessages, deleteMessage };
+  const refreshMessages = useCallback(async () => {
+    if (!userId) return;
+    if (!conversationId) {
+      await initConversation();
+      return;
+    }
+
+    await loadMessages();
+  }, [userId, conversationId, initConversation, loadMessages]);
+
+  return { messages, loading, sendMessage, conversationId, clearMessages, deleteMessage, refreshMessages };
 }
 
 /**
@@ -417,5 +427,9 @@ export function useAdminChat(conversationId: string) {
     return { error: null };
   }, []);
 
-  return { messages, loading, sendMessage, markRead, deleteMessage };
+  const refreshMessages = useCallback(async () => {
+    await loadMessages();
+  }, [loadMessages]);
+
+  return { messages, loading, sendMessage, markRead, deleteMessage, refreshMessages };
 }

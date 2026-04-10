@@ -1,6 +1,15 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { ActivityIndicator, Alert, FlatList, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
-import { Redirect, useLocalSearchParams } from 'expo-router';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  View,
+} from 'react-native';
+import { Redirect, useFocusEffect, useLocalSearchParams } from 'expo-router';
 
 import CustomText from '@/components/CustomText';
 import AdminChatInput from '@/components/features/chat/AdminChatInput';
@@ -18,7 +27,7 @@ export default function AdminChatScreen() {
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>();
   const { user, profile } = useAuth();
   const insets = useSafeAreaInsets();
-  const { messages, loading, sendMessage, markRead, deleteMessage } = useAdminChat(conversationId);
+  const { messages, loading, sendMessage, markRead, deleteMessage, refreshMessages } = useAdminChat(conversationId);
   const { pickAndUploadImage, uploading } = useChatImageUpload(conversationId);
   const flatListRef = useRef<FlatList<MessageWithSender>>(null);
 
@@ -48,6 +57,14 @@ export default function AdminChatScreen() {
       markRead();
     }
   }, [messages.length, markRead, scrollToBottom]);
+
+  useFocusEffect(
+    useCallback(() => {
+      void refreshMessages();
+      void markRead();
+      return undefined;
+    }, [markRead, refreshMessages]),
+  );
 
   useEffect(() => {
     const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
