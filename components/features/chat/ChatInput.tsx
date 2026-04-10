@@ -49,6 +49,18 @@ export default function ChatInput({ onSend, onPickImage, uploading, onClear, saf
         hideSub.remove();
       };
     }
+
+    const showSub = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardOpen(true);
+    });
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardOpen(false);
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
   }, []);
 
   const handleSend = async () => {
@@ -93,11 +105,16 @@ export default function ChatInput({ onSend, onPickImage, uploading, onClear, saf
   const isDisabled = sending || uploading;
 
   const getBottomPadding = () => {
-    if (!safeAreaBottom) return 8;
-    // When keyboard is open, nav bar is behind keyboard — no inset needed
-    if (keyboardOpen) return 8;
-    // Keyboard closed: apply safe area for nav bar / home indicator
-    return insets.bottom;
+    const basePadding = 8;
+
+    // On Android, lift the input while typing, then drop back to 8 when keyboard closes.
+    if (Platform.OS === 'android') {
+      return keyboardOpen ? 35 : 8;
+    }
+
+    if (!safeAreaBottom) return basePadding;
+    if (keyboardOpen) return basePadding;
+    return Math.max(insets.bottom, basePadding);
   };
 
   return (
