@@ -892,6 +892,7 @@ export type Database = {
       teams: {
         Row: {
           avatar_uri: string | null;
+          display: boolean | null;
           division_id: number | null;
           id: number;
           name: string;
@@ -900,6 +901,7 @@ export type Database = {
         };
         Insert: {
           avatar_uri?: string | null;
+          display?: boolean | null;
           division_id?: number | null;
           id?: never;
           name: string;
@@ -908,6 +910,7 @@ export type Database = {
         };
         Update: {
           avatar_uri?: string | null;
+          display?: boolean | null;
           division_id?: number | null;
           id?: never;
           name?: string;
