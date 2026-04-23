@@ -43,9 +43,11 @@ const Teams = () => {
           `
           *,
           pool: pool_id (*),
-          division_details: division_id (*)
+          division_details: division_id (*),
+          display
         `,
         )
+        .eq('display', true)
         .order('name');
 
       if (teamsError) throw teamsError;

@@ -98,6 +98,7 @@ export const useFavoriteTeams = (session: Session | null) => {
           division_details: division_id (*)
         `,
         )
+        .eq('display', true)
         .order('name');
 
       if (error) throw error;
