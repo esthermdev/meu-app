@@ -28,7 +28,19 @@
       },
       "package": "com.esmdev.TourneyAppMEU",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 46
+      "versionCode": 47,
+      "manifestPlaceholders": {},
+      "intentFilters": [],
+      "usesFeatures": [
+        {
+          "name": "android.hardware.camera",
+          "required": false
+        },
+        {
+          "name": "android.hardware.microphone",
+          "required": false
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
