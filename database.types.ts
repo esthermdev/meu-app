@@ -855,6 +855,7 @@ export type Database = {
           game_id: number | null;
           id: number;
           is_finished: boolean | null;
+          round_id: number | null;
           team1_score: number;
           team2_score: number;
         };
@@ -862,6 +863,7 @@ export type Database = {
           game_id?: number | null;
           id?: number;
           is_finished?: boolean | null;
+          round_id?: number | null;
           team1_score: number;
           team2_score: number;
         };
@@ -869,6 +871,7 @@ export type Database = {
           game_id?: number | null;
           id?: number;
           is_finished?: boolean | null;
+          round_id?: number | null;
           team1_score?: number;
           team2_score?: number;
         };
