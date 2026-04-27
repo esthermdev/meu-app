@@ -9,13 +9,27 @@ const RulesAndSOTG = () => {
     <View style={styles.container}>
       <ScrollView style={styles.scrollview} contentContainerStyle={styles.contentContainer}>
         <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentHeader}>
-          Saturday & Sunday
+          D-I
         </CustomText>
         <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>
-          • Games are hard capped at 90 minutes. Soft cap at 80 minutes.{'\n'}• Games are to 15.
-          {'\n'}• 2 timeouts per half.{'\n'}• A point begins as soon as a goal is scored.{'\n'}• The caps do NOT affect
+          • In Clipped Pools, winners play winners in the second round. Teams are reseeded for crossovers.{'\n'}• All
+          games are 105-minute games to 15; 2 TO/half {'\n'}• All games are soft capped (highest score plus 1) at 90
+          mins and hard capped at 105 mins. {'\n'}• A point begins as soon as a goal is scored. {'\n'}• Caps do not
+          affect timeouts.
+        </CustomText>
+        <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentHeader}>
+          D-III
+        </CustomText>
+        <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>
+          • All pool play and crossover games are 90 min games to 15; 2 TO/half.{'\n'}• All pool play games are soft
+          capped (highest score plus 1) at 75 mins and hard capped at 90 mins. {'\n'}• A point begins as soon as a goal
+          is scored. {'\n'}• Caps do not affect timeouts.
+        </CustomText>
+        <View style={styles.divider} />
+        <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>
+          • All bracket games are 105 min games to 15; 2TO/half. {'\n'}• All bracket games are soft capped at 90 mins
+          and hard capped at 105 mins. {'\n'}• A point begins as soon as a goal is scored. {'\n'}• Caps do not affect
           timeouts.
-          {'\n'}• Use the port-o-potties, not the bushes.{'\n'}
         </CustomText>
         <Link
           allowFontScaling
@@ -42,10 +56,11 @@ const styles = StyleSheet.create({
   },
   contentHeader: {
     ...typography.heading4,
-    marginBottom: 10,
+    marginBottom: 5,
   },
   content: {
     ...typography.text,
+    marginBottom: 20,
   },
   link: {
     ...typography.textMedium,
@@ -61,6 +76,11 @@ const styles = StyleSheet.create({
   bulletPoints: {
     marginBottom: 15,
     marginLeft: 15,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#ccc',
+    marginVertical: 15,
   },
   contentSubHeader: {
     ...typography.heading5,

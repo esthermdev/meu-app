@@ -10,18 +10,18 @@ const TournamentInfo = () => {
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>
           On behalf of{' '}
+          <Link href={'https://usaultimate.org/'} allowFontScaling maxFontSizeMultiplier={1.3} style={styles.linkRed}>
+            USA Ultimate
+          </Link>
+          ,{' '}
           <Link href={'https://maineultimate.org/'} allowFontScaling maxFontSizeMultiplier={1.3} style={styles.linkRed}>
             Maine Ultimate
           </Link>
-          ,{' '}
-          <Link href={'https://www.tylertech.com/'} allowFontScaling maxFontSizeMultiplier={1.3} style={styles.linkRed}>
-            Tyler Technologies
-          </Link>{' '}
-          and the{' '}
+          , and the{' '}
           <Link href={'https://www.southportland.gov/'} style={styles.linkRed}>
             City of South Portland
           </Link>
-          , I welcome you to the 2025 edition of the Lobster Pot.
+          , Visit Portland and the Maine Sports Commission, I welcome you to the 2026 College Regionals.
           {'\n\n'}
           The tournament takes place at the{' '}
           <Link
@@ -37,13 +37,6 @@ const TournamentInfo = () => {
           that connects a 6 mile bike/walking trail to Bug Light Park. In the winter months Wainwright turns into a
           winter wonderland filled with opportunities to skate on the ice rink, ski cross country on the groomed trails
           and snowshoe around the complex.
-          {'\n\n'}
-          We are once again excited to have{' '}
-          <Link href={'https://www.tylertech.com/'} allowFontScaling maxFontSizeMultiplier={1.3} style={styles.link}>
-            Tyler Technologies
-          </Link>{' '}
-          as our lead sponsor. Make sure to swing by the Players Lounge for a free disc and to take a look at their
-          internship and job opportunities.
           {'\n\n'}
           The greater Portland area is home to many great restaurants and breweries. We were just named to{' '}
           <Link
@@ -63,11 +56,6 @@ const TournamentInfo = () => {
             LL Bean
           </Link>
           , a 24 hour retail store, check the entrance doors, they have no locks!
-          {'\n\n'}
-          There are many lodging opportunities from a weekly VRBO/AirBnB to a one night stay at a national chain hotel.
-          {'\n\n'}
-          With over 90 teams in attendance, we know an event this size can NOT happen without our wonderful volunteers.
-          If you get a chance, please thank them for all of their hard work!
           {'\n\n'}
           We look forward to hosting you and please do not hesitate to reach out if you have any questions.
           {'\n\n'}
