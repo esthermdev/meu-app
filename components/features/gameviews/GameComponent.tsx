@@ -39,7 +39,7 @@ const GameComponent: React.FC<GameComponentProps> = ({ game, highlightedTeamId, 
               style={styles.teamLogo}
             />
             <CustomText style={[styles.teamText, item.team1?.id === highlightedTeamId ? styles.highlightedTeam : null]}>
-              {item.team1 ? item.team1?.name : 'TBD'}
+              {item.team1 ? item.team1?.name : item.team1_placeholder || 'TBD'}
             </CustomText>
           </View>
 
@@ -54,7 +54,7 @@ const GameComponent: React.FC<GameComponentProps> = ({ game, highlightedTeamId, 
               style={styles.teamLogo}
             />
             <CustomText style={[styles.teamText, item.team2?.id === highlightedTeamId ? styles.highlightedTeam : null]}>
-              {item.team2 ? item.team2?.name : 'TBD'}
+              {item.team2 ? item.team2?.name : item.team2_placeholder || 'TBD'}
             </CustomText>
           </View>
         </View>

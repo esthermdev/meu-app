@@ -304,7 +304,9 @@ export type Database = {
           pool_id: number | null;
           round_id: number | null;
           team1_id: number | null;
+          team1_placeholder: string | null;
           team2_id: number | null;
+          team2_placeholder: string | null;
         };
         Insert: {
           datetime_id?: number | null;
@@ -315,7 +317,9 @@ export type Database = {
           pool_id?: number | null;
           round_id?: number | null;
           team1_id?: number | null;
+          team1_placeholder?: string | null;
           team2_id?: number | null;
+          team2_placeholder?: string | null;
         };
         Update: {
           datetime_id?: number | null;
@@ -326,7 +330,9 @@ export type Database = {
           pool_id?: number | null;
           round_id?: number | null;
           team1_id?: number | null;
+          team1_placeholder?: string | null;
           team2_id?: number | null;
+          team2_placeholder?: string | null;
         };
         Relationships: [
           {
