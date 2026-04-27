@@ -266,10 +266,6 @@ export default function DivisionScheduleScreen() {
   const filtersHeader = useMemo(
     () => (
       <View style={styles.filtersContainer}>
-        <CustomText style={styles.filterPrompt}>
-          Select a stage, then choose a pool or round to view the scheduled games.
-        </CustomText>
-
         <View style={styles.filterRowViewport}>
           <ScrollView
             horizontal
@@ -440,7 +436,9 @@ export default function DivisionScheduleScreen() {
         ListEmptyComponent={() => (
           <View style={styles.emptyStateContainer}>
             <ComingSoonPlaceholder
-              message={isPoolPlay ? 'No games scheduled for this pool' : 'No games scheduled for this game type'}
+              message={
+                isPoolPlay ? 'No games scheduled for this pool!' : `No games scheduled for \n${selectedGameTypeTitle}!`
+              }
               iconName="event-note"
             />
           </View>

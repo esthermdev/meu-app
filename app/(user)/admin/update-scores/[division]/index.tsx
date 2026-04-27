@@ -433,8 +433,6 @@ export default function UpdateScoresDivisionScreen() {
   const filtersHeader = useMemo(
     () => (
       <View style={styles.filtersContainer}>
-        <CustomText style={styles.filterPrompt}>Stages</CustomText>
-
         <View style={styles.filterRowViewport}>
           <ScrollView
             horizontal
