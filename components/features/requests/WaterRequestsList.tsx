@@ -201,8 +201,6 @@ const styles = StyleSheet.create({
     color: '#CCCCCC',
   },
   infoSection: {
-    borderBottomColor: '#CCCCCC66',
-    borderBottomWidth: 1,
     gap: 5,
     paddingHorizontal: 10,
     paddingVertical: 8,

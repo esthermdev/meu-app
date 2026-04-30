@@ -4,11 +4,9 @@ import { Link } from 'expo-router';
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
 
-import { SafeAreaView } from 'react-native-safe-area-context';
-
 const CreditsScreen = () => {
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.title}>
           Credits
@@ -43,10 +41,10 @@ const CreditsScreen = () => {
         </View>
 
         <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.version}>
-          Version 2.0.6
+          Version 2.0.7
         </CustomText>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

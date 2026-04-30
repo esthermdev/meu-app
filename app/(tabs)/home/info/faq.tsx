@@ -6,8 +6,6 @@ import { typography } from '@/constants/Typography';
 import { Tables } from '@/database.types';
 import { supabase } from '@/lib/supabase';
 
-import { SafeAreaView } from 'react-native-safe-area-context';
-
 type FAQ = Tables<'faq'>;
 
 const FAQItem = ({ item }: { item: FAQ }) => (
@@ -55,7 +53,7 @@ const FAQScreen = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <FlatList
         data={faqs}
         renderItem={({ item }) => <FAQItem item={item} />}
@@ -63,7 +61,7 @@ const FAQScreen = () => {
         contentContainerStyle={styles.listContainer}
         ListEmptyComponent={<CustomText style={styles.emptyText}>No FAQs available at the moment.</CustomText>}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

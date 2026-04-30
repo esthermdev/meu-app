@@ -7,7 +7,6 @@ import { Tables } from '@/database.types';
 import { supabase } from '@/lib/supabase';
 
 import { FontAwesome5 } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Vendor = Tables<'vendors'>;
 
@@ -92,7 +91,7 @@ const VendorsScreen = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <FlatList
         data={vendors}
         renderItem={renderVendorItem}
@@ -100,7 +99,7 @@ const VendorsScreen = () => {
         contentContainerStyle={styles.listContainer}
         ListEmptyComponent={<CustomText style={styles.emptyText}>No vendors available at the moment.</CustomText>}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

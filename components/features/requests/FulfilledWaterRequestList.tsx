@@ -234,8 +234,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   infoSection: {
-    borderBottomColor: '#CCCCCC66',
-    borderBottomWidth: 1,
     gap: 5,
     paddingHorizontal: 10,
     paddingVertical: 8,
