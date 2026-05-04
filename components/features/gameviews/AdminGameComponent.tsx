@@ -1,6 +1,6 @@
 // components/AdminGameComponent.tsx
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, Platform, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
@@ -12,6 +12,7 @@ import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
 import { updateGameScore } from '@/utils/updateGameScore';
 
+import ScorePickerModal from '../modals/ScorePickerModal';
 import UpdateGameDetailsModal from '../modals/UpdateGameDetailsModal';
 import { FontAwesome5 } from '@expo/vector-icons';
 
@@ -31,7 +32,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
   const [fieldId, setFieldId] = useState<number | null>(null);
   const [team1Id, setTeam1Id] = useState<number | null>(null);
   const [team2Id, setTeam2Id] = useState<number | null>(null);
-  const [isEditingScores, setIsEditingScores] = useState<boolean>(false);
+  const [scorePickerVisible, setScorePickerVisible] = useState<boolean>(false);
 
   // Update the local state when the game prop changes
   useEffect(() => {
@@ -56,25 +57,22 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
     setModalVisible(true);
   };
 
-  const handleStartScoreEdit = () => {
-    if (isLoading) return;
-    setIsEditingScores(true);
-  };
-
-  const handleSaveInlineScores = async () => {
+  const handleSaveScorePicker = async (newTeam1Score: string, newTeam2Score: string) => {
     setIsLoading(true);
 
     const success = await updateGameScore({
       gameId: game.id,
-      team1Score,
-      team2Score,
+      team1Score: newTeam1Score,
+      team2Score: newTeam2Score,
       scoreId: game.scores && game.scores.length > 0 ? game.scores[0].id : null,
       datetimeId,
       fieldId,
       team1Id,
       team2Id,
       onSuccess: () => {
-        setIsEditingScores(false);
+        setTeam1Score(newTeam1Score);
+        setTeam2Score(newTeam2Score);
+        setScorePickerVisible(false);
         onGameStatusChange();
       },
     });
@@ -82,7 +80,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
     setIsLoading(false);
 
     if (!success) {
-      return;
+      setScorePickerVisible(false);
     }
   };
 
@@ -154,7 +152,6 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
 
         // Update local state
         setIsCompleted(true);
-        setIsEditingScores(false);
 
         // Notify parent component to refresh
         onGameStatusChange();
@@ -194,18 +191,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
             <CustomText style={styles.teamText}>{game.team1?.name || 'TBD'}</CustomText>
             <View style={styles.scoresSection}>
               <View style={styles.scoreSlot}>
-                {isEditingScores ? (
-                  <TextInput
-                    style={[styles.scoreInput, styles.scoreInputEditing]}
-                    value={team1Score}
-                    onChangeText={setTeam1Score}
-                    keyboardType="number-pad"
-                    allowFontScaling={false}
-                    maxLength={3}
-                  />
-                ) : (
-                  <CustomText style={styles.scoreInput}>{team1Score}</CustomText>
-                )}
+                <CustomText style={styles.scoreInput}>{team1Score}</CustomText>
               </View>
             </View>
           </View>
@@ -223,18 +209,7 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
             <CustomText style={styles.teamText}>{game.team2?.name || 'TBD'}</CustomText>
             <View style={styles.scoresSection}>
               <View style={styles.scoreSlot}>
-                {isEditingScores ? (
-                  <TextInput
-                    style={[styles.scoreInput, styles.scoreInputEditing]}
-                    value={team2Score}
-                    onChangeText={setTeam2Score}
-                    keyboardType="number-pad"
-                    allowFontScaling={false}
-                    maxLength={3}
-                  />
-                ) : (
-                  <CustomText style={styles.scoreInput}>{team2Score}</CustomText>
-                )}
+                <CustomText style={styles.scoreInput}>{team2Score}</CustomText>
               </View>
             </View>
           </View>
@@ -258,16 +233,25 @@ const AdminGameComponent: React.FC<AdminGameComponentProps> = ({ game, onGameSta
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.actionButton, styles.editScoresButton, isEditingScores && styles.saveScoresButton]}
-          onPress={isEditingScores ? handleSaveInlineScores : handleStartScoreEdit}
+          style={[styles.actionButton, styles.editScoresButton]}
+          onPress={() => setScorePickerVisible(true)}
           disabled={isLoading}
-          accessibilityLabel={isEditingScores ? 'Save' : 'Score'}>
-          <CustomText style={isEditingScores ? styles.saveButtonText : styles.buttonText}>
-            {isEditingScores ? 'Save' : 'Score'}
-          </CustomText>
-          <FontAwesome5 name="pen" size={14} color={isEditingScores ? '#1EC8A5' : '#000'} />
+          accessibilityLabel="Score">
+          <CustomText style={styles.buttonText}>Score</CustomText>
+          <FontAwesome5 name="pen" size={14} color="#000" />
         </TouchableOpacity>
       </View>
+
+      <ScorePickerModal
+        visible={scorePickerVisible}
+        onClose={() => setScorePickerVisible(false)}
+        onSave={handleSaveScorePicker}
+        initialTeam1Score={team1Score}
+        initialTeam2Score={team2Score}
+        team1Name={game.team1?.name || 'TBD'}
+        team2Name={game.team2?.name || 'TBD'}
+        isLoading={isLoading}
+      />
 
       <UpdateGameDetailsModal
         visible={modalVisible}
@@ -366,9 +350,6 @@ const styles = StyleSheet.create({
       ? { includeFontPadding: false as const, textAlignVertical: 'center' as const }
       : null),
   },
-  scoreInputEditing: {
-    color: '#1EC8A5',
-  },
   actionContainer: {
     flexDirection: 'row',
     gap: 8,
@@ -407,15 +388,6 @@ const styles = StyleSheet.create({
     gap: 6,
     borderColor: '#BFBFBF',
     borderWidth: 1,
-  },
-  saveScoresButton: {
-    backgroundColor: '#FFFFFF12',
-    borderColor: '#1EC8A5',
-    borderWidth: 1,
-  },
-  saveButtonText: {
-    color: '#1EC8A5',
-    ...typography.text,
   },
 });
 
