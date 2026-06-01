@@ -62,6 +62,11 @@ const styles = StyleSheet.create({
     ...typography.text,
     marginBottom: 20,
   },
+  divider: {
+    height: 1,
+    backgroundColor: '#ccc',
+    marginVertical: 15,
+  },
   link: {
     ...typography.textMedium,
     color: 'blue',
@@ -76,11 +81,6 @@ const styles = StyleSheet.create({
   bulletPoints: {
     marginBottom: 15,
     marginLeft: 15,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#ccc',
-    marginVertical: 15,
   },
   contentSubHeader: {
     ...typography.heading5,

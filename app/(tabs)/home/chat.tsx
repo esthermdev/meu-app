@@ -129,15 +129,6 @@ export default function ChatScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  centered: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-  },
   centerContainer: {
     alignItems: 'center',
     backgroundColor: '#fff',
@@ -160,6 +151,15 @@ const styles = StyleSheet.create({
     color: '#EA1D25',
     ...typography.heading5,
     textDecorationLine: 'underline',
+  },
+  centered: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
   },
   messagesList: {
     flexGrow: 1,

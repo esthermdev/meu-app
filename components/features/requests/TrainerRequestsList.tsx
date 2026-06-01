@@ -307,6 +307,14 @@ const styles = StyleSheet.create({
     flex: 0.7,
     justifyContent: 'space-between',
   },
+  labelText: {
+    ...typography.textSmall,
+    color: '#CCCCCCB2',
+  },
+  trainerNameText: {
+    ...typography.textSemiBold,
+    color: '#fff',
+  },
   detailsInfo: {
     flex: 1,
   },
@@ -315,10 +323,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: 5,
-  },
-  labelText: {
-    ...typography.textSmall,
-    color: '#CCCCCCB2',
   },
   valueText: {
     ...typography.textSemiBold,
@@ -337,10 +341,6 @@ const styles = StyleSheet.create({
   timeText: {
     ...typography.textMedium,
     color: '#CCCCCC',
-  },
-  trainerNameText: {
-    ...typography.textSemiBold,
-    color: '#fff',
   },
   descriptionContainer: {
     paddingHorizontal: 10,

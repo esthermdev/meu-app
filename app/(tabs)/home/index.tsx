@@ -133,14 +133,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 15,
   },
-  spacer: {
-    height: 40, // Adds some space before the bottom buttons
-  },
-  bottomButtons: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 'auto',
-  },
   chatCard: {
     backgroundColor: '#edebebff',
     borderRadius: 12,
@@ -173,5 +165,13 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     width: 50,
+  },
+  bottomButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 'auto',
+  },
+  spacer: {
+    height: 40, // Adds some space before the bottom buttons
   },
 });

@@ -457,11 +457,6 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 10,
   },
-  filterPrompt: {
-    ...typography.textLarge,
-    color: '#111',
-    paddingRight: 8,
-  },
   filterRowViewport: {
     marginHorizontal: -20,
   },
@@ -553,5 +548,10 @@ const styles = StyleSheet.create({
   emptyStateContainer: {
     paddingHorizontal: 20,
     paddingTop: 20,
+  },
+  filterPrompt: {
+    ...typography.textLarge,
+    color: '#111',
+    paddingRight: 8,
   },
 });

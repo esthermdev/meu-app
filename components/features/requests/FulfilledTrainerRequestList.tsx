@@ -289,8 +289,20 @@ const styles = StyleSheet.create({
   trainerInfo: {
     flex: 1,
   },
+  labelText: {
+    ...typography.textSmall,
+    color: '#CCCCCCB2',
+  },
+  trainerNameText: {
+    ...typography.textSmallBold,
+    color: '#fff',
+  },
   teamDetails: {
     width: '45%',
+  },
+  valueText: {
+    ...typography.textSmallBold,
+    color: '#fff',
   },
   updatedRow: {
     flexDirection: 'row',
@@ -305,18 +317,6 @@ const styles = StyleSheet.create({
   },
   updatedValueText: {
     width: '45%',
-    ...typography.textSmallBold,
-    color: '#fff',
-  },
-  labelText: {
-    ...typography.textSmall,
-    color: '#CCCCCCB2',
-  },
-  valueText: {
-    ...typography.textSmallBold,
-    color: '#fff',
-  },
-  trainerNameText: {
     ...typography.textSmallBold,
     color: '#fff',
   },

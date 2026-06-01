@@ -97,31 +97,6 @@ const ScorePickerModal: React.FC<ScorePickerModalProps> = ({
 };
 
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-  },
-  content: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    elevation: 5,
-    padding: 20,
-    gap: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    width: '80%',
-  },
-  title: {
-    ...typography.heading4,
-    textAlign: 'center',
-  },
-  teamLabel: {
-    ...typography.textSemiBold,
-  },
   grid: {
     gap: 8,
   },
@@ -146,6 +121,27 @@ const styles = StyleSheet.create({
   },
   gridCellTextSelected: {
     color: '#fff',
+  },
+  overlay: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+  },
+  content: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    elevation: 5,
+    padding: 20,
+    gap: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    width: '80%',
+  },
+  teamLabel: {
+    ...typography.textSemiBold,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -175,6 +171,10 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     ...typography.textMedium,
+  },
+  title: {
+    ...typography.heading4,
+    textAlign: 'center',
   },
 });
 

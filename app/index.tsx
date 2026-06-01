@@ -51,10 +51,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     maxHeight: 250,
   },
-  tournamentLogo: {
-    maxHeight: 250,
-    width: '80%',
-  },
   tournamentTitle: {
     ...typography.heading1,
     color: '#276B5D',
@@ -65,5 +61,9 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(39, 107, 93, 0.2)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
+  },
+  tournamentLogo: {
+    maxHeight: 250,
+    width: '80%',
   },
 });

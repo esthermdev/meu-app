@@ -186,6 +186,32 @@ export default function AdminChatListScreen() {
 }
 
 const styles = StyleSheet.create({
+  rightActionsContainer: {
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    paddingVertical: 1,
+  },
+  deleteAction: {
+    alignItems: 'center',
+    backgroundColor: '#D81E1E',
+    height: '100%',
+    justifyContent: 'center',
+    minWidth: 96,
+    paddingHorizontal: 18,
+  },
+  deleteActionDisabled: {
+    opacity: 0.85,
+  },
+  deleteActionText: {
+    color: '#fff',
+    fontFamily: fonts.semiBold,
+    fontSize: fontSizes.sm,
+  },
+  centered: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  },
   container: {
     backgroundColor: '#fff',
     flex: 1,
@@ -212,11 +238,6 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.xs,
     marginTop: 6,
   },
-  centered: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-  },
   emptyContainer: {
     alignItems: 'center',
     flex: 1,
@@ -229,26 +250,5 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     fontSize: fontSizes.sm,
     textAlign: 'center',
-  },
-  rightActionsContainer: {
-    alignItems: 'stretch',
-    justifyContent: 'center',
-    paddingVertical: 1,
-  },
-  deleteAction: {
-    alignItems: 'center',
-    backgroundColor: '#D81E1E',
-    height: '100%',
-    justifyContent: 'center',
-    minWidth: 96,
-    paddingHorizontal: 18,
-  },
-  deleteActionDisabled: {
-    opacity: 0.85,
-  },
-  deleteActionText: {
-    color: '#fff',
-    fontFamily: fonts.semiBold,
-    fontSize: fontSizes.sm,
   },
 });

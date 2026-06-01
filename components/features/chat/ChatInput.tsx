@@ -180,6 +180,14 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     fontSize: fontSizes.sm,
   },
+  clearMessageText: {
+    color: '#DA7B13',
+    fontFamily: fonts.regular,
+    fontSize: fontSizes.sm,
+    textDecorationLine: 'underline',
+    textAlign: 'center',
+    marginVertical: 3,
+  },
   container: {
     alignItems: 'flex-end',
     backgroundColor: '#fff',
@@ -225,14 +233,6 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: 'center',
     width: 40,
-  },
-  clearMessageText: {
-    color: '#DA7B13',
-    fontFamily: fonts.regular,
-    fontSize: fontSizes.sm,
-    textDecorationLine: 'underline',
-    textAlign: 'center',
-    marginVertical: 3,
   },
   sendButtonDisabled: {
     backgroundColor: '#ccc',

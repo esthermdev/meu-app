@@ -634,10 +634,6 @@ const styles = StyleSheet.create({
     gap: 15,
     padding: 20,
   },
-  filterPrompt: {
-    color: '#fff',
-    ...typography.heading3,
-  },
   filterRowViewport: {
     marginHorizontal: -20,
   },
@@ -756,5 +752,9 @@ const styles = StyleSheet.create({
   },
   itemSeparator: {
     height: 10,
+  },
+  filterPrompt: {
+    color: '#fff',
+    ...typography.heading3,
   },
 });

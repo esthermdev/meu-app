@@ -136,6 +136,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 0.5,
   },
+  image: {
+    borderRadius: 12,
+    height: 200,
+    marginBottom: 6,
+    width: 220,
+  },
   text: {
     color: '#333',
     fontFamily: fonts.regular,
@@ -149,11 +155,5 @@ const styles = StyleSheet.create({
     ...typography.textXSmall,
     marginVertical: 4,
     textAlign: 'right',
-  },
-  image: {
-    borderRadius: 12,
-    height: 200,
-    marginBottom: 6,
-    width: 220,
   },
 });

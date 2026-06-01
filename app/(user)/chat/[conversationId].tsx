@@ -147,14 +147,14 @@ export default function AdminChatScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
   centered: {
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
+  },
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
   },
   messagesList: {
     flexGrow: 1,
