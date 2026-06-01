@@ -1,7 +1,6 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Link } from 'expo-router';
 
-import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
 
 const RulesAndSOTG = () => {
