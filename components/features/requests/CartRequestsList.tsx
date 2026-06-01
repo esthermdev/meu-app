@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
 
 import { Card } from '@/components/Card';
@@ -443,25 +443,31 @@ const CartRequestsList = () => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={listData}
-        renderItem={renderSectionItem}
-        keyExtractor={(item) => item.key}
-        initialNumToRender={8}
-        maxToRenderPerBatch={8}
-        windowSize={8}
-        removeClippedSubviews
-        contentContainerStyle={
-          listData.length === 0 ? [styles.listContainer, styles.emptyListContainer] : styles.listContainer
-        }
-        refreshing={refreshing}
-        onRefresh={() => fetchRequests(false)}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <CustomText style={styles.emptyText}>No cart requests available</CustomText>
-          </View>
-        }
-      />
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#EA1D25" />
+        </View>
+      ) : (
+        <FlatList
+          data={listData}
+          renderItem={renderSectionItem}
+          keyExtractor={(item) => item.key}
+          initialNumToRender={8}
+          maxToRenderPerBatch={8}
+          windowSize={8}
+          removeClippedSubviews
+          contentContainerStyle={
+            listData.length === 0 ? [styles.listContainer, styles.emptyListContainer] : styles.listContainer
+          }
+          refreshing={refreshing}
+          onRefresh={() => fetchRequests(false)}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <CustomText style={styles.emptyText}>No cart requests available</CustomText>
+            </View>
+          }
+        />
+      )}
     </View>
   );
 };
@@ -599,7 +605,7 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: 6,
     borderBottomStartRadius: 6,
     paddingHorizontal: 15,
-    paddingVertical: 5,
+    paddingVertical: 7,
   },
   completeButtonText: {
     ...typography.textSmallBold,
@@ -632,7 +638,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 4,
     paddingHorizontal: 15,
-    paddingVertical: 5,
+    paddingVertical: 7,
   },
   acceptButtonText: {
     ...typography.textSmallBold,
@@ -645,7 +651,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 4,
     paddingHorizontal: 15,
-    paddingVertical: 5,
+    paddingVertical: 7,
   },
   removeButtonText: {
     ...typography.textSmallBold,

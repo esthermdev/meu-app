@@ -8,7 +8,7 @@ const RulesAndSOTG = () => {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollview} contentContainerStyle={styles.contentContainer}>
-        <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentHeader}>
+        {/* <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.contentHeader}>
           D-I
         </CustomText>
         <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>
@@ -30,7 +30,7 @@ const RulesAndSOTG = () => {
           • All bracket games are 105 min games to 15; 2TO/half. {'\n'}• All bracket games are soft capped at 90 mins
           and hard capped at 105 mins. {'\n'}• A point begins as soon as a goal is scored. {'\n'}• Caps do not affect
           timeouts.
-        </CustomText>
+        </CustomText> */}
         <Link
           allowFontScaling
           maxFontSizeMultiplier={1.3}

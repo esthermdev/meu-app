@@ -539,7 +539,7 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: 6,
     borderBottomStartRadius: 6,
     paddingHorizontal: 15,
-    paddingVertical: 5,
+    paddingVertical: 7,
   },
   buttonDisabled: {
     opacity: 0.6,

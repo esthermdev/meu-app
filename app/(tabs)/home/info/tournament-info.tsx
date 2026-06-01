@@ -21,7 +21,7 @@ const TournamentInfo = () => {
           <Link href={'https://www.southportland.gov/'} style={styles.linkRed}>
             City of South Portland
           </Link>
-          , Visit Portland and the Maine Sports Commission, I welcome you to the 2026 College Regionals.
+          , Visit Portland and the Maine Sports Commission, I welcome you to the 2026 Northeast Masters Regionals.
           {'\n\n'}
           The tournament takes place at the{' '}
           <Link
