@@ -36,6 +36,7 @@ export default function HomeScreen() {
                 icon={<MaterialCommunityIcons name="handshake-outline" size={28} color="#fff" />}
                 backgroundColor="#F7941D"
                 route="/(tabs)/home/spirit"
+                disabled={true}
               />
 
               {/* Watch Live button with background image and play button */}

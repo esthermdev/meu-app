@@ -49,7 +49,11 @@ const LargeCardButton: React.FC<LargeCardButtonProps> = ({
 
     return (
       <View style={[styles.contentContainer, { backgroundColor }]}>
-        {icon && typeof icon !== 'string' && <View>{icon}</View>}
+        {disabled ? (
+          <MaterialIcons name="disabled-visible" size={24} color="#e5d9c8" />
+        ) : (
+          icon && typeof icon !== 'string' && <View>{icon}</View>
+        )}
 
         <CustomText style={[styles.text, { color: disabled ? '#e5d9c8' : '#ffffff' }]}>{title}</CustomText>
       </View>

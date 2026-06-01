@@ -21,7 +21,7 @@ export default function Index() {
         <CustomText style={styles.welcomeText}>Welcome to</CustomText>
         <View style={styles.tournamentLogoContainer}>
           {/* <Image source={images.tournamentLogo} resizeMode="contain" style={styles.tournamentLogo} /> */}
-          <CustomText style={styles.tournamentTitle}>New England College Men&apos;s Regionals 2026</CustomText>
+          <CustomText style={styles.tournamentTitle}>Masters Regionals 2026</CustomText>
         </View>
         <PrimaryButton title="Continue" onPress={() => router.push('/(tabs)/home')} />
       </View>
@@ -56,11 +56,10 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   tournamentTitle: {
-    ...typography.heading2,
+    ...typography.heading1,
     color: '#276B5D',
     textAlign: 'center',
     fontWeight: '800',
-    fontSize: 30,
     letterSpacing: 1,
     paddingHorizontal: 4,
     textShadowColor: 'rgba(39, 107, 93, 0.2)',
