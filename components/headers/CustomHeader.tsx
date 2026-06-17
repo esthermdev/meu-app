@@ -1,7 +1,7 @@
 // components/CustomHeader.js
 import React, { useState } from 'react';
 import { Modal, Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { router } from 'expo-router';
+import { Href, router, usePathname } from 'expo-router';
 
 import { fonts } from '@/constants/Typography';
 
@@ -14,13 +14,29 @@ interface CustomHeaderProps {
   refreshInfo?: boolean;
 }
 
+// Maps the current screen to the route its back button should return to.
+// Add an entry here whenever a screen needs a custom back destination.
+const backRoutes: Record<string, Href> = {
+  '/home/mygames': '/(tabs)/home',
+};
+
 export const CustomHeader: React.FC<CustomHeaderProps> = ({ title, refreshInfo }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const currentScreen = usePathname();
+
+  const handleBack = () => {
+    const destination = backRoutes[currentScreen];
+    if (destination) {
+      router.dismissTo(destination);
+    } else {
+      router.back();
+    }
+  };
 
   return (
     <>
       <View style={styles.headerContainer}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <TouchableOpacity style={styles.backButton} onPress={handleBack}>
           <Ionicons name="arrow-back" size={23} color="#EA1D25" />
         </TouchableOpacity>
         <View style={styles.titleContainer}>

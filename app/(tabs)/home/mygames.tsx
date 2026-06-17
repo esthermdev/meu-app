@@ -249,7 +249,8 @@ const MyGames = () => {
             team2_score: team2Score,
             game_id: gameId,
             id: 0, // Temporary ID, will be replaced on next fetch
-            is_finished: false, // Default value
+            is_finished: false,
+            round_id: null,
           });
         }
 
