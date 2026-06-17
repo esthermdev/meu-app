@@ -18,6 +18,8 @@ interface CustomHeaderProps {
 // Add an entry here whenever a screen needs a custom back destination.
 const backRoutes: Record<string, Href> = {
   '/home/mygames': '/(tabs)/home',
+  '/home/chat': '/(tabs)/home',
+  '/home/notifications': '/(tabs)/home',
 };
 
 export const CustomHeader: React.FC<CustomHeaderProps> = ({ title, refreshInfo }) => {

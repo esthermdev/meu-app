@@ -15,15 +15,26 @@ const Header = () => {
     <SafeAreaView edges={['top']} style={{ backgroundColor: '#fff' }}>
       <View style={styles.container}>
         <View style={styles.content}>
-          <TouchableOpacity onPress={handleInfoPress}>
-            <MaterialIcons name="info" size={23} style={{ margin: 3 }} color="#EA1D25" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.navigate('/(tabs)/home')}>
-            <Image source={images.logoW} style={{ width: 40, height: 40 }} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.navigate('/(tabs)/home/notifications' as Href)} style={{ margin: 6 }}>
-            <MaterialCommunityIcons name="bell" size={20} color="#000" />
-          </TouchableOpacity>
+          <View style={styles.side}>
+            <TouchableOpacity onPress={handleInfoPress}>
+              <MaterialIcons name="info" size={23} style={{ margin: 3 }} color="#EA1D25" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.center}>
+            <TouchableOpacity onPress={() => router.navigate('/(tabs)/home')}>
+              <Image source={images.logoW} style={{ width: 40, height: 40 }} />
+            </TouchableOpacity>
+          </View>
+          <View style={[styles.side, { justifyContent: 'flex-end', gap: 10 }]}>
+            <TouchableOpacity
+              onPress={() => router.navigate('/(tabs)/home/notifications' as Href)}
+              style={{ margin: 6 }}>
+              <MaterialCommunityIcons name="bell" size={20} color="#000" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.navigate('/(tabs)/home/chat' as Href)}>
+              <MaterialCommunityIcons name="chat" size={20} color="#000" />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -41,7 +52,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+  },
+  side: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+  },
+  center: {
+    alignItems: 'center',
   },
 });
 
