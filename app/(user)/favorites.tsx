@@ -102,13 +102,13 @@ const FavoritesScreen = () => {
           scrollToTop();
         }}>
         <View style={styles.headerContainer}>
-          <CustomText style={styles.title}>Select your favorite teams!</CustomText>
+          <CustomText style={styles.title}>Select your favorite teams</CustomText>
           <CustomText style={styles.subtitle}>
-            Follow their games on the{' '}
+            Go to{' '}
             <Link href="/(tabs)/home/mygames" style={styles.link}>
               My Games
             </Link>{' '}
-            screen.
+            and report scores to improve your experience!
           </CustomText>
 
           {/* Custom Search Bar */}

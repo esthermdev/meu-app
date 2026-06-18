@@ -397,7 +397,9 @@ const MyGames = () => {
     return (
       <View style={styles.centerContainer}>
         <Text style={styles.mainMessageText}>Want to track your teams?</Text>
-        <Text style={styles.messageText}>Sign in to favorite teams and keep up with their upcoming games.</Text>
+        <Text style={styles.messageText}>
+          Sign in to follow your favorite teams, report scores, and keep up with upcoming games.
+        </Text>
         <PrimaryButton
           title="Sign In"
           onPress={() => router.push('/(tabs)/profile')}
@@ -423,6 +425,11 @@ const MyGames = () => {
       {games.length > 0 ? (
         <>
           {renderDateFilter()}
+          <View style={styles.addTeamsContainer}>
+            <TouchableOpacity onPress={() => router.push('/favorites')}>
+              <CustomText style={styles.addTeamsText}>+ Add Teams</CustomText>
+            </TouchableOpacity>
+          </View>
           <FlatList
             data={filteredGames}
             renderItem={renderGame}
@@ -449,7 +456,9 @@ const MyGames = () => {
       ) : (
         <View style={styles.centerContainer}>
           <Text style={styles.mainMessageText}>No games to show.</Text>
-          <Text style={styles.messageText}>Select your favorite teams to see their matches here.</Text>
+          <Text style={styles.messageText}>
+            Select your favorite teams to see their matches here and report scores!
+          </Text>
           <PrimaryButton
             title="Find Teams   +"
             onPress={() => router.push('/favorites')}
@@ -463,10 +472,20 @@ const MyGames = () => {
 };
 
 const styles = StyleSheet.create({
+  addTeamsContainer: {
+    alignItems: 'flex-end',
+    paddingHorizontal: 15,
+    paddingBottom: 10,
+  },
+  addTeamsText: {
+    ...typography.textSmallBold,
+    color: '#EA1D25',
+  },
   dateFilterContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    padding: 15,
+    paddingVertical: 12,
+    paddingHorizontal: 15,
   },
   dateLabel: {
     ...typography.textBold,
