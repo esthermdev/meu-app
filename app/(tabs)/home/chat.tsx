@@ -59,7 +59,7 @@ export default function ChatScreen() {
   if (!session) {
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.mainMessageText}>Need to reach the admin team?</Text>
+        <Text style={styles.mainMessageText}>Need help?</Text>
         <Text style={styles.messageText}>Sign in to chat directly with tournament administrators.</Text>
         <PrimaryButton
           title="Sign In"

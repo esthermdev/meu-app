@@ -35,11 +35,11 @@ const Header = () => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => router.navigate('/(tabs)/home/notifications' as Href)}
-              style={[styles.bellButton, hasUnread && styles.bellButtonUnread]}>
+              style={[styles.bellButton]}>
               <MaterialCommunityIcons
                 name={hasUnread ? 'bell-ring' : 'bell'}
                 size={20}
-                color={hasUnread ? '#EA1D25' : '#000'}
+                color={hasUnread ? '#f88d3b' : '#000'}
               />
             </TouchableOpacity>
           </View>
@@ -72,9 +72,6 @@ const styles = StyleSheet.create({
   bellButton: {
     margin: 6,
     padding: 4,
-  },
-  bellButtonUnread: {
-    borderColor: '#EA1D25',
   },
 });
 

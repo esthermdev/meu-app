@@ -195,7 +195,8 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     flexDirection: 'row',
     gap: 6,
-    paddingVertical: 12,
+    marginTop: 10,
+    paddingVertical: 5,
   },
   markAllText: {
     ...typography.textSmall,
