@@ -3,15 +3,13 @@ import { ActivityIndicator, FlatList, Image, Linking, StyleSheet, TouchableOpaci
 
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
-import { Tables } from '@/database.types';
 import { supabase } from '@/lib/supabase';
+import { VendorRow } from '@/types/info';
 
 import { FontAwesome5 } from '@expo/vector-icons';
 
-type Vendor = Tables<'vendors'>;
-
 const VendorsScreen = () => {
-  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [vendors, setVendors] = useState<VendorRow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,7 +38,7 @@ const VendorsScreen = () => {
     }
   };
 
-  const renderVendorItem = ({ item }: { item: Vendor }) => (
+  const renderVendorItem = ({ item }: { item: VendorRow }) => (
     <TouchableOpacity
       style={styles.vendorItem}
       onPress={() => handleVendorPress(item.website)}

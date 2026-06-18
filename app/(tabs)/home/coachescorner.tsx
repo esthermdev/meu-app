@@ -4,15 +4,9 @@ import { Image, Modal, Pressable, ScrollView, StyleSheet, TouchableOpacity, View
 import CustomText from '@/components/CustomText';
 import { CustomHeader } from '@/components/headers/CustomHeader';
 import { typography } from '@/constants/Typography';
+import { Coach } from '@/types/info';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-interface Coach {
-  name: string;
-  organization: string;
-  avatar?: string;
-  description: string;
-}
 
 const coaches: Coach[] = [
   {

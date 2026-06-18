@@ -4,20 +4,13 @@ import { Linking, SectionList, StyleSheet, TouchableOpacity, View } from 'react-
 import CustomText from '@/components/CustomText';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { typography } from '@/constants/Typography';
-import { Tables } from '@/database.types';
 import { supabase } from '@/lib/supabase';
+import { RestaurantRow, RestaurantSection } from '@/types/info';
 
 import { FontAwesome } from '@expo/vector-icons';
 
-// Define types for our data structure
-type Restaurant = Tables<'restaurants'>;
-type SectionData = {
-  title: string;
-  data: Restaurant[];
-};
-
 const RestaurantsHotelsScreen = () => {
-  const [data, setData] = useState<SectionData[]>([]);
+  const [data, setData] = useState<RestaurantSection[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,7 +25,7 @@ const RestaurantsHotelsScreen = () => {
       if (error) throw error;
 
       // Group the data by category
-      const groupedData: Record<string, Restaurant[]> = {};
+      const groupedData: Record<string, RestaurantRow[]> = {};
 
       data?.forEach((item) => {
         const category = item.category || 'Uncategorized';
@@ -57,7 +50,7 @@ const RestaurantsHotelsScreen = () => {
     }
   };
 
-  const renderItem = ({ item }: { item: Restaurant }) => (
+  const renderItem = ({ item }: { item: RestaurantRow }) => (
     <TouchableOpacity style={styles.item} onPress={() => (item.website ? Linking.openURL(item.website) : null)}>
       <View style={styles.itemContent}>
         <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.itemName}>
@@ -81,7 +74,7 @@ const RestaurantsHotelsScreen = () => {
     </TouchableOpacity>
   );
 
-  const renderSectionHeader = ({ section }: { section: SectionData }) => (
+  const renderSectionHeader = ({ section }: { section: RestaurantSection }) => (
     <View style={styles.sectionHeader}>
       <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.sectionHeaderText}>
         {section.title}

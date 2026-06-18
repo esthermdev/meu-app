@@ -3,12 +3,10 @@ import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
-import { Tables } from '@/database.types';
 import { supabase } from '@/lib/supabase';
+import { FaqRow } from '@/types/info';
 
-type FAQ = Tables<'faq'>;
-
-const FAQItem = ({ item }: { item: FAQ }) => (
+const FAQItem = ({ item }: { item: FaqRow }) => (
   <View style={styles.faqItem}>
     <CustomText allowFontScaling maxFontSizeMultiplier={1.2} style={styles.question}>
       {item.question}
@@ -20,7 +18,7 @@ const FAQItem = ({ item }: { item: FAQ }) => (
 );
 
 const FAQScreen = () => {
-  const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [faqs, setFaqs] = useState<FaqRow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {

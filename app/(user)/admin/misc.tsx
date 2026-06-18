@@ -4,13 +4,7 @@ import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
 import { supabase } from '@/lib/supabase';
-
-interface FeedbackItem {
-  id: number;
-  subject: string;
-  message: string;
-  created_at: string;
-}
+import { FeedbackItem } from '@/types/feedback';
 
 export default function MiscInfoScreen() {
   const [feedback, setFeedback] = useState<FeedbackItem[]>([]);

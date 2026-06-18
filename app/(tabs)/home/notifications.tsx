@@ -6,20 +6,12 @@ import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
 import { supabase } from '@/lib/supabase';
+import { NotificationItem } from '@/types/notifications';
 
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
-interface Notification {
-  id: number;
-  title: string;
-  message: string;
-  type: string;
-  created_at: string;
-  is_read: boolean;
-}
-
 const NotificationScreen = () => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const { session } = useAuth();
   const userId = session?.user?.id;
@@ -109,7 +101,7 @@ const NotificationScreen = () => {
         (payload) => {
           // Add the new notification to our state
           const newNotification = {
-            ...(payload.new as Notification),
+            ...(payload.new as NotificationItem),
             is_read: false, // New notifications are unread by default
           };
           setNotifications((prev) => [newNotification, ...prev]);
@@ -122,7 +114,7 @@ const NotificationScreen = () => {
     };
   }, [fetchNotifications]);
 
-  const markAsRead = async (notification: Notification) => {
+  const markAsRead = async (notification: NotificationItem) => {
     if (!notification.is_read && session?.user) {
       try {
         // Create a user-specific read status for this notification
@@ -145,7 +137,7 @@ const NotificationScreen = () => {
     }
   };
 
-  const handleNotificationPress = (notification: Notification) => {
+  const handleNotificationPress = (notification: NotificationItem) => {
     markAsRead(notification);
     // You can add navigation logic here if you want announcements to link somewhere
   };
@@ -177,7 +169,7 @@ const NotificationScreen = () => {
     }
   };
 
-  const renderNotification = ({ item }: { item: Notification }) => (
+  const renderNotification = ({ item }: { item: NotificationItem }) => (
     <TouchableOpacity style={styles.notificationItem} onPress={() => handleNotificationPress(item)}>
       <View style={styles.iconContainer}>
         <View style={styles.iconCircle}>
