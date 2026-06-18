@@ -1,141 +1,27 @@
 // app/(tabs)/home/notifications.tsx
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
 
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
-import { supabase } from '@/lib/supabase';
+import { useNotifications } from '@/context/NotificationsProvider';
 import { NotificationItem } from '@/types/notifications';
 
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
 const NotificationScreen = () => {
-  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
-  const [loading, setLoading] = useState(true);
   const { session } = useAuth();
-  const userId = session?.user?.id;
+  const { notifications, unreadCount, loading, refresh, markAsRead, markAllAsRead } = useNotifications();
 
-  const fetchNotifications = useCallback(async () => {
-    try {
-      setLoading(true);
-
-      if (!userId) {
-        // If not logged in, just fetch notifications without read status
-        const { data, error } = await supabase
-          .from('notifications')
-          .select('*')
-          .is('user_id', null)
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          console.error('Error fetching notifications:', error);
-          return;
-        }
-
-        const notificationsWithReadStatus = (data || []).map((notification) => ({
-          ...notification,
-          created_at: notification.created_at || '',
-          is_read: false, // If not logged in, treat all as unread
-        }));
-
-        setNotifications(notificationsWithReadStatus);
-      } else {
-        // If logged in, fetch notifications and join with read status
-        // First get all notifications
-        const { data: notificationsData, error: notificationsError } = await supabase
-          .from('notifications')
-          .select('*')
-          .is('user_id', null)
-          .order('created_at', { ascending: false });
-
-        if (notificationsError) {
-          console.error('Error fetching notifications:', notificationsError);
-          return;
-        }
-
-        // Then get all read statuses for this user
-        const { data: readStatusData, error: readStatusError } = await supabase
-          .from('notification_read_status')
-          .select('notification_id')
-          .eq('user_id', userId);
-
-        if (readStatusError) {
-          console.error('Error fetching read status:', readStatusError);
-          return;
-        }
-
-        // Convert read status data to a Set for faster lookups
-        const readNotificationIds = new Set((readStatusData || []).map((status) => status.notification_id));
-
-        // Combine the data
-        const notificationsWithReadStatus = (notificationsData || []).map((notification) => ({
-          ...notification,
-          created_at: notification.created_at || '',
-          is_read: readNotificationIds.has(notification.id),
-        }));
-
-        setNotifications(notificationsWithReadStatus);
-      }
-    } catch (error) {
-      console.error('Unexpected error:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [userId]);
-
-  useEffect(() => {
-    fetchNotifications();
-
-    // Set up a subscription to listen for new announcements
-    const channel = supabase
-      .channel('public:notifications')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'notifications',
-          filter: 'user_id=is.null', // Only listen for public announcements
-        },
-        (payload) => {
-          // Add the new notification to our state
-          const newNotification = {
-            ...(payload.new as NotificationItem),
-            is_read: false, // New notifications are unread by default
-          };
-          setNotifications((prev) => [newNotification, ...prev]);
-        },
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [fetchNotifications]);
-
-  const markAsRead = async (notification: NotificationItem) => {
-    if (!notification.is_read && session?.user) {
-      try {
-        // Create a user-specific read status for this notification
-        const { error } = await supabase.from('notification_read_status').insert({
-          notification_id: notification.id,
-          user_id: session.user.id,
-        });
-
-        if (error && error.code !== '23505') {
-          // Ignore unique violation errors
-          console.error('Error marking notification as read:', error);
-          return;
-        }
-
-        // Update local state
-        setNotifications((prev) => prev.map((n) => (n.id === notification.id ? { ...n, is_read: true } : n)));
-      } catch (error) {
-        console.error('Unexpected error:', error);
-      }
-    }
-  };
+  // Refresh whenever the screen comes into focus so newly-arrived notifications
+  // appear without the user having to pull to refresh.
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh]),
+  );
 
   const handleNotificationPress = (notification: NotificationItem) => {
     markAsRead(notification);
@@ -193,6 +79,17 @@ const NotificationScreen = () => {
 
   return (
     <View style={styles.container}>
+      {!session?.user && (
+        <View style={styles.signInBanner}>
+          <MaterialCommunityIcons name="information-outline" size={18} color="#EA1D25" />
+          <CustomText style={styles.signInText}>
+            <CustomText style={styles.signInLink} onPress={() => router.push('/sign-in')}>
+              Sign in
+            </CustomText>{' '}
+            to mark notifications as read.
+          </CustomText>
+        </View>
+      )}
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#EA1D25" />
@@ -204,7 +101,15 @@ const NotificationScreen = () => {
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.listContainer}
           refreshing={loading}
-          onRefresh={fetchNotifications}
+          onRefresh={refresh}
+          ListHeaderComponent={
+            session?.user && unreadCount > 0 ? (
+              <TouchableOpacity style={styles.markAllButton} onPress={markAllAsRead}>
+                <MaterialCommunityIcons name="check-all" size={18} color="#EA1D25" />
+                <CustomText style={styles.markAllText}>Mark all as read</CustomText>
+              </TouchableOpacity>
+            ) : null
+          }
         />
       ) : (
         <View style={styles.emptyContainer}>
@@ -284,6 +189,34 @@ const styles = StyleSheet.create({
   },
   notificationMessage: {
     ...typography.text,
+  },
+  markAllButton: {
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    flexDirection: 'row',
+    gap: 6,
+    paddingVertical: 12,
+  },
+  markAllText: {
+    ...typography.textSmall,
+    color: '#EA1D25',
+  },
+  signInBanner: {
+    alignItems: 'center',
+    backgroundColor: '#FDECEC',
+    flexDirection: 'row',
+    gap: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  signInText: {
+    ...typography.textSmall,
+    color: '#333',
+    flex: 1,
+  },
+  signInLink: {
+    color: '#EA1D25',
+    textDecorationLine: 'underline',
   },
 });
 

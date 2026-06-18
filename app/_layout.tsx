@@ -4,6 +4,7 @@ import { Stack, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { AuthProvider } from '@/context/AuthProvider';
+import { NotificationsProvider } from '@/context/NotificationsProvider';
 import { useCheckForAppUpdates } from '@/hooks/useCheckForAppUpdates';
 import { setNotificationRouteContext } from '@/hooks/usePushNotifications';
 
@@ -58,9 +59,10 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <SafeAreaProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <Stack>
+      <NotificationsProvider>
+        <SafeAreaProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'fade' }} />
             <Stack.Screen name="(user)" options={{ headerShown: false, gestureEnabled: false }} />
             <Stack.Screen
@@ -74,9 +76,10 @@ export default function RootLayout() {
             <Stack.Screen name="sign-up" options={{ headerShown: false, gestureEnabled: false, animation: 'none' }} />
             <Stack.Screen name="+not-found" />
             <Stack.Screen name="index" options={{ headerShown: false }} />
-          </Stack>
-        </GestureHandlerRootView>
-      </SafeAreaProvider>
+            </Stack>
+          </GestureHandlerRootView>
+        </SafeAreaProvider>
+      </NotificationsProvider>
     </AuthProvider>
   );
 }

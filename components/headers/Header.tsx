@@ -2,11 +2,15 @@ import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Href, router } from 'expo-router';
 
 import { images } from '@/constants';
+import { useNotifications } from '@/context/NotificationsProvider';
 
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Header = () => {
+  const { unreadCount } = useNotifications();
+  const hasUnread = unreadCount > 0;
+
   const handleInfoPress = () => {
     router.push('/(tabs)/home/info' as Href);
   };
@@ -26,13 +30,17 @@ const Header = () => {
             </TouchableOpacity>
           </View>
           <View style={[styles.side, { justifyContent: 'flex-end', gap: 10 }]}>
-            <TouchableOpacity
-              onPress={() => router.navigate('/(tabs)/home/notifications' as Href)}
-              style={{ margin: 6 }}>
-              <MaterialCommunityIcons name="bell" size={20} color="#000" />
-            </TouchableOpacity>
             <TouchableOpacity onPress={() => router.navigate('/(tabs)/home/chat' as Href)}>
               <MaterialCommunityIcons name="chat" size={20} color="#000" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.navigate('/(tabs)/home/notifications' as Href)}
+              style={[styles.bellButton, hasUnread && styles.bellButtonUnread]}>
+              <MaterialCommunityIcons
+                name={hasUnread ? 'bell-ring' : 'bell'}
+                size={20}
+                color={hasUnread ? '#EA1D25' : '#000'}
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -45,7 +53,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     height: 50,
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     width: '100%',
   },
   content: {
@@ -60,6 +68,13 @@ const styles = StyleSheet.create({
   },
   center: {
     alignItems: 'center',
+  },
+  bellButton: {
+    margin: 6,
+    padding: 4,
+  },
+  bellButtonUnread: {
+    borderColor: '#EA1D25',
   },
 });
 
