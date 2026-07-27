@@ -12,7 +12,7 @@
         "APP_VARIANT": "development"
       },
       "ios": {
-        "simulator": true
+        "simulator": false
       }
     },
     "preview": {

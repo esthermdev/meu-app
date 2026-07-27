@@ -1,6 +1,7 @@
 // app/(tabs)/home/index.tsx
+import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 
 import CircleIconButton from '@/components/buttons/CircleIconButton';
 import FullWidthButton from '@/components/buttons/FullWidthButton';
@@ -14,8 +15,24 @@ import MyGamesButtonBackground from '@/components/MyGamesButtonBackground';
 import { typography } from '@/constants/Typography';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 
 export default function HomeScreen() {
+  // Slide the Evergreen banner in from the right edge every time this screen gains focus.
+  const [bannerWidth, setBannerWidth] = useState(0);
+  const translateX = useSharedValue(300);
+
+  useFocusEffect(
+    useCallback(() => {
+      translateX.value = bannerWidth || 300;
+      translateX.value = withDelay(300, withTiming(0, { duration: 500, easing: Easing.out(Easing.cubic) }));
+    }, [bannerWidth, translateX]),
+  );
+
+  const bannerAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -94,21 +111,36 @@ export default function HomeScreen() {
             />
           </View>
           {/* <FullWidthButton
-          title="Coaches Corner"
-          icon="whistle"
-          backgroundColor="#000"
-          iconColor="#E0AE43"
-          route={'/(tabs)/home/coachescorner'}
-          style={{
-            borderColor: '#000',
-            alignItems: 'center',
-            width: 'auto',
-            marginTop: 14,
-          }}
-        /> */}
+            title="Coaches Corner"
+            icon="whistle"
+            backgroundColor="#000"
+            iconColor="#E0AE43"
+            route={'/(tabs)/home/coachescorner'}
+            style={{
+              borderColor: '#000',
+              alignItems: 'center',
+              width: 'auto',
+              marginTop: 14,
+            }}
+          /> */}
         </View>
         <NotificationPrompt />
       </ScrollView>
+
+      {/* Peeking side banner → Evergreen (slides in on focus) */}
+      <Animated.View
+        style={[styles.evergreenBanner, bannerAnimatedStyle]}
+        onLayout={(e) => setBannerWidth(e.nativeEvent.layout.width)}>
+        <TouchableOpacity
+          style={styles.evergreenBannerInner}
+          onPress={() => router.push('/(tabs)/home/evergreen')}
+          activeOpacity={0.85}
+          accessibilityRole="button"
+          accessibilityLabel="Open Evergreen">
+          <MaterialCommunityIcons name="pine-tree" size={18} color="#fff" />
+          <CustomText style={styles.evergreenBannerText}>Vacationland Merch!</CustomText>
+        </TouchableOpacity>
+      </Animated.View>
     </View>
   );
 }
@@ -173,5 +205,29 @@ const styles = StyleSheet.create({
   },
   spacer: {
     height: 40, // Adds some space before the bottom buttons
+  },
+  evergreenBanner: {
+    backgroundColor: '#276B5D',
+    borderBottomLeftRadius: 14,
+    borderTopLeftRadius: 14,
+    elevation: 5,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    position: 'absolute',
+    right: 0,
+    shadowColor: '#000',
+    shadowOffset: { width: -2, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    top: '66%',
+  },
+  evergreenBannerInner: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 8,
+  },
+  evergreenBannerText: {
+    ...typography.button,
+    color: '#fff',
   },
 });
