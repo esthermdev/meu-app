@@ -1,15 +1,6 @@
 // app/(tabs)/home/evergreen.tsx
 import { useState } from 'react';
-import {
-  Image,
-  ImageSourcePropType,
-  Linking,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Image, ImageSourcePropType, Modal, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
@@ -18,9 +9,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-const ORDER_FORM_URL =
-  'https://docs.google.com/forms/d/e/1FAIpQLSc35ZxZS1yOzq1MMKoyObVDeKBlQhFBOXLRFPvnea7MITRTjQ/viewform';
 
 interface Product {
   id: string;
@@ -191,9 +179,9 @@ export default function EvergreenScreen() {
   const [selected, setSelected] = useState<Product | null>(null);
   const insets = useSafeAreaInsets();
 
-  const openOrderForm = () => {
-    Linking.openURL(ORDER_FORM_URL);
-  };
+  // const openOrderForm = () => {
+  //   Linking.openURL(ORDER_FORM_URL);
+  // };
 
   return (
     <>
@@ -203,10 +191,12 @@ export default function EvergreenScreen() {
         </View>
 
         {/* Order button */}
-        <TouchableOpacity style={styles.orderButton} onPress={openOrderForm} activeOpacity={0.85}>
+        {/* <TouchableOpacity style={styles.orderButton} onPress={openOrderForm} activeOpacity={0.85}> */}
+        <View style={styles.orderButton}>
           <MaterialCommunityIcons name="clipboard-text-outline" size={20} color="#fff" />
-          <CustomText style={styles.orderButtonText}>Order Now</CustomText>
-        </TouchableOpacity>
+          <CustomText style={styles.orderButtonText}>Check out the Merch Tent!</CustomText>
+        </View>
+        {/* </TouchableOpacity> */}
 
         {/* Product gallery */}
         <CustomText variant="textSmall" style={styles.sectionHint}>
@@ -280,13 +270,13 @@ export default function EvergreenScreen() {
         </View>
 
         {/* Pre-order note */}
-        <View style={styles.noteCard}>
+        {/* <View style={styles.noteCard}>
           <MaterialCommunityIcons name="information-outline" size={20} color="#276B5D" />
           <CustomText variant="text" style={styles.noteText}>
             Pre-orders are available now. Pick them up at{' '}
             <CustomText style={styles.noteEmphasis}>Vacationland (Aug 8/9)</CustomText>.
           </CustomText>
-        </View>
+        </View> */}
       </ScrollView>
 
       {/* Enlarged image modal */}
