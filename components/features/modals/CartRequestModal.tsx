@@ -19,6 +19,7 @@ import { supabase } from '@/lib/supabase';
 import { CartRequestInsert, LocationType, RequestStatus } from '@/types/requests';
 
 import ModalButton from '../../buttons/ModalButtons';
+import { CounterInput } from '../../CounterInput';
 import CustomText from '../../CustomText';
 import { Dropdown } from '../../Dropdown';
 import ErrorMessage from '../../ErrorMessage';
@@ -32,6 +33,9 @@ const modalHeight = height * 0.8;
 
 // Define locations as a const array of valid LocationType values
 const LOCATIONS: LocationType[] = ['Field', 'Tourney Central', 'Lot 1 (Grass)', 'Lot 2 (Pavement)', 'Entrance'];
+
+const MIN_PASSENGERS = 1;
+const MAX_PASSENGERS = 6;
 
 const CART_REQUEST_NOTE =
   'Our volunteer drivers are dedicated to assisting you as quickly as possible. To help us serve everyone efficiently:\n\n' +
@@ -50,7 +54,7 @@ const CartRequestButton = () => {
   const [fromFieldNumber, setFromFieldNumber] = useState<number | undefined>(undefined);
   const [toFieldNumber, setToFieldNumber] = useState<number | undefined>(undefined);
   const [fields, setFields] = useState<FieldOption[]>([]);
-  const [passengerCount, setPassengerCount] = useState(1);
+  const [passengerCount, setPassengerCount] = useState(MIN_PASSENGERS);
   const [requesterName, setRequesterName] = useState('');
   const [specialRequest, setSpecialRequest] = useState('');
   // Error states
@@ -125,25 +129,6 @@ const CartRequestButton = () => {
     }
   };
 
-  const PassengerCountInput = ({ value, onValueChange }: { value: number; onValueChange: (value: number) => void }) => {
-    const increment = () => onValueChange(Math.min(value + 1, 6));
-    const decrement = () => onValueChange(Math.max(value - 1, 1));
-
-    return (
-      <View style={styles.passengerCountContainer}>
-        <TouchableOpacity onPress={decrement} style={styles.passengerCountButton}>
-          <Ionicons name="remove" size={24} color="#EA1D25" />
-        </TouchableOpacity>
-        <CustomText style={styles.passengerCountText} allowFontScaling maxFontSizeMultiplier={1.3}>
-          {value}
-        </CustomText>
-        <TouchableOpacity onPress={increment} style={styles.passengerCountButton}>
-          <Ionicons name="add" size={24} color="#EA1D25" />
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
   const validateForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
 
@@ -183,7 +168,7 @@ const CartRequestButton = () => {
     setToLocation('Field');
     setFromFieldNumber(undefined);
     setToFieldNumber(undefined);
-    setPassengerCount(1);
+    setPassengerCount(MIN_PASSENGERS);
     setRequesterName('');
     setSpecialRequest('');
   };
@@ -281,7 +266,13 @@ const CartRequestButton = () => {
                   <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
                     Number of Pax:
                   </CustomText>
-                  <PassengerCountInput value={passengerCount} onValueChange={setPassengerCount} />
+                  <CounterInput
+                    value={passengerCount}
+                    onValueChange={setPassengerCount}
+                    min={MIN_PASSENGERS}
+                    max={MAX_PASSENGERS}
+                    label="passenger count"
+                  />
                 </View>
 
                 <View style={{ marginBottom: 10 }}>
@@ -400,23 +391,6 @@ const CartRequestButton = () => {
 };
 
 const styles = StyleSheet.create({
-  passengerCountContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  passengerCountButton: {
-    alignItems: 'center',
-    backgroundColor: '#F0F0F0',
-    borderRadius: 20,
-    height: 35,
-    justifyContent: 'center',
-    width: 35,
-  },
-  passengerCountText: {
-    ...typography.textBold,
-    paddingHorizontal: 20,
-  },
   circleButton: {
     alignItems: 'center',
     backgroundColor: '#edebebff',

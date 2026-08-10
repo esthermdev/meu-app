@@ -1,15 +1,7 @@
-import React, { useRef } from 'react';
-import {
-  Dimensions,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React from 'react';
+import { Dimensions, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { CounterInput } from '@/components/CounterInput';
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
 
@@ -29,6 +21,14 @@ interface UpdateGameScoreModalProps {
 const { height } = Dimensions.get('window');
 const modalHeight = height * 0.45;
 
+const MIN_SCORE = 0;
+const MAX_SCORE = 15;
+
+const parseScore = (score: string) => {
+  const parsed = parseInt(score, 10);
+  return isNaN(parsed) ? MIN_SCORE : Math.min(Math.max(parsed, MIN_SCORE), MAX_SCORE);
+};
+
 const UpdateGameScoreModal: React.FC<UpdateGameScoreModalProps> = ({
   visible,
   onClose,
@@ -41,90 +41,53 @@ const UpdateGameScoreModal: React.FC<UpdateGameScoreModalProps> = ({
   setTeam2Score,
   isLoading = false,
 }) => {
-  const viewRef = useRef<View | null>(null);
-
-  const handleInputFocus = () => {
-    // Delay until keyboard animation completes. Android takes longer, so use a longer delay.
-    const delay = Platform.OS === 'android' ? 300 : 150;
-    setTimeout(() => {
-      viewRef.current?.measure((x, y, width, inputHeight, pageX, pageY) => {
-        const keyboardHeight = 300;
-        const screenHeight = Dimensions.get('window').height;
-        const inputBottomY = pageY + inputHeight;
-        const overlap = inputBottomY + keyboardHeight - screenHeight;
-
-        if (overlap > 0) {
-          viewRef.current?.setNativeProps({ style: { transform: [{ translateY: -overlap }] } });
-        }
-      });
-    }, delay);
-  };
-
   return (
     <Modal animationType="fade" transparent={true} visible={visible} onRequestClose={onClose}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        enabled={true}
-        keyboardVerticalOffset={Platform.OS === 'android' ? 1 : 0}
-        style={styles.modalContainer}>
-        <View style={styles.modalOverlay}>
-          <View ref={viewRef} style={styles.modalContent}>
-            <CustomText style={styles.modalTitle}>Update Score</CustomText>
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <CustomText style={styles.modalTitle}>Update Score</CustomText>
 
-            <View style={styles.modalTeamContainer}>
-              <CustomText style={styles.modalTeamName}>{team1Name || 'Team 1'}</CustomText>
-              <View style={styles.modalScoreInputContainer}>
-                <TextInput
-                  style={styles.modalScoreInput}
-                  keyboardType="number-pad"
-                  value={team1Score}
-                  onChangeText={setTeam1Score}
-                  onFocus={handleInputFocus}
-                  maxLength={3}
-                  allowFontScaling={false}
-                />
-              </View>
-            </View>
+          <View style={styles.modalTeamContainer}>
+            <CustomText style={styles.modalTeamName}>{team1Name || 'Team 1'}</CustomText>
+            <CounterInput
+              value={parseScore(team1Score)}
+              onValueChange={(score) => setTeam1Score(score.toString())}
+              min={MIN_SCORE}
+              max={MAX_SCORE}
+              label={`${team1Name || 'Team 1'} score`}
+            />
+          </View>
 
-            <View style={styles.modalTeamContainer}>
-              <CustomText style={styles.modalTeamName}>{team2Name || 'Team 2'}</CustomText>
-              <View style={styles.modalScoreInputContainer}>
-                <TextInput
-                  style={styles.modalScoreInput}
-                  keyboardType="number-pad"
-                  value={team2Score}
-                  onChangeText={setTeam2Score}
-                  onFocus={handleInputFocus}
-                  maxLength={3}
-                  allowFontScaling={false}
-                />
-              </View>
-            </View>
+          <View style={styles.modalTeamContainer}>
+            <CustomText style={styles.modalTeamName}>{team2Name || 'Team 2'}</CustomText>
+            <CounterInput
+              value={parseScore(team2Score)}
+              onValueChange={(score) => setTeam2Score(score.toString())}
+              min={MIN_SCORE}
+              max={MAX_SCORE}
+              label={`${team2Name || 'Team 2'} score`}
+            />
+          </View>
 
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity style={styles.modalCancelButton} onPress={onClose} disabled={isLoading}>
-                <CustomText style={styles.modalCancelButtonText}>Cancel</CustomText>
-              </TouchableOpacity>
+          <View style={styles.modalButtonContainer}>
+            <TouchableOpacity style={styles.modalCancelButton} onPress={onClose} disabled={isLoading}>
+              <CustomText style={styles.modalCancelButtonText}>Cancel</CustomText>
+            </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.modalUpdateButton}
-                onPress={() => onSubmit(team1Score, team2Score)}
-                disabled={isLoading}>
-                <CustomText style={styles.modalUpdateButtonText}>Update Score</CustomText>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={styles.modalUpdateButton}
+              onPress={() => onSubmit(parseScore(team1Score).toString(), parseScore(team2Score).toString())}
+              disabled={isLoading}>
+              <CustomText style={styles.modalUpdateButtonText}>Update Score</CustomText>
+            </TouchableOpacity>
           </View>
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    alignItems: 'center',
-    flex: 1,
-  },
   modalOverlay: {
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -142,41 +105,27 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    width: '80%',
+    width: '90%',
   },
   modalTitle: {
     ...typography.heading4,
     marginBottom: 15,
   },
   modalTeamContainer: {
+    gap: 10,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
   },
   modalTeamName: {
-    ...typography.heading5,
+    ...typography.textMedium,
     flex: 1,
-  },
-  modalScoreInputContainer: {
-    alignItems: 'center',
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    borderWidth: 1,
-    height: 50,
-    justifyContent: 'center',
-    width: 55,
-  },
-  modalScoreInput: {
-    flex: 1,
-    ...typography.heading5,
-    ...(Platform.OS === 'android'
-      ? { includeFontPadding: false as const, textAlignVertical: 'center' as const }
-      : null),
   },
   modalButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 10,
   },
   modalCancelButton: {
     backgroundColor: '#000000',
