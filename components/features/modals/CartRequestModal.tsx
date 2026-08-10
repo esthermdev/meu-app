@@ -22,6 +22,7 @@ import ModalButton from '../../buttons/ModalButtons';
 import CustomText from '../../CustomText';
 import { Dropdown } from '../../Dropdown';
 import ErrorMessage from '../../ErrorMessage';
+import { FieldOption, FieldSelector } from '../../FieldSelector';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -46,11 +47,9 @@ const CartRequestButton = () => {
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [fromLocation, setFromLocation] = useState<LocationType>('Field');
   const [toLocation, setToLocation] = useState<LocationType>('Field');
-  const [fromFieldNumber, setFromFieldNumber] = useState<string>('');
-  const [toFieldNumber, setToFieldNumber] = useState<string>('');
-  const [fieldOptions, setFieldOptions] = useState<string[]>([]);
-  const [fieldNameToIdMap, setFieldNameToIdMap] = useState<Record<string, number>>({});
-  const [fieldIdToNameMap, setFieldIdToNameMap] = useState<Record<number, string>>({});
+  const [fromFieldNumber, setFromFieldNumber] = useState<number | undefined>(undefined);
+  const [toFieldNumber, setToFieldNumber] = useState<number | undefined>(undefined);
+  const [fields, setFields] = useState<FieldOption[]>([]);
   const [passengerCount, setPassengerCount] = useState(1);
   const [requesterName, setRequesterName] = useState('');
   const [specialRequest, setSpecialRequest] = useState('');
@@ -89,19 +88,7 @@ const CartRequestButton = () => {
     if (error) {
       console.error('Error fetching fields:', error);
     } else if (data) {
-      // Create the name-to-id and id-to-name mapping
-      const nameToId: Record<string, number> = {};
-      const idToName: Record<number, string> = {};
-      data.forEach((field) => {
-        nameToId[field.name] = field.id;
-        idToName[field.id] = field.name;
-      });
-
-      setFieldNameToIdMap(nameToId);
-      setFieldIdToNameMap(idToName);
-
-      // Set field names for the dropdown
-      setFieldOptions(data.map((field) => field.name));
+      setFields(data);
     }
   };
 
@@ -115,8 +102,8 @@ const CartRequestButton = () => {
       const insertData: CartRequestInsert = {
         from_location: fromLocation,
         to_location: toLocation,
-        from_field_number: fromLocation === 'Field' ? parseInt(fromFieldNumber) : null,
-        to_field_number: toLocation === 'Field' ? parseInt(toFieldNumber) : null,
+        from_field_number: fromLocation === 'Field' ? (fromFieldNumber ?? null) : null,
+        to_field_number: toLocation === 'Field' ? (toFieldNumber ?? null) : null,
         passenger_count: passengerCount,
         requester: requesterName || null,
         special_request: specialRequest,
@@ -169,7 +156,7 @@ const CartRequestButton = () => {
     if (fromLocation === toLocation) {
       if (fromLocation === 'Field') {
         // For fields, check if the field numbers are the same
-        if (fromFieldNumber === toFieldNumber) {
+        if (fromFieldNumber !== undefined && fromFieldNumber === toFieldNumber) {
           newErrors.toFieldNumber = 'From and To field numbers cannot be the same';
         }
       } else {
@@ -194,8 +181,8 @@ const CartRequestButton = () => {
   const resetInputs = () => {
     setFromLocation('Field');
     setToLocation('Field');
-    setFromFieldNumber('');
-    setToFieldNumber('');
+    setFromFieldNumber(undefined);
+    setToFieldNumber(undefined);
     setPassengerCount(1);
     setRequesterName('');
     setSpecialRequest('');
@@ -321,19 +308,19 @@ const CartRequestButton = () => {
                     </View>
                     {fromLocation === 'Field' && (
                       <View style={{ flex: 1, flexDirection: 'column', width: 165 }}>
-                        <Dropdown
+                        <FieldSelector
                           label="From Field"
-                          data={fieldOptions}
-                          onSelect={(fieldName: string) => {
-                            const fieldId = fieldNameToIdMap[fieldName]?.toString() || '';
-                            setFromFieldNumber(fieldId);
+                          title="Select Pickup Field"
+                          fields={fields}
+                          selectedFieldId={fromFieldNumber}
+                          onSelect={(field) => {
+                            setFromFieldNumber(field.id);
                             // Clear error when user makes a selection
                             setErrors((prev) => ({
                               ...prev,
                               fromFieldNumber: undefined,
                             }));
                           }}
-                          selectedValue={fromFieldNumber ? fieldIdToNameMap[parseInt(fromFieldNumber)] : ''}
                           error={!!errors.fromFieldNumber}
                         />
                         <ErrorMessage message={errors.fromFieldNumber} />
@@ -363,19 +350,19 @@ const CartRequestButton = () => {
                     </View>
                     {toLocation === 'Field' && (
                       <View style={{ flex: 1, flexDirection: 'column', width: 165 }}>
-                        <Dropdown
+                        <FieldSelector
                           label="To Field"
-                          data={fieldOptions}
-                          onSelect={(fieldName: string) => {
-                            const fieldId = fieldNameToIdMap[fieldName]?.toString() || '';
-                            setToFieldNumber(fieldId);
+                          title="Select Drop-off Field"
+                          fields={fields}
+                          selectedFieldId={toFieldNumber}
+                          onSelect={(field) => {
+                            setToFieldNumber(field.id);
                             // Clear error when user makes a selection
                             setErrors((prev) => ({
                               ...prev,
                               toFieldNumber: undefined,
                             }));
                           }}
-                          selectedValue={toFieldNumber ? fieldIdToNameMap[parseInt(toFieldNumber)] : ''}
                           error={!!errors.toFieldNumber}
                         />
                         <ErrorMessage message={errors.toFieldNumber} />

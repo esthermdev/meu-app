@@ -1,14 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import {
-  Alert,
-  Dimensions,
-  FlatList,
-  Modal,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { Alert, Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 
 import { typography } from '@/constants/Typography';
 import { Tables } from '@/database.types';
@@ -16,13 +7,10 @@ import { supabase } from '@/lib/supabase';
 
 import ModalButton from '../../buttons/ModalButtons';
 import CustomText from '../../CustomText';
+import { FieldGrid } from '../../FieldSelector';
 import { MaterialIcons } from '@expo/vector-icons';
 
 type Field = Tables<'fields'>;
-
-const { width } = Dimensions.get('window');
-const numColumns = 5; // Number of columns in the grid
-const blockSize = (width * 0.8 - 60) / numColumns; // Calculate block size based on screen width
 
 type FieldWithCooldown = Field & {
   isDisabled: boolean;
@@ -166,29 +154,6 @@ const WaterRequestButton = () => {
     }
   };
 
-  const renderFieldBlock = ({ item }: { item: FieldWithCooldown }) => (
-    <TouchableOpacity
-      style={[
-        styles.fieldBlock,
-        selectedField === item.id && styles.selectedFieldBlock,
-        item.isDisabled && styles.disabledFieldBlock,
-      ]}
-      onPress={() => !item.isDisabled && selectField(item.id, item.name)}
-      activeOpacity={item.isDisabled ? 1 : 0.7}
-      disabled={item.isDisabled}>
-      <CustomText
-        style={[
-          styles.fieldBlockText,
-          selectedField === item.id && styles.selectedFieldText,
-          item.isDisabled && styles.disabledFieldText,
-        ]}
-        allowFontScaling
-        maxFontSizeMultiplier={1.2}>
-        {item.name}
-      </CustomText>
-    </TouchableOpacity>
-  );
-
   return (
     <View>
       <TouchableOpacity style={styles.circleButton} onPress={showModal}>
@@ -209,16 +174,11 @@ const WaterRequestButton = () => {
                     </CustomText>
                   </View>
                 )}
-                <View style={styles.fieldGridContainer}>
-                  <FlatList
-                    data={fields}
-                    numColumns={numColumns}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={renderFieldBlock}
-                    contentContainerStyle={styles.gridContent}
-                    showsVerticalScrollIndicator={false}
-                  />
-                </View>
+                <FieldGrid
+                  fields={fields}
+                  selectedFieldId={selectedField}
+                  onSelectField={(field) => selectField(field.id, field.name)}
+                />
 
                 <View style={styles.selectionInfo}>
                   <CustomText style={styles.selectionText}>Selected: Field {selectedFieldName}</CustomText>
@@ -237,34 +197,6 @@ const WaterRequestButton = () => {
 export default WaterRequestButton;
 
 const styles = StyleSheet.create({
-  fieldBlock: {
-    alignItems: 'center',
-    backgroundColor: '#F0F0F0',
-    borderColor: '#E0E0E0',
-    borderWidth: 1,
-    height: blockSize,
-    justifyContent: 'center',
-    width: blockSize,
-  },
-  selectedFieldBlock: {
-    backgroundColor: '#E74C3C',
-    borderColor: '#C0392B',
-  },
-  disabledFieldBlock: {
-    backgroundColor: '#D0D0D0',
-    borderColor: '#B0B0B0',
-    opacity: 0.5,
-  },
-  fieldBlockText: {
-    ...typography.labelBold,
-    textAlign: 'center',
-  },
-  selectedFieldText: {
-    color: '#fff',
-  },
-  disabledFieldText: {
-    color: '#999',
-  },
   circleButton: {
     alignItems: 'center',
     backgroundColor: '#edebebff',
@@ -307,13 +239,6 @@ const styles = StyleSheet.create({
     ...typography.label,
     color: '#E74C3C',
     textAlign: 'center',
-  },
-  fieldGridContainer: {
-    maxHeight: 300,
-  },
-  gridContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   selectionInfo: {
     backgroundColor: '#F9F9F9',

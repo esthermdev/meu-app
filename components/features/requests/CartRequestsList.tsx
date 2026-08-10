@@ -276,7 +276,7 @@ const CartRequestsList = () => {
             <CustomText style={styles.infoValue}>{item.requester || 'Anonymous'}</CustomText>
           </View>
           <View style={styles.passengerCol}>
-            <CustomText style={styles.passengerLabel}>No. of Passengers</CustomText>
+            <CustomText style={styles.passengerLabel}>No. Passengers</CustomText>
             <CustomText style={styles.passengerCount}>{item.passenger_count || 0}</CustomText>
           </View>
         </View>
@@ -361,7 +361,7 @@ const CartRequestsList = () => {
             <CustomText style={styles.infoValue}>{item.requester || 'Anonymous'}</CustomText>
           </View>
           <View style={styles.passengerCol}>
-            <CustomText style={styles.passengerLabel}>No. of Passengers</CustomText>
+            <CustomText style={styles.passengerLabel}>No. Passengers</CustomText>
             <CustomText style={styles.passengerCount}>{item.passenger_count || 0}</CustomText>
           </View>
         </View>
@@ -490,6 +490,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 8,
     paddingHorizontal: 10,
+    borderBottomColor: '#CCCCCC66',
+    borderBottomWidth: 1,
   },
   requestIdBadge: {
     backgroundColor: 'rgba(145,145,255,0.38)',
@@ -520,7 +522,7 @@ const styles = StyleSheet.create({
   locationsContainer: {
     flexDirection: 'row',
     paddingHorizontal: 10,
-    paddingBottom: 8,
+    paddingVertical: 8,
   },
   routeVisualization: {
     alignItems: 'center',
@@ -589,7 +591,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#CCCCCC66',
     borderTopWidth: 1,
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 8,
   },
   specialRequestLabel: {
     ...typography.textSmall,
@@ -622,7 +624,7 @@ const styles = StyleSheet.create({
     width: 8,
   },
   waitingTime: {
-    ...typography.textMedium,
+    ...typography.text,
     color: '#CCCCCC',
   },
   buttonContainer: {

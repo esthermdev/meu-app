@@ -140,6 +140,10 @@ const FulfilledTrainerRequestList = () => {
   const renderItem = ({ item }: { item: MedicalRequestWithRelations }) => {
     return (
       <Card style={styles.cardContainer}>
+        <View style={styles.updatedRow}>
+          <CustomText style={styles.updatedValueText}>{formatDateMilitary(item.updated_at)}</CustomText>
+        </View>
+
         <View style={styles.cardHeader}>
           <View style={styles.headerBadgesContainer}>
             <View style={styles.requestIdBadge}>
@@ -168,11 +172,6 @@ const FulfilledTrainerRequestList = () => {
               <CustomText style={styles.valueText}>{item.team_name}</CustomText>
             </View>
           )}
-        </View>
-
-        <View style={styles.updatedRow}>
-          <CustomText style={styles.updatedLabelText}>UPDATED</CustomText>
-          <CustomText style={styles.updatedValueText}>{formatDateMilitary(item.updated_at)}</CustomText>
         </View>
 
         {item.description_of_emergency && (
@@ -284,7 +283,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    paddingVertical: 10,
+    paddingBottom: 8,
   },
   trainerInfo: {
     flex: 1,
@@ -299,25 +298,22 @@ const styles = StyleSheet.create({
   },
   teamDetails: {
     width: '45%',
+    alignItems: 'flex-end',
   },
   valueText: {
+    textAlign: 'right',
     ...typography.textSmallBold,
     color: '#fff',
   },
   updatedRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    paddingBottom: 10,
-  },
-  updatedLabelText: {
-    flex: 1,
-    ...typography.textSmall,
-    color: '#CCCCCCB2',
+    justifyContent: 'center',
+    paddingVertical: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCCCCC66',
   },
   updatedValueText: {
-    width: '45%',
-    ...typography.textSmallBold,
+    ...typography.textXSmall,
     color: '#fff',
   },
   descriptionContainer: {
@@ -378,9 +374,7 @@ const styles = StyleSheet.create({
     color: '#B0B0B0',
   },
   listContainer: {
-    paddingBottom: 15,
-    paddingHorizontal: 15,
-    paddingTop: 3,
+    padding: 15,
   },
   clearAllContainer: {
     alignItems: 'center',

@@ -156,6 +156,11 @@ const TrainerRequestsList = () => {
 
     return (
       <Card style={styles.cardContainer}>
+        <View style={styles.timeContainer}>
+          <View style={[styles.timeIndicator, { backgroundColor: timeColor }]} />
+          <CustomText style={styles.timeText}>{getTimeSince(item.created_at)}</CustomText>
+        </View>
+
         <View style={styles.cardHeader}>
           <View style={styles.headerBadgesContainer}>
             <View style={styles.requestIdBadge}>
@@ -179,19 +184,8 @@ const TrainerRequestsList = () => {
             </CustomText>
           </View>
           <View style={styles.detailsInfo}>
-            {item.team_name && (
-              <View style={styles.detailsRow}>
-                <CustomText style={styles.labelText}>TEAM</CustomText>
-                <CustomText style={styles.valueText}>{item.team_name}</CustomText>
-              </View>
-            )}
-            <View style={styles.detailsRow}>
-              <CustomText style={styles.labelText}>WAITING</CustomText>
-              <View style={styles.timeContainer}>
-                <View style={[styles.timeIndicator, { backgroundColor: timeColor }]} />
-                <CustomText style={styles.timeText}>{getTimeSince(item.created_at)}</CustomText>
-              </View>
-            </View>
+            <CustomText style={styles.labelText}>TEAM</CustomText>
+            <CustomText style={styles.valueText}>{item.team_name}</CustomText>
           </View>
         </View>
 
@@ -301,11 +295,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    paddingVertical: 10,
+    paddingVertical: 8,
   },
   trainerInfo: {
     flex: 0.7,
-    justifyContent: 'space-between',
   },
   labelText: {
     ...typography.textSmall,
@@ -317,20 +310,20 @@ const styles = StyleSheet.create({
   },
   detailsInfo: {
     flex: 1,
-  },
-  detailsRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 5,
+    alignItems: 'flex-end',
   },
   valueText: {
+    textAlign: 'right',
     ...typography.textSemiBold,
     color: '#fff',
   },
   timeContainer: {
+    justifyContent: 'center',
+    paddingVertical: 5,
     alignItems: 'center',
     flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCCCCC66',
   },
   timeIndicator: {
     borderRadius: 4,
@@ -339,7 +332,7 @@ const styles = StyleSheet.create({
     width: 8,
   },
   timeText: {
-    ...typography.textMedium,
+    ...typography.textSmall,
     color: '#CCCCCC',
   },
   descriptionContainer: {
@@ -349,7 +342,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#CCCCCC66',
   },
   descriptionLabel: {
-    ...typography.text,
+    ...typography.textSmall,
     color: '#CCCCCCB2',
   },
   descriptionText: {

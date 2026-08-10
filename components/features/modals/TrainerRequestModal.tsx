@@ -18,8 +18,8 @@ import { MedicalRequestInsert, RequestStatus } from '@/types/requests';
 
 import ModalButton from '../../buttons/ModalButtons';
 import CustomText from '../../CustomText';
-import { Dropdown } from '../../Dropdown';
 import ErrorMessage from '../../ErrorMessage';
+import { FieldOption, FieldSelector } from '../../FieldSelector';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -84,19 +84,13 @@ const TrainerRequestButton = () => {
     }
   };
 
-  const handleFieldSelect = (fieldLabel: string) => {
-    if (fieldLabel === FIELD_PLACEHOLDER) return;
+  const handleFieldSelect = (field: FieldOption) => {
+    setSelectedField(field.id);
+    setSelectedFieldLabel(field.name); // Set the display label to field name
 
-    // Find the field where the name matches the selected label
-    const field = fields.find((f) => fieldLabel === f.name);
-    if (field) {
-      setSelectedField(field.id);
-      setSelectedFieldLabel(fieldLabel); // Set the display label to field name
-
-      // Clear the field error when a valid selection is made
-      if (errors.field) {
-        setErrors((prev) => ({ ...prev, field: undefined }));
-      }
+    // Clear the field error when a valid selection is made
+    if (errors.field) {
+      setErrors((prev) => ({ ...prev, field: undefined }));
     }
   };
 
@@ -193,9 +187,6 @@ const TrainerRequestButton = () => {
     </TouchableOpacity>
   );
 
-  // Prepare field labels for dropdown
-  const fieldLabels = fields.map((field) => field.name);
-
   return (
     <View>
       <TouchableOpacity style={styles.circleButton} onPress={() => setIsModalVisible(true)}>
@@ -283,11 +274,11 @@ const TrainerRequestButton = () => {
                 <CustomText style={styles.labelHeader} allowFontScaling maxFontSizeMultiplier={1.2}>
                   Select Field Location:
                 </CustomText>
-                <Dropdown
-                  label="Select Field"
-                  data={fieldLabels}
+                <FieldSelector
+                  label={FIELD_PLACEHOLDER}
+                  fields={fields}
+                  selectedFieldId={selectedField}
                   onSelect={handleFieldSelect}
-                  selectedValue={selectedFieldLabel}
                   error={!!errors.field}
                 />
                 <ErrorMessage message={errors.field} />

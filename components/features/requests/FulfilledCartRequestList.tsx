@@ -277,7 +277,7 @@ const FulfilledCartRequestsList = () => {
           )}
           <View style={styles.passengerInfo}>
             <View style={styles.passengerRow}>
-              <CustomText style={styles.labelText}>No. of Passengers</CustomText>
+              <CustomText style={styles.labelText}>No. Passengers</CustomText>
               <CustomText style={styles.valueText}>{item.passenger_count || 0}</CustomText>
             </View>
             <View style={styles.passengerRow}>
@@ -427,6 +427,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 8,
     paddingHorizontal: 10,
+    borderBottomColor: '#CCCCCC66',
+    borderBottomWidth: 1,
   },
   requestIdBadge: {
     backgroundColor: 'rgba(145,145,255,0.38)',
@@ -454,7 +456,7 @@ const styles = StyleSheet.create({
   locationsContainer: {
     flexDirection: 'row',
     paddingHorizontal: 10,
-    paddingBottom: 8,
+    paddingVertical: 8,
   },
   routeVisualization: {
     alignItems: 'center',
@@ -482,11 +484,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   routeLabel: {
-    ...typography.textMedium,
+    ...typography.text,
     color: '#CCCCCC',
   },
   locationText: {
-    ...typography.textBold,
+    ...typography.textSemiBold,
     color: '#fff',
   },
   infoSection: {
@@ -504,7 +506,7 @@ const styles = StyleSheet.create({
     color: '#CCCCCCB2',
   },
   driverText: {
-    ...typography.textSemiBold,
+    ...typography.textSmallBold,
     color: '#fff',
   },
   passengerInfo: {
@@ -516,21 +518,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   valueText: {
-    ...typography.textSemiBold,
+    ...typography.textSmallBold,
     color: '#fff',
   },
   specialRequestContainer: {
     borderTopColor: '#CCCCCC66',
     borderTopWidth: 1,
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 8,
   },
   specialRequestLabel: {
     ...typography.textSmall,
     color: '#CCCCCCB2',
   },
   specialRequestText: {
-    ...typography.textMedium,
+    ...typography.textSmall,
     color: '#fff',
   },
   deleteButton: {

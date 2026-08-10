@@ -4,7 +4,6 @@ import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react
 import { fonts } from '@/constants/Typography';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { ms } from 'react-native-size-matters';
 
 interface DropdownProps {
   label: string;
@@ -63,7 +62,7 @@ const styles = StyleSheet.create({
   },
   listItem: {
     fontFamily: fonts.regular,
-    fontSize: ms(16),
+    fontSize: 16,
   },
   button: {
     alignItems: 'center',
@@ -76,7 +75,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontFamily: fonts.medium,
-    fontSize: ms(16),
+    fontSize: 16,
   },
   overlay: {
     alignItems: 'center',
