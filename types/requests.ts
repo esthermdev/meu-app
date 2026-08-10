@@ -22,10 +22,10 @@ export interface CartRequestWithDriver extends Omit<CartRequestWithFieldNames, '
 }
 
 export interface WaterRequestWithField extends WaterRequestRow {
-  fields?: {
+  fields: {
     name: string;
     location?: string | null;
-  } | null;
+  };
 }
 
 export interface MedicalRequestWithRelations extends Omit<MedicalRequestRow, 'trainer'> {

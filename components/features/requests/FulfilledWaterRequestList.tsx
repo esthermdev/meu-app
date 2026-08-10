@@ -137,7 +137,7 @@ const FulfilledWaterRequestsList = () => {
         <View style={styles.infoSection}>
           <View style={styles.infoRow}>
             <CustomText style={styles.labelText}>FIELD</CustomText>
-            <CustomText style={styles.valueText}>Field {item.field_number}</CustomText>
+            <CustomText style={styles.valueText}>Field {item.fields.name}</CustomText>
           </View>
 
           {item.volunteer && (
