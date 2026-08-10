@@ -148,13 +148,15 @@ const TeamDetails = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#f5f5f5',
     flex: 1,
   },
   content: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   teamInfoContainer: {
+    backgroundColor: '#fff',
     alignItems: 'center',
     borderBottomColor: '#EFEFEF',
     borderBottomWidth: 1,
