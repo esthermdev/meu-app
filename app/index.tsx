@@ -1,4 +1,5 @@
-import { Dimensions, Image, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
+import { Dimensions, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 
 import { AppLandingPlayerSvg } from '@/assets/svg';
@@ -6,6 +7,7 @@ import PrimaryButton from '@/components/buttons/PrimaryButton';
 import CustomText from '@/components/CustomText';
 import { images } from '@/constants';
 import { typography } from '@/constants/Typography';
+import { useTournamentLogo } from '@/hooks/useTournamentLogo';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -18,10 +20,12 @@ const isCompact = height < 700;
 
 const svgHeight = isCompact ? 180 : 200;
 const svgMarginVertical = isCompact ? 25 : 40;
-const logoHeight = isCompact ? 200 : 290;
+const logoHeight = isCompact ? 200 : 250;
 const logoMarginBottom = isCompact ? 30 : 35;
 
 export default function Index() {
+  const { logoUrl } = useTournamentLogo();
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -33,7 +37,14 @@ export default function Index() {
         <View style={styles.contentContainer}>
           <AppLandingPlayerSvg style={{ alignSelf: 'center', marginVertical: svgMarginVertical }} height={svgHeight} />
           <CustomText style={styles.welcomeText}>Welcome to</CustomText>
-          <Image source={images.tournamentLogo} resizeMode="center" style={styles.tournamentLogo} />
+          <Image
+            source={logoUrl ?? images.tournamentLogo}
+            placeholder={images.tournamentLogo}
+            contentFit="contain"
+            transition={200}
+            cachePolicy="disk"
+            style={styles.tournamentLogo}
+          />
           {/* <CustomText style={styles.tournamentTitle}>Masters Regionals 2026</CustomText> */}
           <PrimaryButton title="Continue" onPress={() => router.push('/(tabs)/home')} />
         </View>
@@ -73,6 +84,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
   },
   tournamentLogo: {
+    // expo-image has no intrinsic size for a remote source, so the width has to be explicit
+    // or the logo collapses to zero until (and unless) the bundled fallback is used.
+    width: centerContainerWidth,
     height: logoHeight,
     marginBottom: logoMarginBottom,
     marginTop: 10,
