@@ -244,6 +244,13 @@ export type Database = {
             foreignKeyName: 'favorite_teams_team_id_fkey';
             columns: ['team_id'];
             isOneToOne: false;
+            referencedRelation: 'team_spirit_rankings';
+            referencedColumns: ['team_id'];
+          },
+          {
+            foreignKeyName: 'favorite_teams_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: false;
             referencedRelation: 'teams';
             referencedColumns: ['id'];
           },
@@ -381,8 +388,22 @@ export type Database = {
             foreignKeyName: 'games_team1_id_fkey';
             columns: ['team1_id'];
             isOneToOne: false;
+            referencedRelation: 'team_spirit_rankings';
+            referencedColumns: ['team_id'];
+          },
+          {
+            foreignKeyName: 'games_team1_id_fkey';
+            columns: ['team1_id'];
+            isOneToOne: false;
             referencedRelation: 'teams';
             referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'games_team2_id_fkey';
+            columns: ['team2_id'];
+            isOneToOne: false;
+            referencedRelation: 'team_spirit_rankings';
+            referencedColumns: ['team_id'];
           },
           {
             foreignKeyName: 'games_team2_id_fkey';
@@ -685,6 +706,7 @@ export type Database = {
           is_chat_online: boolean;
           is_logged_in: boolean | null;
           role_id: number;
+          team_id: number | null;
           updated_at: string | null;
         };
         Insert: {
@@ -696,6 +718,7 @@ export type Database = {
           is_chat_online?: boolean;
           is_logged_in?: boolean | null;
           role_id: number;
+          team_id?: number | null;
           updated_at?: string | null;
         };
         Update: {
@@ -707,6 +730,7 @@ export type Database = {
           is_chat_online?: boolean;
           is_logged_in?: boolean | null;
           role_id?: number;
+          team_id?: number | null;
           updated_at?: string | null;
         };
         Relationships: [
@@ -715,6 +739,20 @@ export type Database = {
             columns: ['role_id'];
             isOneToOne: false;
             referencedRelation: 'roles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'profiles_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: false;
+            referencedRelation: 'team_spirit_rankings';
+            referencedColumns: ['team_id'];
+          },
+          {
+            foreignKeyName: 'profiles_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: false;
+            referencedRelation: 'teams';
             referencedColumns: ['id'];
           },
         ];
@@ -742,6 +780,13 @@ export type Database = {
           wins?: number | null;
         };
         Relationships: [
+          {
+            foreignKeyName: 'rankings_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: true;
+            referencedRelation: 'team_spirit_rankings';
+            referencedColumns: ['team_id'];
+          },
           {
             foreignKeyName: 'rankings_team_id_fkey';
             columns: ['team_id'];
@@ -894,6 +939,89 @@ export type Database = {
             columns: ['game_id'];
             isOneToOne: false;
             referencedRelation: 'games';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      spirit_scores: {
+        Row: {
+          comments: string | null;
+          created_at: string;
+          game_id: number;
+          id: number;
+          rated_team_id: number;
+          rater_team_id: number;
+          score: number;
+          submitted_by: string;
+        };
+        Insert: {
+          comments?: string | null;
+          created_at?: string;
+          game_id: number;
+          id?: never;
+          rated_team_id: number;
+          rater_team_id: number;
+          score: number;
+          submitted_by: string;
+        };
+        Update: {
+          comments?: string | null;
+          created_at?: string;
+          game_id?: number;
+          id?: never;
+          rated_team_id?: number;
+          rater_team_id?: number;
+          score?: number;
+          submitted_by?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'spirit_scores_game_id_fkey';
+            columns: ['game_id'];
+            isOneToOne: false;
+            referencedRelation: 'full_gameview';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'spirit_scores_game_id_fkey';
+            columns: ['game_id'];
+            isOneToOne: false;
+            referencedRelation: 'games';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'spirit_scores_rated_team_id_fkey';
+            columns: ['rated_team_id'];
+            isOneToOne: false;
+            referencedRelation: 'team_spirit_rankings';
+            referencedColumns: ['team_id'];
+          },
+          {
+            foreignKeyName: 'spirit_scores_rated_team_id_fkey';
+            columns: ['rated_team_id'];
+            isOneToOne: false;
+            referencedRelation: 'teams';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'spirit_scores_rater_team_id_fkey';
+            columns: ['rater_team_id'];
+            isOneToOne: false;
+            referencedRelation: 'team_spirit_rankings';
+            referencedColumns: ['team_id'];
+          },
+          {
+            foreignKeyName: 'spirit_scores_rater_team_id_fkey';
+            columns: ['rater_team_id'];
+            isOneToOne: false;
+            referencedRelation: 'teams';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'spirit_scores_submitted_by_fkey';
+            columns: ['submitted_by'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
             referencedColumns: ['id'];
           },
         ];
@@ -1080,6 +1208,13 @@ export type Database = {
             foreignKeyName: 'rankings_team_id_fkey';
             columns: ['team_id'];
             isOneToOne: true;
+            referencedRelation: 'team_spirit_rankings';
+            referencedColumns: ['team_id'];
+          },
+          {
+            foreignKeyName: 'rankings_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: true;
             referencedRelation: 'teams';
             referencedColumns: ['id'];
           },
@@ -1101,6 +1236,40 @@ export type Database = {
             columns: ['pool_id'];
             isOneToOne: false;
             referencedRelation: 'pools';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      spirit_scores_export: {
+        Row: {
+          comments: string | null;
+          created_at: string | null;
+          date: string | null;
+          division: string | null;
+          score: number | null;
+          scoring_team: string | null;
+          submitted_by: string | null;
+          team_scored: string | null;
+          time: string | null;
+        };
+        Relationships: [];
+      };
+      team_spirit_rankings: {
+        Row: {
+          avg_score: number | null;
+          division: string | null;
+          division_id: number | null;
+          division_rank: number | null;
+          name: string | null;
+          scores_received: number | null;
+          team_id: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'teams_division_id_fkey';
+            columns: ['division_id'];
+            isOneToOne: false;
+            referencedRelation: 'divisions';
             referencedColumns: ['id'];
           },
         ];
