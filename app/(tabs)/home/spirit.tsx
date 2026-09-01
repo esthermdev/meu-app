@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, Linking, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
 
 import PrimaryButton from '@/components/buttons/PrimaryButton';
@@ -41,12 +41,6 @@ export default function SpiritPage() {
   const isPickingTeam = !teamId || changingTeam;
   // Rankings default to the user's own division until they tap a different chip.
   const rankingsDivisionId = chosenRankingsDivisionId ?? selectedTeam?.division_id ?? divisions[0]?.id ?? null;
-
-  const openPDF = () => {
-    Linking.openURL(
-      'https://opleqymigooimduhlvym.supabase.co/storage/v1/object/public/documents/Spirit%20Points%20_%20Games%20Version2.pdf',
-    );
-  };
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -142,7 +136,7 @@ export default function SpiritPage() {
     const divisionTeams = teams.filter((team) => team.division_id === divisionId);
 
     return (
-      <View style={styles.section}>
+      <View>
         <TouchableOpacity style={styles.backRow} onPress={() => setDivisionId(null)} hitSlop={8}>
           <MaterialCommunityIcons name="chevron-left" size={20} color={ORANGE} />
           <CustomText style={styles.backText}>{division?.title ?? 'Divisions'}</CustomText>
@@ -171,42 +165,84 @@ export default function SpiritPage() {
     );
   };
 
+  const renderToggleRow = () => (
+    <View style={styles.toggleRow}>
+      <TouchableOpacity
+        style={[styles.toggle, tab === 'submit' && styles.toggleSelected]}
+        onPress={() => setTab('submit')}>
+        <MaterialIcons name="auto-awesome" size={20} color={tab === 'submit' ? '#fff' : ORANGE} />
+        <CustomText style={[styles.toggleText, tab === 'submit' && styles.toggleTextSelected]} numberOfLines={1}>
+          Submit Scores
+        </CustomText>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.toggle, tab === 'rankings' && styles.toggleSelected]}
+        onPress={() => setTab('rankings')}>
+        <MaterialCommunityIcons name="podium" size={20} color={tab === 'rankings' ? '#fff' : ORANGE} />
+        <CustomText style={[styles.toggleText, tab === 'rankings' && styles.toggleTextSelected]} numberOfLines={1}>
+          Spirit Rankings
+        </CustomText>
+      </TouchableOpacity>
+    </View>
+  );
+
   const renderSubmitTab = () => {
     if (!session) {
       return (
-        <View style={styles.emptyState}>
-          <CustomText style={styles.emptyTitle}>Want to score spirit?</CustomText>
-          <CustomText style={styles.emptyMessage}>
-            Sign in to report spirit scores for the teams you played against.
-          </CustomText>
-          <PrimaryButton
-            title="Sign In"
-            onPress={() => router.push('/(tabs)/profile')}
-            style={{ height: 35, paddingHorizontal: 15 }}
-            textStyle={{ ...typography.buttonLarge }}
-          />
-        </View>
+        <>
+          <View style={styles.headerCard}>{renderToggleRow()}</View>
+          <View style={styles.listArea}>
+            <View style={styles.emptyState}>
+              <CustomText style={styles.emptyTitle}>Want to score spirit?</CustomText>
+              <CustomText style={styles.emptyMessage}>
+                Sign in to report spirit scores for the teams you played against.
+              </CustomText>
+              <PrimaryButton
+                title="Sign In"
+                onPress={() => router.push('/(tabs)/profile')}
+                style={{ height: 35, paddingHorizontal: 15 }}
+                textStyle={{ ...typography.buttonLarge }}
+              />
+            </View>
+          </View>
+        </>
       );
     }
 
     if (loading || divisionsLoading) {
-      return <LoadingIndicator message="Loading your games..." fullscreen={false} transparent={false} />;
+      return (
+        <>
+          <View style={styles.headerCard}>{renderToggleRow()}</View>
+          <View style={styles.listArea}>
+            <LoadingIndicator message="Loading your games..." fullscreen={false} transparent={false} />
+          </View>
+        </>
+      );
     }
 
     if (isPickingTeam) {
-      return divisionId === null ? renderDivisionPicker() : renderTeamPicker();
+      return (
+        <View style={styles.headerCard}>
+          {renderToggleRow()}
+          {divisionId === null ? renderDivisionPicker() : renderTeamPicker()}
+        </View>
+      );
     }
 
     return (
       <>
-        <View style={styles.teamBar}>
-          <View style={styles.teamBarText}>
-            <CustomText style={styles.teamBarLabel}>Your team</CustomText>
-            <CustomText style={styles.teamBarName}>{selectedTeam?.name ?? '—'}</CustomText>
+        <View style={styles.headerCard}>
+          {renderToggleRow()}
+
+          <View style={styles.teamBar}>
+            <View style={styles.teamBarText}>
+              <CustomText style={styles.teamBarLabel}>Your team</CustomText>
+              <CustomText style={styles.teamBarName}>{selectedTeam?.name ?? '—'}</CustomText>
+            </View>
+            <TouchableOpacity onPress={startChangingTeam} hitSlop={8}>
+              <CustomText style={styles.changeTeamText}>Change</CustomText>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={startChangingTeam} hitSlop={8}>
-            <CustomText style={styles.changeTeamText}>Change</CustomText>
-          </TouchableOpacity>
         </View>
 
         <View style={styles.listArea}>
@@ -247,7 +283,14 @@ export default function SpiritPage() {
 
   const renderRankingsTab = () => {
     if (loading || divisionsLoading) {
-      return <LoadingIndicator message="Loading rankings..." fullscreen={false} transparent={false} />;
+      return (
+        <>
+          <View style={styles.headerCard}>{renderToggleRow()}</View>
+          <View style={styles.listArea}>
+            <LoadingIndicator message="Loading rankings..." fullscreen={false} transparent={false} />
+          </View>
+        </>
+      );
     }
 
     const avatarByTeam = new Map(teams.map((team) => [team.id, team.avatar_uri]));
@@ -268,44 +311,46 @@ export default function SpiritPage() {
 
     return (
       <>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.chipRow}
-          style={styles.chipScroll}>
-          {divisions.map((division) => {
-            const isSelected = division.id === rankingsDivisionId;
-            return (
-              <TouchableOpacity
-                key={division.id}
-                style={[styles.chip, isSelected && styles.chipSelected]}
-                onPress={() => setChosenRankingsDivisionId(division.id)}>
-                <CustomText style={[styles.chipText, isSelected && styles.chipTextSelected]}>
-                  {division.title.toUpperCase()}
-                </CustomText>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+        <View style={styles.headerCard}>
+          {renderToggleRow()}
 
-        {scored.length === 0 ? (
-          <View style={styles.emptyState}>
-            <CustomText style={styles.emptyTitle}>No spirit scores yet.</CustomText>
-            <CustomText style={styles.emptyMessage}>Rankings appear here once teams start reporting scores.</CustomText>
-          </View>
-        ) : (
-          <>
-            <SpiritPodium entries={podiumEntries} />
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.chipRow}
+            style={styles.chipScroll}>
+            {divisions.map((division) => {
+              const isSelected = division.id === rankingsDivisionId;
+              return (
+                <TouchableOpacity
+                  key={division.id}
+                  style={[styles.chip, isSelected && styles.chipSelected]}
+                  onPress={() => setChosenRankingsDivisionId(division.id)}>
+                  <CustomText style={[styles.chipText, isSelected && styles.chipTextSelected]}>
+                    {division.title.toUpperCase()}
+                  </CustomText>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
 
-            {restRows.length > 0 ? (
-              <View style={styles.listArea}>
-                {restRows.map((row, index) =>
-                  renderRankingCard(row, index + podiumRows.length + 1, avatarByTeam.get(row.team_id ?? 0) ?? null),
-                )}
-              </View>
-            ) : null}
-          </>
-        )}
+          {scored.length > 0 ? <SpiritPodium entries={podiumEntries} /> : null}
+        </View>
+
+        <View style={styles.listArea}>
+          {scored.length === 0 ? (
+            <View style={styles.emptyState}>
+              <CustomText style={styles.emptyTitle}>No spirit scores yet.</CustomText>
+              <CustomText style={styles.emptyMessage}>
+                Rankings appear here once teams start reporting scores.
+              </CustomText>
+            </View>
+          ) : (
+            restRows.map((row, index) =>
+              renderRankingCard(row, index + podiumRows.length + 1, avatarByTeam.get(row.team_id ?? 0) ?? null),
+            )
+          )}
+        </View>
       </>
     );
   };
@@ -317,33 +362,11 @@ export default function SpiritPage() {
           style={styles.container}
           contentContainerStyle={styles.content}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-          {/* Submit / Rankings toggle */}
-          <View style={styles.toggleRow}>
-            <TouchableOpacity
-              style={[styles.toggle, tab === 'submit' && styles.toggleSelected]}
-              onPress={() => setTab('submit')}>
-              <MaterialIcons name="auto-awesome" size={26} color={tab === 'submit' ? '#fff' : ORANGE} />
-              <CustomText style={[styles.toggleText, tab === 'submit' && styles.toggleTextSelected]} numberOfLines={1}>
-                Submit Scores
-              </CustomText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.toggle, tab === 'rankings' && styles.toggleSelected]}
-              onPress={() => setTab('rankings')}>
-              <MaterialCommunityIcons name="podium" size={26} color={tab === 'rankings' ? '#fff' : ORANGE} />
-              <CustomText
-                style={[styles.toggleText, tab === 'rankings' && styles.toggleTextSelected]}
-                numberOfLines={1}>
-                Spirit Rankings
-              </CustomText>
-            </TouchableOpacity>
-          </View>
-
           {tab === 'submit' ? renderSubmitTab() : renderRankingsTab()}
         </ScrollView>
 
         {/* Spirit Points & Games stays anchored while the rest scrolls */}
-        <View style={styles.footer}>
+        {/* <View style={styles.footer}>
           <TouchableOpacity style={styles.pdfButton} onPress={openPDF}>
             <MaterialCommunityIcons name="file-pdf-box" size={24} color={ORANGE} />
             <View style={styles.buttonTextContainer}>
@@ -356,7 +379,7 @@ export default function SpiritPage() {
             </View>
             <MaterialCommunityIcons name="open-in-new" size={20} color="#666" />
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
 
       <SpiritScoreModal
@@ -378,7 +401,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     justifyContent: 'space-between',
-    padding: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 15,
   },
   gameInfo: {
     flex: 1,
@@ -389,11 +413,11 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   gameDate: {
-    ...typography.textSmallBold,
+    ...typography.textXSmallBold,
     color: '#999',
   },
   gameTime: {
-    ...typography.textSmall,
+    ...typography.textXSmall,
     color: '#999',
   },
   gameTeamRow: {
@@ -403,11 +427,11 @@ const styles = StyleSheet.create({
   },
   gameAvatar: {
     borderRadius: 16,
-    height: 32,
-    width: 32,
+    height: 27,
+    width: 27,
   },
   opponentName: {
-    ...typography.textSemiBold,
+    ...typography.textSmallBold,
     color: '#242424',
     flex: 1,
   },
@@ -426,17 +450,18 @@ const styles = StyleSheet.create({
   rateButton: {
     alignItems: 'center',
     backgroundColor: ORANGE,
-    borderRadius: 10,
+    borderRadius: 8,
     height: 52,
     justifyContent: 'center',
     width: 52,
   },
   section: {
-    gap: 12,
+    gap: 10,
   },
   stepTitle: {
     ...typography.heading5,
     color: '#242424',
+    marginBottom: 8,
   },
   divisionCard: {
     alignItems: 'center',
@@ -463,6 +488,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     gap: 2,
+    marginBottom: 12,
   },
   backText: {
     ...typography.textSmallBold,
@@ -480,6 +506,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 14,
+    paddingHorizontal: 10,
   },
   teamRowSelected: {
     backgroundColor: '#FDF3E7',
@@ -501,47 +528,46 @@ const styles = StyleSheet.create({
   },
   teamBar: {
     alignItems: 'center',
-    backgroundColor: '#FDF3E7',
+    backgroundColor: 'rgb(237, 139, 33, 0.15)',
     borderRadius: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 16,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
   },
   teamBarText: {
     flex: 1,
     gap: 2,
   },
   teamBarLabel: {
-    ...typography.textSmallMedium,
+    ...typography.textXSmall,
     color: '#8A7A63',
   },
   teamBarName: {
-    ...typography.heading4,
+    ...typography.textSmallBold,
     color: '#242424',
   },
   changeTeamText: {
-    ...typography.textLargeSemiBold,
+    ...typography.textSmallBold,
     color: ORANGE,
     textDecorationLine: 'underline',
   },
   listArea: {
     backgroundColor: '#F2F2F2',
-    gap: 12,
-    marginHorizontal: -20,
-    marginTop: 16,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    gap: 10,
+    padding: 15,
   },
   rankCard: {
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 12,
     flexDirection: 'row',
-    gap: 12,
-    padding: 14,
+    gap: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
   },
   rankCardPosition: {
-    ...typography.textMedium,
+    ...typography.textSmallBold,
     color: '#555',
   },
   rankCardAvatar: {
@@ -551,7 +577,7 @@ const styles = StyleSheet.create({
   },
   rankCardName: {
     ...typography.textSemiBold,
-    color: '#242424',
+    color: '#000',
     flex: 1,
   },
   rankCardScores: {
@@ -561,34 +587,33 @@ const styles = StyleSheet.create({
   rankCardBadge: {
     backgroundColor: '#5B6472',
     borderRadius: 16,
-    minWidth: 58,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
+    minWidth: 46,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
   },
   rankCardBadgeText: {
-    ...typography.textLargeBold,
+    ...typography.textBold,
     color: '#fff',
     textAlign: 'center',
   },
   rankCardCount: {
     ...typography.textXSmall,
-    color: '#888',
+    color: '#000',
   },
   chipRow: {
-    gap: 10,
-    paddingHorizontal: 20,
-    paddingVertical: 4,
+    gap: 7,
+    paddingHorizontal: 15,
   },
   chipScroll: {
-    marginHorizontal: -20,
+    marginHorizontal: -15,
   },
   chip: {
     backgroundColor: '#fff',
     borderColor: '#242424',
     borderRadius: 100,
-    borderWidth: 1.5,
-    paddingHorizontal: 20,
-    paddingVertical: 9,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   chipSelected: {
     backgroundColor: '#000',
@@ -602,15 +627,20 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   screen: {
-    backgroundColor: '#fff',
+    backgroundColor: '#F2F2F2',
     flex: 1,
   },
   container: {
     flex: 1,
   },
   content: {
-    paddingHorizontal: 20,
+    flexGrow: 1,
+  },
+  headerCard: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 15,
     paddingTop: 20,
+    paddingBottom: 15,
   },
   toggleRow: {
     flexDirection: 'row',
@@ -626,10 +656,11 @@ const styles = StyleSheet.create({
     gap: 4,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderBottomWidth: 4,
+    boxShadow: '0px 2px 0px #ED8C22',
   },
   toggleSelected: {
     backgroundColor: ORANGE,
+    boxShadow: '0px 0px 0px #ED8C22',
   },
   toggleText: {
     ...typography.label,

@@ -7,7 +7,7 @@ import { typography } from '@/constants/Typography';
 const PLACEHOLDER = require('@/assets/images/avatar-placeholder.png');
 
 /** Gold, silver-blue, bronze-green — indexed by rank - 1. */
-export const PODIUM_COLORS = ['#E8871E', '#4357AD', '#276B5D'];
+export const PODIUM_COLORS = ['#ED8C22', '#4357AD', '#276B5D'];
 
 export interface SpiritPodiumEntry {
   teamId: number;
@@ -39,7 +39,7 @@ const SpiritPodium: React.FC<SpiritPodiumProps> = ({ entries }) => {
 
         return (
           <View key={entry.teamId} style={[styles.slot, !isFirst && styles.slotLower]}>
-            <View style={[styles.circleWrap, isFirst && styles.circleWrapFirst]}>
+            <View style={styles.circleWrap}>
               <View style={[styles.circle, isFirst && styles.circleFirst, { borderColor: color }]}>
                 <Image
                   source={entry.avatarUri ? { uri: entry.avatarUri } : PLACEHOLDER}
@@ -80,10 +80,8 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'flex-start',
     flexDirection: 'row',
-    gap: 4,
     justifyContent: 'center',
-    paddingBottom: 8,
-    paddingTop: 20,
+    paddingTop: 25,
   },
   slot: {
     alignItems: 'center',
@@ -96,22 +94,19 @@ const styles = StyleSheet.create({
   circleWrap: {
     marginBottom: 16,
   },
-  circleWrapFirst: {
-    marginBottom: 18,
-  },
   circle: {
     alignItems: 'center',
-    borderRadius: 48,
-    borderWidth: 2,
-    height: 96,
+    borderRadius: 100,
+    borderWidth: 1,
+    height: 110,
     justifyContent: 'flex-end',
     overflow: 'hidden',
-    width: 96,
+    width: 110,
   },
   circleFirst: {
-    borderRadius: 55,
-    height: 110,
-    width: 110,
+    borderRadius: 100,
+    height: 120,
+    width: 120,
   },
   avatar: {
     height: '100%',
@@ -127,9 +122,9 @@ const styles = StyleSheet.create({
   rankBadge: {
     alignItems: 'center',
     borderRadius: 17,
-    height: 34,
+    height: 30,
     justifyContent: 'center',
-    width: 34,
+    width: 30,
   },
   rankBadgeText: {
     ...typography.textMedium,
@@ -146,12 +141,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 16,
     justifyContent: 'center',
-    minWidth: 58,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    minWidth: 46,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
   },
   scoreBadgeText: {
-    ...typography.textLargeBold,
+    ...typography.textBold,
     color: '#fff',
   },
   count: {
