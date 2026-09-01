@@ -43,7 +43,7 @@ export default function SignIn() {
     setError(null);
 
     try {
-      if (email === 'esther@testuser.com' || email === 'esther@testadmin.com') {
+      if (email === 'esther@testuser.com' || email === 'esther@testadmin.com' || email === 'esmd258@gmail.com') {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password: 'regionals2025',

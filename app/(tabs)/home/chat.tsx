@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -17,6 +17,7 @@ import ChatBubble from '@/components/features/chat/ChatBubble';
 import ChatInput from '@/components/features/chat/ChatInput';
 import { fonts, fontSizes, typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
+import { useChatUnread } from '@/context/ChatUnreadProvider';
 import { useChat } from '@/hooks/useChat';
 import { useChatImageUpload } from '@/hooks/useChatImageUpload';
 import { MessageWithSender } from '@/types/chat';
@@ -30,7 +31,9 @@ export default function ChatScreen() {
     user?.id,
   );
   const { pickAndUploadImage, uploading } = useChatImageUpload(conversationId);
+  const { markRead } = useChatUnread();
   const flatListRef = useRef<FlatList<MessageWithSender>>(null);
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleDeleteMessage = useCallback(
     async (messageId: string) => {
@@ -52,9 +55,18 @@ export default function ChatScreen() {
   useFocusEffect(
     useCallback(() => {
       void refreshMessages();
-      return undefined;
+      setIsFocused(true);
+      return () => setIsFocused(false);
     }, [refreshMessages]),
   );
+
+  useEffect(() => {
+    // Clear the Header's unread indicator while the screen is open, including
+    // for replies that arrive as the user is reading.
+    if (isFocused) {
+      void markRead();
+    }
+  }, [isFocused, markRead, messages.length]);
 
   if (!session) {
     return (

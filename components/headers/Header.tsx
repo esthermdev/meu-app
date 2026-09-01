@@ -2,6 +2,7 @@ import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Href, router } from 'expo-router';
 
 import { images } from '@/constants';
+import { useChatUnread } from '@/context/ChatUnreadProvider';
 import { useNotifications } from '@/context/NotificationsProvider';
 
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
@@ -9,6 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Header = () => {
   const { unreadCount } = useNotifications();
+  const { hasUnread: hasUnreadMessages } = useChatUnread();
   const hasUnread = unreadCount > 0;
 
   const handleInfoPress = () => {
@@ -31,7 +33,11 @@ const Header = () => {
           </View>
           <View style={[styles.side, { justifyContent: 'flex-end', gap: 10 }]}>
             <TouchableOpacity onPress={() => router.navigate('/(tabs)/home/chat' as Href)}>
-              <MaterialCommunityIcons name="chat-processing" size={24} color="#000" />
+              <MaterialCommunityIcons
+                name={hasUnreadMessages ? 'chat-alert' : 'chat-processing'}
+                size={24}
+                color={hasUnreadMessages ? '#ED8C22' : '#000'}
+              />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => router.navigate('/(tabs)/home/notifications' as Href)}>
               <MaterialIcons

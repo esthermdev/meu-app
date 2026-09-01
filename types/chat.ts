@@ -6,6 +6,7 @@ export type ConversationRow = {
   created_at: string;
   updated_at: string;
   admin_last_read_at: string | null;
+  user_last_read_at: string | null;
 };
 
 export type MessageRow = {

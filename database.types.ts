@@ -129,6 +129,7 @@ export type Database = {
           id: string;
           updated_at: string;
           user_id: string;
+          user_last_read_at: string | null;
         };
         Insert: {
           admin_last_read_at?: string | null;
@@ -136,6 +137,7 @@ export type Database = {
           id?: string;
           updated_at?: string;
           user_id: string;
+          user_last_read_at?: string | null;
         };
         Update: {
           admin_last_read_at?: string | null;
@@ -143,6 +145,7 @@ export type Database = {
           id?: string;
           updated_at?: string;
           user_id?: string;
+          user_last_read_at?: string | null;
         };
         Relationships: [
           {
