@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   },
   optionSelected: {
     backgroundColor: '#FDF7EC',
-    borderColor: '#E0AE43',
+    borderColor: '#ED8C22',
   },
   scoreBadge: {
     alignItems: 'center',
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     width: 36,
   },
   scoreBadgeSelected: {
-    backgroundColor: '#E0AE43',
+    backgroundColor: '#ED8C22',
   },
   scoreValue: {
     ...typography.textLargeBold,
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     alignItems: 'center',
-    backgroundColor: '#E0AE43',
+    backgroundColor: '#ED8C22',
     borderRadius: 8,
     marginTop: 16,
     padding: 14,
