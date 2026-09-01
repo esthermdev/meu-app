@@ -20,8 +20,8 @@ const isCompact = height < 700;
 
 const svgHeight = isCompact ? 180 : 200;
 const svgMarginVertical = isCompact ? 25 : 40;
-const logoHeight = isCompact ? 200 : 250;
-const logoMarginBottom = isCompact ? 30 : 35;
+const logoHeight = 200;
+const logoMarginBottom = isCompact ? 35 : 50;
 
 export default function Index() {
   const { logoUrl } = useTournamentLogo();
@@ -38,7 +38,7 @@ export default function Index() {
           <AppLandingPlayerSvg style={{ alignSelf: 'center', marginVertical: svgMarginVertical }} height={svgHeight} />
           <CustomText style={styles.welcomeText}>Welcome to</CustomText>
           <Image
-            source={logoUrl ?? images.tournamentLogo}
+            source={logoUrl}
             placeholder={images.tournamentLogo}
             contentFit="contain"
             transition={200}
@@ -84,12 +84,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
   },
   tournamentLogo: {
-    // expo-image has no intrinsic size for a remote source, so the width has to be explicit
-    // or the logo collapses to zero until (and unless) the bundled fallback is used.
     width: centerContainerWidth,
     height: logoHeight,
     marginBottom: logoMarginBottom,
-    marginTop: 10,
+    marginTop: 25,
     alignSelf: 'center',
   },
   tournamentTitle: {
