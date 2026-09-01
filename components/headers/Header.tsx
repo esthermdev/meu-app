@@ -21,7 +21,7 @@ const Header = () => {
         <View style={styles.content}>
           <View style={styles.side}>
             <TouchableOpacity onPress={handleInfoPress}>
-              <MaterialIcons name="info" size={23} style={{ margin: 3 }} color="#EA1D25" />
+              <MaterialCommunityIcons name="information-box" size={24} style={{ margin: 3 }} color="#EA1D25" />
             </TouchableOpacity>
           </View>
           <View style={styles.center}>
@@ -31,14 +31,12 @@ const Header = () => {
           </View>
           <View style={[styles.side, { justifyContent: 'flex-end', gap: 10 }]}>
             <TouchableOpacity onPress={() => router.navigate('/(tabs)/home/chat' as Href)}>
-              <MaterialCommunityIcons name="chat" size={20} color="#000" />
+              <MaterialCommunityIcons name="chat-processing" size={24} color="#000" />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => router.navigate('/(tabs)/home/notifications' as Href)}
-              style={[styles.bellButton]}>
-              <MaterialCommunityIcons
-                name={hasUnread ? 'bell-ring' : 'bell'}
-                size={20}
+            <TouchableOpacity onPress={() => router.navigate('/(tabs)/home/notifications' as Href)}>
+              <MaterialIcons
+                name={hasUnread ? 'notifications-active' : 'notifications'}
+                size={24}
                 color={hasUnread ? '#f88d3b' : '#000'}
               />
             </TouchableOpacity>
@@ -68,10 +66,6 @@ const styles = StyleSheet.create({
   },
   center: {
     alignItems: 'center',
-  },
-  bellButton: {
-    margin: 6,
-    padding: 4,
   },
 });
 
