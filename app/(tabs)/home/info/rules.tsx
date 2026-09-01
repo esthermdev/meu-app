@@ -44,48 +44,48 @@ const RulesAndSOTG = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
+      backgroundColor: '#fff',
+      flex: 1,
+    },
   scrollview: {
-    flex: 1,
-  },
+      flex: 1,
+    },
   contentContainer: {
-    padding: 20,
-  },
-  contentHeader: {
-    ...typography.heading4,
-    marginBottom: 5,
-  },
-  content: {
-    ...typography.text,
-    marginBottom: 20,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#ccc',
-    marginVertical: 15,
-  },
+      padding: 20,
+    },
   link: {
-    ...typography.textMedium,
-    color: 'blue',
-  },
+      ...typography.textMedium,
+      color: 'blue',
+    },
+  contentHeader: {
+      ...typography.heading4,
+      marginBottom: 5,
+    },
+  content: {
+      ...typography.text,
+      marginBottom: 20,
+    },
+  divider: {
+      height: 1,
+      backgroundColor: '#ccc',
+      marginVertical: 15,
+    },
   bold: {
-    ...typography.textBold,
-  },
+      ...typography.textBold,
+    },
   bulletPoint: {
-    ...typography.text,
-    color: '#333',
-  },
+      ...typography.text,
+      color: '#333',
+    },
   bulletPoints: {
-    marginBottom: 15,
-    marginLeft: 15,
-  },
+      marginBottom: 15,
+      marginLeft: 15,
+    },
   contentSubHeader: {
-    ...typography.heading5,
-    color: '#EA1D25',
-    textDecorationLine: 'underline',
-  },
+      ...typography.heading5,
+      color: '#EA1D25',
+      textDecorationLine: 'underline',
+    },
 });
 
 export default RulesAndSOTG;

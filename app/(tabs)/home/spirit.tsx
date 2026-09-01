@@ -20,7 +20,7 @@ import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
 const PLACEHOLDER = require('@/assets/images/avatar-placeholder.png');
 
-const ORANGE = '#E8871E';
+const ORANGE = '#ED8C22';
 
 type SpiritTab = 'submit' | 'rankings';
 
@@ -612,21 +612,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
   },
-  card: {
-    backgroundColor: '#f8f8f8',
-    borderLeftColor: ORANGE,
-    borderLeftWidth: 4,
-    borderRadius: 12,
-    marginBottom: 20,
-    padding: 20,
-  },
-  message: {
-    color: '#333',
-    lineHeight: 24,
-  },
-  name: {
-    color: ORANGE,
-  },
   toggleRow: {
     flexDirection: 'row',
     gap: 12,
@@ -636,21 +621,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderColor: ORANGE,
     borderRadius: 12,
-    borderWidth: 2,
+    borderWidth: 1,
     flex: 1,
-    gap: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 16,
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderBottomWidth: 4,
   },
   toggleSelected: {
     backgroundColor: ORANGE,
   },
   toggleText: {
-    ...typography.textSemiBold,
+    ...typography.label,
     color: '#242424',
   },
   toggleTextSelected: {
     color: '#fff',
+    ...typography.labelBold,
   },
   footer: {
     backgroundColor: '#fff',
@@ -678,5 +665,20 @@ const styles = StyleSheet.create({
   },
   pdfButtonSubtext: {
     color: '#666',
+  },
+  card: {
+    backgroundColor: '#f8f8f8',
+    borderLeftColor: ORANGE,
+    borderLeftWidth: 4,
+    borderRadius: 12,
+    marginBottom: 20,
+    padding: 20,
+  },
+  message: {
+    color: '#333',
+    lineHeight: 24,
+  },
+  name: {
+    color: ORANGE,
   },
 });
