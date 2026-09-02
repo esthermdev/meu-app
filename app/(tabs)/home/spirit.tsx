@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
     width: 27,
   },
   opponentName: {
-    ...typography.textSmallBold,
+    ...typography.textSemiBold,
     color: '#242424',
     flex: 1,
   },
@@ -544,7 +544,7 @@ const styles = StyleSheet.create({
     color: '#8A7A63',
   },
   teamBarName: {
-    ...typography.textSmallBold,
+    ...typography.textLargeBold,
     color: '#242424',
   },
   changeTeamText: {
@@ -663,12 +663,12 @@ const styles = StyleSheet.create({
     boxShadow: '0px 0px 0px #ED8C22',
   },
   toggleText: {
-    ...typography.label,
+    ...typography.heading5,
     color: '#242424',
   },
   toggleTextSelected: {
     color: '#fff',
-    ...typography.labelBold,
+    ...typography.textLargeBold,
   },
   footer: {
     backgroundColor: '#fff',
