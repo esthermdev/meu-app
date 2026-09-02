@@ -1301,13 +1301,6 @@ export type Database = {
         Returns: undefined;
       };
       reset_pool_scores: { Args: { pool_id_param: number }; Returns: undefined };
-      team_spirit_totals: {
-        Args: { p_team_id: number };
-        Returns: {
-          avg_score: number;
-          scores_received: number;
-        }[];
-      };
       update_pool_rankings: { Args: never; Returns: undefined };
     };
     Enums: {
