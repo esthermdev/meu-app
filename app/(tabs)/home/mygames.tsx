@@ -25,6 +25,25 @@ import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
 import { updateGameScore } from '@/utils/updateGameScore';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+type MyGamesUiState = {
+  selectedDate?: string;
+};
+
+// In-memory cache so the selected date survives unmount/remount without waiting on AsyncStorage
+let myGamesUiState: MyGamesUiState | undefined;
+const MY_GAMES_UI_STATE_STORAGE_KEY = 'my-games-ui-state';
+
+// Normalize a date string so the same calendar day always produces the same key
+const toDateKey = (date: string) => {
+  try {
+    return new Date(date).toISOString().split('T')[0];
+  } catch {
+    return date.trim();
+  }
+};
+
 const MyGames = () => {
   const [games, setGames] = useState<GameWithRelations[]>([]);
   const [filteredGames, setFilteredGames] = useState<GameWithRelations[]>([]);
@@ -34,7 +53,8 @@ const MyGames = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const [dates, setDates] = useState<string[]>([]);
-  const [selectedDate, setSelectedDate] = useState<string>('');
+  const [selectedDate, setSelectedDate] = useState<string>(myGamesUiState?.selectedDate ?? '');
+  const [isUiStateHydrated, setIsUiStateHydrated] = useState(Boolean(myGamesUiState));
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -53,43 +73,108 @@ const MyGames = () => {
     }
   });
 
+  // Restore the last selected date from storage (once per app session)
   useEffect(() => {
-    if (games.length > 0) {
-      // Create a map to standardize dates and ensure uniqueness
-      const dateMap = new Map<string, string>();
+    let isMounted = true;
 
-      games.forEach((game) => {
-        if (game.datetime?.date) {
-          // Create a standardized key for comparison by parsing and reformatting
-          try {
-            const dateObj = new Date(game.datetime.date);
-            // Use ISO format date part for deduplication key
-            const standardKey = dateObj.toISOString().split('T')[0];
-            dateMap.set(standardKey, game.datetime.date);
-          } catch {
-            // If date parsing fails, fall back to string normalization
-            const standardKey = game.datetime.date.trim();
-            dateMap.set(standardKey, game.datetime.date);
+    async function hydrateUiState() {
+      if (myGamesUiState) {
+        if (isMounted) {
+          setIsUiStateHydrated(true);
+        }
+        return;
+      }
+
+      try {
+        const storedValue = await AsyncStorage.getItem(MY_GAMES_UI_STATE_STORAGE_KEY);
+
+        if (!isMounted) {
+          return;
+        }
+
+        if (storedValue) {
+          const parsedState = JSON.parse(storedValue) as MyGamesUiState;
+          myGamesUiState = parsedState;
+          if (parsedState.selectedDate) {
+            setSelectedDate(parsedState.selectedDate);
           }
         }
-      });
-
-      // Convert the map values (original date strings) to an array
-      const uniqueDates = Array.from(dateMap.values());
-
-      // Sort dates chronologically
-      uniqueDates.sort((a, b) => {
-        return new Date(a).getTime() - new Date(b).getTime();
-      });
-
-      setDates(uniqueDates);
-
-      // Set first date as selected by default
-      if (uniqueDates.length > 0 && !selectedDate) {
-        setSelectedDate(uniqueDates[0]);
+      } catch (error) {
+        console.error('Failed to hydrate My Games UI state:', error);
+      } finally {
+        if (isMounted) {
+          setIsUiStateHydrated(true);
+        }
       }
     }
-  }, [games, selectedDate]);
+
+    hydrateUiState();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const persistSelectedDate = useCallback(async (date: string) => {
+    myGamesUiState = { ...myGamesUiState, selectedDate: date };
+
+    try {
+      await AsyncStorage.setItem(MY_GAMES_UI_STATE_STORAGE_KEY, JSON.stringify(myGamesUiState));
+    } catch (error) {
+      console.error('Failed to persist My Games UI state:', error);
+    }
+  }, []);
+
+  const handleSelectDate = useCallback(
+    (date: string) => {
+      setSelectedDate(date);
+      persistSelectedDate(date);
+    },
+    [persistSelectedDate],
+  );
+
+  useEffect(() => {
+    // Wait for the stored date so we don't overwrite it with the first date
+    if (!isUiStateHydrated || games.length === 0) {
+      return;
+    }
+
+    // Create a map to standardize dates and ensure uniqueness
+    const dateMap = new Map<string, string>();
+
+    games.forEach((game) => {
+      if (game.datetime?.date) {
+        dateMap.set(toDateKey(game.datetime.date), game.datetime.date);
+      }
+    });
+
+    // Convert the map values (original date strings) to an array
+    const uniqueDates = Array.from(dateMap.values());
+
+    // Sort dates chronologically
+    uniqueDates.sort((a, b) => {
+      return new Date(a).getTime() - new Date(b).getTime();
+    });
+
+    setDates(uniqueDates);
+
+    if (uniqueDates.length === 0) {
+      return;
+    }
+
+    // Keep the remembered date if it still has games; otherwise fall back to the first date
+    const matchingDate = selectedDate
+      ? uniqueDates.find((date) => toDateKey(date) === toDateKey(selectedDate))
+      : undefined;
+
+    if (matchingDate) {
+      if (matchingDate !== selectedDate) {
+        setSelectedDate(matchingDate);
+      }
+    } else {
+      setSelectedDate(uniqueDates[0]);
+    }
+  }, [games, selectedDate, isUiStateHydrated]);
 
   useEffect(() => {
     if (selectedDate) {
@@ -309,7 +394,7 @@ const MyGames = () => {
           <TouchableOpacity
             key={date}
             style={[styles.dateButton, selectedDate === date && styles.selectedDateButton]}
-            onPress={() => setSelectedDate(date)}>
+            onPress={() => handleSelectDate(date)}>
             <CustomText style={[styles.dateButtonText, selectedDate === date && styles.selectedDateText]}>
               {formatDate(date, 'short')}
             </CustomText>
@@ -416,7 +501,7 @@ const MyGames = () => {
     );
   }
 
-  if (loading && !refreshing) {
+  if ((loading && !refreshing) || !isUiStateHydrated) {
     return <LoadingIndicator message="Loading your games..." />;
   }
 
@@ -473,166 +558,166 @@ const MyGames = () => {
 
 const styles = StyleSheet.create({
   dateFilterContainer: {
-      alignItems: 'center',
-      flexDirection: 'row',
-      paddingVertical: 12,
-      paddingHorizontal: 15,
-    },
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+  },
   dateLabel: {
-      ...typography.textBold,
-      color: '#333',
-      marginRight: 12,
-    },
+    ...typography.textBold,
+    color: '#333',
+    marginRight: 12,
+  },
   dateScroll: {
-      backgroundColor: '#fff',
-      borderRadius: 6,
-      flexDirection: 'row',
-      padding: 7,
-    },
+    backgroundColor: '#fff',
+    borderRadius: 6,
+    flexDirection: 'row',
+    padding: 7,
+  },
   dateButton: {
-      borderRadius: 3,
-      paddingHorizontal: 20,
-      paddingVertical: 8,
-    },
+    borderRadius: 3,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+  },
   selectedDateButton: {
-      backgroundColor: '#EA1D25',
-    },
+    backgroundColor: '#EA1D25',
+  },
   dateButtonText: {
-      ...typography.textMedium,
-      color: '#999999',
-    },
+    ...typography.textMedium,
+    color: '#999999',
+  },
   selectedDateText: {
-      color: '#fff',
-    },
+    color: '#fff',
+  },
   gameCard: {
-      backgroundColor: '#fff',
-      borderRadius: 12,
-      elevation: 2,
-      gap: 5,
-      marginBottom: 12,
-      padding: 10,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-    },
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    elevation: 2,
+    gap: 5,
+    marginBottom: 12,
+    padding: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
   gameHeader: {
-      alignItems: 'center',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   dateText: {
-      ...typography.textBold,
-      color: '#999',
-      width: 100,
-    },
+    ...typography.textBold,
+    color: '#999',
+    width: 100,
+  },
   timeContainer: {
-      backgroundColor: '#999',
-      borderRadius: 20,
-      paddingHorizontal: 8,
-    },
+    backgroundColor: '#999',
+    borderRadius: 20,
+    paddingHorizontal: 8,
+  },
   timeText: {
-      ...typography.text,
-      color: '#fff',
-    },
+    ...typography.text,
+    color: '#fff',
+  },
   fieldText: {
-      ...typography.textBold,
-      color: '#276B5D',
-      textAlign: 'right',
-      width: 100,
-    },
+    ...typography.textBold,
+    color: '#276B5D',
+    textAlign: 'right',
+    width: 100,
+  },
   matchupContainer: {
-      alignItems: 'center',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   teamsSection: {
-      flex: 3,
-      gap: 6,
-      justifyContent: 'space-between',
-    },
+    flex: 3,
+    gap: 6,
+    justifyContent: 'space-between',
+  },
   teamRow: {
-      alignItems: 'center',
-      flexDirection: 'row',
-      gap: 8,
-    },
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 8,
+  },
   teamLogo: {
-      borderRadius: 18,
-      height: 27,
-      width: 27,
-    },
+    borderRadius: 18,
+    height: 27,
+    width: 27,
+  },
   teamText: {
-      ...typography.textBold,
-      color: '#444',
-    },
+    ...typography.textBold,
+    color: '#444',
+  },
   highlightedTeam: {
-      color: '#FE0000',
-      fontWeight: '700',
-    },
+    color: '#FE0000',
+    fontWeight: '700',
+  },
   scoresSection: {
-      alignItems: 'flex-end',
-      flex: 1,
-      gap: 2,
-      justifyContent: 'space-between',
-    },
+    alignItems: 'flex-end',
+    flex: 1,
+    gap: 2,
+    justifyContent: 'space-between',
+  },
   scoreText: {
-      ...typography.heading3,
-      color: '#333',
-    },
+    ...typography.heading3,
+    color: '#333',
+  },
   completedContainer: {
-      alignItems: 'center',
-    },
+    alignItems: 'center',
+  },
   completedText: {
-      ...typography.textSmallBold,
-      color: '#276B5D', // Using a green color to indicate completion
-    },
+    ...typography.textSmallBold,
+    color: '#276B5D', // Using a green color to indicate completion
+  },
   updateScoreButton: {
-      alignItems: 'center',
-    },
+    alignItems: 'center',
+  },
   updateScoreText: {
-      ...typography.textSmallBold,
-      color: '#EA1D25',
-      textDecorationLine: 'underline',
-    },
+    ...typography.textSmallBold,
+    color: '#EA1D25',
+    textDecorationLine: 'underline',
+  },
   centerContainer: {
-      alignItems: 'center',
-      flex: 1,
-      gap: 30,
-      justifyContent: 'center',
-      padding: 50,
-    },
+    alignItems: 'center',
+    flex: 1,
+    gap: 30,
+    justifyContent: 'center',
+    padding: 50,
+  },
   mainMessageText: {
-      ...typography.textLargeBold,
-      color: '#838383',
-      textAlign: 'center',
-    },
+    ...typography.textLargeBold,
+    color: '#838383',
+    textAlign: 'center',
+  },
   messageText: {
-      ...typography.textLarge,
-      color: '#00000066',
-      textAlign: 'center',
-    },
+    ...typography.textLarge,
+    color: '#00000066',
+    textAlign: 'center',
+  },
   linkText: {
-      color: '#EA1D25',
-      ...typography.heading5,
-      textDecorationLine: 'underline',
-    },
+    color: '#EA1D25',
+    ...typography.heading5,
+    textDecorationLine: 'underline',
+  },
   container: {
-      flex: 1,
-      backgroundColor: '#E6E6E6',
-    },
+    flex: 1,
+    backgroundColor: '#E6E6E6',
+  },
   addTeamsContainer: {
-      alignItems: 'flex-end',
-      paddingHorizontal: 15,
-      paddingBottom: 10,
-    },
+    alignItems: 'flex-end',
+    paddingHorizontal: 15,
+    paddingBottom: 10,
+  },
   addTeamsText: {
-      ...typography.textSmallBold,
-      color: '#EA1D25',
-    },
+    ...typography.textSmallBold,
+    color: '#EA1D25',
+  },
   listContainer: {
-      paddingBottom: 10,
-      paddingHorizontal: 15,
-    },
+    paddingBottom: 10,
+    paddingHorizontal: 15,
+  },
 });
 
 export default MyGames;
