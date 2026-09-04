@@ -24,12 +24,39 @@ interface SpiritScoreModalProps {
   onClose: () => void;
 }
 
+// Guidance follows the WFDF spirit rubric: "Good" is the expected norm, and
+// scores above or below it should reflect something noticeably different.
 const SCORE_OPTIONS = [
-  { value: 5, label: 'Excellent' },
-  { value: 4, label: 'Very good' },
-  { value: 3, label: 'Good' },
-  { value: 2, label: 'Not so good' },
-  { value: 1, label: 'Poor' },
+  {
+    value: 5,
+    label: 'Excellent',
+    description:
+      'Truly outstanding, well beyond the norm. They stayed calm and generous under pressure, resolved calls quickly and fairly, and made the game more enjoyable for everyone. Please add comments where applicable.',
+  },
+  {
+    value: 4,
+    label: 'Very good',
+    description:
+      'Better than the norm. They knew the rules well, avoided contentious calls, communicated respectfully and handled any disputes with care.',
+  },
+  {
+    value: 3,
+    label: 'Good',
+    description:
+      'The expected standard for a spirited game. They knew the rules, avoided dangerous contact, and resolved calls fairly and respectfully.',
+  },
+  {
+    value: 2,
+    label: 'Not so good',
+    description:
+      'Below the norm. Some avoidable fouls or contact, disputes that dragged on, or moments of frustration and poor communication, but nothing serious.',
+  },
+  {
+    value: 1,
+    label: 'Poor',
+    description:
+      'Well below the norm. Repeated dangerous play, unfair or intimidating calls, or disrespect towards players. Please add details in the comments so organisers can follow up.',
+  },
 ];
 
 const SpiritScoreModal: React.FC<SpiritScoreModalProps> = ({
@@ -87,15 +114,23 @@ const SpiritScoreModal: React.FC<SpiritScoreModalProps> = ({
                     key={option.value}
                     style={[styles.option, isSelected && styles.optionSelected]}
                     onPress={() => setScore(option.value)}
-                    disabled={submitting}>
-                    <View style={[styles.scoreBadge, isSelected && styles.scoreBadgeSelected]}>
-                      <CustomText style={[styles.scoreValue, isSelected && styles.scoreValueSelected]}>
-                        {option.value}
+                    disabled={submitting}
+                    accessibilityRole="radio"
+                    accessibilityState={{ selected: isSelected }}
+                    accessibilityLabel={`${option.value} out of 5, ${option.label}`}
+                    accessibilityHint={option.description}>
+                    <View style={styles.optionRow}>
+                      <View style={[styles.scoreBadge, isSelected && styles.scoreBadgeSelected]}>
+                        <CustomText style={[styles.scoreValue, isSelected && styles.scoreValueSelected]}>
+                          {option.value}
+                        </CustomText>
+                      </View>
+                      <CustomText style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
+                        {option.label}
                       </CustomText>
                     </View>
-                    <CustomText style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
-                      {option.label}
-                    </CustomText>
+                    {/* Only the tapped rating shows its guidance, so the list stays compact. */}
+                    {isSelected ? <CustomText style={styles.optionDescription}>{option.description}</CustomText> : null}
                   </TouchableOpacity>
                 );
               })}
@@ -167,18 +202,26 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   option: {
-    alignItems: 'center',
     backgroundColor: '#F5F5F5',
     borderColor: 'transparent',
     borderRadius: 10,
     borderWidth: 2,
-    flexDirection: 'row',
-    gap: 12,
     padding: 10,
   },
   optionSelected: {
     backgroundColor: '#FDF7EC',
     borderColor: '#ED8C22',
+  },
+  optionRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 12,
+  },
+  optionDescription: {
+    ...typography.textSmall,
+    color: '#5C5C5C',
+    lineHeight: 19,
+    marginTop: 8,
   },
   scoreBadge: {
     alignItems: 'center',
