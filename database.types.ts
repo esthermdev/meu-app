@@ -160,17 +160,23 @@ export type Database = {
       datetime: {
         Row: {
           date: string | null;
+          ends_at: string | null;
           id: number;
+          starts_at: string | null;
           time: string;
         };
         Insert: {
           date?: string | null;
+          ends_at?: string | null;
           id?: number;
+          starts_at?: string | null;
           time: string;
         };
         Update: {
           date?: string | null;
+          ends_at?: string | null;
           id?: number;
+          starts_at?: string | null;
           time?: string;
         };
         Relationships: [];
@@ -311,6 +317,7 @@ export type Database = {
           field_id: number | null;
           gametype_id: number | null;
           id: number;
+          livestream_link: string | null;
           pool_id: number | null;
           round_id: number | null;
           team1_id: number | null;
@@ -324,6 +331,7 @@ export type Database = {
           field_id?: number | null;
           gametype_id?: number | null;
           id?: number;
+          livestream_link?: string | null;
           pool_id?: number | null;
           round_id?: number | null;
           team1_id?: number | null;
@@ -337,6 +345,7 @@ export type Database = {
           field_id?: number | null;
           gametype_id?: number | null;
           id?: number;
+          livestream_link?: string | null;
           pool_id?: number | null;
           round_id?: number | null;
           team1_id?: number | null;
@@ -1292,6 +1301,7 @@ export type Database = {
           role_keys: string[];
         }[];
       };
+      get_server_time: { Args: never; Returns: string };
       handle_anonymous_token: {
         Args: { p_device_id: string; p_token: string };
         Returns: undefined;

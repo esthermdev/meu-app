@@ -14,15 +14,18 @@ import { router, useFocusEffect } from 'expo-router';
 
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import CustomText from '@/components/CustomText';
+import LiveBadge from '@/components/features/gameviews/LiveBadge';
 import UpdateGameScoreModal from '@/components/features/modals/UpdateGameScoreModal';
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
+import { useServerTime } from '@/context/ServerTimeProvider';
 import { useFavoriteGamesSubscription } from '@/hooks/realtime/useGameSubscriptions';
 import { supabase } from '@/lib/supabase';
 import { GameWithRelations } from '@/types/games';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
+import { hasLiveStream } from '@/utils/gameLiveStatus';
 import { updateGameScore } from '@/utils/updateGameScore';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -63,6 +66,7 @@ const MyGames = () => {
   const [team2Score, setTeam2Score] = useState('0');
 
   const { session } = useAuth();
+  const { now } = useServerTime();
 
   // Set up real-time subscription for favorite games
   const gameIds = games.map((game) => game.id);
@@ -406,6 +410,8 @@ const MyGames = () => {
 
   const renderGame = ({ item }: { item: GameWithRelations }) => {
     const isGameFinished = item.scores && item.scores[0]?.is_finished;
+    const livestreamUrl = item.livestream_link?.trim() ?? '';
+    const showLivestream = hasLiveStream(item, now);
     const isTeam1Favorite = item.team1 ? favoriteTeamIds.includes(item.team1.id) : false;
     const isTeam2Favorite = item.team2 ? favoriteTeamIds.includes(item.team2.id) : false;
 
@@ -465,15 +471,17 @@ const MyGames = () => {
           </View>
         </View>
 
-        {isGameFinished ? (
-          <View style={styles.completedContainer}>
+        {/* Footer: action centered on its own, or spread against the LIVE badge when the stream is on */}
+        <View style={[styles.gameFooter, showLivestream ? styles.gameFooterWithLive : styles.gameFooterCentered]}>
+          {showLivestream && <LiveBadge url={livestreamUrl} />}
+          {isGameFinished ? (
             <CustomText style={styles.completedText}>Game completed</CustomText>
-          </View>
-        ) : (
-          <TouchableOpacity style={styles.updateScoreButton} onPress={() => openScoreModal(item)}>
-            <CustomText style={styles.updateScoreText}>Update Score</CustomText>
-          </TouchableOpacity>
-        )}
+          ) : (
+            <TouchableOpacity onPress={() => openScoreModal(item)}>
+              <CustomText style={styles.updateScoreText}>Update Score</CustomText>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     );
   };
@@ -664,15 +672,19 @@ const styles = StyleSheet.create({
     ...typography.heading3,
     color: '#333',
   },
-  completedContainer: {
+  gameFooter: {
     alignItems: 'center',
+    flexDirection: 'row',
+  },
+  gameFooterCentered: {
+    justifyContent: 'center',
+  },
+  gameFooterWithLive: {
+    justifyContent: 'space-between',
   },
   completedText: {
     ...typography.textSmallBold,
     color: '#276B5D', // Using a green color to indicate completion
-  },
-  updateScoreButton: {
-    alignItems: 'center',
   },
   updateScoreText: {
     ...typography.textSmallBold,

@@ -3,9 +3,13 @@ import { Image, StyleSheet, View } from 'react-native';
 
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
+import { useServerTime } from '@/context/ServerTimeProvider';
 import { GameWithRelations } from '@/types/games';
 import { formatDate } from '@/utils/formatDate';
 import { formatTime } from '@/utils/formatTime';
+import { hasLiveStream } from '@/utils/gameLiveStatus';
+
+import LiveBadge from './LiveBadge';
 
 interface GameComponentProps {
   game: GameWithRelations;
@@ -14,63 +18,80 @@ interface GameComponentProps {
 }
 
 const GameComponent: React.FC<GameComponentProps> = ({ game, highlightedTeamId, noScoreFallback = 0 }) => {
-  const renderGame = ({ item }: { item: GameWithRelations }) => (
-    <View style={styles.gameCard}>
-      <View style={styles.gameHeader}>
-        <CustomText style={styles.dateText}>{formatDate(item.datetime?.date, 'short')}</CustomText>
-        <View style={styles.timeContainer}>
-          <CustomText style={styles.timeText}>{formatTime(item.datetime?.time)}</CustomText>
-        </View>
-        <CustomText style={styles.fieldText}>Field {item.field?.name}</CustomText>
-      </View>
+  // Server-anchored clock that ticks, so the badge flips on/off by itself.
+  const { now } = useServerTime();
 
-      {/* Teams and Score Container - New Layout */}
-      <View style={styles.matchupContainer}>
-        {/* Left side: Teams */}
-        <View style={styles.teamsSection}>
-          {/* Team 1 */}
-          <View style={styles.teamRow}>
-            <Image
-              source={
-                item.team1?.avatar_uri
-                  ? { uri: item.team1.avatar_uri }
-                  : require('@/assets/images/avatar-placeholder.png')
-              }
-              style={styles.teamLogo}
-            />
-            <CustomText style={[styles.teamText, item.team1?.id === highlightedTeamId ? styles.highlightedTeam : null]}>
-              {item.team1 ? item.team1?.name : item.team1_placeholder || 'TBD'}
-            </CustomText>
+  const renderGame = ({ item }: { item: GameWithRelations }) => {
+    const livestreamUrl = item.livestream_link?.trim() ?? '';
+    const showLivestream = hasLiveStream(item, now);
+
+    return (
+      <View style={styles.gameCard}>
+        <View style={styles.gameHeader}>
+          <CustomText style={styles.dateText}>{formatDate(item.datetime?.date, 'short')}</CustomText>
+          <View style={styles.timeContainer}>
+            <CustomText style={styles.timeText}>{formatTime(item.datetime?.time)}</CustomText>
+          </View>
+          <CustomText style={styles.fieldText}>Field {item.field?.name}</CustomText>
+        </View>
+
+        {/* Teams and Score Container - New Layout */}
+        <View style={styles.matchupContainer}>
+          {/* Left side: Teams */}
+          <View style={styles.teamsSection}>
+            {/* Team 1 */}
+            <View style={styles.teamRow}>
+              <Image
+                source={
+                  item.team1?.avatar_uri
+                    ? { uri: item.team1.avatar_uri }
+                    : require('@/assets/images/avatar-placeholder.png')
+                }
+                style={styles.teamLogo}
+              />
+              <CustomText
+                style={[styles.teamText, item.team1?.id === highlightedTeamId ? styles.highlightedTeam : null]}>
+                {item.team1 ? item.team1?.name : item.team1_placeholder || 'TBD'}
+              </CustomText>
+            </View>
+
+            {/* Team 2 */}
+            <View style={styles.teamRow}>
+              <Image
+                source={
+                  item.team2?.avatar_uri
+                    ? { uri: item.team2.avatar_uri }
+                    : require('@/assets/images/avatar-placeholder.png')
+                }
+                style={styles.teamLogo}
+              />
+              <CustomText
+                style={[styles.teamText, item.team2?.id === highlightedTeamId ? styles.highlightedTeam : null]}>
+                {item.team2 ? item.team2?.name : item.team2_placeholder || 'TBD'}
+              </CustomText>
+            </View>
           </View>
 
-          {/* Team 2 */}
-          <View style={styles.teamRow}>
-            <Image
-              source={
-                item.team2?.avatar_uri
-                  ? { uri: item.team2.avatar_uri }
-                  : require('@/assets/images/avatar-placeholder.png')
-              }
-              style={styles.teamLogo}
-            />
-            <CustomText style={[styles.teamText, item.team2?.id === highlightedTeamId ? styles.highlightedTeam : null]}>
-              {item.team2 ? item.team2?.name : item.team2_placeholder || 'TBD'}
+          {/* Right side: Scores */}
+          <View style={styles.scoresSection}>
+            <CustomText style={styles.scoreText}>
+              {item.scores && item.scores[0] ? item.scores[0].team1_score : noScoreFallback}
+            </CustomText>
+            <CustomText style={styles.scoreText}>
+              {item.scores && item.scores[0] ? item.scores[0].team2_score : noScoreFallback}
             </CustomText>
           </View>
         </View>
 
-        {/* Right side: Scores */}
-        <View style={styles.scoresSection}>
-          <CustomText style={styles.scoreText}>
-            {item.scores && item.scores[0] ? item.scores[0].team1_score : noScoreFallback}
-          </CustomText>
-          <CustomText style={styles.scoreText}>
-            {item.scores && item.scores[0] ? item.scores[0].team2_score : noScoreFallback}
-          </CustomText>
-        </View>
+        {/* LIVE badge - shown while the server-side [starts_at, ends_at) window contains now */}
+        {showLivestream && (
+          <View style={styles.liveBadgeRow}>
+            <LiveBadge url={livestreamUrl} />
+          </View>
+        )}
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <>
@@ -84,7 +105,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 12,
     elevation: 2,
-    gap: 15,
+    gap: 10,
     padding: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -153,6 +174,10 @@ const styles = StyleSheet.create({
     ...typography.heading3,
     color: '#333',
     textAlign: 'center',
+  },
+  liveBadgeRow: {
+    alignItems: 'center',
+    marginTop: -10,
   },
 });
 

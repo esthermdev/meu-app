@@ -6,6 +6,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { AuthProvider } from '@/context/AuthProvider';
 import { ChatUnreadProvider } from '@/context/ChatUnreadProvider';
 import { NotificationsProvider } from '@/context/NotificationsProvider';
+import { ServerTimeProvider } from '@/context/ServerTimeProvider';
 import { useCheckForAppUpdates } from '@/hooks/useCheckForAppUpdates';
 import { setNotificationRouteContext } from '@/hooks/usePushNotifications';
 
@@ -62,28 +63,30 @@ export default function RootLayout() {
     <AuthProvider>
       <NotificationsProvider>
         <ChatUnreadProvider>
-          <SafeAreaProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <Stack>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'fade' }} />
-                <Stack.Screen name="(user)" options={{ headerShown: false, gestureEnabled: false }} />
-                <Stack.Screen
-                  name="sign-in"
-                  options={{
-                    headerShown: false,
-                    gestureEnabled: false,
-                    animation: 'none',
-                  }}
-                />
-                <Stack.Screen
-                  name="sign-up"
-                  options={{ headerShown: false, gestureEnabled: false, animation: 'none' }}
-                />
-                <Stack.Screen name="+not-found" />
-                <Stack.Screen name="index" options={{ headerShown: false }} />
-              </Stack>
-            </GestureHandlerRootView>
-          </SafeAreaProvider>
+          <ServerTimeProvider>
+            <SafeAreaProvider>
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <Stack>
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'fade' }} />
+                  <Stack.Screen name="(user)" options={{ headerShown: false, gestureEnabled: false }} />
+                  <Stack.Screen
+                    name="sign-in"
+                    options={{
+                      headerShown: false,
+                      gestureEnabled: false,
+                      animation: 'none',
+                    }}
+                  />
+                  <Stack.Screen
+                    name="sign-up"
+                    options={{ headerShown: false, gestureEnabled: false, animation: 'none' }}
+                  />
+                  <Stack.Screen name="+not-found" />
+                  <Stack.Screen name="index" options={{ headerShown: false }} />
+                </Stack>
+              </GestureHandlerRootView>
+            </SafeAreaProvider>
+          </ServerTimeProvider>
         </ChatUnreadProvider>
       </NotificationsProvider>
     </AuthProvider>
