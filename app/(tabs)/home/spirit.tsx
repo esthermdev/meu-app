@@ -9,6 +9,7 @@ import SpiritPodium, { SpiritPodiumEntry } from '@/components/features/spirit/Sp
 import LoadingIndicator from '@/components/LoadingIndicator';
 import { typography } from '@/constants/Typography';
 import { useAuth } from '@/context/AuthProvider';
+import { hasRole } from '@/context/profileRoles';
 import { useDivisions } from '@/hooks/useScheduleConfig';
 import { useSpiritScoring } from '@/hooks/useSpiritScoring';
 import { TeamSpiritRankingRow } from '@/types/database';
@@ -25,8 +26,10 @@ const ORANGE = '#ED8C22';
 type SpiritTab = 'submit' | 'rankings';
 
 export default function SpiritPage() {
-  const { session } = useAuth();
+  const { session, profile } = useAuth();
   const { teamId, teams, games, rankings, loading, submitting, selectTeam, submitScore, refresh } = useSpiritScoring();
+  // A saved team is locked for regular users; only admins can switch it afterwards.
+  const canChangeTeam = hasRole(profile, 'admin');
   const { divisions, loading: divisionsLoading } = useDivisions();
 
   const [tab, setTab] = useState<SpiritTab>('submit');
@@ -37,8 +40,8 @@ export default function SpiritPage() {
   const [refreshing, setRefreshing] = useState(false);
 
   const selectedTeam = teams.find((team) => team.id === teamId) ?? null;
-  // The division/team picker runs before a team is saved, and again on "Change".
-  const isPickingTeam = !teamId || changingTeam;
+  // The division/team picker runs before a team is saved, and again when an admin taps "Change".
+  const isPickingTeam = !teamId || (changingTeam && canChangeTeam);
   // Rankings default to the user's own division until they tap a different chip.
   const rankingsDivisionId = chosenRankingsDivisionId ?? selectedTeam?.division_id ?? divisions[0]?.id ?? null;
 
@@ -48,11 +51,14 @@ export default function SpiritPage() {
   };
 
   const startChangingTeam = () => {
+    if (!canChangeTeam) return;
     setChangingTeam(true);
     setDivisionId(null);
   };
 
-  const cancelChangingTeam = () => {
+  // Tapping "Submit Scores" always lands on the main page, abandoning any in-progress team change.
+  const showSubmitTab = () => {
+    setTab('submit');
     setChangingTeam(false);
     setDivisionId(null);
   };
@@ -111,55 +117,55 @@ export default function SpiritPage() {
     );
   };
 
-  const renderDivisionPicker = () => (
-    <View style={styles.section}>
-      <CustomText style={styles.stepTitle}>Which division are you in?</CustomText>
-
-      {divisions.map((division) => (
-        <TouchableOpacity key={division.id} onPress={() => setDivisionId(division.id)}>
-          <View style={[styles.divisionCard, { borderColor: division.color }]}>
-            <CustomText style={[styles.divisionCardTitle, { color: division.color }]}>{division.title}</CustomText>
-          </View>
-        </TouchableOpacity>
-      ))}
-
-      {teamId ? (
-        <TouchableOpacity onPress={cancelChangingTeam} hitSlop={8}>
-          <CustomText style={styles.cancelText}>Cancel</CustomText>
-        </TouchableOpacity>
-      ) : null}
-    </View>
-  );
-
   const renderTeamPicker = () => {
-    const division = divisions.find((item) => item.id === divisionId) ?? null;
     const divisionTeams = teams.filter((team) => team.division_id === divisionId);
 
     return (
       <View>
-        <TouchableOpacity style={styles.backRow} onPress={() => setDivisionId(null)} hitSlop={8}>
-          <MaterialCommunityIcons name="chevron-left" size={20} color={ORANGE} />
-          <CustomText style={styles.backText}>{division?.title ?? 'Divisions'}</CustomText>
-        </TouchableOpacity>
+        <CustomText style={styles.stepTitle}>Which division are you in?</CustomText>
 
-        <CustomText style={styles.stepTitle}>Which team are you on?</CustomText>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.chipRow}
+          style={styles.chipScroll}>
+          {divisions.map((division) => {
+            const isSelected = division.id === divisionId;
+            return (
+              <TouchableOpacity
+                key={division.id}
+                style={[styles.chip, isSelected && styles.chipSelected]}
+                onPress={() => setDivisionId(division.id)}>
+                <CustomText style={[styles.chipText, isSelected && styles.chipTextSelected]}>
+                  {division.title.toUpperCase()}
+                </CustomText>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
 
-        {divisionTeams.length === 0 ? (
-          <CustomText style={styles.emptyMessage}>No teams in this division yet.</CustomText>
-        ) : (
-          divisionTeams.map((team) => (
-            <TouchableOpacity
-              key={team.id}
-              style={[styles.teamRow, team.id === teamId && styles.teamRowSelected]}
-              onPress={() => handleSelectTeam(team.id)}>
-              <CustomText style={styles.teamRowName}>{team.name}</CustomText>
-              <MaterialCommunityIcons
-                name={team.id === teamId ? 'check-circle' : 'chevron-right'}
-                size={22}
-                color={team.id === teamId ? ORANGE : '#CCC'}
-              />
-            </TouchableOpacity>
-          ))
+        {divisionId && (
+          <>
+            <CustomText style={styles.stepTitle}>Which team are you on?</CustomText>
+
+            {divisionTeams.length === 0 ? (
+              <CustomText style={styles.emptyMessage}>No teams in this division yet.</CustomText>
+            ) : (
+              divisionTeams.map((team) => (
+                <TouchableOpacity
+                  key={team.id}
+                  style={[styles.teamRow, team.id === teamId && styles.teamRowSelected]}
+                  onPress={() => handleSelectTeam(team.id)}>
+                  <CustomText style={styles.teamRowName}>{team.name}</CustomText>
+                  <MaterialCommunityIcons
+                    name={team.id === teamId ? 'check-circle' : 'chevron-right'}
+                    size={22}
+                    color={team.id === teamId ? ORANGE : '#CCC'}
+                  />
+                </TouchableOpacity>
+              ))
+            )}
+          </>
         )}
       </View>
     );
@@ -167,9 +173,7 @@ export default function SpiritPage() {
 
   const renderToggleRow = () => (
     <View style={styles.toggleRow}>
-      <TouchableOpacity
-        style={[styles.toggle, tab === 'submit' && styles.toggleSelected]}
-        onPress={() => setTab('submit')}>
+      <TouchableOpacity style={[styles.toggle, tab === 'submit' && styles.toggleSelected]} onPress={showSubmitTab}>
         <MaterialIcons name="auto-awesome" size={20} color={tab === 'submit' ? '#fff' : ORANGE} />
         <CustomText style={[styles.toggleText, tab === 'submit' && styles.toggleTextSelected]} numberOfLines={1}>
           Submit Scores
@@ -224,7 +228,7 @@ export default function SpiritPage() {
       return (
         <View style={styles.headerCard}>
           {renderToggleRow()}
-          {divisionId === null ? renderDivisionPicker() : renderTeamPicker()}
+          {renderTeamPicker()}
         </View>
       );
     }
@@ -238,10 +242,17 @@ export default function SpiritPage() {
             <View style={styles.teamBarText}>
               <CustomText style={styles.teamBarLabel}>Your team</CustomText>
               <CustomText style={styles.teamBarName}>{selectedTeam?.name ?? '—'}</CustomText>
+              {!canChangeTeam ? (
+                <CustomText style={styles.teamBarHint}>Contact an admin to change your team.</CustomText>
+              ) : null}
             </View>
-            <TouchableOpacity onPress={startChangingTeam} hitSlop={8}>
-              <CustomText style={styles.changeTeamText}>Change</CustomText>
-            </TouchableOpacity>
+            {canChangeTeam ? (
+              <TouchableOpacity onPress={startChangingTeam} hitSlop={8}>
+                <CustomText style={styles.changeTeamText}>Change</CustomText>
+              </TouchableOpacity>
+            ) : (
+              <MaterialCommunityIcons name="lock-outline" size={20} color="#8A7A63" />
+            )}
           </View>
         </View>
 
@@ -455,12 +466,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 52,
   },
-  section: {
-    gap: 10,
-  },
   stepTitle: {
-    ...typography.heading5,
-    color: '#242424',
+    ...typography.textSemiBold,
+    color: '#ED8C22',
     marginBottom: 8,
   },
   divisionCard: {
@@ -476,23 +484,6 @@ const styles = StyleSheet.create({
   divisionCardTitle: {
     ...typography.heading4,
     textDecorationLine: 'underline',
-  },
-  cancelText: {
-    ...typography.textSmallBold,
-    color: '#888',
-    marginTop: 4,
-    textAlign: 'center',
-    textDecorationLine: 'underline',
-  },
-  backRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 2,
-    marginBottom: 12,
-  },
-  backText: {
-    ...typography.textSmallBold,
-    color: ORANGE,
   },
   emptyMessage: {
     ...typography.text,
@@ -546,6 +537,11 @@ const styles = StyleSheet.create({
   teamBarName: {
     ...typography.textLargeBold,
     color: '#242424',
+  },
+  teamBarHint: {
+    ...typography.textXSmall,
+    color: '#8A7A63',
+    marginTop: 2,
   },
   changeTeamText: {
     ...typography.textSmallBold,
@@ -614,6 +610,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 12,
     paddingVertical: 8,
+    marginBottom: 8,
   },
   chipSelected: {
     backgroundColor: '#000',
