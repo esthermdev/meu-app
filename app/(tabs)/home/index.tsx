@@ -1,5 +1,5 @@
 // app/(tabs)/home/index.tsx
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 
@@ -15,18 +15,63 @@ import MyGamesButtonBackground from '@/components/MyGamesButtonBackground';
 import { typography } from '@/constants/Typography';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+
+// How much of the Evergreen banner stays visible when it's tucked away:
+// left padding (14) + pine-tree icon (18) + a little breathing room.
+const BANNER_PEEK_WIDTH = 40;
+const BANNER_HIDDEN_OFFSET = 300;
+const BANNER_INITIAL_DELAY_MS = 300;
+const BANNER_INITIAL_HOLD_MS = 500;
+const BANNER_TAP_HOLD_MS = 1000;
+const SLIDE_IN = { duration: 500, easing: Easing.out(Easing.cubic) };
+const SLIDE_OUT = { duration: 400, easing: Easing.in(Easing.cubic) };
 
 export default function HomeScreen() {
-  // Slide the Evergreen banner in from the right edge every time this screen gains focus.
+  // Evergreen banner: slides fully in on focus, holds briefly, then tucks away so only the
+  // pine-tree icon peeks out. Tapping the peek slides the full banner back in; tapping the
+  // expanded banner opens the Evergreen page.
   const [bannerWidth, setBannerWidth] = useState(0);
-  const translateX = useSharedValue(300);
+  const translateX = useSharedValue(BANNER_HIDDEN_OFFSET);
+  const bannerExpanded = useRef(false);
+  const bannerTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  const clearBannerTimers = useCallback(() => {
+    bannerTimers.current.forEach(clearTimeout);
+    bannerTimers.current = [];
+  }, []);
+
+  const collapseBanner = useCallback(() => {
+    bannerExpanded.current = false;
+    const peekOffset = Math.max(0, (bannerWidth || BANNER_HIDDEN_OFFSET) - BANNER_PEEK_WIDTH);
+    translateX.value = withTiming(peekOffset, SLIDE_OUT);
+  }, [bannerWidth, translateX]);
+
+  const expandBanner = useCallback(
+    (holdMs: number) => {
+      clearBannerTimers();
+      bannerExpanded.current = true;
+      translateX.value = withTiming(0, SLIDE_IN);
+      bannerTimers.current.push(setTimeout(collapseBanner, SLIDE_IN.duration + holdMs));
+    },
+    [clearBannerTimers, collapseBanner, translateX],
+  );
+
+  const onBannerPress = useCallback(() => {
+    if (bannerExpanded.current) {
+      router.push('/(tabs)/home/evergreen');
+    } else {
+      expandBanner(BANNER_TAP_HOLD_MS);
+    }
+  }, [expandBanner]);
 
   useFocusEffect(
     useCallback(() => {
-      translateX.value = bannerWidth || 300;
-      translateX.value = withDelay(300, withTiming(0, { duration: 500, easing: Easing.out(Easing.cubic) }));
-    }, [bannerWidth, translateX]),
+      // Start fully off-screen, then slide in after a short beat.
+      translateX.value = bannerWidth || BANNER_HIDDEN_OFFSET;
+      bannerTimers.current.push(setTimeout(() => expandBanner(BANNER_INITIAL_HOLD_MS), BANNER_INITIAL_DELAY_MS));
+      return clearBannerTimers;
+    }, [bannerWidth, clearBannerTimers, expandBanner, translateX]),
   );
 
   const bannerAnimatedStyle = useAnimatedStyle(() => ({
@@ -127,18 +172,19 @@ export default function HomeScreen() {
         <NotificationPrompt />
       </ScrollView>
 
-      {/* Peeking side banner → Evergreen (slides in on focus) */}
+      {/* Peeking side banner → Evergreen (slides in on focus, then tucks away to a pine-tree peek) */}
       <Animated.View
         style={[styles.evergreenBanner, bannerAnimatedStyle]}
         onLayout={(e) => setBannerWidth(e.nativeEvent.layout.width)}>
         <TouchableOpacity
           style={styles.evergreenBannerInner}
-          onPress={() => router.push('/(tabs)/home/evergreen')}
+          onPress={onBannerPress}
           activeOpacity={0.85}
           accessibilityRole="button"
-          accessibilityLabel="Open Evergreen">
+          accessibilityLabel="Lobster Pot Merch"
+          accessibilityHint="Tap once to reveal, tap again to open Evergreen">
           <MaterialCommunityIcons name="pine-tree" size={18} color="#fff" />
-          <CustomText style={styles.evergreenBannerText}>Vacationland Merch!</CustomText>
+          <CustomText style={styles.evergreenBannerText}>Lobster Pot Merch!</CustomText>
         </TouchableOpacity>
       </Animated.View>
     </View>
