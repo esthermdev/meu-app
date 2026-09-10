@@ -1,6 +1,16 @@
 // app/(tabs)/home/evergreen.tsx
 import { useState } from 'react';
-import { Image, ImageSourcePropType, Modal, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  ImageSourcePropType,
+  Linking,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 
 import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
@@ -10,115 +20,130 @@ import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-g
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+// Controls how a product image is cropped inside its card. The image is positioned absolutely
+// inside the square card wrapper, so:
+//   - width / height: zoom level as a percentage of the wrapper. 100% shows the whole image;
+//     larger values crop tighter.
+//   - top / bottom / left / right: which edge stays pinned (and by how much). Pin `bottom` and
+//     `right` to focus on the bottom-right of the image; use negative values to push further out.
+interface ImageCrop {
+  width?: `${number}%`;
+  height?: `${number}%`;
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+}
+
+const DEFAULT_CROP: ImageCrop = {
+  width: '130%',
+  height: '120%',
+  bottom: 0,
+  right: 0,
+};
+
 interface Product {
   id: string;
   name: string;
   description: string;
   image: ImageSourcePropType;
+  /** Optional per-image crop override. Falls back to DEFAULT_CROP. */
+  crop?: ImageCrop;
 }
+
+const ORDER_FORM_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSejNuzSx-1FvnOseGjLXDRPw1ocJSsf40CO4aVe1KrUoArUcA/viewform';
+
+const INTRO_IMAGE: Product = {
+  id: 'lp26_collection',
+  name: 'Lobster Pot 2026 Collection',
+  description: 'Lobster Pot 2026 Collection',
+  image: require('@/assets/images/lp_merch_26/LP26_Collection.jpg'),
+};
 
 const PRODUCT_1: Product[] = [
   {
-    id: 'jersey_1',
-    name: 'Design 1',
-    description: 'Teal - Short Sleeve',
-    image: require('@/assets/images/jerseys/VL_Em_SS_Front.png'),
+    id: '1',
+    name: 'Colorful Moose',
+    description: 'Longsleeves - Colorful Moose',
+    image: require('@/assets/images/lp_merch_26/LongSleeves_ColorfulMoose.png'),
+    crop: { width: '130%', height: '120%', bottom: 0, right: 0 },
   },
   {
-    id: 'jersey_2',
-    name: 'Design 2',
-    description: 'Teal - Tank Top',
-    image: require('@/assets/images/jerseys/VL_Teal_Tank.png'),
+    id: '2',
+    name: 'Mt. Katahdin',
+    description: 'Shortsleeves - Mt. Katahdin',
+    image: require('@/assets/images/lp_merch_26/Shortsleeves_MtKatahdin.png'),
+    crop: { width: '100%', height: '130%', bottom: 10, right: 0 },
   },
   {
-    id: 'jersey_3',
-    name: 'Design 3',
-    description: 'Cream - Sunhoodie',
-    image: require('@/assets/images/jerseys/VL_Cream_SH_Front.png'),
+    id: '3',
+    name: 'Lobster At Work X Light Trap',
+    description: 'Reversible Tanks - Lobster At Work X Light Trap',
+    image: require('@/assets/images/lp_merch_26/ReversibleTanks_LobsterAtWorkXLightTrap.png'),
+    crop: { width: '130%', height: '120%', bottom: 0, right: 0 },
   },
   {
-    id: 'jersey_4',
-    name: 'Design 4',
-    description: 'Cream - Tank Top',
-    image: require('@/assets/images/jerseys/VL_Cream_Tank.png'),
-  },
-  {
-    id: 'jersey_5',
-    name: 'Design 5',
-    description: 'Dark - Short Sleeve',
-    image: require('@/assets/images/jerseys/VL_Dark_SS_Front.png'),
-  },
-  {
-    id: 'jersey_6',
-    name: 'Design 6',
-    description: 'Orange - Sunhoodie',
-    image: require('@/assets/images/jerseys/VL_Orange_SH_Front.png'),
-  },
-  {
-    id: 'jersey_info',
-    name: 'Infographic',
-    description: 'More info...',
-    image: require('@/assets/images/jerseys/VL_Classic_Cover.jpg'),
+    id: '4',
+    name: 'Lobster At Work X Light Trap - Back & Front',
+    description: 'Reversible Tanks - Front & Back',
+    image: require('@/assets/images/lp_merch_26/LAW_LT_4.jpg'),
+    crop: { width: '100%', height: '100%' },
   },
 ];
 
 const PRODUCT_2: Product[] = [
   {
-    id: 'jersey_1',
-    name: 'Design 1',
-    description: 'Sunhoodie',
-    image: require('@/assets/images/jerseys/LP_SH.png'),
+    id: '1',
+    name: 'Sunhoodie - Lighthouse Maps',
+    description: 'Lighthouse Maps',
+    image: require('@/assets/images/lp_merch_26/Sunhoodie_headlights.jpg'),
+    crop: { width: '100%', height: '140%', bottom: 0, right: 0 },
   },
   {
-    id: 'jersey_2',
-    name: 'Design 2',
-    description: 'Tank Top',
-    image: require('@/assets/images/jerseys/LP_Tank.png'),
+    id: '2',
+    name: 'Sunhoodie - Lobster Catch',
+    description: 'Lobster Catch',
+    image: require('@/assets/images/lp_merch_26/Sunhoodie_LobsterCatch.png'),
+    crop: { width: '100%', height: '130%', bottom: 0, right: 0 },
   },
   {
-    id: 'jersey_3',
-    name: 'Design 3',
-    description: 'Shortsleeve',
-    image: require('@/assets/images/jerseys/VL_LP_Teaser_Front.png'),
-  },
-  {
-    id: 'jersey_4',
-    name: 'Design 4',
-    description: 'Back Design',
-    image: require('@/assets/images/jerseys/VL_LP_Teaser_Back_v1.png'),
-  },
-  {
-    id: 'jersey_info',
-    name: 'Infographic',
-    description: 'More info...',
-    image: require('@/assets/images/jerseys/Lobsterpot_Cover.jpg'),
+    id: '3',
+    name: 'Sunhoodie - LP Special Edition',
+    description: 'LP Special Edition',
+    image: require('@/assets/images/lp_merch_26/Sunhoodie_LP-official.png'),
+    crop: { width: '120%', height: '100%', bottom: 10, right: 0 },
   },
 ];
 
 const PRODUCT_3: Product[] = [
   {
-    id: 'jersey_1',
-    name: 'Design 1',
-    description: 'Tank Top',
-    image: require('@/assets/images/jerseys/Headlight_Tank.png'),
+    id: '1',
+    name: 'LP Plain Black Pants',
+    description: 'Pants - LP Plain Black',
+    image: require('@/assets/images/lp_merch_26/Pants_LPPlainBlack.png'),
+    crop: { width: '100%', height: '130%', bottom: 0, right: 0 },
   },
   {
-    id: 'jersey_2',
-    name: 'Design 2',
-    description: 'Shortsleeve',
-    image: require('@/assets/images/jerseys/VL_Lighthouse_SS_Front.png'),
+    id: '2',
+    name: 'LP Plain Black Shorts',
+    description: 'Shorts - LP Plain Black',
+    image: require('@/assets/images/lp_merch_26/Shorts_LPPlainShorts.png'),
+    crop: { width: '130%', height: '120%', bottom: 0, right: 0 },
   },
   {
-    id: 'jersey_3',
-    name: 'Design 3',
-    description: 'Sunhoodie',
-    image: require('@/assets/images/jerseys/VL_Lighthouse_SH_Front.png'),
+    id: '3',
+    name: 'Underwater Shorts',
+    description: 'Shorts - Underwater',
+    image: require('@/assets/images/lp_merch_26/Shorts_Underwater.png'),
+    crop: { width: '120%', height: '100%', bottom: 0, right: 0 },
   },
   {
-    id: 'jersey_info',
-    name: 'Infographic',
-    description: 'More info...',
-    image: require('@/assets/images/jerseys/Headlight_Cover.jpg'),
+    id: '4',
+    name: 'String Bags',
+    description: 'String Bags - Waterproof',
+    image: require('@/assets/images/lp_merch_26/String_bags-waterproof.png'),
+    crop: { width: '120%', height: '120%', bottom: 0, right: 0 },
   },
 ];
 
@@ -178,10 +203,15 @@ function ZoomableImage({ source }: { source: ImageSourcePropType }) {
 export default function EvergreenScreen() {
   const [selected, setSelected] = useState<Product | null>(null);
   const insets = useSafeAreaInsets();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
-  // const openOrderForm = () => {
-  //   Linking.openURL(ORDER_FORM_URL);
-  // };
+  // Fit the 3:4 intro image within the content width and ~45% of the screen height.
+  const introWidth = Math.min(windowWidth - 40, (windowHeight * 0.45 * 3) / 4);
+  const introHeight = (introWidth * 4) / 3;
+
+  const openOrderForm = () => {
+    Linking.openURL(ORDER_FORM_URL);
+  };
 
   return (
     <>
@@ -191,21 +221,28 @@ export default function EvergreenScreen() {
         </View>
 
         {/* Order button */}
-        {/* <TouchableOpacity style={styles.orderButton} onPress={openOrderForm} activeOpacity={0.85}> */}
-        <View style={styles.orderButton}>
+        <TouchableOpacity style={styles.orderButton} onPress={openOrderForm} activeOpacity={0.85}>
+          {/* <View style={styles.orderButton}> */}
           <MaterialCommunityIcons name="clipboard-text-outline" size={20} color="#fff" />
-          <CustomText style={styles.orderButtonText}>Check out the Merch Tent!</CustomText>
-        </View>
-        {/* </TouchableOpacity> */}
+          <CustomText style={styles.orderButtonText}>Order Now!</CustomText>
+          {/* </View> */}
+        </TouchableOpacity>
 
         {/* Product gallery */}
         <CustomText variant="textSmall" style={styles.sectionHint}>
-          Swipe to browse — tap an image to enlarge.
+          Store will close on the 20th of September for online store exclusive items.
         </CustomText>
-
+        <TouchableOpacity
+          style={[styles.introImageWrapper, { width: introWidth, height: introHeight }]}
+          activeOpacity={0.85}
+          onPress={() => setSelected(INTRO_IMAGE)}
+          accessibilityRole="imagebutton"
+          accessibilityLabel="Lobster Pot 2026 collection overview. Tap to enlarge.">
+          <Image source={INTRO_IMAGE.image} style={styles.introImage} resizeMode="contain" />
+        </TouchableOpacity>
         <View style={styles.section}>
           <CustomText variant="heading4" style={styles.sectionTitle}>
-            Vacationland Classic
+            Tops
           </CustomText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.gallery}>
             {PRODUCT_1.map((product) => (
@@ -215,7 +252,11 @@ export default function EvergreenScreen() {
                 activeOpacity={0.85}
                 onPress={() => setSelected(product)}>
                 <View style={styles.cardImageWrapper}>
-                  <Image source={product.image} style={styles.cardImage} resizeMode="cover" />
+                  <Image
+                    source={product.image}
+                    style={[styles.cardImage, product.crop ?? DEFAULT_CROP]}
+                    resizeMode="cover"
+                  />
                 </View>
                 <View style={styles.cardBody}>
                   <CustomText>{product.description}</CustomText>
@@ -227,7 +268,7 @@ export default function EvergreenScreen() {
 
         <View style={styles.section}>
           <CustomText variant="heading4" style={styles.sectionTitle}>
-            Lobster Pot Limited Edition
+            Sunhoodies
           </CustomText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.gallery}>
             {PRODUCT_2.map((product) => (
@@ -237,7 +278,11 @@ export default function EvergreenScreen() {
                 activeOpacity={0.85}
                 onPress={() => setSelected(product)}>
                 <View style={styles.cardImageWrapper}>
-                  <Image source={product.image} style={styles.cardImage} resizeMode="cover" />
+                  <Image
+                    source={product.image}
+                    style={[styles.cardImage, product.crop ?? DEFAULT_CROP]}
+                    resizeMode="cover"
+                  />
                 </View>
                 <View style={styles.cardBody}>
                   <CustomText>{product.description}</CustomText>
@@ -249,7 +294,7 @@ export default function EvergreenScreen() {
 
         <View style={styles.section}>
           <CustomText variant="heading4" style={styles.sectionTitle}>
-            Headlight Lighthouse
+            Bottoms & String Bags
           </CustomText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.gallery}>
             {PRODUCT_3.map((product) => (
@@ -259,7 +304,11 @@ export default function EvergreenScreen() {
                 activeOpacity={0.85}
                 onPress={() => setSelected(product)}>
                 <View style={styles.cardImageWrapper}>
-                  <Image source={product.image} style={styles.cardImage} resizeMode="cover" />
+                  <Image
+                    source={product.image}
+                    style={[styles.cardImage, product.crop ?? DEFAULT_CROP]}
+                    resizeMode="cover"
+                  />
                 </View>
                 <View style={styles.cardBody}>
                   <CustomText>{product.description}</CustomText>
@@ -270,20 +319,20 @@ export default function EvergreenScreen() {
         </View>
 
         {/* Pre-order note */}
-        {/* <View style={styles.noteCard}>
+        <View style={styles.noteCard}>
           <MaterialCommunityIcons name="information-outline" size={20} color="#276B5D" />
           <CustomText variant="text" style={styles.noteText}>
-            Pre-orders are available now. Pick them up at{' '}
-            <CustomText style={styles.noteEmphasis}>Vacationland (Aug 8/9)</CustomText>.
+            Pre-orders are available now. Pick them up in the merch tent at{' '}
+            <CustomText style={styles.noteEmphasis}>Lobster Pot (Oct 17/18)</CustomText>.
           </CustomText>
-        </View> */}
+        </View>
       </ScrollView>
 
       {/* Enlarged image modal */}
       <Modal visible={selected !== null} animationType="fade" onRequestClose={() => setSelected(null)}>
         <GestureHandlerRootView style={styles.modalRoot}>
           <TouchableOpacity
-            style={[styles.modalClose, { top: insets.top + 12 }]}
+            style={[styles.modalClose, { top: insets.top + 5 }]}
             onPress={() => setSelected(null)}
             accessibilityRole="button"
             accessibilityLabel="Close">
@@ -292,7 +341,7 @@ export default function EvergreenScreen() {
           {selected && (
             <>
               <ZoomableImage key={selected.id} source={selected.image} />
-              <View style={[styles.modalBody, { paddingBottom: insets.bottom + 20 }]}>
+              <View style={[styles.modalBody, { paddingBottom: insets.bottom }]}>
                 <CustomText variant="text" style={styles.modalDescription}>
                   {selected.description}
                 </CustomText>
@@ -308,7 +357,7 @@ export default function EvergreenScreen() {
   );
 }
 
-const CARD_WIDTH = 260;
+const CARD_WIDTH = 250;
 
 const styles = StyleSheet.create({
   zoomContainer: {
@@ -370,6 +419,16 @@ const styles = StyleSheet.create({
     color: '#276B5D',
     textDecorationLine: 'underline',
   },
+  introImageWrapper: {
+    alignSelf: 'center',
+    backgroundColor: '#f4f8f6',
+    borderRadius: 14,
+    overflow: 'hidden',
+  },
+  introImage: {
+    height: '100%',
+    width: '100%',
+  },
   gallery: {
     gap: 14,
     paddingRight: 20,
@@ -390,11 +449,12 @@ const styles = StyleSheet.create({
   cardImageWrapper: {
     backgroundColor: '#f4f8f6',
     height: CARD_WIDTH,
+    overflow: 'hidden',
     width: '100%',
   },
   cardImage: {
-    height: '100%',
-    width: '100%',
+    // Size and pinned edges come from each product's `crop` (see ImageCrop / DEFAULT_CROP).
+    position: 'absolute',
   },
   cardBody: {
     gap: 4,
