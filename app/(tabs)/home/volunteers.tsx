@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { FlatList, Image, StyleSheet, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { FlatList, Image, Modal, Pressable, RefreshControl, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import CustomText from '@/components/CustomText';
 import LoadingIndicator from '@/components/LoadingIndicator';
@@ -7,27 +7,34 @@ import { typography } from '@/constants/Typography';
 import { supabase } from '@/lib/supabase';
 import { VolunteerRow } from '@/types/database';
 
+const placeholderAvatar = require('../../../assets/icons/placeholder_user.png');
+
+const UNASSIGNED_ROLE = 'Other';
+const DEFAULT_DESCRIPTION = 'No description available yet.';
+
+// Sort by role Z-A so volunteers with the same role sit together; ties break on name A-Z.
+// Roles are trimmed so "Livestream " and "Livestream" sort as the same role.
+const sortByRole = (volunteers: VolunteerRow[]): VolunteerRow[] =>
+  [...volunteers].sort((a, b) => {
+    const roleA = a.role?.trim() || UNASSIGNED_ROLE;
+    const roleB = b.role?.trim() || UNASSIGNED_ROLE;
+    return roleB.localeCompare(roleA) || (a.badge ?? '').localeCompare(b.badge ?? '');
+  });
+
 const Volunteers = () => {
   const [volunteers, setVolunteers] = useState<VolunteerRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [selectedVolunteer, setSelectedVolunteer] = useState<VolunteerRow | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  useEffect(() => {
-    fetchVolunteers();
-  }, []);
+  const sortedVolunteers = useMemo(() => sortByRole(volunteers), [volunteers]);
 
-  const fetchVolunteers = async () => {
-    setIsLoading(true);
+  const fetchVolunteers = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('volunteers')
-        .select(
-          `
-          id,
-          badge,
-          role,
-          avatar_uri
-        `,
-        )
+        .select('id, badge, role, avatar_uri, description')
         .order('badge');
 
       if (error) {
@@ -37,39 +44,106 @@ const Volunteers = () => {
       }
     } catch (error) {
       console.error('Error fetching volunteers:', error);
-    } finally {
-      setIsLoading(false);
     }
+  }, []);
+
+  useEffect(() => {
+    fetchVolunteers().finally(() => setIsLoading(false));
+  }, [fetchVolunteers]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchVolunteers().finally(() => setRefreshing(false));
   };
 
-  const renderItem = ({ item }: { item: VolunteerRow }) => (
-    <View style={styles.itemContainer}>
-      <Image
-        style={styles.avatar}
-        source={item.avatar_uri ? { uri: item.avatar_uri } : require('../../../assets/icons/placeholder_user.png')}
-      />
+  const handleVolunteerPress = (volunteer: VolunteerRow) => {
+    setSelectedVolunteer(volunteer);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setTimeout(() => setSelectedVolunteer(null), 300);
+  };
+
+  const renderVolunteer = ({ item: volunteer }: { item: VolunteerRow }) => (
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() => handleVolunteerPress(volunteer)}
+      activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={`${volunteer.badge ?? 'Volunteer'}, ${volunteer.role?.trim() || UNASSIGNED_ROLE}`}
+      accessibilityHint="Opens a short description">
+      <Image style={styles.avatar} source={volunteer.avatar_uri ? { uri: volunteer.avatar_uri } : placeholderAvatar} />
       <CustomText style={styles.badgeText} allowFontScaling maxFontSizeMultiplier={1.1}>
-        {item.badge}
+        {volunteer.badge}
       </CustomText>
       <CustomText style={styles.roleText} allowFontScaling maxFontSizeMultiplier={1.1}>
-        {item.role}
+        {volunteer.role?.trim() || UNASSIGNED_ROLE}
       </CustomText>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>
-      {isLoading ? (
-        <LoadingIndicator message="Loading volunteers..." />
-      ) : (
-        <FlatList
-          data={volunteers}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          numColumns={3}
-        />
-      )}
-    </View>
+    <>
+      <View style={styles.container}>
+        {isLoading ? (
+          <LoadingIndicator message="Loading volunteers..." />
+        ) : (
+          <FlatList
+            data={sortedVolunteers}
+            renderItem={renderVolunteer}
+            keyExtractor={(volunteer) => volunteer.id.toString()}
+            numColumns={3}
+            contentContainerStyle={styles.listContent}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#4357AD']} tintColor="#4357AD" />
+            }
+            ListEmptyComponent={
+              <CustomText variant="textMedium" style={styles.emptyText}>
+                No volunteers to show yet.
+              </CustomText>
+            }
+          />
+        )}
+      </View>
+
+      <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={closeModal}>
+        <Pressable style={styles.modalOverlay} onPress={closeModal}>
+          <View style={styles.modalWrapper}>
+            {selectedVolunteer && (
+              <View style={styles.modalAvatarContainer}>
+                <Image
+                  source={selectedVolunteer.avatar_uri ? { uri: selectedVolunteer.avatar_uri } : placeholderAvatar}
+                  style={styles.modalAvatar}
+                  resizeMode="cover"
+                />
+              </View>
+            )}
+            <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
+              {selectedVolunteer && (
+                <>
+                  <View style={styles.modalHeader}>
+                    <CustomText variant="textLargeBold" style={styles.modalName}>
+                      {selectedVolunteer.badge}
+                    </CustomText>
+                    <CustomText variant="textMedium" style={styles.modalRole}>
+                      {selectedVolunteer.role?.trim() || UNASSIGNED_ROLE}
+                    </CustomText>
+                  </View>
+
+                  <View style={styles.modalBody}>
+                    <CustomText variant="textMedium" style={styles.modalDescription}>
+                      {selectedVolunteer.description?.trim() || DEFAULT_DESCRIPTION}
+                    </CustomText>
+                  </View>
+                </>
+              )}
+            </Pressable>
+          </View>
+        </Pressable>
+      </Modal>
+    </>
   );
 };
 
@@ -77,8 +151,8 @@ const styles = StyleSheet.create({
   itemContainer: {
     alignItems: 'center',
     flex: 1,
-    margin: 10,
-    width: 100,
+    paddingHorizontal: 6,
+    paddingVertical: 10,
   },
   avatar: {
     borderRadius: 30,
@@ -100,10 +174,83 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flex: 1,
   },
-  listContainer: {
-    flexDirection: 'row',
+  listContent: {
+    paddingBottom: 24,
     paddingHorizontal: 10,
-    paddingTop: 10,
+    paddingTop: 6,
+  },
+  emptyText: {
+    color: '#666',
+    marginTop: 40,
+    paddingHorizontal: 20,
+    textAlign: 'center',
+  },
+  modalOverlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  modalWrapper: {
+    alignItems: 'center',
+    position: 'relative',
+  },
+  modalAvatarContainer: {
+    backgroundColor: '#fff',
+    borderColor: '#4357AD',
+    borderRadius: 60,
+    borderWidth: 2,
+    height: 120,
+    overflow: 'hidden',
+    position: 'absolute',
+    top: -60,
+    width: 120,
+    zIndex: 100,
+  },
+  modalAvatar: {
+    height: 120,
+    position: 'absolute',
+    width: '100%',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    elevation: 10,
+    paddingBottom: 40,
+    paddingHorizontal: 25,
+    paddingTop: 70,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    width: '100%',
+  },
+  modalHeader: {
+    alignItems: 'center',
+    borderBottomColor: '#E0E0E0',
+    borderBottomWidth: 1,
+    marginBottom: 20,
+    paddingBottom: 20,
+  },
+  modalName: {
+    color: '#000',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  modalRole: {
+    color: '#4357AD',
+    textAlign: 'center',
+  },
+  modalBody: {
+    marginBottom: 10,
+  },
+  modalDescription: {
+    color: '#333',
+    lineHeight: 24,
+    textAlign: 'left',
   },
 });
 

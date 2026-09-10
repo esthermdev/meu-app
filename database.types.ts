@@ -1111,18 +1111,21 @@ export type Database = {
         Row: {
           avatar_uri: string | null;
           badge: string | null;
+          description: string | null;
           id: number;
           role: string | null;
         };
         Insert: {
           avatar_uri?: string | null;
           badge?: string | null;
+          description?: string | null;
           id?: number;
           role?: string | null;
         };
         Update: {
           avatar_uri?: string | null;
           badge?: string | null;
+          description?: string | null;
           id?: number;
           role?: string | null;
         };
