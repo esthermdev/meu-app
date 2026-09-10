@@ -1,5 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FlatList, Image, Modal, Pressable, RefreshControl, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  FlatList,
+  Image,
+  Modal,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 
 import CustomText from '@/components/CustomText';
 import LoadingIndicator from '@/components/LoadingIndicator';
@@ -11,6 +22,8 @@ const placeholderAvatar = require('../../../assets/icons/placeholder_user.png');
 
 const UNASSIGNED_ROLE = 'Other';
 const DEFAULT_DESCRIPTION = 'No description available yet.';
+// The detail sheet never grows past this share of the screen; longer bios scroll inside it.
+const MODAL_MAX_HEIGHT_RATIO = 0.7;
 
 // Sort by role Z-A so volunteers with the same role sit together; ties break on name A-Z.
 // Roles are trimmed so "Livestream " and "Livestream" sort as the same role.
@@ -27,6 +40,7 @@ const Volunteers = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedVolunteer, setSelectedVolunteer] = useState<VolunteerRow | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const { height: windowHeight } = useWindowDimensions();
 
   const sortedVolunteers = useMemo(() => sortByRole(volunteers), [volunteers]);
 
@@ -120,7 +134,9 @@ const Volunteers = () => {
                 />
               </View>
             )}
-            <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
+            <Pressable
+              style={[styles.modalContent, { maxHeight: windowHeight * MODAL_MAX_HEIGHT_RATIO }]}
+              onPress={(e) => e.stopPropagation()}>
               {selectedVolunteer && (
                 <>
                   <View style={styles.modalHeader}>
@@ -132,11 +148,15 @@ const Volunteers = () => {
                     </CustomText>
                   </View>
 
-                  <View style={styles.modalBody}>
+                  <ScrollView
+                    style={styles.modalBody}
+                    contentContainerStyle={styles.modalBodyContent}
+                    showsVerticalScrollIndicator
+                    bounces={false}>
                     <CustomText variant="textMedium" style={styles.modalDescription}>
                       {selectedVolunteer.description?.trim() || DEFAULT_DESCRIPTION}
                     </CustomText>
-                  </View>
+                  </ScrollView>
                 </>
               )}
             </Pressable>
@@ -245,7 +265,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalBody: {
-    marginBottom: 10,
+    flexShrink: 1,
+  },
+  modalBodyContent: {
+    paddingBottom: 10,
   },
   modalDescription: {
     color: '#333',
