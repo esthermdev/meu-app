@@ -242,7 +242,7 @@ export default function EvergreenScreen() {
         </TouchableOpacity>
         <View style={styles.section}>
           <CustomText variant="heading4" style={styles.sectionTitle}>
-            Tops
+            Jerseys
           </CustomText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.gallery}>
             {PRODUCT_1.map((product) => (
