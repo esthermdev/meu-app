@@ -123,7 +123,15 @@ const Volunteers = () => {
       </View>
 
       <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={closeModal}>
-        <Pressable style={styles.modalOverlay} onPress={closeModal}>
+        <View style={styles.modalOverlay}>
+          {/* The backdrop sits behind the sheet rather than wrapping it, so it never steals
+              touches from the description ScrollView. */}
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={closeModal}
+            accessibilityRole="button"
+            accessibilityLabel="Close volunteer details"
+          />
           <View style={styles.modalWrapper}>
             {selectedVolunteer && (
               <View style={styles.modalAvatarContainer}>
@@ -134,9 +142,7 @@ const Volunteers = () => {
                 />
               </View>
             )}
-            <Pressable
-              style={[styles.modalContent, { maxHeight: windowHeight * MODAL_MAX_HEIGHT_RATIO }]}
-              onPress={(e) => e.stopPropagation()}>
+            <View style={[styles.modalContent, { maxHeight: windowHeight * MODAL_MAX_HEIGHT_RATIO }]}>
               {selectedVolunteer && (
                 <>
                   <View style={styles.modalHeader}>
@@ -159,9 +165,9 @@ const Volunteers = () => {
                   </ScrollView>
                 </>
               )}
-            </Pressable>
+            </View>
           </View>
-        </Pressable>
+        </View>
       </Modal>
     </>
   );
