@@ -13,7 +13,7 @@ const TournamentInfo = () => {
           <Link href={'https://usaultimate.org/'} allowFontScaling maxFontSizeMultiplier={1.3} style={styles.linkRed}>
             USA Ultimate
           </Link>
-          ,{' '}
+          ,
           <Link href={'https://maineultimate.org/'} allowFontScaling maxFontSizeMultiplier={1.3} style={styles.linkRed}>
             Maine Ultimate
           </Link>
@@ -21,7 +21,11 @@ const TournamentInfo = () => {
           <Link href={'https://www.southportland.gov/'} style={styles.linkRed}>
             City of South Portland
           </Link>
-          , Visit Portland and the Maine Sports Commission, I welcome you to Vacationland 2026!
+          ,{' '}
+          <Link href={'https://www.tylertech.com/'} style={styles.linkRed}>
+            Tyler Technologies
+          </Link>
+          , Visit Portland and the Maine Sports Commission, I welcome you to Lobster Pot 2026!
           {'\n\n'}
           The tournament takes place at the{' '}
           <Link
