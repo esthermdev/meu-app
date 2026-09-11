@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Link } from 'expo-router';
 
+import CustomText from '@/components/CustomText';
 import { typography } from '@/constants/Typography';
 
 const RulesAndSOTG = () => {
@@ -24,12 +25,12 @@ const RulesAndSOTG = () => {
           capped (highest score plus 1) at 75 mins and hard capped at 90 mins. {'\n'}• A point begins as soon as a goal
           is scored. {'\n'}• Caps do not affect timeouts.
         </CustomText>
-        <View style={styles.divider} />
+        <View style={styles.divider} /> */}
         <CustomText allowFontScaling maxFontSizeMultiplier={1.3} style={styles.content}>
-          • All bracket games are 105 min games to 15; 2TO/half. {'\n'}• All bracket games are soft capped at 90 mins
-          and hard capped at 105 mins. {'\n'}• A point begins as soon as a goal is scored. {'\n'}• Caps do not affect
-          timeouts.
-        </CustomText> */}
+          • All games are 80-minute games to 15; 2 TO/half. {'\n'}• All games are soft capped (highest score plus 1) at
+          80 minutes and hard capped at 90 minutes. {'\n'}• A point begins as soon as a goal is scored. {'\n'}• The caps
+          do NOT affect timeouts.
+        </CustomText>
         <Link
           allowFontScaling
           maxFontSizeMultiplier={1.3}
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   content: {
-    ...typography.text,
+    ...typography.textLarge,
     marginBottom: 20,
   },
   divider: {
