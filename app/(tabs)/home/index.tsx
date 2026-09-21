@@ -1,6 +1,6 @@
 // app/(tabs)/home/index.tsx
 import { useCallback, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 
 import CircleIconButton from '@/components/buttons/CircleIconButton';
@@ -34,8 +34,16 @@ export default function HomeScreen() {
   // they are limited to signed-in captains (and admins) rather than every player.
   // Both screens behind these buttons require a session, so a signed-out user never
   // sees them even if a stale profile is still in memory.
-  const { profile, session } = useAuth();
+  const { profile, session, refreshProfile } = useAuth();
   const canActForTeam = !!session && hasAnyRole(profile, ['captain', 'admin']);
+
+  // Pull-to-refresh re-checks the role, so a user promoted to captain mid-session
+  // can reveal these buttons without restarting the app.
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    refreshProfile().finally(() => setRefreshing(false));
+  }, [refreshProfile]);
 
   // Evergreen banner: slides fully in on focus, holds briefly, then tucks away so only the
   // pine-tree icon peeks out. Tapping the peek slides the full banner back in; tapping the
@@ -89,7 +97,9 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View>
           {/* My Games Button with Custom Background */}
           <View style={{ gap: 10 }}>

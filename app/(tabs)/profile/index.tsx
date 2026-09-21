@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Href, router } from 'expo-router';
 
 import { Card } from '@/components/Card';
@@ -14,12 +14,20 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function UserDashboard() {
-  const { session, profile, signOut } = useAuth();
+  const { session, profile, signOut, refreshProfile } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   if (!session) {
     return <SignIn />;
   }
+
+  // The Support section below is built from the cached role, so pull-to-refresh
+  // is how a user picks up a role an admin just granted them.
+  const onRefresh = () => {
+    setRefreshing(true);
+    refreshProfile().finally(() => setRefreshing(false));
+  };
 
   const handleOpenDeleteAccount = () => {
     router.push('/(user)/delete-account');
@@ -40,7 +48,9 @@ export default function UserDashboard() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }} edges={['top']}>
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={styles.header}>
           <CustomText style={styles.welcomeText}>
             Welcome, <CustomText style={styles.username}>{profile?.full_name}!</CustomText>

@@ -1,5 +1,6 @@
 // lib/auth/AuthProvider.tsx
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { AppState } from 'react-native';
 import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 
@@ -23,6 +24,10 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// The App Store reviewer runs on a synthetic session whose id is not a real
+// profile row, so every profile fetch has to skip it.
+const REVIEWER_USER_ID = 'app-reviewer';
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -30,6 +35,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   // Flag to track if we're processing a deep link
+  const appStateRef = useRef(AppState.currentState);
+
   const [isProcessingDeepLink, setIsProcessingDeepLink] = useState(false);
   const isProcessingDeepLinkRef = useRef(false);
   const handleDeepLinkRef = useRef<(url: string) => Promise<void>>(async () => {});
@@ -349,17 +356,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const refreshProfile = async (userId?: string) => {
-    try {
-      const id = userId || user?.id;
-      if (!id) return;
+  const refreshProfile = useCallback(
+    async (userId?: string) => {
+      try {
+        const id = userId || user?.id;
+        if (!id || id === REVIEWER_USER_ID) return;
 
-      const data = await fetchProfileWithRole(id);
-      if (data) setProfile(data);
-    } catch (error) {
-      console.error('Error refreshing profile:', error);
-    }
-  };
+        const data = await fetchProfileWithRole(id);
+        if (data) setProfile(data);
+      } catch (error) {
+        // The cached profile is left alone on failure: a dropped connection
+        // should never silently revoke someone's role.
+        console.error('Error refreshing profile:', error);
+      }
+    },
+    [user?.id],
+  );
+
+  // Roles and permissions are assigned by an admin while the user is somewhere
+  // else entirely, so the profile cached at sign-in goes stale with no event to
+  // react to. Re-fetching on every return to the foreground covers the usual
+  // case (an admin makes someone a captain, they reopen the app); the screens
+  // that gate on roles also offer pull-to-refresh for an immediate re-check.
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextState) => {
+      const returnedToForeground = appStateRef.current.match(/inactive|background/) && nextState === 'active';
+      appStateRef.current = nextState;
+
+      if (returnedToForeground) {
+        refreshProfile();
+      }
+    });
+
+    return () => subscription.remove();
+  }, [refreshProfile]);
 
   // Add this function
   const reviewerSignIn = async () => {
@@ -368,7 +398,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // This creates a "fake" session for the reviewer without requiring email verification
       const reviewSession = {
         user: {
-          id: 'app-reviewer',
+          id: REVIEWER_USER_ID,
           email: 'reviewer@maineultimateapp.org',
           user_metadata: {
             full_name: 'App Reviewer',
