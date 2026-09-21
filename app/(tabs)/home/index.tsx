@@ -95,41 +95,57 @@ export default function HomeScreen() {
     transform: [{ translateX: translateX.value }],
   }));
 
+  // These two cards pair up differently depending on whether Spirit is shown, so
+  // they are defined once here and arranged by each layout below.
+  const myGamesButton = (
+    <LargeCardButton
+      title="My Games"
+      subtitle=""
+      route="/(tabs)/home/mygames"
+      renderCustomBackground={() => <MyGamesButtonBackground title="My Games" />}
+    />
+  );
+
+  // Watch Live button with background image and play button
+  const watchLiveButton = (
+    <LargeCardButton
+      title="Watch Live"
+      subtitle=""
+      route="https://www.youtube.com/@maineultimate/streams"
+      backgroundImage={require('@/assets/images/watch-live.jpg')}
+    />
+  );
+
   return (
     <View style={styles.container}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View>
-          {/* My Games Button with Custom Background */}
           <View style={{ gap: 10 }}>
-            <LargeCardButton
-              title="My Games"
-              subtitle=""
-              route="/(tabs)/home/mygames"
-              renderCustomBackground={() => <MyGamesButtonBackground title="My Games" />}
-            />
-
-            <View style={styles.row}>
-              {canActForTeam && (
-                <LargeCardButton
-                  title="Spirit"
-                  subtitle=""
-                  icon={<MaterialCommunityIcons name="handshake-outline" size={28} color="#fff" />}
-                  backgroundColor="#F7941D"
-                  route="/(tabs)/home/spirit"
-                  disabled={false}
-                />
-              )}
-
-              {/* Watch Live button with background image and play button */}
-              <LargeCardButton
-                title="Watch Live"
-                subtitle=""
-                route="https://www.youtube.com/@maineultimate/streams"
-                backgroundImage={require('@/assets/images/watch-live.jpg')}
-              />
-            </View>
+            {canActForTeam ? (
+              <>
+                {myGamesButton}
+                <View style={styles.row}>
+                  <LargeCardButton
+                    title="Spirit"
+                    subtitle=""
+                    icon={<MaterialCommunityIcons name="handshake-outline" size={28} color="#fff" />}
+                    backgroundColor="#F7941D"
+                    route="/(tabs)/home/spirit"
+                    disabled={false}
+                  />
+                  {watchLiveButton}
+                </View>
+              </>
+            ) : (
+              // Without Spirit there is only one card left for the second row, so
+              // My Games pairs up with Watch Live instead of spanning its own row.
+              <View style={styles.row}>
+                {myGamesButton}
+                {watchLiveButton}
+              </View>
+            )}
           </View>
 
           {/* Circular icon buttons */}
