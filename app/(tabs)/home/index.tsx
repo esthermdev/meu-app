@@ -149,7 +149,7 @@ export default function HomeScreen() {
           </View>
 
           {/* Circular icon buttons */}
-          <View style={styles.utilsContainer}>
+          <View style={[styles.utilsContainer, !canActForTeam && styles.utilsContainerWithoutTrainer]}>
             <CircleIconButton icon="map" iconColor="#276B5D" label="Field Map" route="/(tabs)/home/fieldmap" />
             {canActForTeam && <TrainerRequestModal />}
             <CartRequestModal />
@@ -247,6 +247,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 15,
+  },
+  utilsContainerWithoutTrainer: {
+    gap: 45,
+    justifyContent: 'center',
   },
   chatCard: {
     backgroundColor: '#f6f6f6',
