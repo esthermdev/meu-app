@@ -13,6 +13,8 @@ import WaterRequestModal from '@/components/features/modals/WaterRequestModal';
 import NotificationPrompt from '@/components/features/notifications/NotificationPrompt';
 import MyGamesButtonBackground from '@/components/MyGamesButtonBackground';
 import { typography } from '@/constants/Typography';
+import { useAuth } from '@/context/AuthProvider';
+import { hasAnyRole } from '@/context/profileRoles';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -28,6 +30,13 @@ const SLIDE_IN = { duration: 500, easing: Easing.out(Easing.cubic) };
 const SLIDE_OUT = { duration: 400, easing: Easing.in(Easing.cubic) };
 
 export default function HomeScreen() {
+  // Trainer requests and spirit scoring are submitted on behalf of a whole team, so
+  // they are limited to signed-in captains (and admins) rather than every player.
+  // Both screens behind these buttons require a session, so a signed-out user never
+  // sees them even if a stale profile is still in memory.
+  const { profile, session } = useAuth();
+  const canActForTeam = !!session && hasAnyRole(profile, ['captain', 'admin']);
+
   // Evergreen banner: slides fully in on focus, holds briefly, then tucks away so only the
   // pine-tree icon peeks out. Tapping the peek slides the full banner back in; tapping the
   // expanded banner opens the Evergreen page.
@@ -92,14 +101,16 @@ export default function HomeScreen() {
             />
 
             <View style={styles.row}>
-              <LargeCardButton
-                title="Spirit"
-                subtitle=""
-                icon={<MaterialCommunityIcons name="handshake-outline" size={28} color="#fff" />}
-                backgroundColor="#F7941D"
-                route="/(tabs)/home/spirit"
-                disabled={false}
-              />
+              {canActForTeam && (
+                <LargeCardButton
+                  title="Spirit"
+                  subtitle=""
+                  icon={<MaterialCommunityIcons name="handshake-outline" size={28} color="#fff" />}
+                  backgroundColor="#F7941D"
+                  route="/(tabs)/home/spirit"
+                  disabled={false}
+                />
+              )}
 
               {/* Watch Live button with background image and play button */}
               <LargeCardButton
@@ -114,7 +125,7 @@ export default function HomeScreen() {
           {/* Circular icon buttons */}
           <View style={styles.utilsContainer}>
             <CircleIconButton icon="map" iconColor="#276B5D" label="Field Map" route="/(tabs)/home/fieldmap" />
-            <TrainerRequestModal />
+            {canActForTeam && <TrainerRequestModal />}
             <CartRequestModal />
             <WaterRequestModal />
           </View>

@@ -1,7 +1,9 @@
 import { supabase } from '@/lib/supabase';
 import { ProfileRow } from '@/types/database';
 
-export type RoleKey = 'user' | 'admin' | 'medic' | 'driver' | 'volunteer';
+// Mirrors the roles.key CHECK constraint in the database.
+export const ROLE_KEYS = ['user', 'admin', 'captain', 'medic', 'driver', 'volunteer'] as const;
+export type RoleKey = (typeof ROLE_KEYS)[number];
 export type PermissionKey =
   | 'view_admin_dashboard'
   | 'manage_games'
@@ -29,13 +31,15 @@ export type ProfileWithRole = ProfileRow &
 const DEFAULT_ROLE_PERMISSIONS: Record<RoleKey, PermissionKey[]> = {
   user: [],
   admin: ['view_admin_dashboard', 'manage_games', 'manage_transport', 'manage_water', 'manage_trainer_requests'],
+  // Captains gate home-screen features by role, not by permission, so they hold none.
+  captain: [],
   driver: ['manage_transport'],
   volunteer: ['manage_water'],
   medic: ['manage_trainer_requests'],
 };
 
 function isRoleKey(value: string | null | undefined): value is RoleKey {
-  return value === 'user' || value === 'admin' || value === 'medic' || value === 'driver' || value === 'volunteer';
+  return !!value && (ROLE_KEYS as readonly string[]).includes(value);
 }
 
 export function getRoleKey(profile: RoleAwareProfile | null | undefined): RoleKey | null {
@@ -65,6 +69,11 @@ export function getRoleKeys(profile: RoleAwareProfile | null | undefined): RoleK
 
 export function hasRole(profile: RoleAwareProfile | null | undefined, role: RoleKey): boolean {
   return getRoleKeys(profile).includes(role);
+}
+
+export function hasAnyRole(profile: RoleAwareProfile | null | undefined, roles: RoleKey[]): boolean {
+  const roleKeys = getRoleKeys(profile);
+  return roles.some((role) => roleKeys.includes(role));
 }
 
 export function hasPermission(profile: RoleAwareProfile | null | undefined, permission: PermissionKey): boolean {
